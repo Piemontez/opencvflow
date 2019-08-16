@@ -32,10 +32,6 @@ find_package(OpenCV REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 get_target_property(QtCore_location Qt5::Core LOCATION)
 
-#includes
-include_directories(${OpenCV_INCLUDE_DIRS})
-
-
 #make source files list
 file(GLOB_RECURSE opencvflow_SRC src/*.cpp)
 
@@ -43,14 +39,17 @@ file(GLOB_RECURSE opencvflow_SRC src/*.cpp)
 list(REMOVE_ITEM opencvflow_SRC "src/main.cpp")
 
 #make include list
-file(GLOB_RECURSE opencvflow_INCLUDE include/*.h)
+file(GLOB_RECURSE opencvflow_INCLUDE include/*.hpp)
+
+#includes
+include_directories(${OpenCV_INCLUDE_DIRS}
+    include)
 
 
 #file to builder
 add_executable(opencvflow
-	src/main.cpp)
-
-message(${OpenCV_LIBS})
+    src/main.cpp
+    src/window.cpp)
 
 target_link_libraries(opencvflow
     Qt5::Widgets

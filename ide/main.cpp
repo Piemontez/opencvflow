@@ -9,10 +9,11 @@ int main(int argc, char **argv)
   if (false)
     setvbuf(stdout, nullptr, _IONBF, 0);
 
+  QApplication a(argc, argv);
+
   QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
   QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
   QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
-  QApplication a(argc, argv);
   
   a.setQuitOnLastWindowClosed(true);
   a.setApplicationName(APP_FULL_NAME);

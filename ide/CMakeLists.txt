@@ -1,22 +1,35 @@
-cmake_minimum_required(VERSION 2.8.12.1)
+cmake_minimum_required(VERSION 3.1.0)
 
 project(opencvflow)
 
+add_definitions(-DAPP_FULL_NAME="OpenCVFlow")
+
 #flags
+#c++11flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
 
-#dependencies
-find_package( OpenCV REQUIRED )
+#qtflags
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSONCPP jsoncpp)
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endif()
+
+#compilerflag
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
+#dependencies
+find_package(OpenCV REQUIRED)
+
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
+get_target_property(QtCore_location Qt5::Core LOCATION)
 
 #file to builder
 add_executable(opencvflow
 	main.cpp)
 
-target_link_libraries(opencvflow
-  ${OpenCV_LIBS}
-  ${JSONCPP_LIBRARIES})
+target_link_libraries(opencvflow ${OpenCV_LIBS} Qt5::Widgets)
 
 install(TARGETS opencvflow DESTINATION bin)

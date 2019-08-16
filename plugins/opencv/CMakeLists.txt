@@ -3,4 +3,4 @@ include_directories(${opencvflow_SOURCE_DIR})
 
 
 #add ide libraries
-target_link_libraries(plugins ide)
+#target_link_libraries(plugins opencvflow)

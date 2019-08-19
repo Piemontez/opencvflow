@@ -1,8 +1,9 @@
 #include <QApplication>
 #include <QMainWindow>
-#include <QWidget>
 
 #include <stdio.h>
+
+#include "window.h"
 
 int main(int argc, char **argv)
 {
@@ -19,7 +20,7 @@ int main(int argc, char **argv)
   a.setApplicationName(APP_FULL_NAME);
 
   QMainWindow mainWindow;
-  mainWindow.setCentralWidget(new QWidget);
+  mainWindow.setCentralWidget(new CentralWidget);
   mainWindow.show();
 
   return a.exec();

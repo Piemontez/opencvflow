@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include "window.h"
 
 #include <math.h>
 
@@ -15,8 +15,9 @@ class CentralWidgetPrivate {
     CentralWidgetPrivate() {}
 };
 
-CentralWidget::CentralWidget(QWidget *parent)
-    : QGraphicsView(parent), d_ptr(new CentralWidgetPrivate)
+CentralWidget::CentralWidget(QWidget *parent): 
+    QGraphicsView(parent),
+    d_ptr(new CentralWidgetPrivate)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -96,8 +97,8 @@ void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
 
     QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
 
-    gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::lightGray);
+    gradient.setColorAt(0, Qt::lightGray);
+    gradient.setColorAt(1, Qt::white);
     painter->fillRect(rect.intersected(sceneRect), gradient);
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(sceneRect);

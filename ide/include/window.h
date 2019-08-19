@@ -1,17 +1,18 @@
-#ifndef GRAPHWIDGET_H
-#define GRAPHWIDGET_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <QGraphicsView>
 #include <QScopedPointer>
 
 class QWidget;
+
 class CentralWidgetPrivate;
 class CentralWidget : public QGraphicsView
 {
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(CentralWidget)
+    //Q_OBJECT
 
     QScopedPointer<CentralWidgetPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(CentralWidget)
 public:
     CentralWidget(QWidget *parent = 0);
 
@@ -39,4 +40,4 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 };
 
-#endif // GRAPHWIDGET_H
+#endif // WINDOW_H

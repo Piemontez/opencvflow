@@ -23,3 +23,7 @@ QList<Edge *> Node::edges() const
 {
     return d_func()->edges;
 }
+std::vector<cv::Mat> Node::sources() const
+{
+    return d_func()->sources;
+}

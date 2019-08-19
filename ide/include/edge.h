@@ -6,6 +6,9 @@
 class Node;
 class NodeItem;
 
+/**
+ * @brief The Edge;
+ */
 class Edge
 {
 public:
@@ -18,6 +21,9 @@ private:
     Node *source, *dest;
 };
 
+/**
+ * @brief The EdgeItem;
+ */
 class EdgeItemPrivate;
 class EdgeItem : public Edge, QGraphicsItem
 {

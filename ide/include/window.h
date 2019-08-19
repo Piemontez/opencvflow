@@ -6,6 +6,9 @@
 
 class QWidget;
 
+/**
+ * @brief The CentralWidget;
+ */
 class CentralWidgetPrivate;
 class CentralWidget : public QGraphicsView
 {

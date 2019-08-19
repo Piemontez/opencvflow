@@ -1,12 +1,26 @@
 #include "node.h"
 #include "edge.h"
+#include "window.h"
+#include "utils.h"
+
+#include <QPainter>
+#include <QRadialGradient>
+#include <QFont>
+#include <QStyleOptionGraphicsItem>
+#include <QGraphicsSceneContextMenuEvent>
+#include <QWidget>
+
+#include <QMenu>
+#include <QAction>
 
 class NodeItemPrivate {
     CentralWidget *centralWidget;
-}
+
+    friend class NodeItem;
+};
 
 NodeItem::NodeItem(CentralWidget *centralWidget)
-    : d_ptr(mew NodeItemPrivate)
+    : d_ptr(new NodeItemPrivate)
 {
     d_func()->centralWidget = centralWidget;
 
@@ -23,7 +37,7 @@ QString NodeItem::title()
    return "Empty Node";
 }
 
-void NodeItem::addEdge(Edge *edge)
+void NodeItem::addEdge(EdgeItem *edge)
 {
     NodeItem::addEdge(edge);
     
@@ -77,7 +91,7 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 void NodeItem::contentPaint(const QSize &size, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     cv::Mat out;
-    for (auto && mat: sources)
+    for (auto && mat: sources())
     {
         cv::resize(mat, out, cv::Size(size.width(), size.height()));
         painter->drawImage(0, 0, cvMatToQImage(out));
@@ -91,9 +105,8 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
     case ItemPositionHasChanged:
-        foreach (Edge *edge, edgeList)
-            edge->adjust();
-        graph->itemMoved();
+        foreach (Edge *edge, edges())
+            static_cast<EdgeItem *>(edge)->adjust();
         break;
     default:
         break;
@@ -132,7 +145,7 @@ void NodeItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     QAction *action = new QAction("Connect");
     action->setData(QVariant::fromValue((void*)this));
 
-    QObject::connect(action, &QAction::triggered, graph, &GraphWidget::connectNode);
+    QObject::connect(action, &QAction::triggered, d_func()->centralWidget, &CentralWidget::connectNode);
 
     menu->addAction(action);
     menu->popup(event->screenPos());

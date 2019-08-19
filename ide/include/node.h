@@ -7,6 +7,7 @@
 #include "opencv2/opencv.hpp"
 
 class Edge;
+class EdgeItem;
 class CentralWidget;
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
@@ -30,6 +31,7 @@ public:
 
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
+    std::vector<cv::Mat> sources() const;
 
     virtual void proccess() = 0;
 };
@@ -45,10 +47,12 @@ class NodeItem : public Node, QGraphicsItem
     QScopedPointer<NodeItemPrivate> d_ptr;
     Q_DECLARE_PRIVATE(NodeItem)
 public:
-    NodeItem(CentralWidget *centralWidget);
+    explicit NodeItem(CentralWidget *centralWidget);
 
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
+
+    void addEdge(EdgeItem *edge);
 
     virtual QString title();
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;

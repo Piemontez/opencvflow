@@ -19,9 +19,9 @@ int main(int argc, char **argv)
   a.setQuitOnLastWindowClosed(true);
   a.setApplicationName(APP_FULL_NAME);
 
-  QMainWindow mainWindow;
-  mainWindow.setCentralWidget(new CentralWidget);
-  mainWindow.show();
+  auto main = MainWindow::instance();
+  main->setCentralWidget(new CentralWidget);
+  main->show();
 
   return a.exec();
 }

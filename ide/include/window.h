@@ -1,10 +1,29 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <QMainWindow>
 #include <QGraphicsView>
 #include <QScopedPointer>
 
 class QWidget;
+class CentralWidget;
+class NodeItem;
+/**
+ * @brief The MyWindow class
+ */
+class MainWindow: public QMainWindow
+{
+    //Q_OBJECT
+
+    static MainWindow *inst;
+public:
+
+   explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+    static MainWindow *instance();
+    CentralWidget *centralWidget() const;
+};
 
 /**
  * @brief The CentralWidget;
@@ -23,7 +42,7 @@ public slots:
     void zoomIn();
     void zoomOut();
 
-    void connectNode();
+    void connectNode(NodeItem* source, NodeItem* dest);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

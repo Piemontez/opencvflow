@@ -1,20 +1,19 @@
 #include "node.h"
+#include "nodemenuitem.h"
+#include "nodelinkitem.h"
 #include "edge.h"
 #include "window.h"
 #include "utils.h"
 
+#include <QDebug>
 #include <QPainter>
-#include <QRadialGradient>
-#include <QFont>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QWidget>
 
-#include <QMenu>
-#include <QAction>
-
 class NodeItemPrivate {
     CentralWidget *centralWidget;
+    QRect contentSize;
 
     friend class NodeItem;
 };
@@ -23,18 +22,29 @@ NodeItem::NodeItem(CentralWidget *centralWidget)
     : d_ptr(new NodeItemPrivate)
 {
     d_func()->centralWidget = centralWidget;
+    d_func()->contentSize = QRect(0, 0, 220, 100);
 
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
     setCacheMode(DeviceCoordinateCache);
     setZValue(-1);
 
+    addToGroup(new NodeMenuItem(this));
+
+    addToGroup(new NodeLinkItem(this));
+
+    setHandlesChildEvents(false);
     setAcceptHoverEvents(true);
 }
 
 QString NodeItem::title()
 {
-   return "Empty Node";
+    return "Empty Node";
+}
+
+QRect NodeItem::contentRegion()
+{
+    return d_func()->contentSize;
 }
 
 void NodeItem::addEdge(EdgeItem *edge)
@@ -46,61 +56,41 @@ void NodeItem::addEdge(EdgeItem *edge)
 
 QRectF NodeItem::boundingRect() const
 {
-    return QRectF(-20, -20, 220 , 130);
+    QRect region = d_func()->contentSize;
+    region.setTop(-25);
+    return region;
 }
-//! [8]
 
-//! [9]
 QPainterPath NodeItem::shape() const
 {
     QPainterPath path;
-    path.addRect(-20, -20, 220 , 130);
+    path.addRect(d_func()->contentSize);
     return path;
 }
-//! [9]
 
-//! [10]
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *wid)
 {
-    QRadialGradient gradient(0 , 0, 24);
-    gradient.setColorAt(0, Qt::yellow);
-    gradient.setColorAt(1, Qt::darkYellow);
-    painter->setPen(QPen(Qt::black, 0));
-    painter->setBrush(gradient);
-    painter->drawRect(0, -20, 180 , 130);
+    painter->setBrush(Qt::CrossPattern);
+    painter->setPen(QPen(Qt::lightGray, 0));
+    painter->drawRect(d_func()->contentSize);
 
-    QFont font = painter->font();
-    font.setPointSize(14);
-    painter->setFont(font);
-
-    painter->setPen(QPen(Qt::black, 0));
-    painter->drawText(2, -6, title());
-
-    contentPaint(QSize(180, 110), painter, option, wid);
+    contentPaint(d_func()->contentSize, painter, option, wid);
 
     painter->setBrush(Qt::NoBrush);
-    painter->drawLine(0, -0, 180 , -0);
-
-    painter->setBrush(Qt::SolidPattern);
-    painter->drawEllipse(188, 50, 10 , 10);
-
-    painter->setBrush(Qt::SolidPattern);
-    painter->drawEllipse(-20, 50, 10 , 10);
+    painter->setPen(QPen(Qt::black, 0));
+    painter->drawRect(d_func()->contentSize);
 }
 
-void NodeItem::contentPaint(const QSize &size, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     cv::Mat out;
     for (auto && mat: sources())
     {
-        cv::resize(mat, out, cv::Size(size.width(), size.height()));
-        painter->drawImage(0, 0, cvMatToQImage(out));
+        cv::resize(mat, out, cv::Size(region.width(), region.height()));
+        painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
     }
 }
 
-//! [10]
-
-//! [11]
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
@@ -114,9 +104,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 
     return QGraphicsItem::itemChange(change, value);
 }
-//! [11]
-
-//! [12]
+/*
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
@@ -137,8 +125,9 @@ void NodeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void NodeItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
 
-}
+}*/
 
+/*
 void NodeItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
     QMenu *menu = new QMenu;
@@ -150,3 +139,4 @@ void NodeItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     menu->addAction(action);
     menu->popup(event->screenPos());
 }
+*/

@@ -17,7 +17,7 @@ public:
     Node *sourceNode() const;
     Node *destNode() const;
 
-private:
+protected:
     Node *source, *dest;
 };
 
@@ -25,7 +25,7 @@ private:
  * @brief The EdgeItem;
  */
 class EdgeItemPrivate;
-class EdgeItem : public Edge, QGraphicsItem
+class EdgeItem : public Edge, public QGraphicsItem
 {
     //Q_OBJECT
 
@@ -45,9 +45,27 @@ public:
 protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+};
 
-private:
+
+/**
+ * @brief The FakeEdgeItem;
+ */
+class FakeEdgeItem : public QGraphicsItem
+{
     QPointF sourcePoint;
     QPointF destPoint;
+public:
+    explicit FakeEdgeItem(QPointF sourcePoint);
+
+    void setDest(QPointF destPoint);
+    void adjust();
+
+    enum { Type = UserType + 4 };
+    int type() const override { return Type; }
+
+protected:
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 #endif // EDGE_H

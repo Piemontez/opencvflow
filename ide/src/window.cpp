@@ -1,4 +1,6 @@
 #include "window.h"
+#include "node.h"
+#include "edge.h"
 
 #include <math.h>
 
@@ -6,7 +8,29 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QWheelEvent>
-#include <QAction>
+
+MainWindow::MainWindow(QWidget *parent)
+{
+
+}
+
+MainWindow::~MainWindow()
+{
+
+}
+
+MainWindow *MainWindow::inst = nullptr;
+MainWindow *MainWindow::instance()
+{
+    if (!inst) inst = new MainWindow();
+    return inst;
+}
+
+CentralWidget *MainWindow::centralWidget() const
+{
+    return static_cast<CentralWidget *>(QMainWindow::centralWidget());
+}
+
 
 class CentralWidgetPrivate {
     //Node *centerNode;
@@ -32,6 +56,10 @@ CentralWidget::CentralWidget(QWidget *parent):
     setWindowTitle(tr("Elastic Nodes"));
 
     setAcceptDrops(true);
+
+    scene->addItem(new NodeItem(this));
+    scene->addItem(new NodeItem(this));
+
 
     /*
     QThread *th = QThread::create([this] {
@@ -95,14 +123,9 @@ void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
 
     QRectF sceneRect = this->sceneRect();
 
-    QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-
-    gradient.setColorAt(0, Qt::lightGray);
-    gradient.setColorAt(1, Qt::white);
-    painter->fillRect(rect.intersected(sceneRect), gradient);
-    painter->setBrush(Qt::NoBrush);
-    painter->drawRect(sceneRect);
-
+    painter->setPen(QPen(Qt::lightGray, 0));
+    painter->drawLine(sceneRect.left() * 4, 0, sceneRect.right() * 4, 0);
+    painter->drawLine(0, sceneRect.top() * 4, 0, sceneRect.bottom() * 4);
 }
 
 void CentralWidget::scaleView(qreal scaleFactor)
@@ -170,25 +193,9 @@ void CentralWidget::dropEvent(QDropEvent *event)
 void CentralWidget::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
-
-    if (property("node").isValid()) {
-        QGraphicsItem* dest = itemAt(event->pos());
-        if (dest) {
-            /*Node* source = static_cast<Node*>( property("node").value<void*>() );
-
-            if (Node::Type == dest->type()) {
-
-                this->scene()->addItem(
-                    new Edge(source, static_cast<Node*>( dest ))
-                );
-            }*/
-
-            setProperty("node", QVariant());
-        }
-    }
 }
 
-void CentralWidget::connectNode()
+void CentralWidget::connectNode(NodeItem *source, NodeItem *dest)
 {
-    setProperty("node", static_cast<QAction*>(sender())->data());
+    scene()->addItem(new EdgeItem(source, dest));
 }

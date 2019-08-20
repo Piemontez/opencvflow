@@ -53,7 +53,11 @@ add_executable(opencvflow
     src/window.cpp
     src/node.cpp
     src/edge.cpp
-    src/nodeitem.cpp)
+    src/nodeitem.cpp
+    src/nodemenuitem.cpp
+    src/nodelinkitem.cpp
+    src/nodeitem.cpp
+    src/edgeitem.cpp)
 
 target_link_libraries(opencvflow
     Qt5::Core
@@ -63,7 +67,7 @@ target_link_libraries(opencvflow
     opencv_core
 #    opencv_highgui
 #    opencv_imgcodecs
-#    opencv_imgproc
+    opencv_imgproc
 #    opencv_features2d
 #    opencv_calib3d
 #    opencv_video

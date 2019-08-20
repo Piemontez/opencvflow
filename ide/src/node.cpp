@@ -1,29 +1,21 @@
 #include "node.h"
 #include "edge.h"
 
-class NodePrivate {
-    QList<Edge *> edges;
 
-    std::vector<cv::Mat> sources;
-
-    friend class Node;
-};
-
-Node::Node():
-    d_ptr(new NodePrivate)
+Node::Node()
 {
 
 }
 void Node::addEdge(Edge *edge)
 {
-    d_func()->edges << edge;
+    _edges << edge;
 }
 
 QList<Edge *> Node::edges() const
 {
-    return d_func()->edges;
+    return _edges;
 }
 std::vector<cv::Mat> Node::sources() const
 {
-    return d_func()->sources;
+    return _sources;
 }

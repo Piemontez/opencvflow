@@ -11,11 +11,21 @@ class NodeItem;
 /**
  * @brief The MyWindow class
  */
+class MainWindowPrivate;
 class MainWindow: public QMainWindow
 {
     //Q_OBJECT
+    enum ToolBarNames {
+        FilesTB,
+        SourcesTB,
+        ProcessorsTB,
+        ConnectorsTB
+    };
+
 
     static MainWindow *inst;
+    QScopedPointer<MainWindowPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(MainWindow)
 public:
 
    explicit MainWindow(QWidget *parent = nullptr);
@@ -23,6 +33,9 @@ public:
 
     static MainWindow *instance();
     CentralWidget *centralWidget() const;
+
+private:
+    void showToolBar();
 };
 
 /**

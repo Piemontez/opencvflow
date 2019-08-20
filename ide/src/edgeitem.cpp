@@ -1,5 +1,4 @@
-#include "edge.h"
-#include "node.h"
+#include "items.h"
 
 #include <QPainter>
 #include <QLineF>

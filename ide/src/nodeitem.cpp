@@ -1,7 +1,8 @@
 #include "node.h"
+#include "edge.h"
+#include "items.h"
 #include "nodemenuitem.h"
 #include "nodelinkitem.h"
-#include "edge.h"
 #include "window.h"
 #include "utils.h"
 

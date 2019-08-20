@@ -1,6 +1,5 @@
 #include "window.h"
-#include "node.h"
-#include "edge.h"
+#include "items.h"
 
 #include <math.h>
 

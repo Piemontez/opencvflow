@@ -57,9 +57,8 @@ CentralWidget::CentralWidget(QWidget *parent):
 
     setAcceptDrops(true);
 
-    scene->addItem(new NodeItem(this));
-    scene->addItem(new NodeItem(this));
-
+    //scene->addItem(new NodeItem(this));
+    //scene->addItem(new NodeItem(this));
 
     /*
     QThread *th = QThread::create([this] {

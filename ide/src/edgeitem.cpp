@@ -87,10 +87,6 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     painter->drawPolygon(QPolygonF() << line.p2() << destArrowP1 << destArrowP2);
 }
 
-
-
-
-
 FakeEdgeItem::FakeEdgeItem(QPointF sourcePoint)
 {
     this->sourcePoint = sourcePoint;

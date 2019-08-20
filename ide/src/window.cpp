@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for (auto && tb: d_func()->toolbars.values())
     {
         tb->hide();
+        tb->setMinimumHeight(48);
         tb->setMovable(false);
 
         this->addToolBar(tb);
@@ -37,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     act->setData(SourcesTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
+    act->hover();
 
     act = new QAction("Processors");
     act->setData(ProcessorsTB);
@@ -64,6 +66,11 @@ MainWindow *MainWindow::instance()
 CentralWidget *MainWindow::centralWidget() const
 {
     return static_cast<CentralWidget *>(QMainWindow::centralWidget());
+}
+
+QToolBar *MainWindow::toolbar(const MainWindow::ToolBarNames &name)
+{
+    return d_func()->toolbars[name];
 }
 
 void MainWindow::showToolBar()

@@ -8,10 +8,10 @@ Node::Node()
 }
 void Node::addEdge(Edge *edge)
 {
-    _edges << edge;
+    _edges.push_back( edge );
 }
 
-QList<Edge *> Node::edges() const
+std::vector<Edge *> Node::edges() const
 {
     return _edges;
 }

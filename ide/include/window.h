@@ -8,6 +8,7 @@
 class QWidget;
 class CentralWidget;
 class NodeItem;
+class QToolBar;
 /**
  * @brief The MyWindow class
  */
@@ -22,7 +23,6 @@ class MainWindow: public QMainWindow
         ConnectorsTB
     };
 
-
     static MainWindow *inst;
     QScopedPointer<MainWindowPrivate> d_ptr;
     Q_DECLARE_PRIVATE(MainWindow)
@@ -34,6 +34,7 @@ public:
     static MainWindow *instance();
     CentralWidget *centralWidget() const;
 
+    QToolBar* toolbar(const ToolBarNames &name);
 private:
     void showToolBar();
 };
@@ -55,6 +56,7 @@ public slots:
     void zoomIn();
     void zoomOut();
 
+    void addNode(NodeItem* node);
     void connectNode(NodeItem* source, NodeItem* dest);
 
 protected:

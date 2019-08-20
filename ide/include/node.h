@@ -28,13 +28,13 @@ public:
     explicit Node();
 
     void addEdge(Edge *edge);
-    QList<Edge *> edges() const;
+    std::vector<Edge *> edges() const;
     std::vector<cv::Mat> sources() const;
 
-    virtual void proccess() {};
+    virtual void proccess() = 0;
 
 protected:
-    QList<Edge *> _edges;
+    std::vector<Edge *> _edges;
     std::vector<cv::Mat> _sources;
 };
 

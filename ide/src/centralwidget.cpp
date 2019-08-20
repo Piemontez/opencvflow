@@ -22,15 +22,14 @@ CentralWidget::CentralWidget(QWidget *parent):
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 800, 600);
+    scene->setSceneRect(-300, -240, 600, 480);
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(800, 600);
-    setWindowTitle(tr("Elastic Nodes"));
+    setMinimumSize(600, 480);
 
     setAcceptDrops(true);
 
@@ -169,6 +168,11 @@ void CentralWidget::dropEvent(QDropEvent *event)
 void CentralWidget::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
+}
+
+void CentralWidget::addNode(NodeItem *node)
+{
+    scene()->addItem(node);
 }
 
 void CentralWidget::connectNode(NodeItem *source, NodeItem *dest)

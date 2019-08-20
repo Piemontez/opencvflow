@@ -54,6 +54,7 @@ add_executable(opencvflow
     src/centralwidget.cpp
     src/node.cpp
     src/edge.cpp
+    src/component.cpp
     src/nodeitem.cpp
     src/nodemenuitem.cpp
     src/nodelinkitem.cpp

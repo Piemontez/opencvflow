@@ -56,9 +56,7 @@ void NodeItem::addEdge(EdgeItem *edge)
 
 QRectF NodeItem::boundingRect() const
 {
-    QRect region = d_func()->contentSize;
-    region.setTop(-25);
-    return region;
+    return QRectF(-20, -25, d_func()->contentSize.width() + 40, d_func()->contentSize.height() + 25);
 }
 
 QPainterPath NodeItem::shape() const

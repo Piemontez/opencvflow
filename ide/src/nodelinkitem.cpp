@@ -36,12 +36,26 @@ QPainterPath NodeLinkItem::shape() const
 
 void NodeLinkItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    if (!hover)
+        return;
+
     QRect region = nodeItem->contentRegion();
 
-    painter->setPen(QPen(Qt::red, 0));
-    painter->setBrush(Qt::NoBrush);
+    painter->setPen(QPen(Qt::darkGray, 0));
+    painter->setBrush(QBrush(Qt::darkGray));
 
-    painter->drawRect(region.left() -20, region.top() - 20, region.width() + 40, region.height() + 40);
+    painter->drawEllipse(region.left()  -20, region.center().y(), 10, 10);
+    painter->drawEllipse(region.right() +10, region.center().y(), 10, 10);
+}
+
+void NodeLinkItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    hover = true;
+}
+
+void NodeLinkItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    hover = false;
 }
 
 void NodeLinkItem::mousePressEvent(QGraphicsSceneMouseEvent *event)

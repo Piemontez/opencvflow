@@ -25,8 +25,11 @@ void EdgeItem::adjust()
     if (!source || !dest)
         return;
 
-    QLineF line(mapFromItem(static_cast<NodeItem*>(source), 193, 55),
-                mapFromItem(static_cast<NodeItem*>(dest), -15, 55));
+    auto sourceNode = static_cast<NodeItem*>(source);
+    auto destNode = static_cast<NodeItem*>(dest);
+
+    QLineF line(mapFromItem(sourceNode, sourceNode->contentRegion().width() + 5, sourceNode->contentRegion().center().y()),
+                mapFromItem(destNode, -5, destNode->contentRegion().center().y()));
     qreal length = line.length();
 
     prepareGeometryChange();
@@ -118,13 +121,9 @@ void FakeEdgeItem::adjust()
 
 QRectF FakeEdgeItem::boundingRect() const
 {
-    qreal penWidth = 1;
-    qreal extra = penWidth; //(penWidth + arrowSize) / 2.0;
-
     return QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
                                       destPoint.y() - sourcePoint.y()))
-        .normalized()
-        .adjusted(-extra, -extra, extra, extra);
+        .normalized();
 }
 
 void FakeEdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)

@@ -16,17 +16,17 @@ class MainWindowPrivate;
 class MainWindow: public QMainWindow
 {
     //Q_OBJECT
+
+    static MainWindow *inst;
+    QScopedPointer<MainWindowPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(MainWindow)
+public:
     enum ToolBarNames {
         FilesTB,
         SourcesTB,
         ProcessorsTB,
         ConnectorsTB
     };
-
-    static MainWindow *inst;
-    QScopedPointer<MainWindowPrivate> d_ptr;
-    Q_DECLARE_PRIVATE(MainWindow)
-public:
 
    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -37,6 +37,7 @@ public:
     QToolBar* toolbar(const ToolBarNames &name);
 private:
     void showToolBar();
+    void loadPlugins();
 };
 
 /**

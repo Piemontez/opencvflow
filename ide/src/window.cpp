@@ -1,10 +1,12 @@
 #include "window.h"
+#include "component.h"
 
 #include <QMenuBar>
 #include <QToolBar>
 
 class MainWindowPrivate {
     QMap<MainWindow::ToolBarNames, QToolBar*> toolbars;
+    QMap<QString, Component *> components;
 
     friend class MainWindow;
 };
@@ -49,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) :
     act->setData(ConnectorsTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
+
+
+    loadPlugins();
 }
 
 MainWindow::~MainWindow()
@@ -81,4 +86,27 @@ void MainWindow::showToolBar()
     QVariant data = qobject_cast< QAction* >(sender())->data();
     if (data.isValid())
         d_func()->toolbars.value( static_cast<MainWindow::ToolBarNames>(data.toUInt()) )->show();
+}
+
+void MainWindow::loadPlugins()
+{
+    auto comps = (new PluginInterface)->components();
+    for (auto && comp: comps)
+    {
+        d_func()->components.insert(QString::fromStdString(comp->name()), comp);
+
+        auto tb = toolbar( static_cast<ToolBarNames>(comp->actionToolBar()) );
+        if (tb) {
+            auto action = comp->createAction();
+            if (action)
+                tb->addAction(action);
+
+            auto widget = comp->createWidget();
+            if (widget)
+                tb->addWidget(widget);
+            if (!action && !widget) {
+                tb->addAction(new QAction(QString::fromStdString(comp->name())));
+            }
+        }
+    }
 }

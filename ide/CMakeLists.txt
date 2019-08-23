@@ -60,7 +60,9 @@ add_executable(opencvflow
     src/nodelinkitem.cpp
     src/nodeitem.cpp
     src/edgeitem.cpp
-    src/fakeedgeitem.cpp)
+    src/fakeedgeitem.cpp
+    src/action.cpp
+    src/opencvcomponents.cpp)
 
 target_link_libraries(opencvflow
     Qt5::Core

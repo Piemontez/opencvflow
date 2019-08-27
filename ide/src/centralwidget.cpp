@@ -1,5 +1,6 @@
 #include "window.h"
 #include "items.h"
+#include "component.h"
 
 #include <math.h>
 
@@ -148,15 +149,14 @@ void CentralWidget::dragEnterEvent(QDragEnterEvent *event)
 void CentralWidget::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-
-        /*Node *node = nullptr;
-        if (event->mimeData()->data("nodename").compare("videocapture") == 0) {
-            node = new VideoCapture(this);
+        auto component = MainWindow::instance()->component(event->mimeData()->data("nodename").toStdString());
+        if (component) {
+            auto nodeitem = static_cast< NodeItem* >(component->createNode());
+            if (nodeitem) {
+                nodeitem->setPos(event->pos());
+                scene()->addItem(nodeitem);
+            }
         }
-        if (node) {
-            node->setPos(event->pos());
-            scene()->addItem(node);
-        }*/
 
         event->setDropAction(Qt::MoveAction);
         event->accept();
@@ -167,14 +167,4 @@ void CentralWidget::dropEvent(QDropEvent *event)
 void CentralWidget::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
-}
-
-void CentralWidget::addNode(NodeItem *node)
-{
-    scene()->addItem(node);
-}
-
-void CentralWidget::connectNode(NodeItem *source, NodeItem *dest)
-{
-    scene()->addItem(new EdgeItem(source, dest));
 }

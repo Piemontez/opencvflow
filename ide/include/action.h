@@ -11,7 +11,10 @@ class QMouseEvent;
 class FlowAction : public QLabel
 {
 public:
-    explicit FlowAction(const QString &text, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit FlowAction(const std::string &nodeName,
+                        const QString &text,
+                        QWidget* parent = nullptr,
+                        Qt::WindowFlags f = Qt::WindowFlags());
     virtual std::string nodeName();
 protected:
     const QRect targetSquare(const QPoint &position) const;

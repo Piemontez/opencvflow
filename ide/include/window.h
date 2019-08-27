@@ -9,6 +9,7 @@ class QWidget;
 class CentralWidget;
 class NodeItem;
 class QToolBar;
+class Component;
 /**
  * @brief The MyWindow class
  */
@@ -25,7 +26,8 @@ public:
         FilesTB,
         SourcesTB,
         ProcessorsTB,
-        ConnectorsTB
+        ConnectorsTB,
+        BuildTB
     };
 
    explicit MainWindow(QWidget *parent = nullptr);
@@ -35,9 +37,19 @@ public:
     CentralWidget *centralWidget() const;
 
     QToolBar* toolbar(const ToolBarNames &name);
+    Component* component(const std::string &name);
+
+    void addNode(NodeItem* node);
+    void connectNode(NodeItem* source, NodeItem* dest);
+
 private:
+    void makeToolbar();
+    void makeActions();
     void showToolBar();
     void loadPlugins();
+
+    void start();
+    void stop();
 };
 
 /**
@@ -56,9 +68,6 @@ public:
 public slots:
     void zoomIn();
     void zoomOut();
-
-    void addNode(NodeItem* node);
-    void connectNode(NodeItem* source, NodeItem* dest);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;

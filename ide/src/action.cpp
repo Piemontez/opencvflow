@@ -6,9 +6,11 @@
 #include <QMimeData>
 #include <QPainter>
 
-FlowAction::FlowAction(const QString &text, QWidget *parent, Qt::WindowFlags f)
+FlowAction::FlowAction(const std::string &nodeName, const QString &text, QWidget *parent, Qt::WindowFlags f)
     : QLabel(text, parent,f)
 {
+    this->setProperty("nodename", QString::fromStdString(nodeName));
+
     setAcceptDrops(true);
 }
 
@@ -71,4 +73,4 @@ void FlowAction::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-std::string FlowAction::nodeName() { return ""; }
+std::string FlowAction::nodeName() { return this->property("nodename").toString().toStdString(); }

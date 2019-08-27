@@ -84,7 +84,7 @@ void NodeLinkItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     auto item = scene()->itemAt(mapToScene(event->pos()), this->transform());
     if (item && item->type() == this->type()) {
         auto linkItem = static_cast<NodeLinkItem *>(item);
-        MainWindow::instance()->centralWidget()->connectNode(this->nodeItem, linkItem->nodeItem);
+        MainWindow::instance()->connectNode(this->nodeItem, linkItem->nodeItem);
     }
 
     QGraphicsItem::mouseReleaseEvent(event);

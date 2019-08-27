@@ -9,7 +9,9 @@ class Node;
 class Edge;
 class QAction;
 class QWidget;
-
+namespace cv {
+    class Mat;
+}
 /**
  * @brief The Component class
  */
@@ -29,17 +31,21 @@ public:
 /**
  * @brief The ProcessorComponent class
  */
+
+typedef std::function< std::vector<cv::Mat> (const std::vector<Edge *> &) > ProcessFunc;
+
 class ProcessorComponent: public Component
 {
     uint actionBar;
     std::string _name;
-    std::function<void (const std::vector<Edge *> &)> _func;
+    ProcessFunc _func;
 public:
-    ProcessorComponent(uint actionBar, std::function<void (const std::vector<Edge *> &)> func);
-    ProcessorComponent(uint actionBar, std::string name, std::function<void (const std::vector<Edge *> &)> func);
+    ProcessorComponent(uint actionBar, ProcessFunc func);
+    ProcessorComponent(uint actionBar, std::string name, ProcessFunc func);
 
     std::string name() override;
     Node* createNode() override;
+    QWidget* createWidget() override;
 
     uint actionToolBar() override;
 };

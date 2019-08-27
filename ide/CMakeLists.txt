@@ -76,7 +76,7 @@ target_link_libraries(opencvflow
 #    opencv_features2d
 #    opencv_calib3d
 #    opencv_video
-#    opencv_videoio
+    opencv_videoio
 #    opencv_optflow
 )
 

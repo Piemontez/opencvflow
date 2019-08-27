@@ -1,6 +1,8 @@
 #include "component.h"
 #include "node.h"
 #include "edge.h"
+#include "items.h"
+#include "action.h"
 
 std::string Component::name()
 {
@@ -30,10 +32,16 @@ uint Component::actionToolBar()
 /**
  * @brief ProcessorComponent
  */
-class ProcessorNode: public Node {
+class NodeItemPrivate {
+    CentralWidget *centralWidget;
+    QRect contentSize;
+
+    friend class NodeItem;
+};
+class ProcessorNode: public NodeItem {
     std::function<void (const std::vector<Edge *> &)> func;
 public:
-    ProcessorNode(std::function<void (const std::vector<Edge *> &)> func) {
+    ProcessorNode(std::function<void (const std::vector<Edge *> &)> func): NodeItem(nullptr) {
         this->func = func;
     }
     void proccess() override {
@@ -44,14 +52,14 @@ public:
 
 };
 
-ProcessorComponent::ProcessorComponent(uint actionBar, std::function< void (const std::vector<Edge *> &) > func)
+ProcessorComponent::ProcessorComponent(uint actionBar, ProcessFunc func)
 {
     this->actionBar = actionBar;
     _name = "Third Party";
     _func = func;
 }
 
-ProcessorComponent::ProcessorComponent(uint actionBar, std::string name, std::function< void (const std::vector<Edge *> &) > func)
+ProcessorComponent::ProcessorComponent(uint actionBar, std::string name, ProcessFunc func)
 {
     this->actionBar = actionBar;
     _name = name;
@@ -66,6 +74,12 @@ std::string ProcessorComponent::name()
 Node *ProcessorComponent::createNode()
 {
     return new ProcessorNode(this->_func);
+}
+
+QWidget *ProcessorComponent::createWidget()
+{
+    return new FlowAction(this->name(),
+                QString::fromStdString(this->name()));
 }
 
 uint ProcessorComponent::actionToolBar()

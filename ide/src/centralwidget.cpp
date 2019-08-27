@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QWheelEvent>
+#include <QDebug>
 
 class CentralWidgetPrivate {
     //Node *centerNode;
@@ -130,7 +131,11 @@ void CentralWidget::dropEvent(QDropEvent *event)
         if (component) {
             auto nodeitem = static_cast< NodeItem* >(component->createNode());
             if (nodeitem) {
-                nodeitem->setPos(event->pos());
+                qDebug() << event->pos();
+                qDebug() << nodeitem->mapFromScene(event->pos());
+                qDebug() << nodeitem->mapToScene(event->pos());
+
+                nodeitem->setPos(nodeitem->mapToScene(event->pos()));
                 scene()->addItem(nodeitem);
             }
         }

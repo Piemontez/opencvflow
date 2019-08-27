@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QThread>
+#include <QDebug>
 
 class MainWindowPrivate {
     QMap<MainWindow::ToolBarNames, QToolBar*> toolbars;
@@ -161,23 +162,29 @@ void MainWindow::run()
 
     QThread *th = QThread::create([this] {
         std::clock_t last = std::clock();
+
+        QList<NodeItem *> items;
+        for (auto && item: this->centralWidget()->items()) {
+            if (NodeItem::Type != item->type())
+                continue;
+
+            items.append(static_cast<NodeItem*>(item));
+        }
         forever {
-            auto items = this->centralWidget()->items();
-
             //Executa todos os processos
-            for (auto && item: items)
+            for (auto item: items)
             {
-                if (NodeItem::Type != item->type())
-                    continue;
-
-                static_cast<NodeItem*>(item)->proccess();
+                //Todo: add semapharo
+                item->proccess();
             }
             //Atualiza a tela
-            if (float( std::clock () - last ) > 100) {
+            if (float( std::clock () - last ) > 42) {
                 last = std::clock();
 
                 for (auto && item: items)
-                    static_cast<NodeItem*>(item)->update();
+                    item->update();
+
+                QThread::msleep(10 + (items.size() * 2));
             }
             if (!d_func()->runing)
                 break;

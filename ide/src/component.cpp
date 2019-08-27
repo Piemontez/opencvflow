@@ -4,6 +4,8 @@
 #include "items.h"
 #include "action.h"
 
+#include <QDebug>
+
 std::string Component::name()
 {
     return "";
@@ -50,6 +52,7 @@ public:
         auto mats = this->func(this->edges());
 
         sources().insert(sources().begin(), mats.begin(), mats.end());
+        qDebug() << sources().size();
     };
 
 };

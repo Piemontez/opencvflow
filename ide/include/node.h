@@ -22,8 +22,8 @@ public:
     explicit Node();
 
     void addEdge(Edge *edge);
-    std::vector<Edge *> edges() const;
-    std::vector<cv::Mat> sources() const;
+    std::vector<Edge *>& edges();
+    std::vector<cv::Mat>& sources();
 
     virtual void proccess() = 0;
 

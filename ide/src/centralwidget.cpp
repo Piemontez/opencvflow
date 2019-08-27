@@ -33,30 +33,7 @@ CentralWidget::CentralWidget(QWidget *parent):
 
     setAcceptDrops(true);
 
-    //scene->addItem(new NodeItem(this));
-    //scene->addItem(new NodeItem(this));
-
-    /*
-    QThread *th = QThread::create([this] {
-        std::clock_t last = std::clock();
-        forever {
-            for (auto && item: this->items())
-            {
-                if (Node::Type != item->type())
-                    continue;
-
-                static_cast<Node*>(item)->proccess();
-
-                if (float( std::clock () - last ) > 42) {
-                    last = std::clock();
-                    static_cast<Node*>(item)->update();
-                }
-            }
-        }
-    });
-    th->setPriority(QThread::LowestPriority);
-    th->start();
-    */
+    setBackgroundBrush(QBrush(Qt::lightGray, Qt::SolidPattern));
 }
 
 void CentralWidget::keyPressEvent(QKeyEvent *event)
@@ -94,11 +71,11 @@ void CentralWidget::wheelEvent(QWheelEvent *event)
 
 void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
-    Q_UNUSED(rect);
+    QGraphicsView::drawBackground(painter, rect);
 
     QRectF sceneRect = this->sceneRect();
 
-    painter->setPen(QPen(Qt::lightGray, 0));
+    painter->setPen(QPen(Qt::gray, Qt::SolidPattern));
     painter->drawLine(sceneRect.left() * 4, 0, sceneRect.right() * 4, 0);
     painter->drawLine(0, sceneRect.top() * 4, 0, sceneRect.bottom() * 4);
 }

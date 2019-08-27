@@ -48,8 +48,8 @@ private:
     void showToolBar();
     void loadPlugins();
 
-    void start();
-    void stop();
+    void run();
+    void stopRun();
 };
 
 /**

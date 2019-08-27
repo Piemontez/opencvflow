@@ -26,7 +26,7 @@ std::vector<Component *> PluginInterface::components()
         return sources;
     }));
 
-    rs.push_back(new ProcessorComponent(MainWindow::SourcesTB, "Sobel", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
+    rs.push_back(new ProcessorComponent(MainWindow::ProcessorsTB, "Sobel", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
         std::vector<cv::Mat> sources;
 
         cv::Mat out;
@@ -36,12 +36,27 @@ std::vector<Component *> PluginInterface::components()
             for (auto && mat: edge->sourceNode()->sources())
             {
                 cv::Sobel(mat, out, CV_8U, 1, 0, 3);
-                //sources.push_back(out);
+                sources.push_back(out);
             }
         }
-
         return sources;
     }));
+
+    rs.push_back(new ProcessorComponent(MainWindow::ProcessorsTB, "Canny", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
+        std::vector<cv::Mat> sources;
+        cv::Mat out;
+
+        for (auto && edge: edges)
+        {
+            for (auto && mat: edge->sourceNode()->sources())
+            {
+                cv::Canny(mat, out, 80, 170);
+                sources.push_back(out);
+            }
+        }
+        return sources;
+    }));
+
 
     return rs;
 }

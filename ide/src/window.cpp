@@ -109,7 +109,15 @@ void MainWindow::makeToolbar()
 
 void MainWindow::makeActions()
 {
+    auto tb = toolbar(BuildTB);
 
+    auto act = new QAction("Run");
+    connect(act, &QAction::triggered, this, &MainWindow::run);
+    tb->addAction(act);
+
+    act = new QAction("Stop");
+    connect(act, &QAction::triggered, this, &MainWindow::stopRun);
+    tb->addAction(act);
 }
 
 
@@ -146,7 +154,7 @@ void MainWindow::loadPlugins()
     }
 }
 
-void MainWindow::start()
+void MainWindow::run()
 {
     if (d_func()->runing) return;
     d_func()->runing = true;
@@ -154,17 +162,22 @@ void MainWindow::start()
     QThread *th = QThread::create([this] {
         std::clock_t last = std::clock();
         forever {
-            for (auto && item: this->centralWidget()->items())
+            auto items = this->centralWidget()->items();
+
+            //Executa todos os processos
+            for (auto && item: items)
             {
                 if (NodeItem::Type != item->type())
                     continue;
 
                 static_cast<NodeItem*>(item)->proccess();
+            }
+            //Atualiza a tela
+            if (float( std::clock () - last ) > 100) {
+                last = std::clock();
 
-                if (float( std::clock () - last ) > 42) {
-                    last = std::clock();
+                for (auto && item: items)
                     static_cast<NodeItem*>(item)->update();
-                }
             }
             if (!d_func()->runing)
                 break;
@@ -175,7 +188,7 @@ void MainWindow::start()
     th->start();
 }
 
-void MainWindow::stop()
+void MainWindow::stopRun()
 {
     d_func()->runing = false;
 }

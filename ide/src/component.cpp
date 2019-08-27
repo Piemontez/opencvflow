@@ -39,15 +39,17 @@ class NodeItemPrivate {
     friend class NodeItem;
 };
 class ProcessorNode: public NodeItem {
-    std::function<void (const std::vector<Edge *> &)> func;
+    ProcessFunc func;
 public:
-    ProcessorNode(std::function<void (const std::vector<Edge *> &)> func): NodeItem(nullptr) {
+    ProcessorNode(ProcessFunc func): NodeItem(nullptr) {
         this->func = func;
     }
     void proccess() override {
         sources().clear();
 
-        this->func(this->edges());
+        auto mats = this->func(this->edges());
+
+        sources().insert(sources().begin(), mats.begin(), mats.end());
     };
 
 };

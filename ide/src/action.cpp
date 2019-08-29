@@ -44,12 +44,7 @@ void FlowAction::dropEvent(QDropEvent *event) {
 void FlowAction::mousePressEvent(QMouseEvent *event) {
     QPixmap pixmap = this->grab();
 
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << pixmap << QPoint(event->pos() - this->pos());
-
     auto mimeData = new QMimeData;
-    mimeData->setData("application/x-dnditemdata", itemData);
     mimeData->setData("nodename", QByteArray::fromStdString(this->nodeName()));
 
     QDrag *drag = new QDrag(this);
@@ -63,13 +58,10 @@ void FlowAction::mousePressEvent(QMouseEvent *event) {
     painter.fillRect(pixmap.rect(), QColor(127, 127, 127, 127));
     painter.end();
 
-    //child->setPixmap(tempPixmap);
-
     if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction) {
         this->close();
     } else {
         this->show();
-        //child->setPixmap(pixmap);
     }
 }
 

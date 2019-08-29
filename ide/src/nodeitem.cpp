@@ -6,7 +6,6 @@
 #include "window.h"
 #include "utils.h"
 
-#include <QDebug>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneContextMenuEvent>

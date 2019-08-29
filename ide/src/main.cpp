@@ -1,9 +1,13 @@
 #include <QApplication>
 #include <QMainWindow>
+#include <QFile>
+#include <QTextStream>
 
 #include <stdio.h>
 
 #include "window.h"
+
+QString parseCssFile(const QString &resource);
 
 int main(int argc, char **argv)
 {
@@ -11,6 +15,9 @@ int main(int argc, char **argv)
     setvbuf(stdout, nullptr, _IONBF, 0);
 
   QApplication a(argc, argv);
+
+  //Set theme/css
+  a.setStyleSheet(parseCssFile(":/theme/base.css"));
 
   QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
   QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
@@ -24,4 +31,17 @@ int main(int argc, char **argv)
   main->show();
 
   return a.exec();
+}
+
+
+QString parseCssFile(const QString &resource) {
+    //Adiciona o stylesheet
+    QFile file(resource);
+    QString css;
+    if (file.open(QFile::ReadOnly)) {
+        QTextStream ts(&file);
+        css = ts.readAll();
+        file.close();
+    }
+    return css;
 }

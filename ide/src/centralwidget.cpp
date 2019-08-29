@@ -107,7 +107,7 @@ void CentralWidget::dragLeaveEvent(QDragLeaveEvent *event)
 
 void CentralWidget::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+    if (event->mimeData()->hasFormat("nodename")) {
         event->setDropAction(Qt::MoveAction);
         event->accept();
     } else {
@@ -117,29 +117,31 @@ void CentralWidget::dragMoveEvent(QDragMoveEvent *event)
 
 void CentralWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+    if (event->mimeData()->hasFormat("nodename")) {
         event->acceptProposedAction();
         event->accept();
     } else
         event->ignore();
 }
 
+#include <QLabel>
+
+
 void CentralWidget::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+    if (event->mimeData()->hasFormat("nodename")) {
+        //Verifica se o componente foi registrado
         auto component = MainWindow::instance()->component(event->mimeData()->data("nodename").toStdString());
         if (component) {
+            //Solicita a criação do nodeitem pelo componente
             auto nodeitem = static_cast< NodeItem* >(component->createNode());
             if (nodeitem) {
-                qDebug() << event->pos();
-                qDebug() << nodeitem->mapFromScene(event->pos());
-                qDebug() << nodeitem->mapToScene(event->pos());
+                //coleta a posição ao soltar o mouse
 
-                nodeitem->setPos(nodeitem->mapToScene(event->pos()));
+                nodeitem->setPos(MainWindow::instance()->centralWidget()->mapToScene(event->pos()));
                 scene()->addItem(nodeitem);
             }
         }
-
         event->setDropAction(Qt::MoveAction);
         event->accept();
     } else

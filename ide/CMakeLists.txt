@@ -50,19 +50,24 @@ include_directories(${OpenCV_INCLUDE_DIRS}
 #file to builder
 add_executable(opencvflow
     src/main.cpp
+    #base
     src/window.cpp
     src/centralwidget.cpp
     src/node.cpp
     src/edge.cpp
     src/component.cpp
+    #grapichs
     src/nodeitem.cpp
     src/nodemenuitem.cpp
     src/nodelinkitem.cpp
     src/nodeitem.cpp
     src/edgeitem.cpp
     src/fakeedgeitem.cpp
+    #extras
     src/action.cpp
-    src/opencvcomponents.cpp)
+    src/opencvcomponents.cpp
+    #qrc
+    resources/resources.qrc)
 
 target_link_libraries(opencvflow
     Qt5::Core

@@ -52,7 +52,6 @@ public:
         auto mats = this->func(this->edges());
 
         sources().insert(sources().begin(), mats.begin(), mats.end());
-        qDebug() << sources().size();
     };
 
 };

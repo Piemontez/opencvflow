@@ -5,7 +5,6 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QThread>
-#include <QDebug>
 
 class MainWindowPrivate {
     QMap<MainWindow::ToolBarNames, QToolBar*> toolbars;
@@ -75,7 +74,6 @@ void MainWindow::makeToolbar()
     for (auto && tb: d_func()->toolbars.values())
     {
         tb->hide();
-        tb->setMinimumHeight(48);
         tb->setMovable(false);
 
         this->addToolBar(tb);
@@ -124,6 +122,8 @@ void MainWindow::makeActions()
 
 void MainWindow::showToolBar()
 {
+    sender()->setProperty("css", true);
+
     for (auto && tb: d_func()->toolbars.values())
         tb->hide();
 
@@ -178,7 +178,7 @@ void MainWindow::run()
                 item->proccess();
             }
             //Atualiza a tela
-            if (float( std::clock () - last ) > 42) {
+            if (float( std::clock () - last ) > 100) {
                 last = std::clock();
 
                 for (auto && item: items)

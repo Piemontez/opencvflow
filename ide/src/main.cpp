@@ -17,7 +17,9 @@ int main(int argc, char **argv)
   QApplication a(argc, argv);
 
   //Set theme/css
-  a.setStyleSheet(parseCssFile(":/theme/base.css"));
+  a.setStyleSheet(
+      parseCssFile(":/theme/base.css") +
+      parseCssFile(":/theme/widgets.css"));
 
   QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
   QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);

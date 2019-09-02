@@ -30,7 +30,7 @@ void NodeMenuItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 {
     QRect region = nodeItem->contentRegion();
 
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(Qt::darkGray, 0));
     painter->setBrush(QBrush(Qt::lightGray));
 
     painter->drawRect(region.left(), region.top() - 25, region.width(), 24);

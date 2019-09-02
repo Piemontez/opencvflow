@@ -68,14 +68,14 @@ QPainterPath NodeItem::shape() const
 
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *wid)
 {
-    painter->setBrush(Qt::CrossPattern);
-    painter->setPen(QPen(Qt::lightGray, 0));
+    painter->setBrush(QBrush(Qt::darkGray, Qt::SolidPattern));
+    painter->setPen(Qt::NoBrush);
     painter->drawRect(d_func()->contentSize);
 
     contentPaint(d_func()->contentSize, painter, option, wid);
 
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(Qt::lightGray, 0));
     painter->drawRect(d_func()->contentSize);
 }
 

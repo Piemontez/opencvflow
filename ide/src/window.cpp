@@ -5,12 +5,17 @@
 #include <QMenuBar>
 #include <QToolBar>
 #include <QThread>
+#include <QDockWidget>
 
 class MainWindowPrivate {
     QMap<MainWindow::ToolBarNames, QToolBar*> toolbars;
     QMap<QString, Component *> components;
 
+    QDockWidget *propertiesDock;
+
+    QThread *runner;
     bool runing{false};
+
     friend class MainWindow;
 };
 
@@ -19,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     makeToolbar();
     makeActions();
+    makeDocks();
+
     loadPlugins();
 }
 
@@ -70,6 +77,7 @@ void MainWindow::makeToolbar()
     d_func()->toolbars.insert(ProcessorsTB, new QToolBar);
     d_func()->toolbars.insert(ConnectorsTB, new QToolBar);
     d_func()->toolbars.insert(BuildTB, new QToolBar);
+    d_func()->toolbars.insert(WindowTB, new QToolBar);
 
     for (auto && tb: d_func()->toolbars.values())
     {
@@ -104,6 +112,23 @@ void MainWindow::makeToolbar()
     act->setData(BuildTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
+
+    act = new QAction("Window");
+    act->setData(WindowTB);
+    connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
+    menuBar()->addAction(act);
+}
+
+void MainWindow::showToolBar()
+{
+    sender()->setProperty("css", true);
+
+    for (auto && tb: d_func()->toolbars.values())
+        tb->hide();
+
+    QVariant data = qobject_cast< QAction* >(sender())->data();
+    if (data.isValid())
+        d_func()->toolbars.value( static_cast<MainWindow::ToolBarNames>(data.toUInt()) )->show();
 }
 
 void MainWindow::makeActions()
@@ -119,17 +144,16 @@ void MainWindow::makeActions()
     tb->addAction(act);
 }
 
-
-void MainWindow::showToolBar()
+void MainWindow::makeDocks()
 {
-    sender()->setProperty("css", true);
+    //propertiesDock
+    d_func()->propertiesDock = new QDockWidget(this->tr("Propriedades"), this);
+    d_func()->propertiesDock->setObjectName("propertiesDock");
+    d_func()->propertiesDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    for (auto && tb: d_func()->toolbars.values())
-        tb->hide();
+    this->addDockWidget(Qt::RightDockWidgetArea, d_func()->propertiesDock);
 
-    QVariant data = qobject_cast< QAction* >(sender())->data();
-    if (data.isValid())
-        d_func()->toolbars.value( static_cast<MainWindow::ToolBarNames>(data.toUInt()) )->show();
+    toolbar(WindowTB)->addAction(d_func()->propertiesDock->toggleViewAction());
 }
 
 void MainWindow::loadPlugins()
@@ -158,9 +182,10 @@ void MainWindow::loadPlugins()
 void MainWindow::run()
 {
     if (d_func()->runing) return;
+    MainWindow::stopRun();
     d_func()->runing = true;
 
-    QThread *th = QThread::create([this] {
+    d_func()->runner = QThread::create([this] {
         std::clock_t last = std::clock();
 
         QList<NodeItem *> items;
@@ -191,11 +216,18 @@ void MainWindow::run()
         }
     });
 
-    th->setPriority(QThread::LowestPriority);
-    th->start();
+    d_func()->runner->start();
+    d_func()->runner->setPriority(QThread::LowestPriority);
 }
 
 void MainWindow::stopRun()
 {
-    d_func()->runing = false;
+    if (d_func()->runing) {
+        d_func()->runing = false;
+        if (d_func()->runner->wait(1000)) {
+            d_func()->runner->terminate();
+            d_func()->runner->wait();
+        }
+        d_func()->runner->deleteLater();
+    }
 }

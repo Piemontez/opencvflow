@@ -10,6 +10,7 @@ class CentralWidget;
 class NodeItem;
 class QToolBar;
 class Component;
+
 /**
  * @brief The MyWindow class
  */
@@ -27,7 +28,8 @@ public:
         SourcesTB,
         ProcessorsTB,
         ConnectorsTB,
-        BuildTB
+        BuildTB,
+        WindowTB
     };
 
    explicit MainWindow(QWidget *parent = nullptr);
@@ -44,8 +46,10 @@ public:
 
 private:
     void makeToolbar();
-    void makeActions();
     void showToolBar();
+    void makeActions();
+    void makeDocks();
+
     void loadPlugins();
 
     void run();

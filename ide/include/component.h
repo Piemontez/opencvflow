@@ -49,13 +49,4 @@ public:
 
     uint actionToolBar() override;
 };
-
-/**
- * @brief The ActivatorInterface class
- */
-class PluginInterface
-{
-public:
-    virtual std::vector<Component*> components() const = 0;
-};
 #endif // COMPONENT_H

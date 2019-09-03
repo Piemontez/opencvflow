@@ -1,12 +1,15 @@
-#include "plugin.h"
+#include "opencvplugin.h"
 
+#include "component.h"
 #include "globals.h"
 #include "node.h"
 #include "edge.h"
 
-#include "opencv2/opencv.hpp"
+#include <opencv2/opencv.hpp>
 
-std::vector<Component *> Plugin::components() const
+OCVFLOW_PLUGIN(OpenCVPlugin, "OpenCV 4.x.x Plugin", "0.1.1")
+
+std::vector<Component *> OpenCVPlugin::components()
 {
     std::vector<Component *> rs;
 

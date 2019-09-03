@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 message("Building OpenCV Plugin")
+message("${PROJECT_NAME}")
+message("Building OpenCV Plugin")
 
 project(opencv VERSION 0.3.0 DESCRIPTION "OpenCV Plugin")
 
@@ -26,10 +28,11 @@ include_directories(
     include)
 
 
-add_library(opencv
-    src/plugin.cpp)
+add_library(opencv SHARED
+    src/opencvplugin.cpp)
 
 #add ide libraries
-#target_link_libraries(plugins opencvflow)
+#target_link_libraries(opencvflow)
 
-install(TARGETS opencv DESTINATION plugins)
+install(TARGETS opencv
+    DESTINATION bin)

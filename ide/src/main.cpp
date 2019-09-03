@@ -29,7 +29,6 @@ int main(int argc, char **argv)
   a.setApplicationName(APP_FULL_NAME);
 
   auto main = MainWindow::instance();
-  main->setCentralWidget(new CentralWidget);
   main->show();
 
   return a.exec();

@@ -42,6 +42,11 @@ QString NodeItem::title()
     return "Empty Node";
 }
 
+QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
+{
+    return nullptr;
+}
+
 QRect NodeItem::contentRegion()
 {
     return d_func()->contentSize;

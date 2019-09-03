@@ -22,6 +22,9 @@ class MainWindowPrivate {
 MainWindow::MainWindow(QWidget *parent) :
         d_ptr(new MainWindowPrivate)
 {
+
+    setCentralWidget(new CentralWidget);
+
     makeToolbar();
     makeActions();
     makeDocks();

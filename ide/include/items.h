@@ -12,6 +12,7 @@
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
+class QWidget;
 
 /**
  * @brief The NodeItem;
@@ -30,15 +31,16 @@ public:
     int type() const override { return Type; }
 
     void addEdge(EdgeItem *edge);
-
     virtual QString title();
+    virtual QWidget* createPropertiesWidget(QWidget* parent);
+
     QRect contentRegion();
     virtual void contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    //void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+//    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;

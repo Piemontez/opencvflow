@@ -42,8 +42,10 @@ class NodeItemPrivate {
 };
 class ProcessorNode: public NodeItem {
     ProcessFunc func;
+    QString _title;
 public:
-    ProcessorNode(ProcessFunc func): NodeItem(nullptr) {
+    ProcessorNode(QString title, ProcessFunc func): NodeItem(nullptr) {
+        this->_title = title;
         this->func = func;
     }
     void proccess() override {
@@ -54,6 +56,9 @@ public:
         sources().insert(sources().begin(), mats.begin(), mats.end());
     };
 
+    QString title() override {
+        return _title;
+    };
 };
 
 ProcessorComponent::ProcessorComponent(uint actionBar, ProcessFunc func)
@@ -77,7 +82,7 @@ std::string ProcessorComponent::name()
 
 Node *ProcessorComponent::createNode()
 {
-    return new ProcessorNode(this->_func);
+    return new ProcessorNode(QString::fromStdString(_name), this->_func);
 }
 
 QWidget *ProcessorComponent::createWidget()

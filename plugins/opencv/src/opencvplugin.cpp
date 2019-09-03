@@ -13,6 +13,8 @@ std::vector<Component *> OpenCVPlugin::components()
 {
     std::vector<Component *> rs;
 
+    std::cout << "........>>";
+
     auto cap = new cv::VideoCapture(0);
 
     rs.push_back(new ProcessorComponent(SourcesTB, "Video Stream", [cap] (const std::vector<Edge *> &) -> std::vector<cv::Mat> {

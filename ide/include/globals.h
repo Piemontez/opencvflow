@@ -42,7 +42,7 @@ struct PluginDetails {
 
 #define OCVFLOW_PLUGIN(classType, pluginName, pluginVersion)    \
   extern "C" {                                                  \
-      OCVFLOW_PLUGIN_EXPORT ocvflow::PluginInterface* getPlugin()    \
+      OCVFLOW_PLUGIN_EXPORT ocvflow::PluginInterface* loadPlugin()    \
       {                                                         \
           static classType singleton;                           \
           return &singleton;                                    \
@@ -53,7 +53,7 @@ struct PluginDetails {
           #classType,                                           \
           pluginName,                                           \
           pluginVersion,                                        \
-          getPlugin,                                            \
+          loadPlugin,                                           \
       };                                                        \
   }
 

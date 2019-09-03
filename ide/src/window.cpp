@@ -1,7 +1,13 @@
 #include "window.h"
 #include "items.h"
 #include "component.h"
+#include "plugin.h"
 
+#include <dlfcn.h>
+
+#include <QApplication>
+#include <QDebug>
+#include <QDir>
 #include <QMenuBar>
 #include <QToolBar>
 #include <QThread>
@@ -161,6 +167,33 @@ void MainWindow::makeDocks()
 
 void MainWindow::loadPlugins()
 {
+    QStringList typeFiles;
+
+
+    QString path = qApp->applicationDirPath();
+    path = path.left(path.lastIndexOf("/")) + "/plugins";
+
+    QDir pluginsDir(path);
+    for (QString fileName: pluginsDir.entryList(typeFiles, QDir::Files))
+    {
+        //Carrega o arquivo/biblioteca da pasta e tenta executalo
+        qDebug() << fileName;
+
+        void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
+        ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
+
+        qDebug() << "checkload";
+        if (loadPlugin) {
+            qDebug() << "loaded";
+            ocvflow::PluginInterface* plugin = loadPlugin();
+            if (plugin) {
+                qDebug() << "hasplugin";
+                plugin->components();
+            }
+        }
+    }
+
+    try{
     //auto comps = (new PluginInterface)->components();
     std::vector<Component*> comps;
     for (auto && comp: comps)
@@ -180,6 +213,11 @@ void MainWindow::loadPlugins()
                 tb->addAction(new QAction(QString::fromStdString(comp->name())));
             }
         }
+    }
+    }
+    catch (std::exception& exc) {
+        std::cerr << "Error: " << exc.what() << std::endl;
+        assert(0);
     }
 }
 

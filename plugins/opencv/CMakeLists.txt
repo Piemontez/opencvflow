@@ -35,4 +35,4 @@ add_library(opencv SHARED
 #target_link_libraries(opencvflow)
 
 install(TARGETS opencv
-    DESTINATION bin)
+    DESTINATION plugin)

@@ -63,6 +63,7 @@ target_link_libraries(opencvflow
     Qt5::Core
     Qt5::Gui 
     Qt5::Widgets
+    ${CMAKE_DL_LIBS}
 #    ${OpenCV_LIBS}
     opencv_core
 #    opencv_highgui

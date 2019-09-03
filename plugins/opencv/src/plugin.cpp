@@ -1,17 +1,18 @@
-#include "component.h"
-#include "window.h"
+#include "plugin.h"
+
+#include "globals.h"
 #include "node.h"
 #include "edge.h"
 
 #include "opencv2/opencv.hpp"
 
-std::vector<Component *> PluginInterface::components()
+std::vector<Component *> Plugin::components() const
 {
     std::vector<Component *> rs;
 
     auto cap = new cv::VideoCapture(0);
 
-    rs.push_back(new ProcessorComponent(MainWindow::SourcesTB, "Video Stream", [cap] (const std::vector<Edge *> &) -> std::vector<cv::Mat> {
+    rs.push_back(new ProcessorComponent(SourcesTB, "Video Stream", [cap] (const std::vector<Edge *> &) -> std::vector<cv::Mat> {
         std::vector<cv::Mat> sources;
 
         if(!cap->isOpened())  // check if we succeeded
@@ -26,7 +27,7 @@ std::vector<Component *> PluginInterface::components()
         return sources;
     }));
 
-    rs.push_back(new ProcessorComponent(MainWindow::ProcessorsTB, "Sobel", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
+    rs.push_back(new ProcessorComponent(ProcessorsTB, "Sobel", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
         std::vector<cv::Mat> sources;
 
         cv::Mat out;
@@ -42,7 +43,7 @@ std::vector<Component *> PluginInterface::components()
         return sources;
     }));
 
-    rs.push_back(new ProcessorComponent(MainWindow::ProcessorsTB, "Canny", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
+    rs.push_back(new ProcessorComponent(ProcessorsTB, "Canny", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
         std::vector<cv::Mat> sources;
         cv::Mat out;
 

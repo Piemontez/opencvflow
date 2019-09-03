@@ -8,7 +8,7 @@
 #include <QDockWidget>
 
 class MainWindowPrivate {
-    QMap<MainWindow::ToolBarNames, QToolBar*> toolbars;
+    QMap<ToolBarNames, QToolBar*> toolbars;
     QMap<QString, Component *> components;
 
     QDockWidget *propertiesDock;
@@ -49,7 +49,7 @@ CentralWidget *MainWindow::centralWidget() const
     return static_cast<CentralWidget *>(QMainWindow::centralWidget());
 }
 
-QToolBar *MainWindow::toolbar(const MainWindow::ToolBarNames &name)
+QToolBar *MainWindow::toolbar(const ToolBarNames &name)
 {
     return d_func()->toolbars[name];
 }
@@ -131,7 +131,7 @@ void MainWindow::showToolBar()
 
     QVariant data = qobject_cast< QAction* >(sender())->data();
     if (data.isValid())
-        d_func()->toolbars.value( static_cast<MainWindow::ToolBarNames>(data.toUInt()) )->show();
+        d_func()->toolbars.value( static_cast<ToolBarNames>(data.toUInt()) )->show();
 }
 
 void MainWindow::makeActions()
@@ -161,7 +161,8 @@ void MainWindow::makeDocks()
 
 void MainWindow::loadPlugins()
 {
-    auto comps = (new PluginInterface)->components();
+    //auto comps = (new PluginInterface)->components();
+    std::vector<Component*> comps;
     for (auto && comp: comps)
     {
         d_func()->components.insert(QString::fromStdString(comp->name()), comp);

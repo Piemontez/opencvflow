@@ -5,6 +5,8 @@
 #include <QGraphicsView>
 #include <QScopedPointer>
 
+#include "globals.h"
+
 class QWidget;
 class CentralWidget;
 class NodeItem;
@@ -23,14 +25,6 @@ class MainWindow: public QMainWindow
     QScopedPointer<MainWindowPrivate> d_ptr;
     Q_DECLARE_PRIVATE(MainWindow)
 public:
-    enum ToolBarNames {
-        FilesTB,
-        SourcesTB,
-        ProcessorsTB,
-        ConnectorsTB,
-        BuildTB,
-        WindowTB
-    };
 
    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

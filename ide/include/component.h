@@ -56,7 +56,6 @@ public:
 class PluginInterface
 {
 public:
-    //virtual std::list<Component> components() const = 0;
-    virtual std::vector<Component*> components();
+    virtual std::vector<Component*> components() const = 0;
 };
 #endif // COMPONENT_H

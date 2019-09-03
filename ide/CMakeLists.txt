@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 message("Building IDE")
 
-project(opencvflow)
+project(opencvflow VERSION 0.1.0 DESCRIPTION "OpenCVFlow IDE")
 
 #definitions
 add_definitions(-DAPP_FULL_NAME="OpenCVFlow")
@@ -33,19 +33,10 @@ find_package(OpenCV REQUIRED)
 find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
 get_target_property(QtCore_location Qt5::Core LOCATION)
 
-#make source files list
-file(GLOB_RECURSE opencvflow_SRC src/*.cpp)
-
-#remove main from list 
-list(REMOVE_ITEM opencvflow_SRC "src/main.cpp")
-
-#make include list
-file(GLOB_RECURSE opencvflow_INCLUDE include/*.h)
-
 #includes
-include_directories(${OpenCV_INCLUDE_DIRS}
+include_directories(
+    ${OpenCV_INCLUDE_DIRS}
     include)
-
 
 #file to builder
 add_executable(opencvflow
@@ -65,7 +56,6 @@ add_executable(opencvflow
     src/fakeedgeitem.cpp
     #extras
     src/action.cpp
-    src/opencvcomponents.cpp
     #qrc
     resources/resources.qrc)
 

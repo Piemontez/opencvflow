@@ -167,53 +167,55 @@ void MainWindow::makeDocks()
 
 void MainWindow::loadPlugins()
 {
-    QStringList typeFiles;
-
-
-    QString path = qApp->applicationDirPath();
-    path = path.left(path.lastIndexOf("/")) + "/plugins";
-
-    QDir pluginsDir(path);
-    for (QString fileName: pluginsDir.entryList(typeFiles, QDir::Files))
-    {
-        //Carrega o arquivo/biblioteca da pasta e tenta executalo
-        qDebug() << fileName;
-
-        void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
-        ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
-
-        qDebug() << "checkload";
-        if (loadPlugin) {
-            qDebug() << "loaded";
-            ocvflow::PluginInterface* plugin = loadPlugin();
-            if (plugin) {
-                qDebug() << "hasplugin";
-                plugin->components();
-            }
-        }
-    }
-
     try{
-    //auto comps = (new PluginInterface)->components();
-    std::vector<Component*> comps;
-    for (auto && comp: comps)
-    {
-        d_func()->components.insert(QString::fromStdString(comp->name()), comp);
+        std::vector<Component*> comps;
 
-        auto tb = toolbar( static_cast<ToolBarNames>(comp->actionToolBar()) );
-        if (tb) {
-            auto action = comp->createAction();
-            if (action)
-                tb->addAction(action);
+        QStringList typeFiles;
 
-            auto widget = comp->createWidget();
-            if (widget)
-                tb->addWidget(widget);
-            if (!action && !widget) {
-                tb->addAction(new QAction(QString::fromStdString(comp->name())));
+        //set plugin path
+        QString path = qApp->applicationDirPath();
+        path = path.left(path.lastIndexOf("/")) + "/plugins";
+
+        //load libs on plugins dir
+        QDir pluginsDir(path);
+        for (QString fileName: pluginsDir.entryList(typeFiles, QDir::Files))
+        {
+            try{
+                //Carrega a biblioteca
+                void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
+                //Procura pela função loadPlugin
+                ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
+
+                //Verifica se foi encontrada a funcao
+                if (loadPlugin) {
+                    //carrega a classe plugin
+                    ocvflow::PluginInterface* plugin = loadPlugin();
+                    if (plugin) {
+                        auto compsLoaded = plugin->components();
+                        comps.insert(comps.end(), compsLoaded.begin(), compsLoaded.end());
+                    }
+                }
+            } catch (...) {}
+        }
+
+        for (auto && comp: comps)
+        {
+            d_func()->components.insert(QString::fromStdString(comp->name()), comp);
+
+            auto tb = toolbar( static_cast<ToolBarNames>(comp->actionToolBar()) );
+            if (tb) {
+                auto action = comp->createAction();
+                if (action)
+                    tb->addAction(action);
+
+                auto widget = comp->createWidget();
+                if (widget)
+                    tb->addWidget(widget);
+                if (!action && !widget) {
+                    tb->addAction(new QAction(QString::fromStdString(comp->name())));
+                }
             }
         }
-    }
     }
     catch (std::exception& exc) {
         std::cerr << "Error: " << exc.what() << std::endl;

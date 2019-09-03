@@ -13,7 +13,8 @@ std::vector<Component *> OpenCVPlugin::components()
 {
     std::vector<Component *> rs;
 
-    std::cout << "........>>";
+    std::cout << "........>>" << std::endl;
+    std::cout << "........>>" << std::endl;
 
     auto cap = new cv::VideoCapture(0);
 

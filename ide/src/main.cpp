@@ -4,6 +4,7 @@
 #include <QTextStream>
 
 #include <stdio.h>
+#include <iostream>
 
 #include "window.h"
 

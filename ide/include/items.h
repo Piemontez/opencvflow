@@ -4,7 +4,6 @@
 #include "edge.h"
 #include "node.h"
 
-#include <QScopedPointer>
 #include <QGraphicsItemGroup>
 #include <QList>
 #include <QGraphicsItem>
@@ -22,10 +21,10 @@ class NodeItem : public Node, public QGraphicsItemGroup
 {
     //Q_OBJECT
 
-    QScopedPointer<NodeItemPrivate> d_ptr;
+    NodeItemPrivate* d_ptr;
     Q_DECLARE_PRIVATE(NodeItem)
 public:
-    explicit NodeItem(CentralWidget *centralWidget);
+    explicit NodeItem(CentralWidget *centralWidget, QString title = "");
 
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
@@ -45,7 +44,7 @@ public:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
-//    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 //    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 //    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
@@ -61,7 +60,7 @@ class EdgeItem : public Edge, public QGraphicsItem
 {
     //Q_OBJECT
 
-    QScopedPointer<EdgeItemPrivate> d_ptr;
+    EdgeItemPrivate* d_ptr;
     Q_DECLARE_PRIVATE(EdgeItem)
 public:
     explicit EdgeItem(NodeItem *sourceNode, NodeItem *destNode);

@@ -12,7 +12,7 @@ class FlowAction : public QLabel
 {
 public:
     explicit FlowAction(const std::string &nodeName,
-                        const QString &text,
+                        const QString &title,
                         QWidget* parent = nullptr,
                         Qt::WindowFlags f = Qt::WindowFlags());
     virtual std::string nodeName();

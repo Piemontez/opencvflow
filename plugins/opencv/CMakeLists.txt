@@ -7,19 +7,20 @@ message("Building OpenCV Plugin")
 project(opencv VERSION 0.3.0 DESCRIPTION "OpenCV Plugin")
 
 #flags
-#c++11flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+#qtflags
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-#compilerflag
-IF(RELEASE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -o2")
-ELSE()
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -g")
-ENDIF()
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endif()
 
 #dependencies
-
 find_package(OpenCV REQUIRED)
+
+find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
+get_target_property(QtCore_location Qt5::Core LOCATION)
 
 #includes
 include_directories(
@@ -29,10 +30,14 @@ include_directories(
 
 
 add_library(opencv SHARED
+    src/imgproc.cpp
+    src/imgprocproperties.cpp
     src/opencvplugin.cpp)
 
 #add ide libraries
-#target_link_libraries(opencvflow)
+target_link_libraries(opencv
+    Qt5::Core
+    Qt5::Widgets)
 
 install(TARGETS opencv
     DESTINATION plugin)

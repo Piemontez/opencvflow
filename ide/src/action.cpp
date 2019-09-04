@@ -6,8 +6,8 @@
 #include <QMimeData>
 #include <QPainter>
 
-FlowAction::FlowAction(const std::string &nodeName, const QString &text, QWidget *parent, Qt::WindowFlags f)
-    : QLabel(text, parent,f)
+FlowAction::FlowAction(const std::string &nodeName, const QString &title, QWidget *parent, Qt::WindowFlags f)
+    : QLabel(title, parent,f)
 {
     this->setProperty("nodename", QString::fromStdString(nodeName));
 

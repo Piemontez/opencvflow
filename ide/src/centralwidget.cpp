@@ -35,6 +35,8 @@ CentralWidget::CentralWidget(QWidget *parent):
     setAcceptDrops(true);
 
     setBackgroundBrush(QBrush(Qt::lightGray, Qt::SolidPattern));
+
+    scaleView(0.5);
 }
 
 void CentralWidget::keyPressEvent(QKeyEvent *event)

@@ -42,10 +42,8 @@ class NodeItemPrivate {
 };
 class ProcessorNode: public NodeItem {
     ProcessFunc func;
-    QString _title;
 public:
-    ProcessorNode(QString title, ProcessFunc func): NodeItem(nullptr) {
-        this->_title = title;
+    ProcessorNode(QString title, ProcessFunc func): NodeItem(nullptr, title) {
         this->func = func;
     }
     void proccess() override {
@@ -54,10 +52,6 @@ public:
         auto mats = this->func(this->edges());
 
         sources().insert(sources().begin(), mats.begin(), mats.end());
-    };
-
-    QString title() override {
-        return _title;
     };
 };
 

@@ -37,6 +37,7 @@ public:
 
     void addNode(NodeItem* node);
     void connectNode(NodeItem* source, NodeItem* dest);
+    void nodeClicked(NodeItem* node);
 
 private:
     void makeToolbar();

@@ -14,15 +14,16 @@
 class NodeItemPrivate {
     CentralWidget *centralWidget;
     QRect contentSize;
+    QString title;
 
     friend class NodeItem;
 };
 
-NodeItem::NodeItem(CentralWidget *centralWidget)
+NodeItem::NodeItem(CentralWidget *centralWidget, QString title)
     : d_ptr(new NodeItemPrivate)
 {
     d_func()->centralWidget = centralWidget;
-    d_func()->contentSize = QRect(0, 0, 220, 100);
+    d_func()->contentSize = QRect(0, 0, 480, 200);
 
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -35,11 +36,15 @@ NodeItem::NodeItem(CentralWidget *centralWidget)
 
     setHandlesChildEvents(false);
     setAcceptHoverEvents(true);
+
+    d_func()->title = title.isEmpty()
+            ? "Empty Node"
+            : title;
 }
 
 QString NodeItem::title()
 {
-    return "Empty Node";
+    return d_func()->title;
 }
 
 QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
@@ -107,13 +112,19 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 
     return QGraphicsItem::itemChange(change, value);
 }
-/*
+
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    update();
     QGraphicsItem::mousePressEvent(event);
-}
+    if(event->button() == Qt::LeftButton) {
+        if(event->modifiers() == Qt::ShiftModifier || event->modifiers() == Qt::AltModifier) {
 
+        } else {
+            MainWindow::instance()->nodeClicked(this);
+        }
+    }
+}
+/*
 void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     update();

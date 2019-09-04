@@ -77,6 +77,22 @@ void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
     centralWidget()->scene()->addItem(new EdgeItem(source, dest));
 }
 
+void MainWindow::nodeClicked(NodeItem *node)
+{
+    auto last = d_func()->propertiesDock->widget();
+    d_func()->propertiesDock->setWidget(nullptr);
+
+    if (last) {
+        last->hide();
+        last->deleteLater();
+    }
+
+    QWidget* widget = node->createPropertiesWidget(d_func()->propertiesDock);
+    if (widget) {
+        d_func()->propertiesDock->setWidget(widget);
+    }
+}
+
 void MainWindow::makeToolbar()
 {
     setMenuBar(new QMenuBar);

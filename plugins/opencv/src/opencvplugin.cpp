@@ -5,6 +5,8 @@
 #include "node.h"
 #include "edge.h"
 
+#include "imgproc.h"
+
 #include <opencv2/opencv.hpp>
 
 OCVFLOW_PLUGIN(OpenCVPlugin, "OpenCV 4.x.x Plugin", "0.1.1")
@@ -12,9 +14,6 @@ OCVFLOW_PLUGIN(OpenCVPlugin, "OpenCV 4.x.x Plugin", "0.1.1")
 std::vector<Component *> OpenCVPlugin::components()
 {
     std::vector<Component *> rs;
-
-    std::cout << "........>>" << std::endl;
-    std::cout << "........>>" << std::endl;
 
     auto cap = new cv::VideoCapture(0);
 
@@ -33,37 +32,9 @@ std::vector<Component *> OpenCVPlugin::components()
         return sources;
     }));
 
-    rs.push_back(new ProcessorComponent(ProcessorsTB, "Sobel", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
-        std::vector<cv::Mat> sources;
-
-        cv::Mat out;
-
-        for (auto && edge: edges)
-        {
-            for (auto && mat: edge->sourceNode()->sources())
-            {
-                cv::Sobel(mat, out, CV_8U, 1, 0, 3);
-                sources.push_back(out);
-            }
-        }
-        return sources;
-    }));
-
-    rs.push_back(new ProcessorComponent(ProcessorsTB, "Canny", [] (const std::vector<Edge *> &edges) -> std::vector<cv::Mat> {
-        std::vector<cv::Mat> sources;
-        cv::Mat out;
-
-        for (auto && edge: edges)
-        {
-            for (auto && mat: edge->sourceNode()->sources())
-            {
-                cv::Canny(mat, out, 80, 170);
-                sources.push_back(out);
-            }
-        }
-        return sources;
-    }));
-
+    rs.push_back(new SobelComponent);
+    rs.push_back(new CannyComponent);
+    rs.push_back(new LaplacianComponent);
 
     return rs;
 }

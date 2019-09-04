@@ -41,10 +41,10 @@ class ProcessorComponent: public Component
     ProcessFunc _func;
 public:
     ProcessorComponent(uint actionBar, ProcessFunc func);
-    ProcessorComponent(uint actionBar, std::string name, ProcessFunc func);
+    ProcessorComponent(uint actionBar, std::string name, ProcessFunc func = nullptr);
 
     std::string name() override;
-    Node* createNode() override;
+    virtual Node* createNode() override;
     QWidget* createWidget() override;
 
     uint actionToolBar() override;

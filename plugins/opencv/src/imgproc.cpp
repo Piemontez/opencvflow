@@ -52,7 +52,7 @@ CannyComponent::CannyComponent() : ProcessorComponent(ProcessorsTB, "Canny") { }
 Node *CannyComponent::createNode() { return new CannyNode; }
 
 /**
- * @brief CannyNode::CannyNode
+ * @brief LaplacianNode::LaplacianNode
  */
 LaplacianNode::LaplacianNode():  NodeItem(nullptr, "Laplacian") {}
 

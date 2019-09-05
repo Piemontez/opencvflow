@@ -62,4 +62,4 @@ public:
 };
 
 
-#endif // OPENCVPLUGIN_H
+#endif // OPCVF_IMGPROC_H

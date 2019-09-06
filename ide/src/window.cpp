@@ -146,6 +146,7 @@ void MainWindow::makeToolbar()
 
 void MainWindow::showToolBar()
 {
+    qDebug() << sender();
     sender()->setProperty("css", true);
 
     for (auto && tb: d_func()->toolbars.values())
@@ -239,6 +240,22 @@ void MainWindow::loadPlugins()
     }
 }
 
+void itemsAdd(QList< NodeItem* >& ordered, QGraphicsItem* item) {
+    if (NodeItem::Type != item->type())
+        return;
+
+    auto nodeItem = static_cast<NodeItem*>(item);
+    if (! ordered.contains(nodeItem)) {
+         ordered.append(nodeItem);
+
+         for (auto edge: nodeItem->edges()) {
+            auto edgeItem = static_cast<EdgeItem*>(edge);
+
+            itemsAdd(ordered, static_cast<NodeItem*>(edgeItem->destNode()));
+         }
+    }
+}
+
 void MainWindow::run()
 {
     if (d_func()->runing) return;
@@ -250,29 +267,34 @@ void MainWindow::run()
 
         QList<NodeItem *> items;
         for (auto && item: this->centralWidget()->items()) {
-            if (NodeItem::Type != item->type())
-                continue;
+            itemsAdd(items, item);
+        }
 
-            items.append(static_cast<NodeItem*>(item));
+        for (auto item: items) {
+            item->start();
         }
         forever {
             //Executa todos os processos
             for (auto item: items)
             {
                 //Todo: add semapharo
+                item->acquire();
                 item->proccess();
+                item->release();
             }
             //Atualiza a tela
-            if (float( std::clock () - last ) > 100) {
+            if (float( std::clock () - last ) > 42) {
                 last = std::clock();
-
                 for (auto && item: items)
                     item->update();
 
-                QThread::msleep(10 + (items.size() * 2));
+                QThread::msleep(10 + items.size());
             }
             if (!d_func()->runing)
                 break;
+        }
+        for (auto item: items) {
+            item->stop();
         }
     });
 

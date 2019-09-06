@@ -91,12 +91,16 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    acquire();
+
     cv::Mat out;
     for (auto && mat: sources())
     {
         cv::resize(mat, out, cv::Size(region.width(), region.height()));
         painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
     }
+
+    release();
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)

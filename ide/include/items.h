@@ -65,8 +65,8 @@ class EdgeItem : public Edge, public QGraphicsItem
 public:
     explicit EdgeItem(NodeItem *sourceNode, NodeItem *destNode);
 
-    Node *sourceNode() const;
-    Node *destNode() const;
+    NodeItem *sourceNode() const;
+    NodeItem *destNode() const;
 
     void adjust();
 

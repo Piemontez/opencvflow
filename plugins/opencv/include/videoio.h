@@ -16,7 +16,9 @@ class VideoCaptureNode: public NodeItem {
     int index{0};
 public:
     VideoCaptureNode();
+    void start() override;
     void proccess() override;
+    void stop() override;
 };
 
 

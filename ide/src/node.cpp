@@ -1,10 +1,11 @@
 #include "node.h"
 #include "edge.h"
 
+#include <QSemaphore>
 
 Node::Node()
 {
-
+    semaphore = new QSemaphore(1);
 }
 void Node::addEdge(Edge *edge)
 {
@@ -19,4 +20,24 @@ std::vector<Edge *>& Node::edges()
 std::vector<cv::Mat>& Node::sources()
 {
     return _sources;
+}
+
+void Node::start()
+{
+
+}
+
+void Node::stop()
+{
+
+}
+
+void Node::acquire()
+{
+    semaphore->acquire();
+}
+
+void Node::release()
+{
+    semaphore->release();
 }

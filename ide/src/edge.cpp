@@ -4,7 +4,6 @@
 Edge::Edge(Node *sourceNode, Node *destNode)
     //: arrowSize(10)
 {
-
     source = sourceNode;
     dest = destNode;
     source->addEdge(this);

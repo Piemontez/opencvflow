@@ -28,9 +28,9 @@ QPainterPath NodeLinkItem::shape() const
     QRect region = nodeItem->contentRegion();
 
     QPainterPath path;
-    //path.addRect(region.left() -20, region.top() - 20, region.width() + 40, region.height() + 40);
-    path.addRect(region.left() -20, region.top() - 20, 20, region.height() + 40);
-    path.addRect(region.right(), region.top() - 20, 20, region.height() + 40);
+
+    path.addRect(region.left() -30, region.top() - 30, 40, region.height() + 70);
+    path.addRect(region.right(), region.top() - 30, 40, region.height() + 70);
     return path;
 }
 

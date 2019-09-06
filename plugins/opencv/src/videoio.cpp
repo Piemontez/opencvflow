@@ -2,7 +2,12 @@
 #include "globals.h"
 
 VideoCaptureNode::VideoCaptureNode():  NodeItem(nullptr, "VideoCapture") {
-    cap = new cv::VideoCapture(index);
+    cap = new cv::VideoCapture();
+}
+
+void VideoCaptureNode::start()
+{
+    cap->open(index);
 }
 
 void VideoCaptureNode::proccess()
@@ -16,6 +21,12 @@ void VideoCaptureNode::proccess()
     *cap >> frame;
 
     _sources.push_back(frame);
+}
+
+void VideoCaptureNode::stop()
+{
+    if(cap->isOpened())
+        cap->release();
 }
 
 VideoCaptureComponent::VideoCaptureComponent() : ProcessorComponent(SourcesTB, "VideoCapture") { }

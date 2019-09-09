@@ -13,7 +13,9 @@
 using namespace ocvflow;
 
 class ocvflow::CentralWidgetPrivate {
-    //Node *centerNode;
+    bool moveViewPort{false};
+    double mouseOriginX;
+    double mouseOriginY;
 
     friend class CentralWidget;
     CentralWidgetPrivate() {}
@@ -25,12 +27,12 @@ CentralWidget::CentralWidget(QWidget *parent):
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-320, -240, 640, 480);
+    scene->setSceneRect(-16000, -12000, 32000, 24000);
 
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
-    setRenderHint(QPainter::Antialiasing);
+    //setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
 
     setMinimumSize(640, 480);
@@ -81,9 +83,9 @@ void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
 
     QRectF sceneRect = this->sceneRect();
 
-    painter->setPen(QPen(Qt::gray, Qt::SolidPattern));
-    painter->drawLine(sceneRect.left() * 4, 0, sceneRect.right() * 4, 0);
-    painter->drawLine(0, sceneRect.top() * 4, 0, sceneRect.bottom() * 4);
+    painter->setPen(QPen(Qt::gray, 2, Qt::DashLine));
+    painter->drawLine(sceneRect.left() * 2, 0, sceneRect.right() * 2, 0);
+    painter->drawLine(0, sceneRect.top() * 2, 0, sceneRect.bottom() * 2);
 }
 
 void CentralWidget::scaleView(qreal scaleFactor)
@@ -155,5 +157,36 @@ void CentralWidget::dropEvent(QDropEvent *event)
 
 void CentralWidget::mousePressEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton)
+    {
+        d_func()->moveViewPort = !itemAt(event->pos());
+
+        d_func()->mouseOriginX = event->x();
+        d_func()->mouseOriginY = event->y();
+    }
     QGraphicsView::mousePressEvent(event);
 }
+
+void CentralWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    if (d_func()->moveViewPort)
+    {
+        QPointF oldp = mapToScene(d_func()->mouseOriginX, d_func()->mouseOriginY);
+        QPointF newp = mapToScene(event->pos());
+        QPointF translation = newp - oldp;
+
+        translate(translation.x(), translation.y());
+
+        d_func()->mouseOriginX = event->x();
+        d_func()->mouseOriginY = event->y();
+    }
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void CentralWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    d_func()->moveViewPort = false;
+
+    QGraphicsView::mousePressEvent(event);
+}
+

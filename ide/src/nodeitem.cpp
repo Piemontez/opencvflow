@@ -94,12 +94,17 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     acquire();
-
-    cv::Mat out;
-    for (auto && mat: sources())
-    {
-        cv::resize(mat, out, cv::Size(region.width(), region.height()));
-        painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
+    if (data(ocvflow::ErrorData).isValid()) {
+        painter->setPen(QPen(Qt::white, 4));
+        painter->drawLine(region.left(), region.top(), region.right(), region.bottom());
+        painter->drawLine(region.right(), region.top(), region.left(), region.bottom());
+    } else {
+        cv::Mat out;
+        for (auto && mat: sources())
+        {
+            cv::resize(mat, out, cv::Size(region.width(), region.height()));
+            painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
+        }
     }
 
     release();
@@ -130,13 +135,15 @@ void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
     }
 }
-/*
+
 void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    update();
+    MainWindow::instance()->update();
+
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
+/*
 void NodeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
 

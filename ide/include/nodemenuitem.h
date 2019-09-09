@@ -3,6 +3,8 @@
 
 #include <QGraphicsItem>
 
+namespace ocvflow {
+
 class NodeItem;
 
 class NodeMenuItem : public QGraphicsItem
@@ -19,4 +21,5 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 
+}
 #endif // NODEMENUITEM_H

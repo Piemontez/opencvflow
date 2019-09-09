@@ -1,6 +1,8 @@
 #include "videoio.h"
 #include "globals.h"
 
+using namespace ocvflow;
+
 VideoCaptureNode::VideoCaptureNode():  NodeItem(nullptr, "VideoCapture") {
     cap = new cv::VideoCapture();
 }

@@ -13,6 +13,8 @@ class QGraphicsSceneMouseEvent;
 QT_END_NAMESPACE
 class QWidget;
 
+namespace ocvflow {
+
 /**
  * @brief The NodeItem;
  */
@@ -99,4 +101,7 @@ protected:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
+
+}
+
 #endif // EDGE_H

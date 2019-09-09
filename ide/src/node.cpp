@@ -3,6 +3,8 @@
 
 #include <QSemaphore>
 
+using namespace ocvflow;
+
 Node::Node()
 {
     semaphore = new QSemaphore(1);

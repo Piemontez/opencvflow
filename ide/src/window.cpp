@@ -13,7 +13,9 @@
 #include <QThread>
 #include <QDockWidget>
 
-class MainWindowPrivate {
+using namespace ocvflow;
+
+class ocvflow::MainWindowPrivate {
     QMap<ToolBarNames, QToolBar*> toolbars;
     QMap<QString, Component *> components;
 
@@ -112,33 +114,33 @@ void MainWindow::makeToolbar()
         this->addToolBar(tb);
     }
 
-    auto act = new QAction("Files");
+    auto act = new QAction("Files", this);
     act->setData(FilesTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
 
-    act = new QAction("Sources");
+    act = new QAction("Sources", this);
     act->setData(SourcesTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
     act->hover();
 
-    act = new QAction("Processors");
+    act = new QAction("Processors", this);
     act->setData(ProcessorsTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
 
-    act = new QAction("Connectors");
+    act = new QAction("Connectors", this);
     act->setData(ConnectorsTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
 
-    act = new QAction("Build");
+    act = new QAction("Build", this);
     act->setData(BuildTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
 
-    act = new QAction("Window");
+    act = new QAction("Window", this);
     act->setData(WindowTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
@@ -146,8 +148,7 @@ void MainWindow::makeToolbar()
 
 void MainWindow::showToolBar()
 {
-    qDebug() << sender();
-    sender()->setProperty("css", true);
+    sender()->setProperty("menuselected", true);
 
     for (auto && tb: d_func()->toolbars.values())
         tb->hide();

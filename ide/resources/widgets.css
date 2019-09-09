@@ -2,3 +2,9 @@ QDockWidget#propertiesDock
 {
     min-width: 140;
 }
+
+QWidget > [menuselected="true"]
+{
+    color: #404040;
+    background-color: #323232;
+}

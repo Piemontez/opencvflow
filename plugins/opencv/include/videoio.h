@@ -11,7 +11,7 @@ namespace cv {
 /**
  * @brief The VideoCaptureNode class
  */
-class VideoCaptureNode: public NodeItem {
+class VideoCaptureNode: public ocvflow::NodeItem {
     cv::VideoCapture* cap;
     int index{0};
 public:
@@ -22,11 +22,11 @@ public:
 };
 
 
-class VideoCaptureComponent: public ProcessorComponent
+class VideoCaptureComponent: public ocvflow::ProcessorComponent
 {
 public:
     VideoCaptureComponent();
-    Node* createNode() override;
+    ocvflow::Node* createNode() override;
 };
 
 

@@ -1,18 +1,20 @@
 #ifndef NODE_H
 #define NODE_H
 
-
 #include "opencv2/opencv.hpp"
 
 class QSemaphore;
-class Edge;
-class EdgeItem;
-class CentralWidget;
 
 namespace cv {
     class VideoCapture;
     class Mat;
 }
+
+namespace ocvflow {
+
+class Edge;
+class EdgeItem;
+class CentralWidget;
 
 /**
  * @brief The Node;
@@ -40,4 +42,5 @@ protected:
     std::vector<cv::Mat> _sources;
 };
 
+}
 #endif // NODE_H

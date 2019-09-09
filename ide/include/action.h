@@ -8,6 +8,8 @@ class QDragMoveEvent;
 class QDropEvent;
 class QMouseEvent;
 
+namespace ocvflow {
+
 class FlowAction : public QLabel
 {
 public:
@@ -27,5 +29,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
 
 };
+
+}
 
 #endif // ACTION_H

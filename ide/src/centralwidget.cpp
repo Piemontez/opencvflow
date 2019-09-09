@@ -10,7 +10,9 @@
 #include <QWheelEvent>
 #include <QDebug>
 
-class CentralWidgetPrivate {
+using namespace ocvflow;
+
+class ocvflow::CentralWidgetPrivate {
     //Node *centerNode;
 
     friend class CentralWidget;

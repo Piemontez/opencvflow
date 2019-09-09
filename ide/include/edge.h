@@ -1,6 +1,8 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+namespace ocvflow {
+
 class Node;
 class NodeItem;
 
@@ -18,5 +20,7 @@ public:
 protected:
     Node *source, *dest;
 };
+
+}
 
 #endif // EDGE_H

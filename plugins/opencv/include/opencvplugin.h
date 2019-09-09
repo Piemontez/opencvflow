@@ -5,7 +5,7 @@
 
 class OpenCVPlugin : public ocvflow::PluginInterface
 {
-    std::vector<Component*> components() override;
+    std::vector<ocvflow::Component*> components() override;
 };
 
 #endif // OPENCVPLUGIN_H

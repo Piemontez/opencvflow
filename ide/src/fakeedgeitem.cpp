@@ -3,6 +3,8 @@
 #include <QPainter>
 #include <QLineF>
 
+using namespace ocvflow;
+
 FakeEdgeItem::FakeEdgeItem(QPointF sourcePoint)
 {
     this->sourcePoint = sourcePoint;

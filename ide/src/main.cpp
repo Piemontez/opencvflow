@@ -29,7 +29,7 @@ int main(int argc, char **argv)
   a.setQuitOnLastWindowClosed(true);
   a.setApplicationName(APP_FULL_NAME);
 
-  auto main = MainWindow::instance();
+  auto main = ocvflow::MainWindow::instance();
   main->show();
 
   return a.exec();

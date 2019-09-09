@@ -8,6 +8,8 @@
 #include <QRadialGradient>
 #include <QGraphicsSceneMouseEvent>
 
+using namespace ocvflow;
+
 NodeLinkItem::NodeLinkItem(NodeItem *nodeItem) :
     nodeItem(nodeItem)
 {

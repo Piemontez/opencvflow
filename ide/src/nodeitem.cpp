@@ -11,7 +11,9 @@
 #include <QGraphicsSceneContextMenuEvent>
 #include <QWidget>
 
-class NodeItemPrivate {
+using namespace ocvflow;
+
+class ocvflow::NodeItemPrivate {
     CentralWidget *centralWidget;
     QRect contentSize;
     QString title;

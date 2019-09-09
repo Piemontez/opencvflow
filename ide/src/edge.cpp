@@ -1,6 +1,8 @@
 #include "edge.h"
 #include "node.h"
 
+using namespace ocvflow;
+
 Edge::Edge(Node *sourceNode, Node *destNode)
     //: arrowSize(10)
 {

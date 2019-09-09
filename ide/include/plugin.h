@@ -4,12 +4,10 @@
 #include "globals.h"
 #include <vector>
 
-class Component;
-
-
 namespace ocvflow {
 
-//https://sourcey.com/articles/building-a-simple-cpp-cross-platform-plugin-system
+class Component;
+
 /**
  * @brief The ActivatorInterface class
  */

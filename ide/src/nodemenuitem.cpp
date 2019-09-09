@@ -5,6 +5,8 @@
 #include <QFont>
 #include <QRadialGradient>
 
+using namespace ocvflow;
+
 NodeMenuItem::NodeMenuItem(NodeItem *nodeItem) :
     nodeItem(nodeItem)
 {

@@ -8,9 +8,12 @@
 #include "globals.h"
 
 class QWidget;
+class QToolBar;
+
+namespace ocvflow {
+
 class CentralWidget;
 class NodeItem;
-class QToolBar;
 class Component;
 
 /**
@@ -85,5 +88,7 @@ protected:
 
     void mousePressEvent(QMouseEvent *event) override;
 };
+
+}
 
 #endif // WINDOW_H

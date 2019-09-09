@@ -5,13 +5,17 @@
 #include <vector>
 #include <functional>
 
-class Node;
-class Edge;
 class QAction;
 class QWidget;
 namespace cv {
     class Mat;
 }
+
+namespace ocvflow {
+
+class Node;
+class Edge;
+
 /**
  * @brief The Component class
  */
@@ -49,4 +53,7 @@ public:
 
     uint actionToolBar() override;
 };
+
+}
+
 #endif // COMPONENT_H

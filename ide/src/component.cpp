@@ -6,6 +6,8 @@
 
 #include <QDebug>
 
+using namespace ocvflow;
+
 std::string Component::name()
 {
     return "";

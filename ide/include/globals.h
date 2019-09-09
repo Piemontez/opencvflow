@@ -1,6 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+namespace ocvflow {
+
+class PluginInterface;
+
 enum ToolBarNames {
     FilesTB,
     SourcesTB,
@@ -10,9 +14,6 @@ enum ToolBarNames {
     WindowTB
 };
 
-namespace ocvflow {
-
-class PluginInterface;
 
 // Define the API version.
 #define OCVFLOW_PLUGIN_API_VERSION 1

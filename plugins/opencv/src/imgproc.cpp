@@ -3,6 +3,8 @@
 
 #include <QString>
 
+using namespace ocvflow;
+
 /**
  * @brief SobelNode::SobelNode
  */

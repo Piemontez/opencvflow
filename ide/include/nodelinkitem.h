@@ -5,6 +5,8 @@
 
 #include "edge.h"
 
+namespace ocvflow {
+
 class FakeEdgeItem;
 /**
  * @brief The NodeLinkItem;
@@ -32,4 +34,6 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 };
+
+}
 #endif // NODELINKITEM_H

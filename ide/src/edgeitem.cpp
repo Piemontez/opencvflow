@@ -3,7 +3,9 @@
 #include <QPainter>
 #include <QLineF>
 
-class EdgeItemPrivate {
+using namespace ocvflow;
+
+class ocvflow::EdgeItemPrivate {
     QPointF sourcePoint;
     QPointF destPoint;
 

@@ -6,6 +6,8 @@
 #include <QMimeData>
 #include <QPainter>
 
+using namespace ocvflow;
+
 FlowAction::FlowAction(const std::string &nodeName, const QString &title, QWidget *parent, Qt::WindowFlags f)
     : QLabel(title, parent,f)
 {

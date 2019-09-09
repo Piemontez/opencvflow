@@ -12,9 +12,9 @@
 
 OCVFLOW_PLUGIN(OpenCVPlugin, "OpenCV 4.x.x Plugin", "0.1.1")
 
-std::vector<Component *> OpenCVPlugin::components()
+std::vector<ocvflow::Component *> OpenCVPlugin::components()
 {
-    std::vector<Component *> rs;
+    std::vector<ocvflow::Component *> rs;
 
     //videoio
     rs.push_back(new VideoCaptureComponent);

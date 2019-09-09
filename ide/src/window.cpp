@@ -273,6 +273,7 @@ void MainWindow::run()
 
         for (auto item: items) {
             item->start();
+            item->setData(ErrorData, QVariant());
         }
         forever {
             //Executa todos os processos
@@ -280,7 +281,13 @@ void MainWindow::run()
             {
                 //Todo: add semapharo
                 item->acquire();
-                item->proccess();
+                try {
+                    item->proccess();
+                } catch (cv::Exception& ex) {
+                    item->setData(ErrorData, QString::fromStdString(ex.msg));
+                } catch (...) {
+                }
+
                 item->release();
             }
             //Atualiza a tela

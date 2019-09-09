@@ -14,6 +14,10 @@ enum ToolBarNames {
     WindowTB
 };
 
+enum FlowData {
+    ErrorData = 0x0101
+};
+
 
 // Define the API version.
 #define OCVFLOW_PLUGIN_API_VERSION 1

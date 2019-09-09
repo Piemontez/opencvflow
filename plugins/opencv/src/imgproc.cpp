@@ -245,7 +245,7 @@ void ScharrNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::Scharr(mat, out, 1, 1, 1);
+            cv::Scharr(mat, out, 1, 1, 0);
             _sources.push_back(out);
         }
     }

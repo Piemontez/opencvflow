@@ -95,5 +95,39 @@ public:
     ocvflow::Node* createNode() override;
 };
 
+/**
+ * @brief The BilateralFilterNode class
+ */
+class BilateralFilterNode: public ocvflow::NodeItem {
+public:
+    BilateralFilterNode();
+    void proccess() override;
+};
+
+
+class BilateralFilterComponent: public ocvflow::ProcessorComponent
+{
+public:
+    BilateralFilterComponent();
+    ocvflow::Node* createNode() override;
+};
+
+/**
+ * @brief The BoxFilterNode class
+ */
+class BoxFilterNode: public ocvflow::NodeItem {
+public:
+    BoxFilterNode();
+    void proccess() override;
+};
+
+
+class BoxFilterComponent: public ocvflow::ProcessorComponent
+{
+public:
+    BoxFilterComponent();
+    ocvflow::Node* createNode() override;
+};
+
 
 #endif // OPCVF_IMGPROC_H

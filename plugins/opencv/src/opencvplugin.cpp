@@ -25,6 +25,8 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
     rs.push_back(new LaplacianComponent);
     rs.push_back(new MedianBlurComponent);
     rs.push_back(new GaussianBlurComponent);
+    rs.push_back(new BilateralFilterComponent);
+    rs.push_back(new BoxFilterComponent);
 
     return rs;
 }

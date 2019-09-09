@@ -127,3 +127,53 @@ void GaussianBlurNode::proccess()
 
 GaussianBlurComponent::GaussianBlurComponent() : ProcessorComponent(ProcessorsTB, "GaussianBlur") { }
 Node *GaussianBlurComponent::createNode() { return new GaussianBlurNode; }
+
+/**
+ * @brief BilateralFilterNode::BilateralFilterNode
+ */
+BilateralFilterNode::BilateralFilterNode():  NodeItem(nullptr, "BilateralFilter") {}
+
+void BilateralFilterNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::bilateralFilter(mat, out, 1, 1, 1);
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+BilateralFilterComponent::BilateralFilterComponent() : ProcessorComponent(ProcessorsTB, "BilateralFilter") { }
+Node *BilateralFilterComponent::createNode() { return new BilateralFilterNode; }
+
+/**
+ * @brief BoxFilterNode::BoxFilterNode
+ */
+BoxFilterNode::BoxFilterNode():  NodeItem(nullptr, "BoxFilter") {}
+
+void BoxFilterNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::boxFilter(mat, out, 1, cv::Size(3, 3));
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+BoxFilterComponent::BoxFilterComponent() : ProcessorComponent(ProcessorsTB, "BoxFilter") { }
+Node *BoxFilterComponent::createNode() { return new BoxFilterNode; }

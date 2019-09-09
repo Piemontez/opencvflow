@@ -177,3 +177,80 @@ void BoxFilterNode::proccess()
 
 BoxFilterComponent::BoxFilterComponent() : ProcessorComponent(ProcessorsTB, "BoxFilter") { }
 Node *BoxFilterComponent::createNode() { return new BoxFilterNode; }
+
+
+/**
+ * @brief SqrBoxFilterNode::SqrBoxFilterNode
+ */
+SqrBoxFilterNode::SqrBoxFilterNode():  NodeItem(nullptr, "SqrBoxFilter") {}
+
+void SqrBoxFilterNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::sqrBoxFilter(mat, out, 1, cv::Size(3, 3));
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+SqrBoxFilterComponent::SqrBoxFilterComponent() : ProcessorComponent(ProcessorsTB, "SqrBoxFilter") { }
+Node *SqrBoxFilterComponent::createNode() { return new SqrBoxFilterNode; }
+
+
+/**
+ * @brief BlurNode::BlurNode
+ */
+BlurNode::BlurNode():  NodeItem(nullptr, "Blur") {}
+
+void BlurNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::blur(mat, out, cv::Size(3, 3));
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+BlurComponent::BlurComponent() : ProcessorComponent(ProcessorsTB, "Blur") { }
+Node *BlurComponent::createNode() { return new BlurNode; }
+
+/**
+ * @brief ScharrNode::ScharrNode
+ */
+ScharrNode::ScharrNode():  NodeItem(nullptr, "Scharr") {}
+
+void ScharrNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::Scharr(mat, out, 1, 1, 1);
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+ScharrComponent::ScharrComponent() : ProcessorComponent(ProcessorsTB, "Scharr") { }
+Node *ScharrComponent::createNode() { return new ScharrNode; }

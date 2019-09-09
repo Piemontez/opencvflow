@@ -129,5 +129,58 @@ public:
     ocvflow::Node* createNode() override;
 };
 
+/**
+ * @brief The SqrBoxFilterNode class
+ */
+class SqrBoxFilterNode: public ocvflow::NodeItem {
+public:
+    SqrBoxFilterNode();
+    void proccess() override;
+};
+
+
+class SqrBoxFilterComponent: public ocvflow::ProcessorComponent
+{
+public:
+    SqrBoxFilterComponent();
+    ocvflow::Node* createNode() override;
+};
+
+
+/**
+ * @brief The BlurNode class
+ */
+class BlurNode: public ocvflow::NodeItem {
+public:
+    BlurNode();
+    void proccess() override;
+};
+
+
+class BlurComponent: public ocvflow::ProcessorComponent
+{
+public:
+    BlurComponent();
+    ocvflow::Node* createNode() override;
+};
+
+
+/**
+ * @brief The ScharrNode class
+ */
+class ScharrNode: public ocvflow::NodeItem {
+public:
+    ScharrNode();
+    void proccess() override;
+};
+
+
+class ScharrComponent: public ocvflow::ProcessorComponent
+{
+public:
+    ScharrComponent();
+    ocvflow::Node* createNode() override;
+};
+
 
 #endif // OPCVF_IMGPROC_H

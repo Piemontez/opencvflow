@@ -77,3 +77,53 @@ void LaplacianNode::proccess()
 
 LaplacianComponent::LaplacianComponent() : ProcessorComponent(ProcessorsTB, "Laplacian") { }
 Node *LaplacianComponent::createNode() { return new LaplacianNode; }
+
+/**
+ * @brief MedianBlurNode::MedianBlurNode
+ */
+MedianBlurNode::MedianBlurNode():  NodeItem(nullptr, "MedianBlur") {}
+
+void MedianBlurNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::medianBlur(mat, out, 3);
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+MedianBlurComponent::MedianBlurComponent() : ProcessorComponent(ProcessorsTB, "MedianBlur") { }
+Node *MedianBlurComponent::createNode() { return new MedianBlurNode; }
+
+/**
+ * @brief GaussianBlurNode::GaussianBlurNode
+ */
+GaussianBlurNode::GaussianBlurNode():  NodeItem(nullptr, "GaussianBlur") {}
+
+void GaussianBlurNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::GaussianBlur(mat, out, cv::Size(3, 3), 1);
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+GaussianBlurComponent::GaussianBlurComponent() : ProcessorComponent(ProcessorsTB, "GaussianBlur") { }
+Node *GaussianBlurComponent::createNode() { return new GaussianBlurNode; }

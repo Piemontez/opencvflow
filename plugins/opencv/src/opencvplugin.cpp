@@ -23,6 +23,8 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
     rs.push_back(new SobelComponent);
     rs.push_back(new CannyComponent);
     rs.push_back(new LaplacianComponent);
+    rs.push_back(new MedianBlurComponent);
+    rs.push_back(new GaussianBlurComponent);
 
     return rs;
 }

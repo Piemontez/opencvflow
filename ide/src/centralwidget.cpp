@@ -25,14 +25,15 @@ CentralWidget::CentralWidget(QWidget *parent):
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-300, -240, 600, 480);
+    scene->setSceneRect(-320, -240, 640, 480);
+
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
-    scale(qreal(0.8), qreal(0.8));
-    setMinimumSize(600, 480);
+
+    setMinimumSize(640, 480);
 
     setAcceptDrops(true);
 

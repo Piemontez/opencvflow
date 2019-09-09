@@ -34,15 +34,13 @@ void NodeMenuItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
     painter->setPen(QPen(Qt::darkGray, 0));
     painter->setBrush(QBrush(Qt::lightGray));
-
-    painter->drawRect(region.left(), region.top() - 25, region.width(), 24);
+    painter->drawRect(region.left(), region.top() - 40, region.width(), 40);
 
     QFont font = painter->font();
-    font.setPointSize(14);
+    font.setPointSize(22);
     painter->setFont(font);
 
+    painter->setPen(QPen(Qt::black, 0));
     painter->setBrush(Qt::NoBrush);
-
-    painter->drawText(region.left() +2, region.top() -6, nodeItem->title());
-
+    painter->drawText(region.left() + 6, region.top() -10, nodeItem->title());
 }

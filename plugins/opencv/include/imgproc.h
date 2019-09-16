@@ -31,8 +31,13 @@ public:
  * @brief The CannyNode class
  */
 class CannyNode: public ocvflow::NodeItem {
+    double threshold1{80};
+    double threshold2{170};
+    int aperturesize{3};
+    bool L2gradiente{0};
 public:
     CannyNode();
+    QWidget* createPropertiesWidget(QWidget* parent) override;
     void proccess() override;
 };
 

@@ -43,7 +43,7 @@ void CannyNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::Canny(mat, out, 80, 170);
+            cv::Canny(mat, out, threshold1, threshold1, aperturesize, L2gradiente);
             _sources.push_back(out);
         }
     }

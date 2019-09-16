@@ -187,6 +187,6 @@ void CentralWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     d_func()->moveViewPort = false;
 
-    QGraphicsView::mousePressEvent(event);
+    QGraphicsView::mouseReleaseEvent(event);
 }
 

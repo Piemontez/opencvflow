@@ -3,6 +3,7 @@
 #include "component.h"
 #include "plugin.h"
 
+#include <chrono>
 #include <dlfcn.h>
 
 #include <QApplication>
@@ -285,17 +286,21 @@ void MainWindow::run()
                     item->proccess();
                 } catch (cv::Exception& ex) {
                     item->setData(ErrorData, QString::fromStdString(ex.msg));
-                } catch (...) {
-                }
+                } catch (...) {}
 
                 item->release();
             }
             //Atualiza a tela
             if (float( std::clock () - last ) > 42) {
                 last = std::clock();
-                for (auto && item: items)
-                    item->update();
-
+                for (auto && item: items) {
+                    item->setData(LastUpdateCall, float(last));
+                    try {
+                        item->update();
+                    } catch (cv::Exception& ex) {
+                        item->setData(ErrorData, QString::fromStdString(ex.msg));
+                    } catch (...) {}
+                }
                 QThread::msleep(10 + items.size());
             }
             if (!d_func()->runing)

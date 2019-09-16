@@ -94,16 +94,27 @@ void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     acquire();
-    if (data(ocvflow::ErrorData).isValid()) {
+    if (data(ErrorData).isValid())
+    {
         painter->setPen(QPen(Qt::white, 4));
         painter->drawLine(region.left(), region.top(), region.right(), region.bottom());
         painter->drawLine(region.right(), region.top(), region.left(), region.bottom());
     } else {
-        cv::Mat out;
-        for (auto && mat: sources())
+        if (this->data(LastViewUpdated).isNull() || this->data(LastUpdateCall).isNull()
+                || this->data(LastViewUpdated).toFloat() != this->data(LastUpdateCall).toFloat())
         {
-            cv::resize(mat, out, cv::Size(region.width(), region.height()));
-            painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
+            this->setData(LastViewUpdated, this->data(LastUpdateCall));
+
+            cv::Mat out;
+            for (auto && mat: sources())
+            {
+                cv::resize(mat, out, cv::Size(region.width(), region.height()));
+                setData(ContentViewCache, cvMatToQImage(out));
+                painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
+
+            }
+        } else {
+            painter->drawImage(region.left(), region.top(), data(ContentViewCache).value<QImage>());
         }
     }
 

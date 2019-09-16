@@ -21,6 +21,12 @@ enum FlowData {
     ContentViewCache = 0x1000    //float
 };
 
+enum Properties {
+    IntProperties,
+    FloatProperties,
+    DoubleProperties
+};
+
 
 // Define the API version.
 #define OCVFLOW_PLUGIN_API_VERSION 1

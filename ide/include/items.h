@@ -1,6 +1,7 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
+#include "globals.h"
 #include "edge.h"
 #include "node.h"
 
@@ -33,6 +34,8 @@ public:
 
     void addEdge(EdgeItem *edge);
     virtual QString title();
+
+    virtual QMap<QString, ocvflow::Properties> properties();
     virtual QWidget* createPropertiesWidget(QWidget* parent);
 
     QRect contentRegion();

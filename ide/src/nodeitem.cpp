@@ -49,6 +49,13 @@ QString NodeItem::title()
     return d_func()->title;
 }
 
+QMap<QString, Properties> NodeItem::properties()
+{
+    QMap<QString, Properties> props;
+
+    return props;
+}
+
 QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 {
     return nullptr;

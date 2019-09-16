@@ -55,6 +55,7 @@ public:
 class LaplacianNode: public ocvflow::NodeItem {
 public:
     LaplacianNode();
+    virtual QMap<QString, ocvflow::Properties> properties();
     void proccess() override;
 };
 

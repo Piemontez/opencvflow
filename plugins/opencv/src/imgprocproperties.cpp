@@ -133,3 +133,13 @@ QWidget *CannyNode::createPropertiesWidget(QWidget *parent)
     return widget;
 }
 
+
+
+QMap<QString, ocvflow::Properties> LaplacianNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+
+    props.insert("KSize", ocvflow::IntProperties);
+
+    return props;
+}

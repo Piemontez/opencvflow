@@ -108,10 +108,13 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyle
             cv::Mat out;
             for (auto && mat: sources())
             {
-                cv::resize(mat, out, cv::Size(region.width(), region.height()));
-                setData(ContentViewCache, cvMatToQImage(out));
-                painter->drawImage(region.left(), region.top(), cvMatToQImage(out));
+                try {
+                    cv::resize(mat, out, cv::Size(region.width(), region.height()));
+                    auto image = cvMatToQImage(out);
 
+                    setData(ContentViewCache, image);
+                    painter->drawImage(region.left(), region.top(), image);
+                } catch (...) {}
             }
         } else {
             painter->drawImage(region.left(), region.top(), data(ContentViewCache).value<QImage>());

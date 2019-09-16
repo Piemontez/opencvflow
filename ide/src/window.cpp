@@ -247,15 +247,17 @@ void itemsAdd(QList< NodeItem* >& ordered, QGraphicsItem* item) {
         return;
 
     auto nodeItem = static_cast<NodeItem*>(item);
-    if (! ordered.contains(nodeItem)) {
-         ordered.append(nodeItem);
 
-         for (auto edge: nodeItem->edges()) {
+    if (!ordered.contains(nodeItem))
+        for (auto edge: nodeItem->edges()) {
             auto edgeItem = static_cast<EdgeItem*>(edge);
 
-            itemsAdd(ordered, static_cast<NodeItem*>(edgeItem->destNode()));
-         }
-    }
+            if (edgeItem->sourceNode() != nodeItem)
+                itemsAdd(ordered, edgeItem->sourceNode());
+        }
+
+    if (!ordered.contains(nodeItem))
+        ordered.append(nodeItem);
 }
 
 void MainWindow::run()
@@ -267,6 +269,7 @@ void MainWindow::run()
     d_func()->runner = QThread::create([this] {
         std::clock_t last = std::clock();
 
+        //Enfileira ordem de processamento.
         QList<NodeItem *> items;
         for (auto && item: this->centralWidget()->items()) {
             itemsAdd(items, item);
@@ -295,11 +298,7 @@ void MainWindow::run()
                 last = std::clock();
                 for (auto && item: items) {
                     item->setData(LastUpdateCall, float(last));
-                    try {
-                        item->update();
-                    } catch (cv::Exception& ex) {
-                        item->setData(ErrorData, QString::fromStdString(ex.msg));
-                    } catch (...) {}
+                    item->update();
                 }
                 QThread::msleep(10 + items.size());
             }

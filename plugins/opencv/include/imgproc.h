@@ -16,7 +16,11 @@ class SobelNode: public ocvflow::NodeItem {
     double delta{0};
 public:
     SobelNode();
-    QWidget* createPropertiesWidget(QWidget* parent) override;
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
@@ -37,7 +41,11 @@ class CannyNode: public ocvflow::NodeItem {
     bool L2gradiente{0};
 public:
     CannyNode();
-    QWidget* createPropertiesWidget(QWidget* parent) override;
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
@@ -53,9 +61,17 @@ public:
  * @brief The LaplacianNode class
  */
 class LaplacianNode: public ocvflow::NodeItem {
+    int ddepth{CV_8U};
+    int ksize{3};
+    double scale{1};
+    double delta{0};
 public:
     LaplacianNode();
-    virtual QMap<QString, ocvflow::Properties> properties();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
@@ -71,8 +87,14 @@ public:
  * @brief The MedianBlurNode class
  */
 class MedianBlurNode: public ocvflow::NodeItem {
+    int ksize{3};
 public:
     MedianBlurNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 

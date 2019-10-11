@@ -1,145 +1,151 @@
 #include "imgproc.h"
 
-#include <QWidget>
-#include <QLabel>
-#include <QGridLayout>
-#include <QSpacerItem>
-#include <QDoubleSpinBox>
-#include <QSpinBox>
-
-QWidget *SobelNode::createPropertiesWidget(QWidget *parent)
+/**
+ * @brief SobelNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> SobelNode::properties()
 {
-    auto widget = new QWidget(parent);
-    auto layout = new QGridLayout(widget);
-    layout->setHorizontalSpacing(4);
-    layout->setVerticalSpacing(0);
-    widget->setLayout(layout);
-
-    layout->addWidget(new QLabel("DDepth", widget), 0, 0, 1, 1);
-    /*auto spinBox = new QSpinBox();
-    spinBox->setValue(ddepth);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this] (int value) {
-        ddepth = value;
-    });
-    layout->addWidget(spinBox, 0, 1, 1, 1);*/
-
-    layout->addWidget(new QLabel("dx", widget), 1, 0, 1, 1);
-    auto spinBox = new QSpinBox();
-    spinBox->setMaximum(std::numeric_limits<int>::max());
-    spinBox->setValue(dx);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this] (int value) {
-        dx = value;
-    });
-    layout->addWidget(spinBox, 1, 1, 1, 1);
-
-    layout->addWidget(new QLabel("dy", widget), 2, 0, 1, 1);
-    spinBox = new QSpinBox();
-    spinBox->setMaximum(std::numeric_limits<int>::max());
-    spinBox->setValue(dy);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this] (int value) {
-        dy = value;
-    });
-    layout->addWidget(spinBox, 2, 1, 1, 1);
-
-    layout->addWidget(new QLabel("ksize", widget), 3, 0, 1, 1);
-    spinBox = new QSpinBox();
-    spinBox->setMaximum(std::numeric_limits<int>::max());
-    spinBox->setValue(ksize);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this, spinBox] (int value) {
-        if (ksize < value) {
-            ksize = value + 1;
-        } else if (ksize > value) {
-            ksize = value - 1;
-        }
-        if (ksize != value)
-            spinBox->setValue(ksize);
-    });
-    layout->addWidget(spinBox, 3, 1, 1, 1);
-
-    layout->addWidget(new QLabel("scale", widget), 4, 0, 1, 1);
-    auto dbSpinBox = new QDoubleSpinBox();
-    dbSpinBox->setMaximum(std::numeric_limits<double>::max());
-    dbSpinBox->setValue(scale);
-    dbSpinBox->connect(dbSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), dbSpinBox, [this] (double value) {
-        scale = value;
-    });
-    layout->addWidget(dbSpinBox, 4, 1, 1, 1);
-
-    layout->addWidget(new QLabel("delta", widget), 5, 0, 1, 1);
-    dbSpinBox = new QDoubleSpinBox();
-    dbSpinBox->setValue(delta);
-    dbSpinBox->connect(dbSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), dbSpinBox, [this] (double value) {
-        delta = value;
-    });
-    layout->addWidget(dbSpinBox, 5, 1, 1, 1);
-
-    layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding), 6, 0, 1, 1);
-
-
-    return widget;
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("DDepth", ocvflow::EmptyProperties);
+    props.insert("DX",     ocvflow::IntProperties);
+    props.insert("DY",     ocvflow::IntProperties);
+    props.insert("KSize",  ocvflow::IntProperties);
+    props.insert("Scale",  ocvflow::DoubleProperties);
+    props.insert("Delta",  ocvflow::DoubleProperties);
+    return props;
 }
 
-QWidget *CannyNode::createPropertiesWidget(QWidget *parent)
+ocvflow::PropertiesVariant SobelNode::property(const QString &property)
 {
-    auto widget = new QWidget(parent);
-    auto layout = new QGridLayout(widget);
-    layout->setHorizontalSpacing(4);
-    layout->setVerticalSpacing(0);
-    widget->setLayout(layout);
-
-    layout->addWidget(new QLabel("Threshold 1", widget), 0, 0, 1, 1);
-    auto dbSpinBox = new QDoubleSpinBox();
-    dbSpinBox->setMaximum(std::numeric_limits<int>::max());
-    dbSpinBox->setValue(threshold1);
-    dbSpinBox->connect(dbSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), dbSpinBox, [this] (double value) {
-        threshold1 = value;
-    });
-    layout->addWidget(dbSpinBox, 0, 1, 1, 1);
-
-    layout->addWidget(new QLabel("Threshold 2", widget), 1, 0, 1, 1);
-    dbSpinBox = new QDoubleSpinBox();
-    dbSpinBox->setMaximum(std::numeric_limits<int>::max());
-    dbSpinBox->setValue(threshold2);
-    dbSpinBox->connect(dbSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), dbSpinBox, [this] (double value) {
-        threshold2 = value;
-    });
-    layout->addWidget(dbSpinBox, 1, 1, 1, 1);
-
-    layout->addWidget(new QLabel("Aperture Size", widget), 2, 0, 1, 1);
-    auto spinBox = new QSpinBox();
-    spinBox->setMaximum(std::numeric_limits<int>::max());
-    spinBox->setValue(aperturesize);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this, spinBox] (int value) {
-        if (aperturesize < value) {
-            aperturesize = value + 1;
-        } else if (aperturesize > value) {
-            aperturesize = value - 1;
-        }
-        if (aperturesize != value)
-            spinBox->setValue(aperturesize);
-    });
-    layout->addWidget(spinBox, 2, 1, 1, 1);
-
-
-    layout->addWidget(new QLabel("L2 gradiente", widget), 3, 0, 1, 1);
-    /*auto spinBox = new QSpinBox();
-    spinBox->setValue(ddepth);
-    spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this] (int value) {
-        ddepth = value;
-    });
-    layout->addWidget(spinBox, 0, 1, 1, 1);*/
-
-    layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding), 6, 0, 1, 1);
-    return widget;
+    if (!property.compare("KSize")) return ksize;
+    if (!property.compare("DX"))    return dx;
+    if (!property.compare("DY"))    return dy;
+    if (!property.compare("Scale")) return scale;
+    if (!property.compare("Delta")) return delta;
+    return 0;
 }
 
+bool SobelNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("KSize")) {
+        if (ksize < value.i) {
+            ksize = value.i + 1;
+        } else if (ksize > value.i) {
+            ksize = value.i - 1;
+        }
+        return ksize == value.i;
+    }
+    else if (!property.compare("DX")) dx = value.d;
+    else if (!property.compare("DY")) dy = value.d;
+    else if (!property.compare("Scale")) scale = value.d;
+    else if (!property.compare("Delta")) delta = value.d;
 
+    return true;
+}
 
+/**
+ * @brief CannyNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> CannyNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("Threshold 1", ocvflow::DoubleProperties);
+    props.insert("Threshold 2",  ocvflow::DoubleProperties);
+    props.insert("Aperture Size",  ocvflow::IntProperties);
+    props.insert("L2 gradiente",  ocvflow::EmptyProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant CannyNode::property(const QString &property)
+{
+    if (!property.compare("Threshold 1")) return threshold1;
+    if (!property.compare("Threshold 2")) return threshold2;
+    if (!property.compare("Aperture Size")) return aperturesize;
+    return 0;
+}
+
+bool CannyNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("Threshold 1")) threshold1 = value.d;
+    else if (!property.compare("Threshold 2")) threshold2 = value.d;
+    else if (!property.compare("Aperture Size")) {
+        if (aperturesize < value.i) {
+            aperturesize = value.i + 1;
+        } else if (aperturesize > value.i) {
+            aperturesize = value.i - 1;
+        }
+        return aperturesize == value.i;
+    }
+
+    return true;
+}
+/**
+ * @brief LaplacianNode::properties
+ * @return
+ */
 QMap<QString, ocvflow::Properties> LaplacianNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
-
-    props.insert("KSize", ocvflow::IntProperties);
-
+    props.insert("DDepth", ocvflow::EmptyProperties);
+    props.insert("KSize",  ocvflow::IntProperties);
+    props.insert("Scale",  ocvflow::DoubleProperties);
+    props.insert("Delta",  ocvflow::DoubleProperties);
     return props;
+}
+
+ocvflow::PropertiesVariant LaplacianNode::property(const QString &property)
+{
+    if (!property.compare("KSize")) return ksize;
+    if (!property.compare("Scale")) return scale;
+    if (!property.compare("Delta")) return delta;
+    return 0;
+}
+
+bool LaplacianNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("KSize")) {
+        if (ksize < value.i) {
+            ksize = value.i + 1;
+        } else if (ksize > value.i) {
+            ksize = value.i - 1;
+        }
+        return ksize == value.i;
+    }
+    else if (!property.compare("Scale")) scale = value.d;
+    else if (!property.compare("Delta")) delta = value.d;
+
+    return true;
+}
+
+/**
+ * @brief MedianBlurNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> MedianBlurNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("KSize",  ocvflow::IntProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant MedianBlurNode::property(const QString &property)
+{
+    if (!property.compare("KSize")) return ksize;
+    return 0;
+}
+
+bool MedianBlurNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("KSize")) {
+        /*if (ksize < value.i) {
+            ksize = value.i + 1;
+        } else if (ksize > value.i) {
+            ksize = value.i - 1;
+        }*/
+        return ksize == value.i;
+    }
+
+    return true;
 }

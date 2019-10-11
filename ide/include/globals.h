@@ -21,7 +21,16 @@ enum FlowData {
     ContentViewCache = 0x1000    //float
 };
 
+union PropertiesVariant {
+    int i;
+    double d;
+    PropertiesVariant(int i) {this->i = i;}
+    PropertiesVariant(double d) {this->d = d;}
+    ~PropertiesVariant() {};
+};
+
 enum Properties {
+    EmptyProperties,
     IntProperties,
     FloatProperties,
     DoubleProperties

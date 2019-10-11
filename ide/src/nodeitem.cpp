@@ -10,6 +10,10 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneContextMenuEvent>
 #include <QWidget>
+#include <QGridLayout>
+#include <QLabel>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 
 using namespace ocvflow;
 
@@ -56,9 +60,75 @@ QMap<QString, Properties> NodeItem::properties()
     return props;
 }
 
+PropertiesVariant NodeItem::property(const QString &property)
+{
+    return {0};
+}
+
+bool NodeItem::setProperty(const QString& property, const PropertiesVariant& value)
+{
+    return true;
+}
+
 QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 {
-    return nullptr;
+    QMap<QString, Properties> props = this->properties();
+
+    if (props.size() == 0)
+        return nullptr;
+
+
+    auto widget = new QWidget(parent);
+    auto layout = new QGridLayout(widget);
+    layout->setHorizontalSpacing(4);
+    layout->setVerticalSpacing(0);
+    widget->setLayout(layout);
+
+    int pos = 0;
+    for(auto && entry: props.toStdMap()) {
+        switch (entry.second) {
+        case ocvflow::EmptyProperties:
+        {
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            break;
+        }
+        case ocvflow::IntProperties:
+        {
+            auto spinBox = new QSpinBox();
+            spinBox->setMaximum(std::numeric_limits<int>::max());
+            spinBox->setValue(this->property(entry.first).i);
+            spinBox->connect(spinBox, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBox, [this, spinBox, entry] (int value) {
+                if (!this->setProperty(entry.first, value)) {
+                    spinBox->setValue(this->property(entry.first).i);
+                }
+            });
+
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            layout->addWidget(spinBox, pos, 1, 1, 1);
+            break;
+        }
+        case ocvflow::FloatProperties:
+        case ocvflow::DoubleProperties:
+        {
+            auto doubleSpinBox = new QDoubleSpinBox();
+            doubleSpinBox->setMaximum(std::numeric_limits<double>::max());
+            doubleSpinBox->setValue(this->property(entry.first).d);
+            doubleSpinBox->connect(doubleSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, entry] (double value) {
+                if (!this->setProperty(entry.first, value)) {
+                    doubleSpinBox->setValue(this->property(entry.first).i);
+                }
+            });
+
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            layout->addWidget(doubleSpinBox, pos, 1, 1, 1);
+        }
+        }
+        pos++;
+    }
+
+
+    layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding), 6, 0, 1, 1);
+    return widget;
 }
 
 QRect NodeItem::contentRegion()

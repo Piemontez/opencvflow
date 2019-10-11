@@ -202,16 +202,18 @@ void MainWindow::loadPlugins()
             try{
                 //Carrega a biblioteca
                 void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
-                //Procura pela função loadPlugin
-                ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
+                if (handle) {
+                    //Procura pela função loadPlugin
+                    ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
 
-                //Verifica se foi encontrada a funcao
-                if (loadPlugin) {
-                    //carrega a classe plugin
-                    ocvflow::PluginInterface* plugin = loadPlugin();
-                    if (plugin) {
-                        auto compsLoaded = plugin->components();
-                        comps.insert(comps.end(), compsLoaded.begin(), compsLoaded.end());
+                    //Verifica se foi encontrada a funcao
+                    if (loadPlugin) {
+                        //carrega a classe plugin
+                        ocvflow::PluginInterface* plugin = loadPlugin();
+                        if (plugin) {
+                            auto compsLoaded = plugin->components();
+                            comps.insert(comps.end(), compsLoaded.begin(), compsLoaded.end());
+                        }
                     }
                 }
             } catch (...) {}

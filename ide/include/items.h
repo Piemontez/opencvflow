@@ -36,6 +36,9 @@ public:
     virtual QString title();
 
     virtual QMap<QString, ocvflow::Properties> properties();
+    virtual PropertiesVariant property(const QString &property);
+    virtual bool /*acepted*/ setProperty(const QString &property, const PropertiesVariant &value);
+
     virtual QWidget* createPropertiesWidget(QWidget* parent);
 
     QRect contentRegion();

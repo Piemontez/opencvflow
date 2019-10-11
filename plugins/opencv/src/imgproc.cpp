@@ -68,11 +68,10 @@ void LaplacianNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::Laplacian(mat, out, CV_8U);
+            cv::Laplacian(mat, out, ddepth, ksize, scale, delta);
             _sources.push_back(out);
         }
     }
-
 }
 
 LaplacianComponent::LaplacianComponent() : ProcessorComponent(ProcessorsTB, "Laplacian") { }
@@ -93,7 +92,7 @@ void MedianBlurNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::medianBlur(mat, out, 3);
+            cv::medianBlur(mat, out, ksize);
             _sources.push_back(out);
         }
     }

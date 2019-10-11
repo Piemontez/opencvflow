@@ -33,7 +33,10 @@ enum Properties {
     EmptyProperties,
     IntProperties,
     FloatProperties,
-    DoubleProperties
+    DoubleProperties,
+    SizeProperties,
+    IntTableProperties,
+    DoubleTableProperties
 };
 
 

@@ -110,8 +110,17 @@ public:
  * @brief The GaussianBlurNode class
  */
 class GaussianBlurNode: public ocvflow::NodeItem {
+    cv::Size size{3,3};
+    double sigmaX{1};
+    double sigmaY{0};
+
 public:
     GaussianBlurNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 

@@ -1,4 +1,4 @@
-#include "imgproc.h"
+﻿#include "imgproc.h"
 
 /**
  * @brief SobelNode::properties
@@ -138,14 +138,38 @@ ocvflow::PropertiesVariant MedianBlurNode::property(const QString &property)
 
 bool MedianBlurNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
 {
-    if (!property.compare("KSize")) {
-        /*if (ksize < value.i) {
-            ksize = value.i + 1;
-        } else if (ksize > value.i) {
-            ksize = value.i - 1;
-        }*/
+    if (!property.compare("KSize"))
         return ksize == value.i;
-    }
+
+    return true;
+}
+
+/**
+ * @brief GaussianBlurNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> GaussianBlurNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("Size",   ocvflow::SizeProperties);
+    props.insert("SigmaX", ocvflow::DoubleProperties);
+    props.insert("SigmaY", ocvflow::DoubleProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant GaussianBlurNode::property(const QString &property)
+{
+    if (!property.compare("SigmaX")) return sigmaX;
+    if (!property.compare("SigmaY")) return sigmaY;
+    return 0;
+}
+
+bool GaussianBlurNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("SigmaX"))
+        return sigmaX == value.d;
+    if (!property.compare("SigmaY"))
+        return sigmaX == value.d;
 
     return true;
 }

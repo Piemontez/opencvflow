@@ -117,7 +117,7 @@ void GaussianBlurNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::GaussianBlur(mat, out, cv::Size(3, 3), 1);
+            cv::GaussianBlur(mat, out, size, sigmaX, sigmaY);
             _sources.push_back(out);
         }
     }

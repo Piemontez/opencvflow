@@ -87,11 +87,6 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
     int pos = 0;
     for(auto && entry: props.toStdMap()) {
         switch (entry.second) {
-        case ocvflow::EmptyProperties:
-        {
-            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
-            break;
-        }
         case ocvflow::IntProperties:
         {
             auto spinBox = new QSpinBox();
@@ -121,6 +116,14 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(doubleSpinBox, pos, 1, 1, 1);
+        }
+        case ocvflow::EmptyProperties:
+        case ocvflow::IntTableProperties:
+        case ocvflow::DoubleTableProperties:
+        default:
+        {
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            break;
         }
         }
         pos++;

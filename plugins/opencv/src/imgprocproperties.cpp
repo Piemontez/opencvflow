@@ -173,3 +173,148 @@ bool GaussianBlurNode::setProperty(const QString& property, const ocvflow::Prope
 
     return true;
 }
+
+/**
+ * @brief BilateralFilterNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> BilateralFilterNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("D",   ocvflow::IntProperties);
+    props.insert("SigmaColor", ocvflow::DoubleProperties);
+    props.insert("SigmaSpace", ocvflow::DoubleProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant BilateralFilterNode::property(const QString &property)
+{
+    if (!property.compare("D")) return d;
+    if (!property.compare("SigmaColor")) return sigmaColor;
+    if (!property.compare("SigmaSpace")) return sigmaSpace;
+    return 0;
+}
+
+bool BilateralFilterNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("D"))
+        return d == value.i;
+    if (!property.compare("SigmaColor"))
+        return sigmaColor == value.d;
+    if (!property.compare("SigmaSpace"))
+        return sigmaSpace == value.d;
+
+    return true;
+}
+
+/**
+ * @brief BoxFilterNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> BoxFilterNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("DDepth", ocvflow::IntProperties);
+    props.insert("Ksize",  ocvflow::SizeProperties);
+    props.insert("Anchor", ocvflow::SizeProperties);
+    props.insert("Normalize", ocvflow::BooleanProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant BoxFilterNode::property(const QString &property)
+{
+    if (!property.compare("DDepth")) return ddepth;
+    return 0;
+}
+
+bool BoxFilterNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("DDepth"))
+        return ddepth == value.i;
+
+    return true;
+}
+
+/**
+ * @brief SqrBoxFilterNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> SqrBoxFilterNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("DDepth", ocvflow::IntProperties);
+    props.insert("Ksize",  ocvflow::SizeProperties);
+    props.insert("Anchor", ocvflow::SizeProperties);
+    props.insert("Normalize", ocvflow::BooleanProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant SqrBoxFilterNode::property(const QString &property)
+{
+    if (!property.compare("DDepth")) return ddepth;
+    return 0;
+}
+
+bool SqrBoxFilterNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("DDepth"))
+        return ddepth == value.i;
+
+    return true;
+}
+
+/**
+ * @brief BlurNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> BlurNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("Ksize",  ocvflow::SizeProperties);
+    props.insert("Anchor", ocvflow::SizeProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant BlurNode::property(const QString &property)
+{
+    return 0;
+}
+
+bool BlurNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    return true;
+}
+
+/**
+ * @brief ScharrNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> ScharrNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("DDepth", ocvflow::EmptyProperties);
+    props.insert("DX",     ocvflow::IntProperties);
+    props.insert("DY",     ocvflow::IntProperties);
+    props.insert("Scale",  ocvflow::DoubleProperties);
+    props.insert("Delta",  ocvflow::DoubleProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant ScharrNode::property(const QString &property)
+{
+    if (!property.compare("DX"))    return dx;
+    if (!property.compare("DY"))    return dy;
+    if (!property.compare("Scale")) return scale;
+    if (!property.compare("Delta")) return delta;
+    return 0;
+}
+
+bool ScharrNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
+{
+    if (!property.compare("DX")) dx = value.d;
+    else if (!property.compare("DY")) dy = value.d;
+    else if (!property.compare("Scale")) scale = value.d;
+    else if (!property.compare("Delta")) delta = value.d;
+
+    return true;
+}

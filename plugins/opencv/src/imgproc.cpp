@@ -142,7 +142,7 @@ void BilateralFilterNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::bilateralFilter(mat, out, 1, 1, 1);
+            cv::bilateralFilter(mat, out, d, sigmaColor, sigmaSpace);
             _sources.push_back(out);
         }
     }
@@ -167,7 +167,7 @@ void BoxFilterNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::boxFilter(mat, out, 1, cv::Size(3, 3));
+            cv::boxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
         }
     }
@@ -193,7 +193,7 @@ void SqrBoxFilterNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::sqrBoxFilter(mat, out, 1, cv::Size(3, 3));
+            cv::sqrBoxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
         }
     }
@@ -219,7 +219,7 @@ void BlurNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::blur(mat, out, cv::Size(3, 3));
+            cv::blur(mat, out, ksize, anchor);
             _sources.push_back(out);
         }
     }
@@ -244,7 +244,7 @@ void ScharrNode::proccess()
     {
         for (auto && mat: edge->sourceNode()->sources())
         {
-            cv::Scharr(mat, out, 1, 1, 0);
+            cv::Scharr(mat, out, ddepth, dx, dy, scale, delta);
             _sources.push_back(out);
         }
     }

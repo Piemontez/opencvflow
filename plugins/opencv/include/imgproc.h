@@ -24,8 +24,7 @@ public:
     void proccess() override;
 };
 
-class SobelComponent: public ocvflow::ProcessorComponent
-{
+class SobelComponent: public ocvflow::ProcessorComponent {
 public:
     SobelComponent();
     ocvflow::Node* createNode() override;
@@ -50,8 +49,7 @@ public:
 };
 
 
-class CannyComponent: public ocvflow::ProcessorComponent
-{
+class CannyComponent: public ocvflow::ProcessorComponent {
 public:
     CannyComponent();
     ocvflow::Node* createNode() override;
@@ -76,8 +74,7 @@ public:
 };
 
 
-class LaplacianComponent: public ocvflow::ProcessorComponent
-{
+class LaplacianComponent: public ocvflow::ProcessorComponent {
 public:
     LaplacianComponent();
     ocvflow::Node* createNode() override;
@@ -99,8 +96,7 @@ public:
 };
 
 
-class MedianBlurComponent: public ocvflow::ProcessorComponent
-{
+class MedianBlurComponent: public ocvflow::ProcessorComponent {
 public:
     MedianBlurComponent();
     ocvflow::Node* createNode() override;
@@ -125,8 +121,7 @@ public:
 };
 
 
-class GaussianBlurComponent: public ocvflow::ProcessorComponent
-{
+class GaussianBlurComponent: public ocvflow::ProcessorComponent {
 public:
     GaussianBlurComponent();
     ocvflow::Node* createNode() override;
@@ -136,14 +131,22 @@ public:
  * @brief The BilateralFilterNode class
  */
 class BilateralFilterNode: public ocvflow::NodeItem {
+    int d{1};
+    double sigmaColor{1};
+    double sigmaSpace{1};
+
 public:
     BilateralFilterNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
 
-class BilateralFilterComponent: public ocvflow::ProcessorComponent
-{
+class BilateralFilterComponent: public ocvflow::ProcessorComponent {
 public:
     BilateralFilterComponent();
     ocvflow::Node* createNode() override;
@@ -153,14 +156,21 @@ public:
  * @brief The BoxFilterNode class
  */
 class BoxFilterNode: public ocvflow::NodeItem {
+    int ddepth{-1};
+    cv::Size ksize{3,3};
+    cv::Size anchor{-1,-1};
+    bool normalize{true};
 public:
     BoxFilterNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
-
-class BoxFilterComponent: public ocvflow::ProcessorComponent
-{
+class BoxFilterComponent: public ocvflow::ProcessorComponent {
 public:
     BoxFilterComponent();
     ocvflow::Node* createNode() override;
@@ -170,14 +180,22 @@ public:
  * @brief The SqrBoxFilterNode class
  */
 class SqrBoxFilterNode: public ocvflow::NodeItem {
+    int ddepth{1};
+    cv::Size ksize{3,3};
+    cv::Size anchor{-1,-1};
+    bool normalize{true};
 public:
     SqrBoxFilterNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
 
-class SqrBoxFilterComponent: public ocvflow::ProcessorComponent
-{
+class SqrBoxFilterComponent: public ocvflow::ProcessorComponent {
 public:
     SqrBoxFilterComponent();
     ocvflow::Node* createNode() override;
@@ -188,14 +206,20 @@ public:
  * @brief The BlurNode class
  */
 class BlurNode: public ocvflow::NodeItem {
+    cv::Size ksize{3,3};
+    cv::Size anchor{-1,-1};
 public:
     BlurNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
 
-class BlurComponent: public ocvflow::ProcessorComponent
-{
+class BlurComponent: public ocvflow::ProcessorComponent {
 public:
     BlurComponent();
     ocvflow::Node* createNode() override;
@@ -206,14 +230,23 @@ public:
  * @brief The ScharrNode class
  */
 class ScharrNode: public ocvflow::NodeItem {
+    int ddepth{-1};
+    int dx{1};
+    int dy{0};
+    double scale{1};
+    double delta{0};
 public:
     ScharrNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void proccess() override;
 };
 
 
-class ScharrComponent: public ocvflow::ProcessorComponent
-{
+class ScharrComponent: public ocvflow::ProcessorComponent {
 public:
     ScharrComponent();
     ocvflow::Node* createNode() override;

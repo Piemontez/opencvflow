@@ -118,6 +118,7 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             layout->addWidget(doubleSpinBox, pos, 1, 1, 1);
         }
         case ocvflow::EmptyProperties:
+        case ocvflow::BooleanProperties:
         case ocvflow::IntTableProperties:
         case ocvflow::DoubleTableProperties:
         default:

@@ -31,6 +31,7 @@ union PropertiesVariant {
 
 enum Properties {
     EmptyProperties,
+    BooleanProperties,
     IntProperties,
     FloatProperties,
     DoubleProperties,

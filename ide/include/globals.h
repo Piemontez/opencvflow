@@ -1,6 +1,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include <tuple>
+
 namespace ocvflow {
 
 class PluginInterface;
@@ -15,10 +17,18 @@ enum ToolBarNames {
 };
 
 union PropertiesVariant {
+    bool b;
     int i;
+    float f;
     double d;
+    std::tuple<int, int> sizeI;
+
+    PropertiesVariant(bool b) {this->b = b;}
     PropertiesVariant(int i) {this->i = i;}
+    PropertiesVariant(float f) {this->f = f;}
     PropertiesVariant(double d) {this->d = d;}
+    PropertiesVariant(int w, int h) {this->sizeI = std::make_tuple(w,h);}
+
     ~PropertiesVariant() {};
 };
 
@@ -28,7 +38,7 @@ enum Properties {
     IntProperties,
     FloatProperties,
     DoubleProperties,
-    SizeProperties,
+    SizeIntProperties,
     IntTableProperties,
     DoubleTableProperties
 };

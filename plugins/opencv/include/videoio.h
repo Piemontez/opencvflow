@@ -16,6 +16,11 @@ class VideoCaptureNode: public ocvflow::NodeItem {
     int index{0};
 public:
     VideoCaptureNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
     void start() override;
     void proccess() override;
     void stop() override;

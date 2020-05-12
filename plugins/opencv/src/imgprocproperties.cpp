@@ -151,7 +151,7 @@ bool MedianBlurNode::setProperty(const QString& property, const ocvflow::Propert
 QMap<QString, ocvflow::Properties> GaussianBlurNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
-    props.insert("Size",   ocvflow::SizeProperties);
+    props.insert("Size",   ocvflow::SizeIntProperties);
     props.insert("SigmaX", ocvflow::DoubleProperties);
     props.insert("SigmaY", ocvflow::DoubleProperties);
     return props;
@@ -215,8 +215,8 @@ QMap<QString, ocvflow::Properties> BoxFilterNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
     props.insert("DDepth", ocvflow::IntProperties);
-    props.insert("Ksize",  ocvflow::SizeProperties);
-    props.insert("Anchor", ocvflow::SizeProperties);
+    props.insert("Ksize",  ocvflow::SizeIntProperties);
+    props.insert("Anchor", ocvflow::SizeIntProperties);
     props.insert("Normalize", ocvflow::BooleanProperties);
     return props;
 }
@@ -243,8 +243,8 @@ QMap<QString, ocvflow::Properties> SqrBoxFilterNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
     props.insert("DDepth", ocvflow::IntProperties);
-    props.insert("Ksize",  ocvflow::SizeProperties);
-    props.insert("Anchor", ocvflow::SizeProperties);
+    props.insert("Ksize",  ocvflow::SizeIntProperties);
+    props.insert("Anchor", ocvflow::SizeIntProperties);
     props.insert("Normalize", ocvflow::BooleanProperties);
     return props;
 }
@@ -270,18 +270,23 @@ bool SqrBoxFilterNode::setProperty(const QString& property, const ocvflow::Prope
 QMap<QString, ocvflow::Properties> BlurNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
-    props.insert("Ksize",  ocvflow::SizeProperties);
-    props.insert("Anchor", ocvflow::SizeProperties);
+    props.insert("Ksize",  ocvflow::SizeIntProperties);
+    props.insert("Anchor", ocvflow::SizeIntProperties);
     return props;
 }
 
 ocvflow::PropertiesVariant BlurNode::property(const QString &property)
 {
+    if (!property.compare("Ksize")) return ocvflow::PropertiesVariant(ksize.width, ksize.height);
+    if (!property.compare("Anchor")) return ocvflow::PropertiesVariant(anchor.width, anchor.height);
     return 0;
 }
 
 bool BlurNode::setProperty(const QString& property, const ocvflow::PropertiesVariant& value)
 {
+    if (!property.compare("Ksize")) std::tie(ksize.width, ksize.height) = value.sizeI;
+    else if (!property.compare("Anchor"))  std::tie(anchor.width, anchor.height) = value.sizeI;
+
     return true;
 }
 

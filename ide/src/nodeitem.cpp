@@ -125,13 +125,46 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             doubleSpinBox->setMaximum(std::numeric_limits<double>::max());
             doubleSpinBox->setValue(this->property(entry.first).d);
             doubleSpinBox->connect(doubleSpinBox, static_cast< void (QDoubleSpinBox::*) (double) >(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, entry] (double value) {
-                if (!this->setProperty(entry.first, value)) {
-                    doubleSpinBox->setValue(this->property(entry.first).i);
+                switch (entry.second) {
+                case ocvflow::FloatProperties:
+                    if (!this->setProperty(entry.first, (float)value)) {
+                        doubleSpinBox->setValue(this->property(entry.first).i);
+                    }
+                case ocvflow::DoubleProperties:
+                default:
+                    if (!this->setProperty(entry.first, value)) {
+                        doubleSpinBox->setValue(this->property(entry.first).i);
+                    }
                 }
             });
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(doubleSpinBox, pos, 1, 1, 1);
+        }
+        case ocvflow::SizeIntProperties:
+        {
+            auto spinBoxl = new QSpinBox();
+            spinBoxl->setMaximum(std::numeric_limits<int>::max());
+            spinBoxl->setValue(this->property(entry.first).i);
+
+            auto spinBoxr = new QSpinBox();
+            spinBoxr->setMaximum(std::numeric_limits<int>::max());
+            spinBoxr->setValue(this->property(entry.first).i);
+
+            auto func =[this, spinBoxl, spinBoxr, entry] (int /*value*/) {
+                if (!this->setProperty(entry.first, ocvflow::PropertiesVariant(spinBoxl->value(), spinBoxr->value()))) {
+                    spinBoxl->setValue(std::get<0>(this->property(entry.first).sizeI));
+                    spinBoxr->setValue(std::get<1>(this->property(entry.first).sizeI));
+                }
+            };
+
+            spinBoxl->connect(spinBoxl, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBoxl, func);
+            spinBoxr->connect(spinBoxr, static_cast< void (QSpinBox::*) (int) >(&QSpinBox::valueChanged), spinBoxr, func);
+
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            layout->addWidget(spinBoxl, pos, 1, 1, 1);
+            layout->addWidget(spinBoxr, pos, 2, 1, 1);
+            break;
         }
         case ocvflow::EmptyProperties:
         case ocvflow::BooleanProperties:
@@ -145,7 +178,6 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         }
         pos++;
     }
-
 
     layout->addItem(new QSpacerItem(40, 20, QSizePolicy::Preferred, QSizePolicy::MinimumExpanding), 6, 0, 1, 1);
     return widget;
@@ -220,8 +252,6 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 */
 void NodeItem::mousePressEvent(QMouseEvent *event)
 {
-    std::cout << "mousePressEvent" << title().toStdString() << std::endl;
-
     d_func()->faceEdgeItem = new FakeEdgeItem(graphicsProxyWidget()->mapToScene(event->pos()));
     MainWindow::instance()->centralWidget()->scene()->addItem(d_func()->faceEdgeItem);
 
@@ -239,8 +269,6 @@ void NodeItem::mousePressEvent(QMouseEvent *event)
 
 void NodeItem::mouseMoveEvent(QMouseEvent *event)
 {
-    std::cout << "mouseMoveEvent" << title().toStdString() << std::endl;
-
     if (d_func()->faceEdgeItem) {
         d_func()->faceEdgeItem->setDest(graphicsProxyWidget()->mapToScene(event->pos()));
         d_func()->faceEdgeItem->update();
@@ -251,9 +279,6 @@ void NodeItem::mouseMoveEvent(QMouseEvent *event)
 
 void NodeItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    std::cout << "mouseReleaseEvent" << title().toStdString() << std::endl;
-
-    //graphicsProxyWidget()->s
     if (d_func()->faceEdgeItem) {
         delete d_func()->faceEdgeItem;
         d_func()->faceEdgeItem = 0;
@@ -268,7 +293,7 @@ void NodeItem::mouseReleaseEvent(QMouseEvent *event)
         if (pProxy) {
             auto nodeItem = static_cast<NodeItem*>(pProxy->widget());
 
-            if (nodeItem) {
+            if (nodeItem && nodeItem != this) {
                 MainWindow::instance()->connectNode(this, nodeItem);
             }
         }

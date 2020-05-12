@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+#include <QGraphicsProxyWidget>
 #include <QMimeData>
 #include <QWidget>
 #include <QKeyEvent>
@@ -144,9 +145,8 @@ void CentralWidget::dropEvent(QDropEvent *event)
             auto nodeitem = static_cast< NodeItem* >(component->createNode());
             if (nodeitem) {
                 //coleta a posição ao soltar o mouse
-
-                nodeitem->setPos(MainWindow::instance()->centralWidget()->mapToScene(event->pos()));
-                scene()->addItem(nodeitem);
+                scene()->addWidget(nodeitem)
+                    ->setPos(MainWindow::instance()->centralWidget()->mapToScene(event->pos()));
             }
         }
         event->setDropAction(Qt::MoveAction);

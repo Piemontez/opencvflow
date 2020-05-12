@@ -1,24 +1,14 @@
 #ifndef NODEMENUITEM_H
 #define NODEMENUITEM_H
 
-#include <QGraphicsItem>
+#include <QToolBar>
 
 namespace ocvflow {
 
-class NodeItem;
-
-class NodeMenuItem : public QGraphicsItem
+class NodeMenuItem : public QToolBar
 {
-    NodeItem* nodeItem;
 public:
-    explicit NodeMenuItem(NodeItem*);
-
-    enum { Type = UserType + 4 };
-    int type() const override { return Type; }
-
-    QRectF boundingRect() const override;
-    //QPainterPath shape() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    explicit NodeMenuItem(QString title);
 };
 
 }

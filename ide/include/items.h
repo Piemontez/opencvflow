@@ -5,13 +5,12 @@
 #include "edge.h"
 #include "node.h"
 
+#include <QWidget>
 #include <QGraphicsItemGroup>
 #include <QList>
 #include <QGraphicsItem>
 
-QT_BEGIN_NAMESPACE
-class QGraphicsSceneMouseEvent;
-QT_END_NAMESPACE
+class QMouseEvent;
 class QWidget;
 
 namespace ocvflow {
@@ -20,7 +19,7 @@ namespace ocvflow {
  * @brief The NodeItem;
  */
 class NodeItemPrivate;
-class NodeItem : public Node, public QGraphicsItemGroup
+class NodeItem : public Node, public QWidget
 {
     //Q_OBJECT
 
@@ -29,8 +28,8 @@ class NodeItem : public Node, public QGraphicsItemGroup
 public:
     explicit NodeItem(CentralWidget *centralWidget, QString title = "");
 
-    enum { Type = UserType + 1 };
-    int type() const override { return Type; }
+    void setError(const QString &error);
+    void setLastUpdateCall(const float &lastUpdateCall);
 
     void addEdge(EdgeItem *edge);
     virtual QString title();
@@ -41,23 +40,22 @@ public:
 
     virtual QWidget* createPropertiesWidget(QWidget* parent);
 
-    QRect contentRegion();
-    virtual void contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paintEvent(QPaintEvent *event) override;
 
-    QRectF boundingRect() const override;
-    QPainterPath shape() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-//    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    virtual void contentPaint(const QRect &region, QPainter *painter);
+
+////    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+    //QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
-//    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-//    //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-//    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+////    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+////    //virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+////    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 };
 
 /**

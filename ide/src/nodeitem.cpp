@@ -2,13 +2,14 @@
 #include "edge.h"
 #include "items.h"
 #include "nodemenuitem.h"
-#include "nodelinkitem.h"
 #include "window.h"
 #include "utils.h"
 
 #include <QPainter>
+#include <QGraphicsProxyWidget>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneContextMenuEvent>
+#include <QMouseEvent>
 #include <QWidget>
 #include <QGridLayout>
 #include <QLabel>
@@ -18,34 +19,49 @@
 using namespace ocvflow;
 
 class ocvflow::NodeItemPrivate {
-    CentralWidget *centralWidget;
-    QRect contentSize;
+    FakeEdgeItem* faceEdgeItem{0}; //Todo Mover para mywindows
     QString title;
+    QString error;
+    QImage contentViewCache;
+    float lastUpdateCall;
+    float lastViewUpdated;
 
     friend class NodeItem;
 };
 
-NodeItem::NodeItem(CentralWidget *centralWidget, QString title)
+NodeItem::NodeItem(CentralWidget *centralWidget/*remover*/, QString title)
     : d_ptr(new NodeItemPrivate)
 {
-    d_func()->centralWidget = centralWidget;
-    d_func()->contentSize = QRect(0, 0, 480, 200);
+    d_func()->lastViewUpdated = 0;
 
-    setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
-    setCacheMode(DeviceCoordinateCache);
-    setZValue(-1);
+    this->setMinimumSize(240, 100);
+    this->setFixedSize(480, 200);
 
-    addToGroup(new NodeMenuItem(this));
+    auto dockLayout = new QVBoxLayout(); //or any other layout type you want
+    dockLayout->setMenuBar(new NodeMenuItem(title)); // <-- the interesting part
 
+    this->setLayout(dockLayout);
+
+/*
     addToGroup(new NodeLinkItem(this));
-
-    setHandlesChildEvents(false);
-    setAcceptHoverEvents(true);
+    */
+    //setAttribute(Qt::WA_Hover);
+    installEventFilter(this);
+    setMouseTracking(true);
 
     d_func()->title = title.isEmpty()
             ? "Empty Node"
             : title;
+}
+
+void NodeItem::setError(const QString &error)
+{
+    d_func()->error = error;
+}
+
+void NodeItem::setLastUpdateCall(const float &lastUpdateCall)
+{
+    d_func()->lastUpdateCall = lastUpdateCall;
 }
 
 QString NodeItem::title()
@@ -135,11 +151,6 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
     return widget;
 }
 
-QRect NodeItem::contentRegion()
-{
-    return d_func()->contentSize;
-}
-
 void NodeItem::addEdge(EdgeItem *edge)
 {
     NodeItem::addEdge(edge);
@@ -147,44 +158,31 @@ void NodeItem::addEdge(EdgeItem *edge)
     edge->adjust();
 }
 
-QRectF NodeItem::boundingRect() const
+
+void NodeItem::paintEvent(QPaintEvent *event)
 {
-    return QRectF(-20, -25, d_func()->contentSize.width() + 40, d_func()->contentSize.height() + 25);
+    QPainter painter;
+    painter.begin(this);
+
+    contentPaint(event->rect(), &painter);
+    //contentPaint(d_func()->contentSize, &painter);
+
+    painter.end();
 }
 
-QPainterPath NodeItem::shape() const
-{
-    QPainterPath path;
-    path.addRect(d_func()->contentSize);
-    return path;
-}
-
-void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *wid)
-{
-    painter->setBrush(QBrush(Qt::darkGray, Qt::SolidPattern));
-    painter->setPen(Qt::NoBrush);
-    painter->drawRect(d_func()->contentSize);
-
-    contentPaint(d_func()->contentSize, painter, option, wid);
-
-    painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(Qt::lightGray, 0));
-    painter->drawRect(d_func()->contentSize);
-}
-
-void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void NodeItem::contentPaint(const QRect &region, QPainter *painter)
 {
     acquire();
-    if (data(ErrorData).isValid())
+    if (!d_func()->error.isEmpty())
     {
         painter->setPen(QPen(Qt::white, 4));
         painter->drawLine(region.left(), region.top(), region.right(), region.bottom());
         painter->drawLine(region.right(), region.top(), region.left(), region.bottom());
     } else {
-        if (this->data(LastViewUpdated).isNull() || this->data(LastUpdateCall).isNull()
-                || this->data(LastViewUpdated).toFloat() != this->data(LastUpdateCall).toFloat())
+        if (!d_func()->lastViewUpdated || !d_func()->lastUpdateCall
+                || d_func()->lastViewUpdated != d_func()->lastUpdateCall)
         {
-            this->setData(LastViewUpdated, this->data(LastUpdateCall));
+            d_func()->lastViewUpdated = d_func()->lastUpdateCall;
 
             cv::Mat out;
             for (auto && mat: sources())
@@ -193,18 +191,19 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter, const QStyle
                     cv::resize(mat, out, cv::Size(region.width(), region.height()));
                     auto image = cvMatToQImage(out);
 
-                    setData(ContentViewCache, image);
+                    d_func()->contentViewCache = image;;
                     painter->drawImage(region.left(), region.top(), image);
                 } catch (...) {}
             }
         } else {
-            painter->drawImage(region.left(), region.top(), data(ContentViewCache).value<QImage>());
+            painter->drawImage(region.left(), region.top(), d_func()->contentViewCache);
         }
     }
 
     release();
 }
 
+/*
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
@@ -218,10 +217,16 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
 
     return QGraphicsItem::itemChange(change, value);
 }
-
-void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+*/
+void NodeItem::mousePressEvent(QMouseEvent *event)
 {
-    QGraphicsItem::mousePressEvent(event);
+    std::cout << "mousePressEvent" << title().toStdString() << std::endl;
+
+    d_func()->faceEdgeItem = new FakeEdgeItem(graphicsProxyWidget()->mapToScene(event->pos()));
+    MainWindow::instance()->centralWidget()->scene()->addItem(d_func()->faceEdgeItem);
+
+    QWidget::mousePressEvent(event);
+
     if(event->button() == Qt::LeftButton) {
         if(event->modifiers() == Qt::ShiftModifier || event->modifiers() == Qt::AltModifier) {
 
@@ -229,14 +234,51 @@ void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             MainWindow::instance()->nodeClicked(this);
         }
     }
+    event->accept();
 }
 
-void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void NodeItem::mouseMoveEvent(QMouseEvent *event)
 {
+    std::cout << "mouseMoveEvent" << title().toStdString() << std::endl;
+
+    if (d_func()->faceEdgeItem) {
+        d_func()->faceEdgeItem->setDest(graphicsProxyWidget()->mapToScene(event->pos()));
+        d_func()->faceEdgeItem->update();
+    }
+
+    QWidget::mouseMoveEvent(event);
+}
+
+void NodeItem::mouseReleaseEvent(QMouseEvent *event)
+{
+    std::cout << "mouseReleaseEvent" << title().toStdString() << std::endl;
+
+    //graphicsProxyWidget()->s
+    if (d_func()->faceEdgeItem) {
+        delete d_func()->faceEdgeItem;
+        d_func()->faceEdgeItem = 0;
+    }
+
+    auto grapItem = MainWindow::instance()->centralWidget()->scene()->itemAt(
+            graphicsProxyWidget()->mapToScene(event->pos()),
+            MainWindow::instance()->centralWidget()->scene()->views().first()->transform()); //mapToScene
+
+    if (grapItem) {
+        auto pProxy = qgraphicsitem_cast< QGraphicsProxyWidget* >(grapItem);
+        if (pProxy) {
+            auto nodeItem = static_cast<NodeItem*>(pProxy->widget());
+
+            if (nodeItem) {
+                MainWindow::instance()->connectNode(this, nodeItem);
+            }
+        }
+    }
+
     MainWindow::instance()->update();
 
-    QGraphicsItem::mouseReleaseEvent(event);
+    QWidget::mouseReleaseEvent(event);
 }
+
 
 /*
 void NodeItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)

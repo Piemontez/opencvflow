@@ -39,8 +39,8 @@ void EdgeItem::adjust()
     auto sourceNode = static_cast<NodeItem*>(source);
     auto destNode = static_cast<NodeItem*>(dest);
 
-    QLineF line(mapFromItem(sourceNode, sourceNode->contentRegion().width() + 5, sourceNode->contentRegion().center().y()),
-                mapFromItem(destNode, -5, destNode->contentRegion().center().y()));
+    QLineF line(sourceNode->geometry().right() + 8, sourceNode->geometry().center().y(),
+                destNode->geometry().left() + 8, destNode->geometry().center().y());
     qreal length = line.length();
 
     prepareGeometryChange();
@@ -77,7 +77,7 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     if (qFuzzyCompare(line.length(), qreal(0.)))
         return;
     // Draw the line itself
-    painter->setPen(QPen(Qt::darkGray, 2, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(Qt::darkGray, 3, Qt::DashLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
 
     // Draw the arrows

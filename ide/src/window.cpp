@@ -6,6 +6,7 @@
 #include <chrono>
 #include <dlfcn.h>
 
+#include <QGraphicsProxyWidget>
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -72,7 +73,8 @@ Component *MainWindow::component(const std::string &name)
 
 void MainWindow::addNode(NodeItem *node)
 {
-    centralWidget()->scene()->addItem(node);
+    centralWidget()->scene()->addWidget(node)
+            ->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 }
 
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
@@ -187,6 +189,9 @@ void MainWindow::makeDocks()
 void MainWindow::loadPlugins()
 {
     try{
+
+        std::cout << "Loading plugins." << std::endl;
+
         std::vector<Component*> comps;
 
         QStringList typeFiles;
@@ -200,6 +205,8 @@ void MainWindow::loadPlugins()
         for (QString fileName: pluginsDir.entryList(typeFiles, QDir::Files))
         {
             try{
+                std::cout << "Loading plugin:" << (path + "/" + fileName).toStdString() << std::endl;
+
                 //Carrega a biblioteca
                 void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
                 if (handle) {
@@ -244,12 +251,7 @@ void MainWindow::loadPlugins()
     }
 }
 
-void itemsAdd(QList< NodeItem* >& ordered, QGraphicsItem* item) {
-    if (NodeItem::Type != item->type())
-        return;
-
-    auto nodeItem = static_cast<NodeItem*>(item);
-
+void itemsAdd(QList< NodeItem* >& ordered, NodeItem* nodeItem) {
     if (!ordered.contains(nodeItem))
         for (auto edge: nodeItem->edges()) {
             auto edgeItem = static_cast<EdgeItem*>(edge);
@@ -274,12 +276,18 @@ void MainWindow::run()
         //Enfileira ordem de processamento.
         QList<NodeItem *> items;
         for (auto && item: this->centralWidget()->items()) {
-            itemsAdd(items, item);
+            QGraphicsProxyWidget* pProxy = qgraphicsitem_cast<QGraphicsProxyWidget*>(item);
+            if (pProxy) {
+                auto nodeItem = static_cast<NodeItem*>(pProxy->widget());
+                if (nodeItem) {
+                    itemsAdd(items, nodeItem);
+                }
+            }
         }
 
         for (auto item: items) {
             item->start();
-            item->setData(ErrorData, QVariant());
+            item->setError("");
         }
         forever {
             //Executa todos os processos
@@ -290,7 +298,7 @@ void MainWindow::run()
                 try {
                     item->proccess();
                 } catch (cv::Exception& ex) {
-                    item->setData(ErrorData, QString::fromStdString(ex.msg));
+                    item->setError(QString::fromStdString(ex.msg));
                 } catch (...) {}
 
                 item->release();
@@ -299,7 +307,7 @@ void MainWindow::run()
             if (float( std::clock () - last ) > 42) {
                 last = std::clock();
                 for (auto && item: items) {
-                    item->setData(LastUpdateCall, float(last));
+                    item->setLastUpdateCall(float(last));
                     item->update();
                 }
                 QThread::msleep(10 + items.size());

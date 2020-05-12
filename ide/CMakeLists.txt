@@ -40,7 +40,6 @@ add_executable(opencvflow
     #grapichs
     src/nodeitem.cpp
     src/nodemenuitem.cpp
-    src/nodelinkitem.cpp
     src/nodeitem.cpp
     src/edgeitem.cpp
     src/fakeedgeitem.cpp

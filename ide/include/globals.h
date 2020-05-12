@@ -14,13 +14,6 @@ enum ToolBarNames {
     WindowTB
 };
 
-enum FlowData {
-    ErrorData        = 0x0101,   //std::exception->msg
-    LastUpdateCall   = 0x0110,   //float
-    LastViewUpdated  = 0x0111,   //float
-    ContentViewCache = 0x1000    //float
-};
-
 union PropertiesVariant {
     int i;
     double d;

@@ -121,7 +121,6 @@ void GaussianBlurNode::proccess()
             _sources.push_back(out);
         }
     }
-
 }
 
 GaussianBlurComponent::GaussianBlurComponent() : ProcessorComponent(ProcessorsTB, "GaussianBlur") { }
@@ -253,3 +252,28 @@ void ScharrNode::proccess()
 
 ScharrComponent::ScharrComponent() : ProcessorComponent(ProcessorsTB, "Scharr") { }
 Node *ScharrComponent::createNode() { return new ScharrNode; }
+
+/**
+ * @brief DilateNode::DilateNode
+ */
+DilateNode::DilateNode():  NodeItem(nullptr, "Scharr") {}
+
+void DilateNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto && edge: _edges)
+    {
+        for (auto && mat: edge->sourceNode()->sources())
+        {
+            cv::dilate(mat, out, kernel, anchor, iterations, borderType, borderValue);
+            _sources.push_back(out);
+        }
+    }
+
+}
+
+DilateComponent::DilateComponent() : ProcessorComponent(ProcessorsTB, "Dilate") { }
+Node *DilateComponent::createNode() { return new DilateNode; }

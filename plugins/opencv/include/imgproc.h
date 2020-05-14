@@ -252,5 +252,30 @@ public:
     ocvflow::Node* createNode() override;
 };
 
+/**
+ * @brief The DilateNode class
+ */
+class DilateNode: public ocvflow::NodeItem {
+    cv::Mat kernel;
+    cv::Point anchor{cv::Point(-1,-1)};
+    int iterations{1};
+    int borderType{cv::BORDER_CONSTANT};
+    cv::Scalar borderValue{cv::morphologyDefaultBorderValue()};
+public:
+    DilateNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
+    void proccess() override;
+};
+
+
+class DilateComponent: public ocvflow::ProcessorComponent {
+public:
+    DilateComponent();
+    ocvflow::Node* createNode() override;
+};
 
 #endif // OPCVF_IMGPROC_H

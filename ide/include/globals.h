@@ -40,7 +40,8 @@ enum Properties {
     DoubleProperties,
     SizeIntProperties,
     IntTableProperties,
-    DoubleTableProperties
+    DoubleTableProperties,
+    ScalarProperties
 };
 
 

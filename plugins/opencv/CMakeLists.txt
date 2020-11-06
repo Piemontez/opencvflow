@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 message("Building OpenCV Plugin")
-message("${PROJECT_NAME}")
-message("Building OpenCV Plugin")
 
 project(opencv VERSION 0.3.0 DESCRIPTION "OpenCV Plugin")
 

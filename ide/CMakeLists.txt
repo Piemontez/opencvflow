@@ -25,6 +25,7 @@ get_target_property(QtCore_location Qt5::Core LOCATION)
 
 #includes
 include_directories(
+    ${opencvflow_SOURCE_DIR}/include
     ${OpenCV_INCLUDE_DIRS}
     include)
 
@@ -53,16 +54,9 @@ target_link_libraries(opencvflow
     Qt5::Gui 
     Qt5::Widgets
     ${CMAKE_DL_LIBS}
-#    ${OpenCV_LIBS}
     opencv_core
-#    opencv_highgui
-#    opencv_imgcodecs
     opencv_imgproc
-#    opencv_features2d
-#    opencv_calib3d
-#    opencv_video
     opencv_videoio
-#    opencv_optflow
 )
 
 install(TARGETS opencvflow 

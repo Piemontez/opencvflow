@@ -17,8 +17,9 @@
 
 using namespace ocvflow;
 
-class ocvflow::MainWindowPrivate {
-    QMap<ToolBarNames, QToolBar*> toolbars;
+class ocvflow::MainWindowPrivate
+{
+    QMap<ToolBarNames, QToolBar *> toolbars;
     QMap<QString, Component *> components;
 
     QDockWidget *propertiesDock;
@@ -29,8 +30,7 @@ class ocvflow::MainWindowPrivate {
     friend class MainWindow;
 };
 
-MainWindow::MainWindow(QWidget *parent) :
-        d_ptr(new MainWindowPrivate)
+MainWindow::MainWindow(QWidget *parent) : d_ptr(new MainWindowPrivate)
 {
 
     setCentralWidget(new CentralWidget);
@@ -44,13 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-
 }
 
 MainWindow *MainWindow::inst = nullptr;
 MainWindow *MainWindow::instance()
 {
-    if (!inst) inst = new MainWindow();
+    if (!inst)
+        inst = new MainWindow();
     return inst;
 }
 
@@ -73,8 +73,7 @@ Component *MainWindow::component(const std::string &name)
 
 void MainWindow::addNode(NodeItem *node)
 {
-    centralWidget()->scene()->addWidget(node)
-            ->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    centralWidget()->scene()->addWidget(node)->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 }
 
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
@@ -87,13 +86,15 @@ void MainWindow::nodeClicked(NodeItem *node)
     auto last = d_func()->propertiesDock->widget();
     d_func()->propertiesDock->setWidget(nullptr);
 
-    if (last) {
+    if (last)
+    {
         last->hide();
         last->deleteLater();
     }
 
-    QWidget* widget = node->createPropertiesWidget(d_func()->propertiesDock);
-    if (widget) {
+    QWidget *widget = node->createPropertiesWidget(d_func()->propertiesDock);
+    if (widget)
+    {
         d_func()->propertiesDock->setWidget(widget);
     }
 }
@@ -109,7 +110,7 @@ void MainWindow::makeToolbar()
     d_func()->toolbars.insert(BuildTB, new QToolBar);
     d_func()->toolbars.insert(WindowTB, new QToolBar);
 
-    for (auto && tb: d_func()->toolbars.values())
+    for (auto &&tb : d_func()->toolbars.values())
     {
         tb->hide();
         tb->setMovable(false);
@@ -153,12 +154,12 @@ void MainWindow::showToolBar()
 {
     sender()->setProperty("menuselected", true);
 
-    for (auto && tb: d_func()->toolbars.values())
+    for (auto &&tb : d_func()->toolbars.values())
         tb->hide();
 
-    QVariant data = qobject_cast< QAction* >(sender())->data();
+    QVariant data = qobject_cast<QAction *>(sender())->data();
     if (data.isValid())
-        d_func()->toolbars.value( static_cast<ToolBarNames>(data.toUInt()) )->show();
+        d_func()->toolbars.value(static_cast<ToolBarNames>(data.toUInt()))->show();
 }
 
 void MainWindow::makeActions()
@@ -188,11 +189,12 @@ void MainWindow::makeDocks()
 
 void MainWindow::loadPlugins()
 {
-    try{
+    try
+    {
 
         std::cout << "Loading plugins." << std::endl;
 
-        std::vector<Component*> comps;
+        std::vector<Component *> comps;
 
         QStringList typeFiles;
 
@@ -200,38 +202,61 @@ void MainWindow::loadPlugins()
         QString path = qApp->applicationDirPath();
         path = path.left(path.lastIndexOf("/")) + "/plugins";
 
-        //load libs on plugins dir
+        //Procura arquivos na pasta plugin e suas sub pastas.
         QDir pluginsDir(path);
-        for (QString fileName: pluginsDir.entryList(typeFiles, QDir::Files))
+        QStringList filesPaths;
+        for (QString fileName : pluginsDir.entryList(typeFiles, QDir::Files))
         {
-            try{
-                std::cout << "Loading plugin:" << (path + "/" + fileName).toStdString() << std::endl;
+            filesPaths.append(path + "/" + fileName);
+        }
+        for (QString subDirName : pluginsDir.entryList(typeFiles, QDir::Dirs))
+        {
+            QDir pluginsSubDir(path + "/" + subDirName);
+            for (QString fileName : pluginsSubDir.entryList(typeFiles, QDir::Files))
+            {
+                filesPaths.append(path + "/" + subDirName + "/" + fileName);
+            }
+        }
+
+        //load libs on plugins dir
+        for (QString filePath : filesPaths)
+        {
+            try
+            {
+                std::cout << "Loading plugin:" << filePath.toStdString() << std::endl;
 
                 //Carrega a biblioteca
-                void * handle = dlopen((path + "/" + fileName).toStdString().c_str(), RTLD_LAZY);
-                if (handle) {
+                void *handle = dlopen(filePath.toStdString().c_str(), RTLD_LAZY);
+                if (handle)
+                {
                     //Procura pela função loadPlugin
-                    ocvflow::PluginInterface* (*loadPlugin)() = (ocvflow::PluginInterface* (*)()) dlsym(handle, "loadPlugin");
+                    ocvflow::PluginInterface *(*loadPlugin)() = (ocvflow::PluginInterface * (*)()) dlsym(handle, "loadPlugin");
 
                     //Verifica se foi encontrada a funcao
-                    if (loadPlugin) {
+                    if (loadPlugin)
+                    {
                         //carrega a classe plugin
-                        ocvflow::PluginInterface* plugin = loadPlugin();
-                        if (plugin) {
+                        ocvflow::PluginInterface *plugin = loadPlugin();
+                        if (plugin)
+                        {
                             auto compsLoaded = plugin->components();
                             comps.insert(comps.end(), compsLoaded.begin(), compsLoaded.end());
                         }
                     }
                 }
-            } catch (...) {}
+            }
+            catch (...)
+            {
+            }
         }
 
-        for (auto && comp: comps)
+        for (auto &&comp : comps)
         {
             d_func()->components.insert(QString::fromStdString(comp->name()), comp);
 
-            auto tb = toolbar( static_cast<ToolBarNames>(comp->actionToolBar()) );
-            if (tb) {
+            auto tb = toolbar(static_cast<ToolBarNames>(comp->actionToolBar()));
+            if (tb)
+            {
                 auto action = comp->createAction();
                 if (action)
                     tb->addAction(action);
@@ -239,22 +264,26 @@ void MainWindow::loadPlugins()
                 auto widget = comp->createWidget();
                 if (widget)
                     tb->addWidget(widget);
-                if (!action && !widget) {
+                if (!action && !widget)
+                {
                     tb->addAction(new QAction(QString::fromStdString(comp->name())));
                 }
             }
         }
     }
-    catch (std::exception& exc) {
+    catch (std::exception &exc)
+    {
         std::cerr << "Error: " << exc.what() << std::endl;
         assert(0);
     }
 }
 
-void itemsAdd(QList< NodeItem* >& ordered, NodeItem* nodeItem) {
+void itemsAdd(QList<NodeItem *> &ordered, NodeItem *nodeItem)
+{
     if (!ordered.contains(nodeItem))
-        for (auto edge: nodeItem->edges()) {
-            auto edgeItem = static_cast<EdgeItem*>(edge);
+        for (auto edge : nodeItem->edges())
+        {
+            auto edgeItem = static_cast<EdgeItem *>(edge);
 
             if (edgeItem->sourceNode() != nodeItem)
                 itemsAdd(ordered, edgeItem->sourceNode());
@@ -266,7 +295,8 @@ void itemsAdd(QList< NodeItem* >& ordered, NodeItem* nodeItem) {
 
 void MainWindow::run()
 {
-    if (d_func()->runing) return;
+    if (d_func()->runing)
+        return;
     MainWindow::stopRun();
     d_func()->runing = true;
 
@@ -275,38 +305,51 @@ void MainWindow::run()
 
         //Enfileira ordem de processamento.
         QList<NodeItem *> items;
-        for (auto && item: this->centralWidget()->items()) {
-            QGraphicsProxyWidget* pProxy = qgraphicsitem_cast<QGraphicsProxyWidget*>(item);
-            if (pProxy) {
-                auto nodeItem = static_cast<NodeItem*>(pProxy->widget());
-                if (nodeItem) {
+        for (auto &&item : this->centralWidget()->items())
+        {
+            QGraphicsProxyWidget *pProxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item);
+            if (pProxy)
+            {
+                auto nodeItem = static_cast<NodeItem *>(pProxy->widget());
+                if (nodeItem)
+                {
                     itemsAdd(items, nodeItem);
                 }
             }
         }
 
-        for (auto item: items) {
+        for (auto item : items)
+        {
             item->start();
             item->setError("");
         }
-        forever {
+        forever
+        {
             //Executa todos os processos
-            for (auto item: items)
+            for (auto item : items)
             {
                 //Todo: add semapharo
                 item->acquire();
-                try {
+                try
+                {
                     item->proccess();
-                } catch (cv::Exception& ex) {
+                }
+                catch (cv::Exception &ex)
+                {
                     item->setError(QString::fromStdString(ex.msg));
-                } catch (...) {}
+                }
+                catch (...)
+                {
+                }
 
                 item->release();
             }
             //Atualiza a tela
-            if (float( std::clock () - last ) > 42) {
+            if (float(std::clock() - last) > 42)
+            {
                 last = std::clock();
-                for (auto && item: items) {
+                for (auto &&item : items)
+                {
                     item->setLastUpdateCall(float(last));
                     item->update();
                 }
@@ -315,7 +358,8 @@ void MainWindow::run()
             if (!d_func()->runing)
                 break;
         }
-        for (auto item: items) {
+        for (auto item : items)
+        {
             item->stop();
         }
     });
@@ -326,9 +370,11 @@ void MainWindow::run()
 
 void MainWindow::stopRun()
 {
-    if (d_func()->runing) {
+    if (d_func()->runing)
+    {
         d_func()->runing = false;
-        if (d_func()->runner->wait(1000)) {
+        if (d_func()->runner->wait(1000))
+        {
             d_func()->runner->terminate();
             d_func()->runner->wait();
         }

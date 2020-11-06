@@ -9,7 +9,8 @@ CREATE_BUILD_FOLDER_IF_DOESNT_EXIST() {
 
 INSTALL() {
     CREATE_BUILD_FOLDER_IF_DOESNT_EXIST;
-    cmake -D RELEASE=ON .
+    cmake -D RELEASE=ON -H./ -B./build ../
+    cd build
     make
 }
 

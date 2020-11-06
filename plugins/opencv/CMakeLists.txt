@@ -42,4 +42,4 @@ target_link_libraries(opencv
     Qt5::Widgets)
 
 install(TARGETS opencv
-    DESTINATION plugin)
+    DESTINATION ${CVFLOW_INSTALL_PLUGIN_DIR})

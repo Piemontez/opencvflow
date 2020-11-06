@@ -65,4 +65,5 @@ target_link_libraries(opencvflow
 #    opencv_optflow
 )
 
-install(TARGETS opencvflow DESTINATION bin)
+install(TARGETS opencvflow 
+    RUNTIME DESTINATION ${CVFLOW_INSTALL_BIN_DIR})

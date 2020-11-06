@@ -9,7 +9,7 @@ FakeEdgeItem::FakeEdgeItem(QPointF sourcePoint)
 {
     this->sourcePoint = sourcePoint;
 
-    setAcceptedMouseButtons(0);
+    setAcceptedMouseButtons(Qt::NoButton);
 }
 
 void FakeEdgeItem::setDest(QPointF destPoint)

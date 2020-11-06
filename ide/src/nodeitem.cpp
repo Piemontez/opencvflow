@@ -194,11 +194,11 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         {
             auto sizeX = new QSpinBox();
             sizeX->setMaximum(std::numeric_limits<int>::max());
-            sizeX->setValue(this->property(entry.first).i);
+            sizeX->setValue(3);
 
             auto sizeY = new QSpinBox();
             sizeY->setMaximum(std::numeric_limits<int>::max());
-            sizeY->setValue(this->property(entry.first).i);
+            sizeY->setValue(3);
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(sizeX, pos, 1, 1, 1);
@@ -215,11 +215,82 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             layout->addWidget(gridW, pos, 0, 1, 3);
 
             auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
+                //removes excess widgets
+                for (int j = sizeX->value(); j < gridL->columnCount(); j++)
+                {
+                    for (int k = sizeY->value(); k < gridL->rowCount(); k++)
+                    {
+                        auto item = gridL->itemAtPosition(k, j);
+                        if (item) {
+                            gridL->removeItem(item);
+                            delete item;
+                        }
+                    }
+                }
+                //add new widgets
                 for (int j = 0; j < sizeX->value(); j++)
                 {
                     for (int k = 0; k < sizeY->value(); k++)
                     {
-                        gridL->addWidget(new QSpinBox(), k, j, 1, 1);
+                        if (!gridL->itemAtPosition(k, j))
+                            gridL->addWidget(new QSpinBox(), k, j, 1, 1);
+                    }
+                }
+            };
+
+            sizeX->connect(sizeX, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), sizeX, func);
+            sizeY->connect(sizeY, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), sizeY, func);
+
+            func(0);
+
+            break;
+        }
+        case ocvflow::OneZeroTableProperties:
+        {
+            auto sizeX = new QSpinBox();
+            sizeX->setMaximum(std::numeric_limits<int>::max());
+            sizeX->setValue(3);
+
+            auto sizeY = new QSpinBox();
+            sizeY->setMaximum(std::numeric_limits<int>::max());
+            sizeY->setValue(3);
+
+            layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
+            layout->addWidget(sizeX, pos, 1, 1, 1);
+            layout->addWidget(sizeY, pos, 2, 1, 1);
+
+            pos++;
+
+            auto gridW = new QWidget(parent);
+            auto gridL = new QGridLayout(gridW);
+            gridL->setHorizontalSpacing(4);
+            gridL->setVerticalSpacing(0);
+            gridW->setLayout(gridL);
+
+            layout->addWidget(gridW, pos, 0, 1, 3);
+
+            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
+                //cv::getStructuringElement(cv::MORPH_RECT, cv::Point(sizeY->value(), sizeX->value()));
+                //cv::MORPH_RECT;
+                //removes excess widgets
+                for (int j = sizeX->value(); j < gridL->columnCount(); j++)
+                {
+                    for (int k = sizeY->value(); k < gridL->rowCount(); k++)
+                    {
+                        auto item = gridL->itemAtPosition(k, j);
+                        if (item) {
+                            gridL->removeItem(item);
+                            delete item;
+                        }
+                    }
+                }
+                //add new widgets
+                for (int j = 0; j < sizeX->value(); j++)
+                {
+                    for (int k = 0; k < sizeY->value(); k++)
+                    {
+                        if (!gridL->itemAtPosition(k, j))
+                            gridL->addWidget(new QCheckBox(), k, j, 1, 1);
                     }
                 }
             };

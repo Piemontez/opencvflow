@@ -5,30 +5,30 @@
 
 using namespace ocvflow;
 
-class ocvflow::EdgeItemPrivate {
+class ocvflow::EdgeItemPrivate
+{
     QPointF sourcePoint;
     QPointF destPoint;
 
     friend class EdgeItem;
 };
 
-EdgeItem::EdgeItem(NodeItem *sourceNode, NodeItem *destNode) :
-    Edge(sourceNode, destNode),
-    d_ptr(new EdgeItemPrivate)
+EdgeItem::EdgeItem(NodeItem *sourceNode, NodeItem *destNode) : Edge(sourceNode, destNode),
+                                                               d_ptr(new EdgeItemPrivate)
 {
-    setAcceptedMouseButtons(0);
-    
+    setAcceptedMouseButtons(Qt::NoButton);
+
     adjust();
 }
 
-NodeItem* EdgeItem::sourceNode() const
+NodeItem *EdgeItem::sourceNode() const
 {
-    return static_cast<NodeItem*>( Edge::sourceNode() );
+    return static_cast<NodeItem *>(Edge::sourceNode());
 }
 
-NodeItem* EdgeItem::destNode() const
+NodeItem *EdgeItem::destNode() const
 {
-    return static_cast<NodeItem*>( Edge::destNode() );
+    return static_cast<NodeItem *>(Edge::destNode());
 }
 
 void EdgeItem::adjust()
@@ -36,8 +36,8 @@ void EdgeItem::adjust()
     if (!source || !dest)
         return;
 
-    auto sourceNode = static_cast<NodeItem*>(source);
-    auto destNode = static_cast<NodeItem*>(dest);
+    auto sourceNode = static_cast<NodeItem *>(source);
+    auto destNode = static_cast<NodeItem *>(dest);
 
     QLineF line(sourceNode->geometry().right() + 8, sourceNode->geometry().center().y(),
                 destNode->geometry().left() + 8, destNode->geometry().center().y());
@@ -45,11 +45,14 @@ void EdgeItem::adjust()
 
     prepareGeometryChange();
 
-    if (length > qreal(20.)) {
+    if (length > qreal(20.))
+    {
         QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
         d_func()->sourcePoint = line.p1() + edgeOffset;
         d_func()->destPoint = line.p2() - edgeOffset;
-    } else {
+    }
+    else
+    {
         d_func()->sourcePoint = d_func()->destPoint = line.p1();
     }
 }
@@ -63,7 +66,7 @@ QRectF EdgeItem::boundingRect() const
     qreal extra = penWidth; //(penWidth + arrowSize) / 2.0;
 
     return QRectF(d_func()->sourcePoint, QSizeF(d_func()->destPoint.x() - d_func()->sourcePoint.x(),
-                                      d_func()->destPoint.y() - d_func()->sourcePoint.y()))
+                                                d_func()->destPoint.y() - d_func()->sourcePoint.y()))
         .normalized()
         .adjusted(-extra, -extra, extra, extra);
 }
@@ -84,14 +87,14 @@ void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidge
     double angle = std::atan2(-line.dy(), line.dx());
 
     int arrowSize = 8;
-//    QPointF sourceArrowP1 = sourcePoint + QPointF(sin(angle + M_PI / 3) * arrowSize,
-//                                                  cos(angle + M_PI / 3) * arrowSize);
-//    QPointF sourceArrowP2 = sourcePoint + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
-//                                                  cos(angle + M_PI - M_PI / 3) * arrowSize);
+    //    QPointF sourceArrowP1 = sourcePoint + QPointF(sin(angle + M_PI / 3) * arrowSize,
+    //                                                  cos(angle + M_PI / 3) * arrowSize);
+    //    QPointF sourceArrowP2 = sourcePoint + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
+    //                                                  cos(angle + M_PI - M_PI / 3) * arrowSize);
     QPointF destArrowP1 = d_func()->destPoint + QPointF(sin(angle - M_PI / 3) * arrowSize,
-                                              cos(angle - M_PI / 3) * arrowSize);
+                                                        cos(angle - M_PI / 3) * arrowSize);
     QPointF destArrowP2 = d_func()->destPoint + QPointF(sin(angle - M_PI + M_PI / 3) * arrowSize,
-                                              cos(angle - M_PI + M_PI / 3) * arrowSize);
+                                                        cos(angle - M_PI + M_PI / 3) * arrowSize);
 
     painter->setBrush(Qt::black);
     //painter->drawPolygon(QPolygonF() << line.p1() << sourceArrowP1 << sourceArrowP2);

@@ -428,7 +428,7 @@ bool ScharrNode::setProperty(const QString &property, const ocvflow::PropertiesV
 QMap<QString, ocvflow::Properties> DilateNode::properties()
 {
     QMap<QString, ocvflow::Properties> props;
-    props.insert("Kernel", ocvflow::IntTableProperties);
+    props.insert("Kernel", ocvflow::OneZeroTableProperties);
     props.insert("Anchor", ocvflow::SizeIntProperties);
     props.insert("Iterations", ocvflow::IntProperties);
     props.insert("BorderType", ocvflow::IntProperties);

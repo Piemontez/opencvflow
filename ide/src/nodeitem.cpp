@@ -21,26 +21,33 @@ using namespace ocvflow;
 
 class ocvflow::NodeItemPrivate
 {
-    FakeEdgeItem *faceEdgeItem{0}; //Todo Mover para mywindows
-    QString title;
-    QString error;
-    QImage contentViewCache;
-    float lastUpdateCall;
-    float lastViewUpdated;
+    QGraphicsProxyWidget *proxyWidget{nullptr};
+
+    QString title;           //título do widget
+    QString error;           //Mensagem de erro ao realizar processamento
+    QImage contentViewCache; //cache da última imagem processada
+    float lastUpdateCall;    //último processamento
+    float lastViewUpdated;   //última atualização da imagem visualizada
 
     friend class NodeItem;
 };
 
-NodeItem::NodeItem(CentralWidget *centralWidget /*remover*/, QString title)
-    : d_ptr(new NodeItemPrivate)
+NodeItem::NodeItem(QWidget *parent)
+    : QWidget(parent),
+      d_ptr(new NodeItemPrivate)
+{
+}
+
+NodeItem::NodeItem(CentralWidget *centralWidget /*remover*/, QString title, QWidget *parent)
+    : NodeItem(parent)
 {
     d_func()->lastViewUpdated = 0;
 
     this->setMinimumSize(240, 100);
     this->setFixedSize(480, 200);
 
-    auto dockLayout = new QVBoxLayout();             //or any other layout type you want
-    dockLayout->setMenuBar(new NodeMenuItem(title)); // <-- the interesting part
+    auto dockLayout = new QVBoxLayout();
+    dockLayout->setMenuBar(new NodeMenuItem(title, this));
 
     this->setLayout(dockLayout);
 
@@ -48,12 +55,16 @@ NodeItem::NodeItem(CentralWidget *centralWidget /*remover*/, QString title)
     addToGroup(new NodeLinkItem(this));
     */
     //setAttribute(Qt::WA_Hover);
-    installEventFilter(this);
-    setMouseTracking(true);
+    //installEventFilter(this);
+    //setMouseTracking(true);
 
     d_func()->title = title.isEmpty()
                           ? "Empty Node"
                           : title;
+}
+
+NodeItem::~NodeItem()
+{
 }
 
 void NodeItem::setError(const QString &error)
@@ -88,6 +99,9 @@ bool NodeItem::setProperty(const QString &property, const PropertiesVariant &val
     return true;
 }
 
+/**
+ * Cria menu de propriedades conforme especificações do nó
+ */
 QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 {
     QMap<QString, Properties> props = this->properties();
@@ -221,7 +235,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                     for (int k = sizeY->value(); k < gridL->rowCount(); k++)
                     {
                         auto item = gridL->itemAtPosition(k, j);
-                        if (item) {
+                        if (item)
+                        {
                             gridL->removeItem(item);
                             delete item;
                         }
@@ -278,7 +293,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                     for (int k = sizeY->value(); k < gridL->rowCount(); k++)
                     {
                         auto item = gridL->itemAtPosition(k, j);
-                        if (item) {
+                        if (item)
+                        {
                             gridL->removeItem(item);
                             delete item;
                         }
@@ -376,81 +392,37 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
     release();
 }
 
-/*
-QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    switch (change) {
-    case ItemPositionHasChanged:
-        foreach (Edge *edge, edges())
-            static_cast<EdgeItem *>(edge)->adjust();
-        break;
-    default:
-        break;
-    };
-
-    return QGraphicsItem::itemChange(change, value);
-}
-*/
 void NodeItem::mousePressEvent(QMouseEvent *event)
 {
-    d_func()->faceEdgeItem = new FakeEdgeItem(graphicsProxyWidget()->mapToScene(event->pos()));
-    MainWindow::instance()->centralWidget()->scene()->addItem(d_func()->faceEdgeItem);
-
     QWidget::mousePressEvent(event);
 
-    if (event->button() == Qt::LeftButton)
-    {
-        if (event->modifiers() == Qt::ShiftModifier || event->modifiers() == Qt::AltModifier)
-        {
-        }
-        else
-        {
-            MainWindow::instance()->nodeClicked(this);
-        }
-    }
+    MainWindow::instance()->nodeMousePressEvent(this, event);
+
     event->accept();
 }
 
 void NodeItem::mouseMoveEvent(QMouseEvent *event)
 {
-    if (d_func()->faceEdgeItem)
-    {
-        d_func()->faceEdgeItem->setDest(graphicsProxyWidget()->mapToScene(event->pos()));
-        d_func()->faceEdgeItem->update();
-    }
+    MainWindow::instance()->nodeMouseMoveEvent(this, event);
 
     QWidget::mouseMoveEvent(event);
 }
 
 void NodeItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (d_func()->faceEdgeItem)
-    {
-        delete d_func()->faceEdgeItem;
-        d_func()->faceEdgeItem = 0;
-    }
-
-    auto grapItem = MainWindow::instance()->centralWidget()->scene()->itemAt(
-        graphicsProxyWidget()->mapToScene(event->pos()),
-        MainWindow::instance()->centralWidget()->scene()->views().first()->transform()); //mapToScene
-
-    if (grapItem)
-    {
-        auto pProxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(grapItem);
-        if (pProxy)
-        {
-            auto nodeItem = static_cast<NodeItem *>(pProxy->widget());
-
-            if (nodeItem && nodeItem != this)
-            {
-                MainWindow::instance()->connectNode(this, nodeItem);
-            }
-        }
-    }
-
-    MainWindow::instance()->update();
+    MainWindow::instance()->nodeMouseReleaseEvent(this, event);
 
     QWidget::mouseReleaseEvent(event);
+}
+
+QGraphicsProxyWidget *NodeItem::proxyWidget()
+{
+    return d_func()->proxyWidget;
+}
+
+void NodeItem::setProxyWidget(QGraphicsProxyWidget *proxyWidget)
+{
+    d_func()->proxyWidget = proxyWidget;
 }
 
 /*

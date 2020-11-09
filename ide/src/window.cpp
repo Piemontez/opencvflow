@@ -1,5 +1,6 @@
 #include "window.h"
 #include "items.h"
+#include "nodemenuitem.h"
 #include "component.h"
 #include "plugin.h"
 
@@ -26,6 +27,13 @@ class ocvflow::MainWindowPrivate
 
     QThread *runner;
     bool runing{false};
+
+    //Utilizado para criar os edges que conectam 2 nodes
+    FakeEdgeItem *fakeEdgeItem{0};
+
+    //Indica que foi presssionar o toolbal do nodeitem
+    bool nodeMoveViewPort{false};
+    //QPointF nodeMoveMouseOrigin;
 
     friend class MainWindow;
 };
@@ -69,34 +77,6 @@ Component *MainWindow::component(const std::string &name)
     if (d_func()->components.contains(QString::fromStdString(name)))
         return d_func()->components[QString::fromStdString(name)];
     return nullptr;
-}
-
-void MainWindow::addNode(NodeItem *node)
-{
-    centralWidget()->scene()->addWidget(node)->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-}
-
-void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
-{
-    centralWidget()->scene()->addItem(new EdgeItem(source, dest));
-}
-
-void MainWindow::nodeClicked(NodeItem *node)
-{
-    auto last = d_func()->propertiesDock->widget();
-    d_func()->propertiesDock->setWidget(nullptr);
-
-    if (last)
-    {
-        last->hide();
-        last->deleteLater();
-    }
-
-    QWidget *widget = node->createPropertiesWidget(d_func()->propertiesDock);
-    if (widget)
-    {
-        d_func()->propertiesDock->setWidget(widget);
-    }
 }
 
 void MainWindow::makeToolbar()
@@ -380,4 +360,137 @@ void MainWindow::stopRun()
         }
         d_func()->runner->deleteLater();
     }
+}
+
+void MainWindow::addNode(NodeItem *node)
+{
+    centralWidget()->scene()->addWidget(node)->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+}
+
+void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
+{
+    centralWidget()->scene()->addItem(new EdgeItem(source, dest));
+}
+
+void MainWindow::nodeClicked(NodeItem *node)
+{
+    auto last = d_func()->propertiesDock->widget();
+    d_func()->propertiesDock->setWidget(nullptr);
+
+    if (last)
+    {
+        last->hide();
+        last->deleteLater();
+    }
+
+    QWidget *widget = node->createPropertiesWidget(d_func()->propertiesDock);
+    if (widget)
+    {
+        d_func()->propertiesDock->setWidget(widget);
+    }
+}
+
+void MainWindow::nodeMousePressEvent(NodeItem *node, QMouseEvent *event)
+{
+    d_func()->fakeEdgeItem = new FakeEdgeItem(node->graphicsProxyWidget()->mapToScene(event->pos()));
+    this->centralWidget()->scene()->addItem(d_func()->fakeEdgeItem);
+
+    if (event->button() == Qt::LeftButton)
+    {
+        if (event->modifiers() == Qt::ShiftModifier || event->modifiers() == Qt::AltModifier)
+        {
+        }
+        else
+        {
+            this->nodeClicked(node);
+        }
+    }
+}
+
+void MainWindow::nodeMouseMoveEvent(NodeItem *node, QMouseEvent *event)
+{
+    if (d_func()->fakeEdgeItem)
+    {
+        d_func()->fakeEdgeItem->setDest(node->graphicsProxyWidget()->mapToScene(event->pos()));
+        d_func()->fakeEdgeItem->update();
+    }
+}
+
+void MainWindow::nodeMouseReleaseEvent(NodeItem *node, QMouseEvent *event)
+{
+    if (d_func()->fakeEdgeItem)
+    {
+        delete d_func()->fakeEdgeItem;
+        d_func()->fakeEdgeItem = 0;
+    }
+
+    auto grapItem = this->centralWidget()->scene()->itemAt(
+        node->graphicsProxyWidget()->mapToScene(event->pos()),
+        this->centralWidget()->scene()->views().first()->transform()); //mapToScene
+
+    if (grapItem)
+    {
+        auto pProxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(grapItem);
+        if (pProxy)
+        {
+            auto nodeItem = static_cast<NodeItem *>(pProxy->widget());
+
+            if (nodeItem && nodeItem != node)
+            {
+                this->connectNode(node, nodeItem);
+            }
+        }
+    }
+
+    this->update();
+}
+
+void MainWindow::nodeMenuMousePressEvent(NodeMenuItem *nodeMenu, QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        //d_func()->nodeMoveMouseOrigin = event->screenPos();
+        d_func()->nodeMoveViewPort = true;
+    }
+}
+
+void MainWindow::nodeMenuMouseMoveEvent(NodeMenuItem *nodeMenu, QMouseEvent *event)
+{
+    if (d_func()->nodeMoveViewPort)
+    {
+        NodeItem *nodeItem = static_cast<NodeItem *>(nodeMenu->parentWidget());
+
+        if (nodeItem)
+        {
+            QGraphicsProxyWidget *proxy = nodeItem->proxyWidget();
+            if (proxy)
+            {
+                //QPointF translation = proxy->scenePos() - d_func()->nodeMoveMouseOrigin + event->screenPos();
+                //proxy->setPos(translation);
+
+                QPointF newp = nodeItem->mapToParent(event->pos());
+                proxy->setPos(newp.x(), newp.y());
+
+                //d_func()->nodeMoveMouseOrigin = event->screenPos();
+            }
+        }
+    }
+}
+
+void MainWindow::nodeMenuMouseReleaseEvent(NodeMenuItem *nodeMenu, QMouseEvent *event)
+{
+    d_func()->nodeMoveViewPort = false;
+            
+    NodeItem *nodeItem = static_cast<NodeItem *>(nodeMenu->parentWidget());
+    if (nodeItem)
+    {
+        for(auto edge: nodeItem->edges())
+        {
+            EdgeItem* edgeItem = static_cast< EdgeItem* >(edge);
+            if (edgeItem) {
+                edgeItem->adjust();
+            }
+        }
+    }
+    
 }

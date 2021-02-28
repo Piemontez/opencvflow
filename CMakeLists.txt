@@ -7,7 +7,7 @@ file(GLOB SOURCES "*.cpp")
 
 #flags
 #c++11flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
 set(CVFLOW_INSTALL_DIR      "${CMAKE_CURRENT_BINARY_DIR}/dist")
 set(CVFLOW_INSTALL_BIN_DIR  "${CVFLOW_INSTALL_DIR}/bin")

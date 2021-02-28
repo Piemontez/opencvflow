@@ -18,29 +18,58 @@ namespace ocvflow
         WindowTB
     };
 
-    union PropertiesVariant
+    struct PropertiesVariant
     {
-        bool b;
-        int i;
-        float f;
-        double d;
-        std::tuple<int, int> sizeI;
-        //cv::Mat mat;
-
-        PropertiesVariant(const bool b) { this->b = b; }
-        PropertiesVariant(const int i) { this->i = i; }
-        PropertiesVariant(const float f) { this->f = f; }
-        PropertiesVariant(const double d) { this->d = d; }
-        PropertiesVariant(const int w, const int h) { this->sizeI = std::make_tuple(w, h); }
-        //explicit PropertiesVariant(cv::Mat mat) { /*this->mat = mat;*/ }
+        PropertiesVariant(const bool b) : type{BOOL}, b{b} {}
+        PropertiesVariant(const int i) : type{INT}, i{i} {}
+        PropertiesVariant(const float f) : type{FLOAT}, f{f} {}
+        PropertiesVariant(const double d) : type{DOUBLE}, d{d} {}
+        PropertiesVariant(const int w, const int h) : type{INT_SIZE} { this->sizeI = std::make_tuple(w, h); }
+        PropertiesVariant(cv::Mat mat) { /*this->mat = mat;*/ }
 
         ~PropertiesVariant(){};
 
         /*
-        PropertiesVariant& operator = (PropertiesVariant &value) { i = value.i; return *this; }
-        PropertiesVariant& operator = (PropertiesVariant &&value) { return value; }
-        PropertiesVariant operator = (const PropertiesVariant &value) { return move(value); }
+        PropertiesVariant &operator=(const PropertiesVariant &other)
+        {
+            //std::swap(type, other.type);
+            //std::swap(math, other.math);
+            return *this;
+        };
         */
+        PropertiesVariant &operator=(PropertiesVariant &&other)
+        {
+            std::swap(type, other.type);
+            //std::swap(math, other.math);
+            return *this;
+        };
+        /*
+        PropertiesVariant &operator=(PropertiesVariant other)
+        {
+            std::swap(type, other.type);
+            //std::swap(math, other.math);
+            return *this;
+        };
+        */
+
+        enum
+        {
+            BOOL,
+            INT,
+            FLOAT,
+            DOUBLE,
+            INT_SIZE,
+            CV_MAT
+        } type;
+        union
+        {
+            bool b;
+            int i;
+            float f;
+            double d;
+            std::tuple<int, int> sizeI;
+            //cv::Mat mat;
+        };
     };
 
     enum Properties

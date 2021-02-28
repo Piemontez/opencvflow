@@ -29,29 +29,25 @@ namespace ocvflow
         { /*this->mat = mat;*/
         }
 
-        ~PropertiesVariant() {};
-        PropertiesVariant(const PropertiesVariant &val){};
-        PropertiesVariant &operator=(const PropertiesVariant &val) { return *this; };
-        PropertiesVariant(PropertiesVariant &&val){};
-        PropertiesVariant &operator=(PropertiesVariant &&val) = delete;
-
-        //PropertiesVariant &operator=(const PropertiesVariant &other){};
-        //PropertiesVariant &operator=(PropertiesVariant &&other){};
-        /*PropertiesVariant &operator=(PropertiesVariant other)
+        ~PropertiesVariant(){};
+        PropertiesVariant(const PropertiesVariant &rvalue)
         {
-            std::swap(type, other.type);
-            //std::swap(math, other.math);
-            return *this;
-        };*/
+            type = rvalue.type;
+            switch (rvalue.type)
+            {
+            case BOOL: b = rvalue.b; break;
+            case INT: i = rvalue.i; break;
+            case FLOAT: f = rvalue.f; break;
+            case DOUBLE: d = rvalue.d; break;
+            case INT_SIZE: sizeI = rvalue.sizeI; break;
+            case CV_MAT: mat = rvalue.mat; break;
+            default:
+                break;
+            }
+        };
 
-        enum
-        {
-            BOOL,
-            INT,
-            FLOAT,
-            DOUBLE,
-            INT_SIZE,
-            CV_MAT
+        enum { 
+            BOOL, INT, FLOAT, DOUBLE, INT_SIZE, CV_MAT
         } type;
         union
         {

@@ -25,9 +25,7 @@ namespace ocvflow
         PropertiesVariant(const float f) : type{FLOAT}, f{f} {}
         PropertiesVariant(const double d) : type{DOUBLE}, d{d} {}
         PropertiesVariant(const int w, const int h) : type{INT_SIZE} { this->sizeI = std::make_tuple(w, h); }
-        PropertiesVariant(cv::Mat mat)
-        { /*this->mat = mat;*/
-        }
+        PropertiesVariant(const cv::Mat mat) : type{CV_MAT}, mat{mat} { }
 
         operator bool() const { return b; }
         operator int() const { return i; }

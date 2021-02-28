@@ -290,7 +290,7 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                 //cv::Mat mat = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Point(sizeX->value(), sizeY->value()));
                 cv::Mat mat = this->property(entry.first).mat;
 
-                this->setProperty(entry.first, PropertiesVariant(mat));
+                this->setProperty(entry.first, mat);
 
                 for (int j = sizeX->value(); j < gridL->columnCount(); j++)
                 {
@@ -319,7 +319,7 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                                 auto mat = this->property(entry.first).mat;
                                 mat.at<int>(j, k) = isChecked ? 1 : 0;
 
-                                if (!this->setProperty(entry.first, PropertiesVariant(mat)))
+                                if (!this->setProperty(entry.first, mat))
                                 {
                                     checkbox->setChecked(this->property(entry.first).mat.at<int>(j, k));
                                 }

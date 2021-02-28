@@ -440,6 +440,15 @@ ocvflow::PropertiesVariant DilateNode::property(const QString &property)
 {
     if (!property.compare("Kernel"))
         return kernel;
+    if (!property.compare("Anchor"))
+        return ocvflow::PropertiesVariant(anchor.x, anchor.y);
+    if (!property.compare("Iterations"))
+        return iterations;
+    if (!property.compare("BorderType"))
+        return borderType;
+    if (!property.compare("BorderValue"))
+        return 0;
+        //return borderValue;//TODO
 
     return 0;
 }

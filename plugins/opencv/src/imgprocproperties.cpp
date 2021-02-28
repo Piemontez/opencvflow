@@ -447,7 +447,7 @@ ocvflow::PropertiesVariant DilateNode::property(const QString &property)
 bool DilateNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("Kernel"))
-        kernel = *value.mat;
+        kernel = value.mat;
 
     return true;
 }

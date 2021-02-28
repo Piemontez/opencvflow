@@ -36,7 +36,7 @@ ocvflow::PropertiesVariant SobelNode::property(const QString &property)
 bool SobelNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("DDepth"))
-        ddepth = value.i;
+        ddepth = value;
     else if (!property.compare("KSize"))
     {
         if (ksize < value.i)
@@ -50,13 +50,13 @@ bool SobelNode::setProperty(const QString &property, const ocvflow::PropertiesVa
         return ksize == value.i;
     }
     else if (!property.compare("DX"))
-        dx = value.i;
+        dx = value;
     else if (!property.compare("DY"))
-        dy = value.i;
+        dy = value;
     else if (!property.compare("Scale"))
-        scale = value.d;
+        scale = value;
     else if (!property.compare("Delta"))
-        delta = value.d;
+        delta = value;
 
     return true;
 }
@@ -91,9 +91,9 @@ ocvflow::PropertiesVariant CannyNode::property(const QString &property)
 bool CannyNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("Threshold 1"))
-        threshold1 = value.d;
+        threshold1 = value;
     else if (!property.compare("Threshold 2"))
-        threshold2 = value.d;
+        threshold2 = value;
     else if (!property.compare("Aperture Size"))
     {
         if (aperturesize < value.i)
@@ -107,7 +107,7 @@ bool CannyNode::setProperty(const QString &property, const ocvflow::PropertiesVa
         return aperturesize == value.i;
     }
     else if (!property.compare("L2 gradiente"))
-        L2gradiente = value.b;
+        L2gradiente = value;
 
     return true;
 }
@@ -141,7 +141,7 @@ ocvflow::PropertiesVariant LaplacianNode::property(const QString &property)
 bool LaplacianNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("DDepth"))
-        ddepth = value.i;
+        ddepth = value;
     else if (!property.compare("KSize"))
     {
         if (ksize < value.i)
@@ -155,9 +155,9 @@ bool LaplacianNode::setProperty(const QString &property, const ocvflow::Properti
         return ksize == value.i;
     }
     else if (!property.compare("Scale"))
-        scale = value.d;
+        scale = value;
     else if (!property.compare("Delta"))
-        delta = value.d;
+        delta = value;
 
     return true;
 }
@@ -183,7 +183,7 @@ ocvflow::PropertiesVariant MedianBlurNode::property(const QString &property)
 bool MedianBlurNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("KSize"))
-        ksize = value.i;
+        ksize = value;
 
     return true;
 }
@@ -217,9 +217,9 @@ bool GaussianBlurNode::setProperty(const QString &property, const ocvflow::Prope
     if (!property.compare("Size"))
         std::tie(size.width, size.height) = value.sizeI;
     else if (!property.compare("SigmaX"))
-        sigmaX = value.d;
+        sigmaX = value;
     else if (!property.compare("SigmaY"))
-        sigmaY = value.d;
+        sigmaY = value;
 
     return true;
 }
@@ -251,11 +251,11 @@ ocvflow::PropertiesVariant BilateralFilterNode::property(const QString &property
 bool BilateralFilterNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("D"))
-        d = value.i;
+        d = value;
     if (!property.compare("SigmaColor"))
-        sigmaColor = value.d;
+        sigmaColor = value;
     if (!property.compare("SigmaSpace"))
-        sigmaSpace = value.d;
+        sigmaSpace = value;
 
     return true;
 }
@@ -291,13 +291,13 @@ ocvflow::PropertiesVariant BoxFilterNode::property(const QString &property)
 bool BoxFilterNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("DDepth"))
-        ddepth = value.i;
+        ddepth = value;
     else if (!property.compare("Ksize"))
         std::tie(ksize.width, ksize.height) = value.sizeI;
     else if (!property.compare("Anchor"))
         std::tie(anchor.width, anchor.height) = value.sizeI;
     else if (!property.compare("Normalize"))
-        normalize = value.b;
+        normalize = value;
 
     return true;
 }
@@ -333,13 +333,13 @@ ocvflow::PropertiesVariant SqrBoxFilterNode::property(const QString &property)
 bool SqrBoxFilterNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("DDepth"))
-        ddepth = value.i;
+        ddepth = value;
     else if (!property.compare("Ksize"))
         std::tie(ksize.width, ksize.height) = value.sizeI;
     else if (!property.compare("Anchor"))
         std::tie(anchor.width, anchor.height) = value.sizeI;
     else if (!property.compare("Normalize"))
-        normalize = value.b;
+        normalize = value;
 
     return true;
 }
@@ -408,15 +408,15 @@ ocvflow::PropertiesVariant ScharrNode::property(const QString &property)
 bool ScharrNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
     if (!property.compare("DDepth"))
-        dx = value.i;
+        dx = value;
     else if (!property.compare("DX"))
-        dx = value.i;
+        dx = value;
     else if (!property.compare("DY"))
-        dy = value.i;
+        dy = value;
     else if (!property.compare("Scale"))
-        scale = value.d;
+        scale = value;
     else if (!property.compare("Delta"))
-        delta = value.d;
+        delta = value;
 
     return true;
 }

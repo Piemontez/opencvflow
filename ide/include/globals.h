@@ -29,6 +29,11 @@ namespace ocvflow
         { /*this->mat = mat;*/
         }
 
+        operator bool() const { return b; }
+        operator int() const { return i; }
+        operator float() const { return f; }
+        operator double() const { return d; }
+
         ~PropertiesVariant(){};
         PropertiesVariant(const PropertiesVariant &rvalue)
         {

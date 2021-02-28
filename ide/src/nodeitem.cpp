@@ -166,11 +166,11 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         {
             auto spinBoxl = new QSpinBox();
             spinBoxl->setMaximum(std::numeric_limits<int>::max());
-            spinBoxl->setValue(this->property(entry.first).i);
+            spinBoxl->setValue(std::get<0>(this->property(entry.first).sizeI));
 
             auto spinBoxr = new QSpinBox();
             spinBoxr->setMaximum(std::numeric_limits<int>::max());
-            spinBoxr->setValue(this->property(entry.first).i);
+            spinBoxr->setValue(std::get<1>(this->property(entry.first).sizeI));
 
             auto func = [this, spinBoxl, spinBoxr, entry](int /*value*/) {
                 if (!this->setProperty(entry.first, ocvflow::PropertiesVariant(spinBoxl->value(), spinBoxr->value())))

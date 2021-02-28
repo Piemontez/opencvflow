@@ -25,16 +25,22 @@ namespace ocvflow
         float f;
         double d;
         std::tuple<int, int> sizeI;
-        cv::Mat *mat;
+        //cv::Mat mat;
 
-        PropertiesVariant(bool b) { this->b = b; }
-        PropertiesVariant(int i) { this->i = i; }
-        PropertiesVariant(float f) { this->f = f; }
-        PropertiesVariant(double d) { this->d = d; }
-        PropertiesVariant(int w, int h) { this->sizeI = std::make_tuple(w, h); }
-        PropertiesVariant(cv::Mat &mat) { this->mat = &mat; }
+        PropertiesVariant(const bool b) { this->b = b; }
+        PropertiesVariant(const int i) { this->i = i; }
+        PropertiesVariant(const float f) { this->f = f; }
+        PropertiesVariant(const double d) { this->d = d; }
+        PropertiesVariant(const int w, const int h) { this->sizeI = std::make_tuple(w, h); }
+        //explicit PropertiesVariant(cv::Mat mat) { /*this->mat = mat;*/ }
 
         ~PropertiesVariant(){};
+
+        /*
+        PropertiesVariant& operator = (PropertiesVariant &value) { i = value.i; return *this; }
+        PropertiesVariant& operator = (PropertiesVariant &&value) { return value; }
+        PropertiesVariant operator = (const PropertiesVariant &value) { return move(value); }
+        */
     };
 
     enum Properties

@@ -290,7 +290,7 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                 //cv::Mat mat = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Point(sizeX->value(), sizeY->value()));
                 cv::Mat mat = this->property(entry.first).mat;
 
-                this->setProperty(entry.first, mat);
+                this->setProperty(entry.first, PropertiesVariant(mat));
 
                 for (int j = sizeX->value(); j < gridL->columnCount(); j++)
                 {
@@ -312,16 +312,16 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                         if (!gridL->itemAtPosition(k, j))
                         {
                             auto checkbox = new QCheckBox();
-                            checkbox->setChecked(this->property(entry.first).mat->at<int>(j, k));
+                            checkbox->setChecked(this->property(entry.first).mat.at<int>(j, k));
                             checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, j, k, entry](int value) {
                                 auto isChecked = value == Qt::Checked;
 
                                 auto mat = this->property(entry.first).mat;
-                                mat->at<int>(j, k) = isChecked ? 1 : 0;
+                                mat.at<int>(j, k) = isChecked ? 1 : 0;
 
-                                if (!this->setProperty(entry.first, mat))
+                                if (!this->setProperty(entry.first, PropertiesVariant(mat)))
                                 {
-                                    checkbox->setChecked(this->property(entry.first).mat->at<int>(j, k));
+                                    checkbox->setChecked(this->property(entry.first).mat.at<int>(j, k));
                                 }
                             });
 

@@ -8,16 +8,17 @@ using namespace ocvflow;
 /**
  * @brief SobelNode::SobelNode
  */
-SobelNode::SobelNode(): NodeItem(nullptr, "Sobel") {}
+SobelNode::SobelNode() : NodeItem(nullptr, "Sobel") {}
 
-void SobelNode::proccess() {
+void SobelNode::proccess()
+{
     _sources.clear();
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::Sobel(mat, out, ddepth, dx, dy, ksize, scale, delta);
             _sources.push_back(out);
@@ -25,13 +26,13 @@ void SobelNode::proccess() {
     }
 }
 
-SobelComponent::SobelComponent() : ProcessorComponent(ProcessorsTB, "Sobel") { }
+SobelComponent::SobelComponent() : ProcessorComponent(ProcessorsTB, "Sobel") {}
 Node *SobelComponent::createNode() { return new SobelNode; }
 
 /**
  * @brief CannyNode::CannyNode
  */
-CannyNode::CannyNode():  NodeItem(nullptr, "Canny") {}
+CannyNode::CannyNode() : NodeItem(nullptr, "Canny") {}
 
 void CannyNode::proccess()
 {
@@ -39,24 +40,23 @@ void CannyNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::Canny(mat, out, threshold1, threshold1, aperturesize, L2gradiente);
             _sources.push_back(out);
         }
     }
-
 }
 
-CannyComponent::CannyComponent() : ProcessorComponent(ProcessorsTB, "Canny") { }
+CannyComponent::CannyComponent() : ProcessorComponent(ProcessorsTB, "Canny") {}
 Node *CannyComponent::createNode() { return new CannyNode; }
 
 /**
  * @brief LaplacianNode::LaplacianNode
  */
-LaplacianNode::LaplacianNode():  NodeItem(nullptr, "Laplacian") {}
+LaplacianNode::LaplacianNode() : NodeItem(nullptr, "Laplacian") {}
 
 void LaplacianNode::proccess()
 {
@@ -64,9 +64,9 @@ void LaplacianNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::Laplacian(mat, out, ddepth, ksize, scale, delta);
             _sources.push_back(out);
@@ -74,13 +74,13 @@ void LaplacianNode::proccess()
     }
 }
 
-LaplacianComponent::LaplacianComponent() : ProcessorComponent(ProcessorsTB, "Laplacian") { }
+LaplacianComponent::LaplacianComponent() : ProcessorComponent(ProcessorsTB, "Laplacian") {}
 Node *LaplacianComponent::createNode() { return new LaplacianNode; }
 
 /**
  * @brief MedianBlurNode::MedianBlurNode
  */
-MedianBlurNode::MedianBlurNode():  NodeItem(nullptr, "MedianBlur") {}
+MedianBlurNode::MedianBlurNode() : NodeItem(nullptr, "MedianBlur") {}
 
 void MedianBlurNode::proccess()
 {
@@ -88,24 +88,23 @@ void MedianBlurNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::medianBlur(mat, out, ksize);
             _sources.push_back(out);
         }
     }
-
 }
 
-MedianBlurComponent::MedianBlurComponent() : ProcessorComponent(ProcessorsTB, "MedianBlur") { }
+MedianBlurComponent::MedianBlurComponent() : ProcessorComponent(ProcessorsTB, "MedianBlur") {}
 Node *MedianBlurComponent::createNode() { return new MedianBlurNode; }
 
 /**
  * @brief GaussianBlurNode::GaussianBlurNode
  */
-GaussianBlurNode::GaussianBlurNode():  NodeItem(nullptr, "GaussianBlur") {}
+GaussianBlurNode::GaussianBlurNode() : NodeItem(nullptr, "GaussianBlur") {}
 
 void GaussianBlurNode::proccess()
 {
@@ -113,9 +112,9 @@ void GaussianBlurNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::GaussianBlur(mat, out, size, sigmaX, sigmaY);
             _sources.push_back(out);
@@ -123,13 +122,13 @@ void GaussianBlurNode::proccess()
     }
 }
 
-GaussianBlurComponent::GaussianBlurComponent() : ProcessorComponent(ProcessorsTB, "GaussianBlur") { }
+GaussianBlurComponent::GaussianBlurComponent() : ProcessorComponent(ProcessorsTB, "GaussianBlur") {}
 Node *GaussianBlurComponent::createNode() { return new GaussianBlurNode; }
 
 /**
  * @brief BilateralFilterNode::BilateralFilterNode
  */
-BilateralFilterNode::BilateralFilterNode():  NodeItem(nullptr, "BilateralFilter") {}
+BilateralFilterNode::BilateralFilterNode() : NodeItem(nullptr, "BilateralFilter") {}
 
 void BilateralFilterNode::proccess()
 {
@@ -137,24 +136,23 @@ void BilateralFilterNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::bilateralFilter(mat, out, d, sigmaColor, sigmaSpace);
             _sources.push_back(out);
         }
     }
-
 }
 
-BilateralFilterComponent::BilateralFilterComponent() : ProcessorComponent(ProcessorsTB, "BilateralFilter") { }
+BilateralFilterComponent::BilateralFilterComponent() : ProcessorComponent(ProcessorsTB, "BilateralFilter") {}
 Node *BilateralFilterComponent::createNode() { return new BilateralFilterNode; }
 
 /**
  * @brief BoxFilterNode::BoxFilterNode
  */
-BoxFilterNode::BoxFilterNode():  NodeItem(nullptr, "BoxFilter") {}
+BoxFilterNode::BoxFilterNode() : NodeItem(nullptr, "BoxFilter") {}
 
 void BoxFilterNode::proccess()
 {
@@ -162,25 +160,23 @@ void BoxFilterNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::boxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
         }
     }
-
 }
 
-BoxFilterComponent::BoxFilterComponent() : ProcessorComponent(ProcessorsTB, "BoxFilter") { }
+BoxFilterComponent::BoxFilterComponent() : ProcessorComponent(ProcessorsTB, "BoxFilter") {}
 Node *BoxFilterComponent::createNode() { return new BoxFilterNode; }
-
 
 /**
  * @brief SqrBoxFilterNode::SqrBoxFilterNode
  */
-SqrBoxFilterNode::SqrBoxFilterNode():  NodeItem(nullptr, "SqrBoxFilter") {}
+SqrBoxFilterNode::SqrBoxFilterNode() : NodeItem(nullptr, "SqrBoxFilter") {}
 
 void SqrBoxFilterNode::proccess()
 {
@@ -188,25 +184,23 @@ void SqrBoxFilterNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::sqrBoxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
         }
     }
-
 }
 
-SqrBoxFilterComponent::SqrBoxFilterComponent() : ProcessorComponent(ProcessorsTB, "SqrBoxFilter") { }
+SqrBoxFilterComponent::SqrBoxFilterComponent() : ProcessorComponent(ProcessorsTB, "SqrBoxFilter") {}
 Node *SqrBoxFilterComponent::createNode() { return new SqrBoxFilterNode; }
-
 
 /**
  * @brief BlurNode::BlurNode
  */
-BlurNode::BlurNode():  NodeItem(nullptr, "Blur") {}
+BlurNode::BlurNode() : NodeItem(nullptr, "Blur") {}
 
 void BlurNode::proccess()
 {
@@ -214,24 +208,23 @@ void BlurNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::blur(mat, out, ksize, anchor);
             _sources.push_back(out);
         }
     }
-
 }
 
-BlurComponent::BlurComponent() : ProcessorComponent(ProcessorsTB, "Blur") { }
+BlurComponent::BlurComponent() : ProcessorComponent(ProcessorsTB, "Blur") {}
 Node *BlurComponent::createNode() { return new BlurNode; }
 
 /**
  * @brief ScharrNode::ScharrNode
  */
-ScharrNode::ScharrNode():  NodeItem(nullptr, "Scharr") {}
+ScharrNode::ScharrNode() : NodeItem(nullptr, "Scharr") {}
 
 void ScharrNode::proccess()
 {
@@ -239,24 +232,26 @@ void ScharrNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::Scharr(mat, out, ddepth, dx, dy, scale, delta);
             _sources.push_back(out);
         }
     }
-
 }
 
-ScharrComponent::ScharrComponent() : ProcessorComponent(ProcessorsTB, "Scharr") { }
+ScharrComponent::ScharrComponent() : ProcessorComponent(ProcessorsTB, "Scharr") {}
 Node *ScharrComponent::createNode() { return new ScharrNode; }
 
 /**
  * @brief DilateNode::DilateNode
  */
-DilateNode::DilateNode():  NodeItem(nullptr, "Scharr") {}
+DilateNode::DilateNode() : NodeItem(nullptr, "Dilate")
+{
+    kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Point(3, 3));
+}
 
 void DilateNode::proccess()
 {
@@ -264,16 +259,15 @@ void DilateNode::proccess()
 
     cv::Mat out;
 
-    for (auto && edge: _edges)
+    for (auto &&edge : _edges)
     {
-        for (auto && mat: edge->sourceNode()->sources())
+        for (auto &&mat : edge->sourceNode()->sources())
         {
             cv::dilate(mat, out, kernel, anchor, iterations, borderType, borderValue);
             _sources.push_back(out);
         }
     }
-
 }
 
-DilateComponent::DilateComponent() : ProcessorComponent(ProcessorsTB, "Dilate") { }
+DilateComponent::DilateComponent() : ProcessorComponent(ProcessorsTB, "Dilate") {}
 Node *DilateComponent::createNode() { return new DilateNode; }

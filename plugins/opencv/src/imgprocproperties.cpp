@@ -438,10 +438,16 @@ QMap<QString, ocvflow::Properties> DilateNode::properties()
 
 ocvflow::PropertiesVariant DilateNode::property(const QString &property)
 {
+    if (!property.compare("Kernel"))
+        return kernel;
+
     return 0;
 }
 
 bool DilateNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
 {
+    if (!property.compare("Kernel"))
+        kernel = *value.mat;
+
     return true;
 }

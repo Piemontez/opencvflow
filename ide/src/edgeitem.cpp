@@ -39,8 +39,8 @@ void EdgeItem::adjust()
     auto sourceNode = static_cast<NodeItem *>(source);
     auto destNode = static_cast<NodeItem *>(dest);
 
-    QLineF line(sourceNode->geometry().right() + 8, sourceNode->geometry().center().y(),
-                destNode->geometry().left() + 8, destNode->geometry().center().y());
+    QLineF line(sourceNode->geometry().right(), sourceNode->geometry().center().y(),
+                destNode->geometry().left(), destNode->geometry().center().y());
     qreal length = line.length();
 
     prepareGeometryChange();

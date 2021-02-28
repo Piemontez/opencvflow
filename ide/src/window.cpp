@@ -472,6 +472,16 @@ void MainWindow::nodeMenuMouseMoveEvent(NodeMenuItem *nodeMenu, QMouseEvent *eve
                 proxy->setPos(newp.x(), newp.y());
 
                 //d_func()->nodeMoveMouseOrigin = event->screenPos();
+
+                //Alinhas as setas
+                for (auto edge : nodeItem->edges())
+                {
+                    EdgeItem *edgeItem = static_cast<EdgeItem *>(edge);
+                    if (edgeItem)
+                    {
+                        edgeItem->adjust();
+                    }
+                }
             }
         }
     }
@@ -480,17 +490,4 @@ void MainWindow::nodeMenuMouseMoveEvent(NodeMenuItem *nodeMenu, QMouseEvent *eve
 void MainWindow::nodeMenuMouseReleaseEvent(NodeMenuItem *nodeMenu, QMouseEvent *event)
 {
     d_func()->nodeMoveViewPort = false;
-            
-    NodeItem *nodeItem = static_cast<NodeItem *>(nodeMenu->parentWidget());
-    if (nodeItem)
-    {
-        for(auto edge: nodeItem->edges())
-        {
-            EdgeItem* edgeItem = static_cast< EdgeItem* >(edge);
-            if (edgeItem) {
-                edgeItem->adjust();
-            }
-        }
-    }
-    
 }

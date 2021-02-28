@@ -2,93 +2,100 @@
 #define GLOBALS_H
 
 #include <tuple>
+#include "opencv2/core/mat.hpp"
 
-namespace ocvflow {
+namespace ocvflow
+{
+    class PluginInterface;
 
-class PluginInterface;
+    enum ToolBarNames
+    {
+        FilesTB,
+        SourcesTB,
+        ProcessorsTB,
+        ConnectorsTB,
+        BuildTB,
+        WindowTB
+    };
 
-enum ToolBarNames {
-    FilesTB,
-    SourcesTB,
-    ProcessorsTB,
-    ConnectorsTB,
-    BuildTB,
-    WindowTB
-};
+    union PropertiesVariant
+    {
+        bool b;
+        int i;
+        float f;
+        double d;
+        std::tuple<int, int> sizeI;
+        cv::Mat *mat;
 
-union PropertiesVariant {
-    bool b;
-    int i;
-    float f;
-    double d;
-    std::tuple<int, int> sizeI;
+        PropertiesVariant(bool b) { this->b = b; }
+        PropertiesVariant(int i) { this->i = i; }
+        PropertiesVariant(float f) { this->f = f; }
+        PropertiesVariant(double d) { this->d = d; }
+        PropertiesVariant(int w, int h) { this->sizeI = std::make_tuple(w, h); }
+        PropertiesVariant(cv::Mat &mat) { this->mat = &mat; }
 
-    PropertiesVariant(bool b) {this->b = b;}
-    PropertiesVariant(int i) {this->i = i;}
-    PropertiesVariant(float f) {this->f = f;}
-    PropertiesVariant(double d) {this->d = d;}
-    PropertiesVariant(int w, int h) {this->sizeI = std::make_tuple(w,h);}
+        ~PropertiesVariant(){};
+    };
 
-    ~PropertiesVariant() {};
-};
-
-enum Properties {
-    EmptyProperties,
-    BooleanProperties,
-    IntProperties,
-    FloatProperties,
-    DoubleProperties,
-    SizeIntProperties,
-    IntTableProperties,
-    OneZeroTableProperties,
-    DoubleTableProperties,
-    ScalarProperties
-};
-
+    enum Properties
+    {
+        EmptyProperties,
+        BooleanProperties,
+        IntProperties,
+        FloatProperties,
+        DoubleProperties,
+        SizeIntProperties,
+        OneZeroTableProperties,
+        IntTableProperties,
+        DoubleTableProperties,
+        ScalarProperties
+    };
 
 // Define the API version.
 #define OCVFLOW_PLUGIN_API_VERSION 1
 
 #ifdef WIN32
-# define OCVFLOW_PLUGIN_EXPORT __declspec(dllexport)
+#define OCVFLOW_PLUGIN_EXPORT __declspec(dllexport)
 #else
-# define OCVFLOW_PLUGIN_EXPORT // empty
+#define OCVFLOW_PLUGIN_EXPORT // empty
 #endif
 
-// Define a type for the static function pointer.
-OCVFLOW_PLUGIN_EXPORT typedef PluginInterface* (*GetPluginFunc)();
+    // Define a type for the static function pointer.
+    OCVFLOW_PLUGIN_EXPORT typedef PluginInterface *(*GetPluginFunc)();
 
-// Plugin details structure that's exposed to the application.
-struct PluginDetails {
-    int apiVersion;
-    const char* fileName;
-    const char* className;
-    const char* pluginName;
-    const char* pluginVersion;
-    GetPluginFunc initializeFunc;
-};
+    // Plugin details structure that's exposed to the application.
+    struct PluginDetails
+    {
+        int apiVersion;
+        const char *fileName;
+        const char *className;
+        const char *pluginName;
+        const char *pluginVersion;
+        GetPluginFunc initializeFunc;
+    };
 
 #define OCVFLOW_STANDARD_PLUGIN_STUFF \
     OCVFLOW_PLUGIN_API_VERSION,       \
-    __FILE__
+        __FILE__
 
-#define OCVFLOW_PLUGIN(classType, pluginName, pluginVersion)    \
-  extern "C" {                                                  \
-      OCVFLOW_PLUGIN_EXPORT ocvflow::PluginInterface* loadPlugin()    \
-      {                                                         \
-          static classType singleton;                           \
-          return &singleton;                                    \
-      }                                                         \
-      OCVFLOW_PLUGIN_EXPORT ocvflow::PluginDetails exports = \
-      {                                                         \
-          OCVFLOW_STANDARD_PLUGIN_STUFF,                        \
-          #classType,                                           \
-          pluginName,                                           \
-          pluginVersion,                                        \
-          loadPlugin,                                           \
-      };                                                        \
-  }
+#define OCVFLOW_PLUGIN(classType, pluginName, pluginVersion)         \
+    extern "C"                                                       \
+    {                                                                \
+        OCVFLOW_PLUGIN_EXPORT ocvflow::PluginInterface *loadPlugin() \
+        {                                                            \
+            static classType singleton;                              \
+            return &singleton;                                       \
+        }                                                            \
+        OCVFLOW_PLUGIN_EXPORT ocvflow::PluginDetails exports =       \
+            {                                                        \
+                OCVFLOW_STANDARD_PLUGIN_STUFF,                       \
+                #classType,                                          \
+                pluginName,                                          \
+                pluginVersion,                                       \
+                loadPlugin,                                          \
+        };                                                           \
+    }
 
-}
+} // namespace ocvflow
 
 #endif // GLOBALS_H

@@ -262,10 +262,12 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         }
         case ocvflow::OneZeroTableProperties:
         {
+            //Quantidade X de posições
             auto sizeX = new QSpinBox();
             sizeX->setMaximum(std::numeric_limits<int>::max());
             sizeX->setValue(3);
 
+            //Quantidade Y de posições
             auto sizeY = new QSpinBox();
             sizeY->setMaximum(std::numeric_limits<int>::max());
             sizeY->setValue(3);
@@ -285,9 +287,11 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             layout->addWidget(gridW, pos, 0, 1, 3);
 
             auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
-                //cv::getStructuringElement(cv::MORPH_RECT, cv::Point(sizeY->value(), sizeX->value()));
-                //cv::MORPH_RECT;
-                //removes excess widgets
+                //cv::Mat mat = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Point(sizeX->value(), sizeY->value()));
+                cv::Mat mat = this->property(entry.first).mat;
+
+                this->setProperty(entry.first, mat);
+
                 for (int j = sizeX->value(); j < gridL->columnCount(); j++)
                 {
                     for (int k = sizeY->value(); k < gridL->rowCount(); k++)
@@ -306,7 +310,23 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                     for (int k = 0; k < sizeY->value(); k++)
                     {
                         if (!gridL->itemAtPosition(k, j))
-                            gridL->addWidget(new QCheckBox(), k, j, 1, 1);
+                        {
+                            auto checkbox = new QCheckBox();
+                            checkbox->setChecked(this->property(entry.first).mat->at<int>(j, k));
+                            checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, j, k, entry](int value) {
+                                auto isChecked = value == Qt::Checked;
+
+                                auto mat = this->property(entry.first).mat;
+                                mat->at<int>(j, k) = isChecked ? 1 : 0;
+
+                                if (!this->setProperty(entry.first, mat))
+                                {
+                                    checkbox->setChecked(this->property(entry.first).mat->at<int>(j, k));
+                                }
+                            });
+
+                            gridL->addWidget(checkbox, k, j, 1, 1);
+                        }
                     }
                 }
             };

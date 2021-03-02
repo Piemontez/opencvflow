@@ -367,6 +367,12 @@ void MainWindow::addNode(NodeItem *node)
     centralWidget()->scene()->addWidget(node)->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
 }
 
+void MainWindow::removeNode(NodeItem *node)
+{
+    centralWidget()->scene()->removeItem(node->proxyWidget());
+}
+
+
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
 {
     centralWidget()->scene()->addItem(new EdgeItem(source, dest));

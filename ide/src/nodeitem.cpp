@@ -38,7 +38,7 @@ NodeItem::NodeItem(QWidget *parent)
 {
 }
 
-NodeItem::NodeItem(CentralWidget *centralWidget /*remover*/, QString title, QWidget *parent)
+NodeItem::NodeItem(CentralWidget *centralWidget, QString title, QWidget *parent)
     : NodeItem(parent)
 {
     d_func()->lastViewUpdated = 0;
@@ -51,9 +51,8 @@ NodeItem::NodeItem(CentralWidget *centralWidget /*remover*/, QString title, QWid
 
     this->setLayout(dockLayout);
 
-    /*
-    addToGroup(new NodeLinkItem(this));
-    */
+    //addToGroup(new NodeLinkItem(this));
+    
     //setAttribute(Qt::WA_Hover);
     //installEventFilter(this);
     //setMouseTracking(true);
@@ -382,6 +381,7 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
     }
     else
     {
+        //Verifica se teve modificação 
         if (!d_func()->lastViewUpdated || !d_func()->lastUpdateCall || d_func()->lastViewUpdated != d_func()->lastUpdateCall)
         {
             d_func()->lastViewUpdated = d_func()->lastUpdateCall;
@@ -391,11 +391,12 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
             {
                 try
                 {
+                    //Redimenciona a imagem para o tamanho do widget
                     cv::resize(mat, out, cv::Size(region.width(), region.height()));
                     auto image = cvMatToQImage(out);
 
                     d_func()->contentViewCache = image;
-                    ;
+
                     painter->drawImage(region.left(), region.top(), image);
                 }
                 catch (...)

@@ -28,7 +28,7 @@ CentralWidget::CentralWidget(QWidget *parent) : QGraphicsView(parent),
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-16000, -12000, 32000, 24000);
+    scene->setSceneRect(-8000, -3000, 16000, 6000);
 
     setScene(scene);
     setCacheMode(CacheBackground);
@@ -42,7 +42,7 @@ CentralWidget::CentralWidget(QWidget *parent) : QGraphicsView(parent),
 
     setBackgroundBrush(QBrush(Qt::lightGray, Qt::SolidPattern));
 
-    scaleView(0.5);
+    scaleView(0.8);
 }
 
 void CentralWidget::keyPressEvent(QKeyEvent *event)
@@ -79,21 +79,10 @@ void CentralWidget::wheelEvent(QWheelEvent *event)
 }
 #endif
 
-void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
-{
-    QGraphicsView::drawBackground(painter, rect);
-
-    QRectF sceneRect = this->sceneRect();
-
-    painter->setPen(QPen(Qt::gray, 2, Qt::DashLine));
-    painter->drawLine(sceneRect.left() * 2, 0, sceneRect.right() * 2, 0);
-    painter->drawLine(0, sceneRect.top() * 2, 0, sceneRect.bottom() * 2);
-}
-
 void CentralWidget::scaleView(qreal scaleFactor)
 {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
+    if (factor < 0.07 || factor > 2)
         return;
 
     scale(scaleFactor, scaleFactor);
@@ -107,6 +96,17 @@ void CentralWidget::zoomIn()
 void CentralWidget::zoomOut()
 {
     scaleView(1 / qreal(1.2));
+}
+
+void CentralWidget::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    QGraphicsView::drawBackground(painter, rect);
+
+    QRectF sceneRect = this->sceneRect();
+
+    painter->setPen(QPen(Qt::gray, 2, Qt::DashLine));
+    painter->drawLine(sceneRect.left() * 2, 0, sceneRect.right() * 2, 0);
+    painter->drawLine(0, sceneRect.top() * 2, 0, sceneRect.bottom() * 2);
 }
 
 void CentralWidget::dragLeaveEvent(QDragLeaveEvent *event)

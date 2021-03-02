@@ -43,6 +43,7 @@ namespace ocvflow
          * Adiciona novo nó no componente central
          */
         void addNode(NodeItem *node);
+        void removeNode(NodeItem *node);
         /**
          * Conecta dois nós
          */

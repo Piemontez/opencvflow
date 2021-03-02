@@ -20,8 +20,9 @@ endif()
 #dependencies
 find_package(OpenCV REQUIRED)
 
-find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
-get_target_property(QtCore_location Qt5::Core LOCATION)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets Charts REQUIRED)
+get_target_property(QtCore_location Qt${QT_VERSION_MAJOR}::Core LOCATION)
 
 #includes
 include_directories(
@@ -50,9 +51,10 @@ add_executable(opencvflow
     resources/resources.qrc)
 
 target_link_libraries(opencvflow
-    Qt5::Core
-    Qt5::Gui 
-    Qt5::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui 
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Charts
     ${CMAKE_DL_LIBS}
     opencv_core
     opencv_imgproc

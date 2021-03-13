@@ -44,7 +44,7 @@ NodeItem::NodeItem(CentralWidget *centralWidget, QString title, QWidget *parent)
     d_func()->lastViewUpdated = 0;
 
     this->setMinimumSize(240, 100);
-    this->setFixedSize(480, 200);
+    this->setFixedSize(540, 400);
 
     auto dockLayout = new QVBoxLayout();
     dockLayout->setMenuBar(new NodeMenuItem(title, this));

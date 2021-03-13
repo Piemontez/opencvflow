@@ -3,6 +3,12 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 CMakeLists.txt.*
+
+*_autogen
+*.so
+opencvflow
+install*
+
 build/
 dist/
 *.cbp

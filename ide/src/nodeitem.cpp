@@ -16,6 +16,7 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QCheckBox>
+#include <QPushButton>
 
 using namespace ocvflow;
 
@@ -28,6 +29,7 @@ class ocvflow::NodeItemPrivate
     QImage contentViewCache; //cache da última imagem processada
     float lastUpdateCall;    //último processamento
     float lastViewUpdated;   //última atualização da imagem visualizada
+    bool resize{false};           //título do widget
 
     friend class NodeItem;
 };
@@ -46,20 +48,33 @@ NodeItem::NodeItem(CentralWidget *centralWidget, QString title, QWidget *parent)
     this->setMinimumSize(240, 100);
     this->setFixedSize(540, 400);
 
+    auto nodeMenuItem = new NodeMenuItem(title, this);
+    auto resizerButton = new QPushButton(this);
+    resizerButton->setFlat(true);
+    resizerButton->setFixedSize(20, 20);
+    resizerButton->setCursor(Qt::SizeFDiagCursor);
+    resizerButton->setStyleSheet("QPushButton { background-color: transparent; border: 0px }");
+
     auto dockLayout = new QVBoxLayout();
-    dockLayout->setMenuBar(new NodeMenuItem(title, this));
+    dockLayout->setMargin(0);
+    dockLayout->setSpacing(0);
+    dockLayout->setMenuBar(nodeMenuItem);
+    dockLayout->addWidget(resizerButton, 0, Qt::AlignRight | Qt::AlignBottom);
 
     this->setLayout(dockLayout);
-
-    //addToGroup(new NodeLinkItem(this));
-    
-    //setAttribute(Qt::WA_Hover);
-    //installEventFilter(this);
-    //setMouseTracking(true);
 
     d_func()->title = title.isEmpty()
                           ? "Empty Node"
                           : title;
+
+
+    //dockLayout->installEventFilter(this);
+    dockLayout->connect(resizerButton, &QPushButton::pressed, dockLayout, [this] {
+        d_func()->resize = true;
+    });
+    dockLayout->connect(resizerButton, &QPushButton::released, dockLayout, [this] {
+        d_func()->resize = false;
+    });
 }
 
 NodeItem::~NodeItem()

@@ -8,6 +8,9 @@ namespace ocvflow
 {
     class PluginInterface;
 
+    /**
+     * Menus disponíveis na IDE
+     */
     enum ToolBarNames
     {
         FilesTB,
@@ -18,6 +21,27 @@ namespace ocvflow
         WindowTB
     };
 
+    /**
+     * Tipos de propriedades de um nó
+     */
+    enum Properties
+    {
+        EmptyProperties,
+        BooleanProperties,
+        IntProperties,
+        FloatProperties,
+        DoubleProperties,
+        SizeIntProperties,
+        OneZeroTableProperties,
+        IntTableProperties,
+        DoubleTableProperties,
+        ScalarProperties
+    };
+
+    /**
+     * Variável para tráfego de informação entre a ide e o nó.
+     * Utilizado para descrever as propriedades de um nó.
+     */
     struct PropertiesVariant
     {
         PropertiesVariant(const bool b) : type{BOOL}, b{b} {}
@@ -61,20 +85,6 @@ namespace ocvflow
             std::tuple<int, int> sizeI;
             cv::Mat mat;
         };
-    };
-
-    enum Properties
-    {
-        EmptyProperties,
-        BooleanProperties,
-        IntProperties,
-        FloatProperties,
-        DoubleProperties,
-        SizeIntProperties,
-        OneZeroTableProperties,
-        IntTableProperties,
-        DoubleTableProperties,
-        ScalarProperties
     };
 
 // Define the API version.

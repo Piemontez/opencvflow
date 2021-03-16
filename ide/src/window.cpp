@@ -477,6 +477,7 @@ void MainWindow::nodeMouseReleaseEvent(NodeItem *node, QMouseEvent *event)
 
 void MainWindow::nodeMenuMousePressEvent(NodeMenuItem *nodeMenu, QMouseEvent *event)
 {
+
     if (event->button() == Qt::LeftButton)
     {
         //d_func()->nodeMoveMouseOrigin = event->screenPos();

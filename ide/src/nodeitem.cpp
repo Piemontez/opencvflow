@@ -30,6 +30,7 @@ class ocvflow::NodeItemPrivate
     float lastUpdateCall;    //último processamento
     float lastViewUpdated;   //última atualização da imagem visualizada
     bool resize{false};           //título do widget
+    QPoint lastMousePos;
 
     friend class NodeItem;
 };
@@ -66,15 +67,10 @@ NodeItem::NodeItem(CentralWidget *centralWidget, QString title, QWidget *parent)
     d_func()->title = title.isEmpty()
                           ? "Empty Node"
                           : title;
+    this->setObjectName(d_func()->title);
 
-
-    //dockLayout->installEventFilter(this);
-    dockLayout->connect(resizerButton, &QPushButton::pressed, dockLayout, [this] {
-        d_func()->resize = true;
-    });
-    dockLayout->connect(resizerButton, &QPushButton::released, dockLayout, [this] {
-        d_func()->resize = false;
-    });
+    //installEventFilter(this);
+    resizerButton->installEventFilter(this);
 }
 
 NodeItem::~NodeItem()
@@ -428,6 +424,31 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
     release();
 }
 
+bool NodeItem::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+        auto mouseEvent = static_cast<QMouseEvent *>(event);
+        d_func()->resize = true;
+        d_func()->lastMousePos = mouseEvent->pos();
+        return true;
+    }
+    if (event->type() == QEvent::MouseButtonRelease) {
+        d_func()->resize = false;
+        return true;
+    }
+    if (event->type() == QEvent::MouseMove && d_func()->resize) {
+        auto mouseEvent = static_cast<QMouseEvent *>(event);
+        QPoint move = mouseEvent->pos() - d_func()->lastMousePos;
+        QSize newSize = this->size() + QSize(move.x(), move.y());
+        this->setFixedSize(newSize);
+
+        d_func()->lastMousePos = mouseEvent->pos();
+        return true;
+    } else {
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+}
 void NodeItem::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);

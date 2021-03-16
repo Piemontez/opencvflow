@@ -52,6 +52,7 @@ namespace ocvflow
         ////    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
     protected:
+        bool eventFilter(QObject *obj, QEvent *event) override;
         //QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
         void mousePressEvent(QMouseEvent *event) override;

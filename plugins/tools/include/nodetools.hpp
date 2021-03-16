@@ -1,10 +1,12 @@
 #ifndef TOOLS_NODE_H
 #define TOOLS_NODE_H
 
-#include "items.h"
-
 #include <chrono>
 #include "opencv2/core/mat.hpp"
+#include <QObject>
+
+#include "items.h"
+
 
 namespace QtCharts
 {

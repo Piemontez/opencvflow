@@ -4,14 +4,12 @@
 #include "globals.h"
 #include <vector>
 
-class QAction;
-class QMenu;
-class QMenuBar;
+class QObject;
 
 namespace ocvflow {
 
 class Component;
-class QObject;
+class NodeItem;
 
 /**
  * @brief The ActivatorInterface class
@@ -23,9 +21,13 @@ public:
     virtual ~PluginInterface() {};
 
     //Components add on toolbar to create a node
-    virtual std::vector<Component*> components() = 0;
-    //Node actions add on the toolbar of node widgets
-    virtual std::vector<QObject*> nodeToolBarActions() = 0;
+    virtual std::vector<Component*> components() {
+        return std::vector<Component*>();
+    }
+    //Node actions to add on the toolbar of node widgets
+    virtual std::vector<QObject*> nodeToolBarActions(NodeItem* nodeItem) {
+        return std::vector<QObject*>();
+    }
 };
 
 }

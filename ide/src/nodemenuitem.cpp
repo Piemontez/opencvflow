@@ -1,7 +1,4 @@
 #include <chrono>
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/imgproc.hpp"
 
 #include "nodemenuitem.h"
 #include "items.h"
@@ -24,14 +21,12 @@ NodeMenuItem::NodeMenuItem(QString title, QWidget *parent)
     auto menuBar = new QMenuBar;
     menuBar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
     auto menu = new QMenu(tr("..."));
-    auto histAction = new QAction(tr("View histogram"));
     auto close = new QAction;
     close->setIcon(this->style()->standardIcon(QStyle::SP_TitleBarCloseButton));
 
     auto spacer = new QWidget;
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    menu->addAction(histAction);
     menuBar->addMenu(menu);
     menuBar->addAction(close);
 
@@ -39,18 +34,13 @@ NodeMenuItem::NodeMenuItem(QString title, QWidget *parent)
     this->addWidget(spacer);
     this->addWidget(menuBar);
 
+    MainWindow::instance()->addNodeToolbarActions(menu, static_cast<NodeItem*>(parent));
+
     connect(close, &QAction::triggered, this, [parent]() {
         auto nodeItem = static_cast<NodeItem *>(parent);
         if (nodeItem)
         {
             MainWindow::instance()->removeNode(nodeItem);
-        }
-    });
-    connect(histAction, &QAction::triggered, this, [parent]() {
-        auto nodeItem = static_cast<NodeItem *>(parent);
-        if (nodeItem)
-        {
-            MainWindow::instance()->addNode(new HistogramNode(nodeItem));
         }
     });
 

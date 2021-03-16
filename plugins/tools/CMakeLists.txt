@@ -22,7 +22,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS REQUIRED Core Gui Widgets Charts D
 get_target_property(QtCore_location Qt${QT_VERSION_MAJOR}::Core LOCATION)
 
 qt5_wrap_cpp(MOC_Files
-    include/nodetools.h
+    include/nodetools.hpp
 )
 
 

@@ -15,11 +15,13 @@
 #include <QToolBar>
 #include <QThread>
 #include <QDockWidget>
+#include <QObject>
 
 using namespace ocvflow;
 
 class ocvflow::MainWindowPrivate
 {
+    QList<ocvflow::PluginInterface *> plugins;
     QMap<ToolBarNames, QToolBar *> toolbars;
     QMap<QString, Component *> components;
 
@@ -218,6 +220,8 @@ void MainWindow::loadPlugins()
                         ocvflow::PluginInterface *plugin = loadPlugin();
                         if (plugin)
                         {
+                            d_func()->plugins.push_back(plugin);
+
                             auto compsLoaded = plugin->components();
                             comps.insert(comps.end(), compsLoaded.begin(), compsLoaded.end());
                         }
@@ -375,6 +379,27 @@ void MainWindow::removeNode(NodeItem *node)
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
 {
     centralWidget()->scene()->addItem(new EdgeItem(source, dest));
+}
+
+void MainWindow::addNodeToolbarActions(QMenu *menu, NodeItem* nodeItem) 
+{
+    if (!menu) return;
+    
+    for (auto && plugin: d_func()->plugins)
+    {
+        auto actionsLoaded = plugin->nodeToolBarActions(nodeItem);
+        for (QObject* object: actionsLoaded)
+        {
+            auto action = qobject_cast<QAction *>(object);
+            if (action) {
+                menu->addAction(action);
+            }
+            auto menu = qobject_cast<QMenu *>(object);
+            if (menu) {
+                menu->addMenu(menu);
+            }
+        }
+    }
 }
 
 void MainWindow::nodeClicked(NodeItem *node)

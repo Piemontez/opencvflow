@@ -49,10 +49,15 @@ namespace ocvflow
          */
         void connectNode(NodeItem *source, NodeItem *dest);
         /**
+         * Adiciona ações no toolbar do nodeitem
+         */ 
+        void addNodeToolbarActions(QMenu *menu, NodeItem* nodeItem);
+        /**
          * Evento clicado
          */
         void nodeClicked(NodeItem *node);
 
+        //Interceptadores do mouse
         void nodeMousePressEvent(NodeItem *node, QMouseEvent *event);
         void nodeMouseMoveEvent(NodeItem *node, QMouseEvent *event);
         void nodeMouseReleaseEvent(NodeItem *node, QMouseEvent *event);

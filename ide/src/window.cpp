@@ -171,7 +171,6 @@ void MainWindow::loadPlugins()
 {
     try
     {
-
         std::cout << "Loading plugins." << std::endl;
 
         std::vector<Component *> comps;

@@ -21,12 +21,11 @@ endif()
 find_package(OpenCV REQUIRED)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets Charts DataVisualization REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets REQUIRED)
 get_target_property(QtCore_location Qt${QT_VERSION_MAJOR}::Core LOCATION)
 
-qt5_wrap_cpp(MOC_Files
-    include/nodemenuitem.h
-)
+#qt5_wrap_cpp(MOC_Files
+#)
 
 #includes
 include_directories(
@@ -53,15 +52,13 @@ add_executable(opencvflow
     src/action.cpp
     #qrc
     resources/resources.qrc
-    ${MOC_Files}
+    #${MOC_Files}
 )
 
 target_link_libraries(opencvflow
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Gui 
     Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Charts
-    Qt${QT_VERSION_MAJOR}::DataVisualization
     ${CMAKE_DL_LIBS}
     opencv_core
     opencv_imgproc

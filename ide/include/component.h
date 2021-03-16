@@ -22,13 +22,16 @@ class Edge;
 class Component
 {
 public:
+    //Node nase
     virtual std::string name();
+    //Function called to create a node.
     virtual Node* createNode();
 
-    //Use only one: action or widget
+    //Use only one: action or widget to add button on toolbarmenu
     virtual QAction* createAction();
     virtual QWidget* createWidget();
 
+    //Menu Identifier
     virtual uint actionToolBar();
 };
 

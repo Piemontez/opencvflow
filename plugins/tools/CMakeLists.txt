@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
-message("Building OpenCV Plugin")
+message("Building Tools Plugin")
 
-project(opencv VERSION 0.3.0 DESCRIPTION "OpenCV Plugin")
+project(tools VERSION 0.3.0 DESCRIPTION "Tools Plugin")
 
 #flags
 #qtflags
@@ -17,8 +17,14 @@ endif()
 #dependencies
 find_package(OpenCV REQUIRED)
 
-find_package(Qt5 COMPONENTS REQUIRED Core Gui Widgets)
-get_target_property(QtCore_location Qt5::Core LOCATION)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS REQUIRED Core Gui Widgets Charts DataVisualization REQUIRED)
+get_target_property(QtCore_location Qt${QT_VERSION_MAJOR}::Core LOCATION)
+
+qt5_wrap_cpp(MOC_Files
+    include/nodetools.h
+)
+
 
 #includes
 include_directories(
@@ -26,18 +32,19 @@ include_directories(
     ${OpenCV_INCLUDE_DIRS}
     include)
 
-
-add_library(opencv SHARED
-    src/imgproc.cpp
-    src/imgprocproperties.cpp
-    src/videoio.cpp
-    src/videoioproperties.cpp
-    src/opencvplugin.cpp)
+add_library(tools SHARED
+    src/nodetools.cpp
+    src/toolsplugin.cpp
+    ${MOC_Files}
+)
 
 #add ide libraries
-target_link_libraries(opencv
-    Qt5::Core
-    Qt5::Widgets)
+target_link_libraries(tools
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Charts
+    Qt${QT_VERSION_MAJOR}::DataVisualization
+)
 
-install(TARGETS opencv
+install(TARGETS tools
     DESTINATION ${CVFLOW_INSTALL_PLUGIN_DIR})

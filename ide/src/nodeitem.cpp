@@ -440,7 +440,15 @@ bool NodeItem::eventFilter(QObject *obj, QEvent *event)
         auto mouseEvent = static_cast<QMouseEvent *>(event);
         QPoint move = mouseEvent->pos() - d_func()->lastMousePos;
         QSize newSize = this->size() + QSize(move.x(), move.y());
-        this->setFixedSize(newSize);
+        //this->setFixedSize(newSize);
+        
+        d_func()->proxyWidget->setGeometry(QRectF(
+            pos().x(),
+            pos().y(),
+            newSize.width(),
+            newSize.height()
+        ));
+        d_func()->proxyWidget->adjustSize();
 
         d_func()->lastMousePos = mouseEvent->pos();
         return true;

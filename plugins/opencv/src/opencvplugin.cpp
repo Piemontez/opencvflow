@@ -6,6 +6,7 @@
 #include "edge.h"
 
 #include "imgproc.h"
+#include "imgcodecs.h"
 #include "videoio.h"
 
 #include <opencv2/opencv.hpp>
@@ -18,6 +19,8 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
 
     //videoio
     rs.push_back(new VideoCaptureComponent);
+    //imgcodecs
+    rs.push_back(new ImReadComponent);
 
     //imgproc
     rs.push_back(new BlurComponent);

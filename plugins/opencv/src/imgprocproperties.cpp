@@ -432,7 +432,7 @@ QMap<QString, ocvflow::Properties> DilateNode::properties()
     props.insert("Anchor", ocvflow::SizeIntProperties);
     props.insert("Iterations", ocvflow::IntProperties);
     props.insert("BorderType", ocvflow::IntProperties);
-    props.insert("BorderValue", ocvflow::DoubleProperties);
+    props.insert("BorderValue", ocvflow::ScalarProperties);
     return props;
 }
 
@@ -447,8 +447,7 @@ ocvflow::PropertiesVariant DilateNode::property(const QString &property)
     if (!property.compare("BorderType"))
         return borderType;
     if (!property.compare("BorderValue"))
-        return 0;
-        //return borderValue;//TODO
+        return ocvflow::PropertiesVariant(borderValue[0], borderValue[1], borderValue[2], borderValue[3]);
 
     return 0;
 }
@@ -457,6 +456,14 @@ bool DilateNode::setProperty(const QString &property, const ocvflow::PropertiesV
 {
     if (!property.compare("Kernel"))
         kernel = value.mat;
+    if (!property.compare("Anchor"))
+        anchor = cv::Point(std::get<0>(value.sizeI), std::get<1>(value.sizeI));
+    if (!property.compare("Iterations"))
+        iterations = value.i;
+    if (!property.compare("BorderType"))
+        borderType = value.i;
+    if (!property.compare("BorderValue"))
+        borderValue = cv::Scalar(std::get<0>(value.scalar), std::get<1>(value.scalar), std::get<2>(value.scalar), std::get<3>(value.scalar));
 
     return true;
 }

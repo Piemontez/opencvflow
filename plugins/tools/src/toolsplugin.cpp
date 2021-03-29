@@ -1,5 +1,6 @@
 #include "toolsplugin.hpp"
 
+#include <QGraphicsProxyWidget>
 #include <QObject>
 #include <QAction>
 #include "window.h"
@@ -8,16 +9,26 @@
 
 OCVFLOW_PLUGIN(ToolsPlugin, "Tools Plugin", "0.1.1")
 
-std::vector<QObject *> ToolsPlugin::nodeToolBarActions(ocvflow::NodeItem* nodeItem)
+std::vector<QObject *> ToolsPlugin::nodeToolBarActions(ocvflow::NodeItem *nodeItem)
 {
-    auto actions = std::vector<QObject*>();
-    if (!nodeItem) return actions;
+    auto actions = std::vector<QObject *>();
+    if (!nodeItem)
+        return actions;
 
     auto histAction = new QAction(QObject::tr("View histogram"));
     nodeItem->connect(histAction, &QAction::triggered, histAction, [nodeItem]() {
         if (nodeItem)
         {
-            ocvflow::MainWindow::instance()->addNode(new HistogramNode(nodeItem));
+            auto histoNode = new HistogramNode;
+            auto pos = nodeItem->graphicsProxyWidget()->pos();
+            auto size = histoNode->size();
+            
+            ocvflow::MainWindow::instance()
+                ->addNode(histoNode)
+                ->setPos(pos - QPoint(5, size.height() + 5));
+
+            ocvflow::MainWindow::instance()
+                ->connectNode(nodeItem, histoNode);
         }
     });
 

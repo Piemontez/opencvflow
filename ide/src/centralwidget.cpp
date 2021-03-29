@@ -152,9 +152,8 @@ void CentralWidget::dropEvent(QDropEvent *event)
             auto nodeitem = static_cast<NodeItem *>(component->createNode());
             if (nodeitem)
             {
+                QGraphicsProxyWidget *proxy = MainWindow::instance()->addNode(nodeitem);
                 //coleta a posição ao soltar o mouse
-                QGraphicsProxyWidget *proxy = scene()->addWidget(nodeitem);
-                nodeitem->setProxyWidget(proxy);
                 proxy->setPos(this->mapToScene(event->pos()));
             }
         }

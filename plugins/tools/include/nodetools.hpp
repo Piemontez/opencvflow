@@ -24,7 +24,6 @@ class HistogramNode : public ocvflow::NodeItem
 {
     Q_OBJECT
 
-    Node *node;
     QtDataVisualization::Q3DBars *bars;
     /*
         QtCharts::QBarSeries *series;
@@ -34,7 +33,7 @@ class HistogramNode : public ocvflow::NodeItem
     std::clock_t lastProcess;
 
 public:
-    HistogramNode(Node *node);
+    HistogramNode();
 
     void paintEvent(QPaintEvent *event) override;
     void updateHistogram(const std::vector<cv::Mat> histograms);

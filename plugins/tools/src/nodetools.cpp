@@ -12,22 +12,46 @@ using namespace QtDataVisualization;
 
 Q_DECLARE_METATYPE(cv::Mat);
 
-HistogramNode::HistogramNode(Node *node) : NodeItem(nullptr, "Histogram"), node{node}
+HistogramNode::HistogramNode() : NodeItem(nullptr, "Histogram")
 {
     this->setFixedSize(840, 250);
 
     lastProcess = std::clock();
 
     bars = new Q3DBars;
-    bars->setFlags(bars->flags() ^ Qt::FramelessWindowHint);
-    bars->rowAxis()->setRange(0, 3);
-    bars->columnAxis()->setRange(0, 255);
-    bars->scene()->activeCamera()->setCameraPosition(10, 30);
-    auto barsWidget = (QWidget::createWindowContainer(bars));
+    /*if (!bars->hasContext())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Couldn't initialize the OpenGL context for Q3DBars.");
+        msgBox.exec();
+    }
+    else*/
+    {
 
-    //((QVBoxLayout *)layout())->addWidget(barsWidget, 1);
+        //bars->setBarThickness(1.0f);
+        //bars->setBarSpacing(QSizeF(0.2, 0.2));
+        bars->setFlags(bars->flags() ^ Qt::FramelessWindowHint);
+        bars->rowAxis()->setRange(0, 3);
+        bars->columnAxis()->setRange(0, 255);
+        //bars->scene()->activeCamera()->setCameraPosition(10, 30);
 
-    barsWidget->show();
+        /*
+        QSize screenSize = bars->screen()->size();
+        auto container = (QWidget::createWindowContainer(bars));
+        container->setParent(this);
+        container->setMinimumSize(QSize(screenSize.width() / 3, screenSize.height() / 3));
+        container->setMaximumSize(screenSize);
+        container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        //container->setFocusPolicy(Qt::TabFocus);
+        
+        
+        ((QVBoxLayout *)layout())->addWidget(new QLabel("AAAAA"), 1, Qt::AlignHCenter);
+        ((QVBoxLayout *)layout())->addWidget(container, 1, Qt::AlignHCenter);
+        ((QVBoxLayout *)layout())->addWidget(new QLabel("BBBBB"), 1, Qt::AlignHCenter);
+        */
+        bars->show();
+        //container->show();
+    }
 
     /*
     series = new QBarSeries();
@@ -143,19 +167,22 @@ void HistogramNode::proccess()
     const float *histRange = {range};
     bool uniform = true, accumulate = false;
 
-    for (auto &&src : node->sources())
+    for (auto &&edge : _edges)
     {
-        std::vector<cv::Mat> planes;
-        std::vector<cv::Mat> histograms;
-
-        cv::split(src, planes);
-        for (auto &plane : planes)
+        for (auto &&src : edge->sourceNode()->sources())
         {
-            cv::Mat hist;
-            cv::calcHist(&plane, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
-            histograms.push_back(hist);
-        }
+            std::vector<cv::Mat> planes;
+            std::vector<cv::Mat> histograms;
 
-        emit newSeries(histograms);
+            cv::split(src, planes);
+            for (auto &plane : planes)
+            {
+                cv::Mat hist;
+                cv::calcHist(&plane, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+                histograms.push_back(hist);
+            }
+
+            emit newSeries(histograms);
+        }
     }
 };

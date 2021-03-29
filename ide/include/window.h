@@ -9,6 +9,7 @@
 
 class QWidget;
 class QToolBar;
+class QGraphicsProxyWidget;
 
 namespace ocvflow
 {
@@ -42,7 +43,7 @@ namespace ocvflow
         /**
          * Adiciona novo nó no componente central
          */
-        void addNode(NodeItem *node);
+        QGraphicsProxyWidget* addNode(NodeItem *node);
         void removeNode(NodeItem *node);
         /**
          * Conecta dois nós

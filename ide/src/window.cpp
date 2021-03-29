@@ -365,9 +365,13 @@ void MainWindow::stopRun()
     }
 }
 
-void MainWindow::addNode(NodeItem *node)
+QGraphicsProxyWidget* MainWindow::addNode(NodeItem *node)
 {
-    centralWidget()->scene()->addWidget(node)->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    QGraphicsProxyWidget *proxy = centralWidget()->scene()->addWidget(node);
+    node->setProxyWidget(proxy);
+    //proxy->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
+    
+    return proxy;
 }
 
 void MainWindow::removeNode(NodeItem *node)

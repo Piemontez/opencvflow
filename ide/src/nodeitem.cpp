@@ -79,6 +79,11 @@ NodeItem::~NodeItem()
 {
 }
 
+bool NodeItem::hasError()
+{
+    return !d_func()->error.isEmpty();
+}
+
 void NodeItem::setError(const QString &error)
 {
     d_func()->error = error;
@@ -92,6 +97,11 @@ void NodeItem::setLastUpdateCall(const float &lastUpdateCall)
 QString NodeItem::title()
 {
     return d_func()->title;
+}
+
+NodeMenuItem *NodeItem::menuBar()
+{
+    return static_cast<NodeMenuItem *>(this->layout()->menuBar());
 }
 
 QMap<QString, Properties> NodeItem::properties()
@@ -475,21 +485,14 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
                 {
                     //Redimenciona a imagem para o tamanho do widget
                     cv::resize(mat, out, cv::Size(region.width(), region.height()));
-                    auto image = cvMatToQImage(out);
-
-                    d_func()->contentViewCache = image;
-
-                    painter->drawImage(region.left(), region.top(), image);
+                    d_func()->contentViewCache = cvMatToQImage(out);
                 }
                 catch (...)
                 {
                 }
             }
         }
-        else
-        {
-            painter->drawImage(region.left(), region.top(), d_func()->contentViewCache);
-        }
+        painter->drawImage(region.left(), region.top(), d_func()->contentViewCache);
     }
 
     release();

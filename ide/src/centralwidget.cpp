@@ -33,6 +33,7 @@ CentralWidget::CentralWidget(QWidget *parent) : QGraphicsView(parent),
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
+    
     //setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
 

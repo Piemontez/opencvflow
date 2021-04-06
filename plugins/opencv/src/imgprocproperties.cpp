@@ -467,3 +467,82 @@ bool DilateNode::setProperty(const QString &property, const ocvflow::PropertiesV
 
     return true;
 }
+
+/**
+ * @brief ErodeNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> ErodeNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("Kernel", ocvflow::OneZeroTableProperties);
+    props.insert("Anchor", ocvflow::SizeIntProperties);
+    props.insert("Iterations", ocvflow::IntProperties);
+    props.insert("BorderType", ocvflow::IntProperties);
+    props.insert("BorderValue", ocvflow::ScalarProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant ErodeNode::property(const QString &property)
+{
+    if (!property.compare("Kernel"))
+        return kernel;
+    if (!property.compare("Anchor"))
+        return ocvflow::PropertiesVariant(anchor.x, anchor.y);
+    if (!property.compare("Iterations"))
+        return iterations;
+    if (!property.compare("BorderType"))
+        return borderType;
+    if (!property.compare("BorderValue"))
+        return ocvflow::PropertiesVariant(borderValue[0], borderValue[1], borderValue[2], borderValue[3]);
+
+    return 0;
+}
+
+bool ErodeNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
+{
+    if (!property.compare("Kernel"))
+        kernel = value.mat;
+    if (!property.compare("Anchor"))
+        anchor = cv::Point(std::get<0>(value.sizeI), std::get<1>(value.sizeI));
+    if (!property.compare("Iterations"))
+        iterations = value.i;
+    if (!property.compare("BorderType"))
+        borderType = value.i;
+    if (!property.compare("BorderValue"))
+        borderValue = cv::Scalar(std::get<0>(value.scalar), std::get<1>(value.scalar), std::get<2>(value.scalar), std::get<3>(value.scalar));
+
+    return true;
+}
+
+/**
+ * @brief CvtColorNode::properties
+ * @return
+ */
+QMap<QString, ocvflow::Properties> CvtColorNode::properties()
+{
+    QMap<QString, ocvflow::Properties> props;
+    props.insert("Code", ocvflow::IntProperties);
+    props.insert("DstCn", ocvflow::IntProperties);
+    return props;
+}
+
+ocvflow::PropertiesVariant CvtColorNode::property(const QString &property)
+{
+    if (!property.compare("Code"))
+        return code;
+    if (!property.compare("DstCn"))
+        return dstCn;
+
+    return 0;
+}
+
+bool CvtColorNode::setProperty(const QString &property, const ocvflow::PropertiesVariant &value)
+{
+    if (!property.compare("Code"))
+        code = value.i;
+    if (!property.compare("DstCn"))
+        dstCn = value.i;
+
+    return true;
+}

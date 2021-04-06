@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : d_ptr(new MainWindowPrivate)
 
 MainWindow::~MainWindow()
 {
+    this->stopRun();
 }
 
 MainWindow *MainWindow::inst = nullptr;
@@ -316,15 +317,19 @@ void MainWindow::run()
                 try
                 {
                     item->proccess();
+                    if (item->hasError())
+                    {
+                        item->setError("");
+                    }
                 }
                 catch (cv::Exception &ex)
                 {
+                    std::cerr << "Error: " << ex.what() << std::endl;
                     item->setError(QString::fromStdString(ex.msg));
                 }
                 catch (...)
                 {
                 }
-
                 item->release();
             }
             //Atualiza a tela
@@ -335,8 +340,8 @@ void MainWindow::run()
                 {
                     item->setLastUpdateCall(float(last));
                     item->update();
+                    QThread::msleep(20);
                 }
-                QThread::msleep(10 + items.size());
             }
             if (!d_func()->runing)
                 break;
@@ -365,12 +370,12 @@ void MainWindow::stopRun()
     }
 }
 
-QGraphicsProxyWidget* MainWindow::addNode(NodeItem *node)
+QGraphicsProxyWidget *MainWindow::addNode(NodeItem *node)
 {
     QGraphicsProxyWidget *proxy = centralWidget()->scene()->addWidget(node);
     node->setProxyWidget(proxy);
     //proxy->setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsSelectable);
-    
+
     return proxy;
 }
 
@@ -379,27 +384,29 @@ void MainWindow::removeNode(NodeItem *node)
     centralWidget()->scene()->removeItem(node->proxyWidget());
 }
 
-
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)
 {
     centralWidget()->scene()->addItem(new EdgeItem(source, dest));
 }
 
-void MainWindow::addNodeToolbarActions(QMenu *menu, NodeItem* nodeItem) 
+void MainWindow::addNodeToolbarActions(QMenu *menu, NodeItem *nodeItem)
 {
-    if (!menu) return;
-    
-    for (auto && plugin: d_func()->plugins)
+    if (!menu)
+        return;
+
+    for (auto &&plugin : d_func()->plugins)
     {
         auto actionsLoaded = plugin->nodeToolBarActions(nodeItem);
-        for (QObject* object: actionsLoaded)
+        for (QObject *object : actionsLoaded)
         {
             auto action = qobject_cast<QAction *>(object);
-            if (action) {
+            if (action)
+            {
                 menu->addAction(action);
             }
             auto menu = qobject_cast<QMenu *>(object);
-            if (menu) {
+            if (menu)
+            {
                 menu->addMenu(menu);
             }
         }

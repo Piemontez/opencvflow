@@ -24,10 +24,10 @@ class HistogramNode : public ocvflow::NodeItem
 {
     Q_OBJECT
 
-    QtDataVisualization::Q3DBars *bars;
+    QtDataVisualization::Q3DBars *chart3D;
+    QtCharts::QChart *chart;
+    QtCharts::QBarSeries *series;
     /*
-        QtCharts::QBarSeries *series;
-        QtCharts::QChart *chart;
         QtCharts::QChartView *chartView;
         */
     std::clock_t lastProcess;

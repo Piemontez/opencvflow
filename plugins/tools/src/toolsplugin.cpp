@@ -22,10 +22,10 @@ std::vector<QObject *> ToolsPlugin::nodeToolBarActions(ocvflow::NodeItem *nodeIt
             auto histoNode = new HistogramNode;
             auto pos = nodeItem->graphicsProxyWidget()->pos();
             auto size = histoNode->size();
-            
+
             ocvflow::MainWindow::instance()
                 ->addNode(histoNode)
-                ->setPos(pos - QPoint(5, size.height() + 5));
+                ->setPos(pos - QPoint(-nodeItem->size().width() - 5, size.height() + 5));
 
             ocvflow::MainWindow::instance()
                 ->connectNode(nodeItem, histoNode);

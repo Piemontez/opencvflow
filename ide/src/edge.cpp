@@ -3,18 +3,18 @@
 
 using namespace ocvflow;
 
-Edge::Edge(Node *sourceNode, Node *destNode)
+Edge::Edge(Node *origNode, Node *destNode)
     //: arrowSize(10)
 {
-    source = sourceNode;
+    orig = origNode;
     dest = destNode;
-    source->addEdge(this);
+    orig->addEdge(this);
     dest->addEdge(this);
 
 }
 Node *Edge::sourceNode() const
 {
-    return source;
+    return orig;
 }
 
 Node *Edge::destNode() const

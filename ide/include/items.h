@@ -19,6 +19,7 @@ namespace ocvflow
     /**
     * @brief The NodeItem;
     */
+    class NodeMenuItem;
     class NodeItemPrivate;
     class NodeItem : public Node, public QWidget
     {
@@ -29,6 +30,7 @@ namespace ocvflow
         NodeItem(CentralWidget *centralWidget, QString title = "", QWidget *parent = nullptr);
         ~NodeItem();
 
+        bool hasError();
         void setError(const QString &error);
         void setLastUpdateCall(const float &lastUpdateCall);
 
@@ -52,6 +54,7 @@ namespace ocvflow
         ////    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
     protected:
+        NodeMenuItem *menuBar();
         bool eventFilter(QObject *obj, QEvent *event) override;
         //QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
@@ -59,7 +62,7 @@ namespace ocvflow
         void mouseMoveEvent(QMouseEvent *event) override;
         void mouseReleaseEvent(QMouseEvent *event) override;
 
-        QGraphicsProxyWidget * proxyWidget();
+        QGraphicsProxyWidget *proxyWidget();
         void setProxyWidget(QGraphicsProxyWidget *proxyWidget);
 
         ////    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;

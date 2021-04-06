@@ -18,7 +18,7 @@ public:
     Node *destNode() const;
 
 protected:
-    Node *source, *dest;
+    Node *orig, *dest;
 };
 
 }

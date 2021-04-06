@@ -278,4 +278,53 @@ public:
     ocvflow::Node* createNode() override;
 };
 
+/**
+ * @brief The ErodeNode class
+ */
+class ErodeNode: public ocvflow::NodeItem {
+    cv::Mat kernel;
+    cv::Point anchor{cv::Point(-1,-1)};
+    int iterations{1};
+    int borderType{cv::BORDER_CONSTANT};
+    cv::Scalar borderValue{cv::morphologyDefaultBorderValue()};
+public:
+    ErodeNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
+    void proccess() override;
+};
+
+
+class ErodeComponent: public ocvflow::ProcessorComponent {
+public:
+    ErodeComponent();
+    ocvflow::Node* createNode() override;
+};
+
+
+/**
+ * @brief The CvtColorNode class
+ */
+class CvtColorNode: public ocvflow::NodeItem {
+    int code{cv::COLOR_BGR2GRAY};
+    int dstCn{0};
+public:
+    CvtColorNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
+    void proccess() override;
+};
+
+
+class CvtColorComponent: public ocvflow::ProcessorComponent {
+public:
+    CvtColorComponent();
+    ocvflow::Node* createNode() override;
+};
 #endif // OPCVF_IMGPROC_H

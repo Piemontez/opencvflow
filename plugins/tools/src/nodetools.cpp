@@ -1,4 +1,5 @@
 #include "nodetools.hpp"
+#include "nodemenuitem.h"
 
 #include <QtCharts>
 #include <QtDataVisualization>
@@ -12,60 +13,59 @@ using namespace QtDataVisualization;
 
 Q_DECLARE_METATYPE(cv::Mat);
 
-HistogramNode::HistogramNode() : NodeItem(nullptr, "Histogram")
+HistogramNode::HistogramNode() : NodeItem(nullptr, "Histogram"), chart3D{0}
 {
     this->setFixedSize(840, 250);
 
     lastProcess = std::clock();
 
-    bars = new Q3DBars;
-    /*if (!bars->hasContext())
+    auto menu = this->menuBar();
+    if (menu)
     {
-        QMessageBox msgBox;
-        msgBox.setText("Couldn't initialize the OpenGL context for Q3DBars.");
-        msgBox.exec();
+        auto chart3DAction = new QAction("3D");
+        menu->addAction(chart3DAction);
+
+        connect(chart3DAction, &QAction::triggered, this, [this]() {
+            if (chart3D)
+            {
+                return;
+            }
+            this->chart3D = new Q3DBars;
+            if (!chart3D->hasContext())
+            {
+                QMessageBox msgBox;
+                msgBox.setText("Couldn't initialize the OpenGL context for Q3DBars.");
+                msgBox.exec();
+            }
+            else
+            {
+
+                this->chart3D->raise();
+                this->chart3D->setBarThickness(1.0f);
+                this->chart3D->setBarSpacing(QSizeF(0.2, 0.2));
+                this->chart3D->setFlags(this->chart3D->flags() ^ Qt::FramelessWindowHint);
+                this->chart3D->rowAxis()->setRange(0, 3);
+                this->chart3D->columnAxis()->setRange(0, 255);
+                this->chart3D->scene()->activeCamera()->setCameraPosition(10, 30);
+                this->chart3D->show();
+
+                this->chart3D->connect(chart3D, &QWindow::destroy, this, [this] {
+                    delete this->chart3D;
+                    this->chart3D = nullptr;
+                });
+            }
+        });
     }
-    else*/
-    {
 
-        //bars->setBarThickness(1.0f);
-        //bars->setBarSpacing(QSizeF(0.2, 0.2));
-        bars->setFlags(bars->flags() ^ Qt::FramelessWindowHint);
-        bars->rowAxis()->setRange(0, 3);
-        bars->columnAxis()->setRange(0, 255);
-        //bars->scene()->activeCamera()->setCameraPosition(10, 30);
-
-        /*
-        QSize screenSize = bars->screen()->size();
-        auto container = (QWidget::createWindowContainer(bars));
-        container->setParent(this);
-        container->setMinimumSize(QSize(screenSize.width() / 3, screenSize.height() / 3));
-        container->setMaximumSize(screenSize);
-        container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        //container->setFocusPolicy(Qt::TabFocus);
-        
-        
-        ((QVBoxLayout *)layout())->addWidget(new QLabel("AAAAA"), 1, Qt::AlignHCenter);
-        ((QVBoxLayout *)layout())->addWidget(container, 1, Qt::AlignHCenter);
-        ((QVBoxLayout *)layout())->addWidget(new QLabel("BBBBB"), 1, Qt::AlignHCenter);
-        */
-        bars->show();
-        //container->show();
-    }
-
-    /*
     series = new QBarSeries();
     chart = new QChart;
     chart->legend()->hide();
     chart->layout()->setContentsMargins(0, 0, 0, 0);
     chart->setBackgroundRoundness(0);
 
-    chartView = new QChartView(chart);
+    auto chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    //chart->legend()->markers(series).first()->setVisible(false);
-    //chart->setAnimationOptions(QChart::SeriesAnimations);
     ((QVBoxLayout *)layout())->addWidget(chartView);
-    */
 
     connect(this, &HistogramNode::newSeries, this, &HistogramNode::updateHistogram, Qt::QueuedConnection);
 };
@@ -77,87 +77,126 @@ void HistogramNode::paintEvent(QPaintEvent *event)
 
 void HistogramNode::updateHistogram(const std::vector<cv::Mat> histograms)
 {
-    /*
     if (series->barSets().size())
         chart->removeSeries(series);
     series->clear();
-    */
 
-    //Verificar necessidade de normalização (cv::normalize) do histograma
-    int pos = 0;
-    for (auto &hist : histograms)
+    int pos;
+    //chart 2D
+    if (chart)
     {
-        //auto set = new QBarSet("");
-        QBar3DSeries *series;
-        if (bars->seriesList().size() > pos)
+        int pos = 0;
+        for (auto &hist : histograms)
         {
-            series = bars->seriesList().at(pos);
-        }
-        else
-        {
-            series = new QBar3DSeries;
-            bars->addSeries(series);
-        }
-
-        auto data = new QBarDataRow;
-        if (histograms.size() == 1)
-        {
-            series->setBaseColor("black");
-            //set->setColor("black");
-        }
-        else
-        {
-            switch (pos)
+            auto set = new QBarSet("");
+            if (histograms.size() == 1)
             {
-            case 0:
-                series->setBaseColor("blue");
-                //set->setColor("blue");
-                break;
-            case 1:
-                series->setBaseColor("green");
-                //set->setColor("green");
-                break;
-            case 2:
-                series->setBaseColor("red");
-                //set->setColor("red");
-                break;
-
-            default:
-                break;
+                set->setColor("black");
+                set->setBorderColor("black");
             }
-        }
+            else
+            {
+                switch (pos)
+                {
+                case 0:
+                    set->setColor("blue");
+                    set->setBorderColor("blue");
+                    break;
+                case 1:
+                    set->setColor("green");
+                    set->setBorderColor("green");
+                    break;
+                case 2:
+                    set->setColor("red");
+                    set->setBorderColor("red");
+                    break;
+                default:
+                    set->setColor("black");
+                    set->setBorderColor("black");
+                    break;
+                }
+            }
 
-        float max = 0;
-        for (int i = 1; i < 255; i++)
-        {
-            float value = hist.at<float>(0, i);
-            //*set << (hist.at<float>(0, i));
-            *data << value;
-            if (max < value)
-                max = value;
-        }
+            for (int i = 1; i < 255; i++)
+            {
+                *set << (hist.at<float>(0, i));
+            }
 
-        bars->valueAxis()->setRange(0, max);
-        //series->append(set);
-        if (series->dataProxy()->rowCount() > 0)
-        {
-            series->dataProxy()->setRow(0, data);
+            series->append(set);
+            pos++;
         }
-        else
-        {
-            series->dataProxy()->addRow(data);
-        }
-        pos++;
+        chart->addSeries(series);
     }
 
-    //chart->addSeries(series);
+    //Chart 3D
+    if (chart3D)
+    {
+        pos = 0;
+        for (auto &hist : histograms)
+        {
+            QBar3DSeries *series;
+            if (chart3D->seriesList().size() > pos)
+            {
+                series = chart3D->seriesList().at(pos);
+            }
+            else
+            {
+                series = new QBar3DSeries;
+                chart3D->addSeries(series);
+            }
+
+            auto data = new QBarDataRow;
+            if (histograms.size() == 1)
+            {
+                series->setBaseColor("black");
+            }
+            else
+            {
+                switch (pos)
+                {
+                case 0:
+                    series->setBaseColor("blue");
+                    break;
+                case 1:
+                    series->setBaseColor("green");
+                    break;
+                case 2:
+                    series->setBaseColor("red");
+                    break;
+
+                default:
+                    break;
+                }
+            }
+
+            float max = 0;
+            for (int i = 1; i < 255; i++)
+            {
+                float value = hist.at<float>(0, i);
+                *data << value;
+                if (max < value)
+                    max = value;
+            }
+
+            chart3D->valueAxis()->setRange(0, max);
+            if (series->dataProxy()->rowCount() > 0)
+            {
+                series->dataProxy()->setRow(0, data);
+            }
+            else
+            {
+                series->dataProxy()->addRow(data);
+            }
+            pos++;
+        }
+    }
     lastProcess = std::clock();
 }
 
 void HistogramNode::proccess()
 {
     std::clock_t now = std::clock();
-    if ((now - lastProcess) < 100000)
+    if ((now - lastProcess) < 130000)
     {
         return;
     }

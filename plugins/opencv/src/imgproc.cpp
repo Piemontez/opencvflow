@@ -1,3 +1,5 @@
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "imgproc.h"
 #include "globals.h"
 
@@ -271,3 +273,54 @@ void DilateNode::proccess()
 
 DilateComponent::DilateComponent() : ProcessorComponent(ProcessorsTB, "Dilate") {}
 Node *DilateComponent::createNode() { return new DilateNode; }
+
+/**
+ * @brief ErodeNode::ErodeNode
+ */
+ErodeNode::ErodeNode() : NodeItem(nullptr, "Erode")
+{
+    kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Point(3, 3));
+}
+
+void ErodeNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto &&edge : _edges)
+    {
+        for (auto &&mat : edge->sourceNode()->sources())
+        {
+            cv::erode(mat, out, kernel, anchor, iterations, borderType, borderValue);
+            _sources.push_back(out);
+        }
+    }
+}
+
+ErodeComponent::ErodeComponent() : ProcessorComponent(ProcessorsTB, "Erode") {}
+Node *ErodeComponent::createNode() { return new ErodeNode; }
+
+/**
+ * @brief CvtColorNode::CvtColorNode
+ */
+CvtColorNode::CvtColorNode() : NodeItem(nullptr, "CvtColor") {}
+
+void CvtColorNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat out;
+
+    for (auto &&edge : _edges)
+    {
+        for (auto &&mat : edge->sourceNode()->sources())
+        {
+            cv::cvtColor(mat, out, code, dstCn);
+            _sources.push_back(out);
+        }
+    }
+}
+
+CvtColorComponent::CvtColorComponent() : ProcessorComponent(ProcessorsTB, "CvtColor") {}
+Node *CvtColorComponent::createNode() { return new CvtColorNode; }

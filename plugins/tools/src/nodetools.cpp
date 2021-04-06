@@ -208,7 +208,7 @@ void HistogramNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&src : edge->sourceNode()->sources())
+        for (auto &&src : edge->origNode()->sources())
         {
             std::vector<cv::Mat> planes;
             std::vector<cv::Mat> histograms;

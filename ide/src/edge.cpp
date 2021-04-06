@@ -12,7 +12,7 @@ Edge::Edge(Node *origNode, Node *destNode)
     dest->addEdge(this);
 
 }
-Node *Edge::sourceNode() const
+Node *Edge::origNode() const
 {
     return orig;
 }

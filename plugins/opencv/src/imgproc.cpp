@@ -20,7 +20,7 @@ void SobelNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::Sobel(mat, out, ddepth, dx, dy, ksize, scale, delta);
             _sources.push_back(out);
@@ -44,7 +44,7 @@ void CannyNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::Canny(mat, out, threshold1, threshold1, aperturesize, L2gradiente);
             _sources.push_back(out);
@@ -68,7 +68,7 @@ void LaplacianNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::Laplacian(mat, out, ddepth, ksize, scale, delta);
             _sources.push_back(out);
@@ -92,7 +92,7 @@ void MedianBlurNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::medianBlur(mat, out, ksize);
             _sources.push_back(out);
@@ -116,7 +116,7 @@ void GaussianBlurNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::GaussianBlur(mat, out, size, sigmaX, sigmaY);
             _sources.push_back(out);
@@ -140,7 +140,7 @@ void BilateralFilterNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::bilateralFilter(mat, out, d, sigmaColor, sigmaSpace);
             _sources.push_back(out);
@@ -164,7 +164,7 @@ void BoxFilterNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::boxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
@@ -188,7 +188,7 @@ void SqrBoxFilterNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::sqrBoxFilter(mat, out, ddepth, ksize, anchor, normalize);
             _sources.push_back(out);
@@ -212,7 +212,7 @@ void BlurNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::blur(mat, out, ksize, anchor);
             _sources.push_back(out);
@@ -236,7 +236,7 @@ void ScharrNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::Scharr(mat, out, ddepth, dx, dy, scale, delta);
             _sources.push_back(out);
@@ -263,7 +263,7 @@ void DilateNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::dilate(mat, out, kernel, anchor, iterations, borderType, borderValue);
             _sources.push_back(out);
@@ -290,7 +290,7 @@ void ErodeNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::erode(mat, out, kernel, anchor, iterations, borderType, borderValue);
             _sources.push_back(out);
@@ -314,7 +314,7 @@ void CvtColorNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&mat : edge->sourceNode()->sources())
+        for (auto &&mat : edge->origNode()->sources())
         {
             cv::cvtColor(mat, out, code, dstCn);
             _sources.push_back(out);

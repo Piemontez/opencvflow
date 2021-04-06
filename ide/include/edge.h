@@ -14,7 +14,7 @@ class Edge
 public:
     explicit Edge(Node *sourceNode, Node *destNode);
 
-    Node *sourceNode() const;
+    Node *origNode() const;
     Node *destNode() const;
 
 protected:

@@ -23,7 +23,7 @@ EdgeItem::EdgeItem(NodeItem *sourceNode, NodeItem *destNode) : Edge(sourceNode, 
 
 NodeItem *EdgeItem::sourceNode() const
 {
-    return static_cast<NodeItem *>(Edge::sourceNode());
+    return static_cast<NodeItem *>(Edge::origNode());
 }
 
 NodeItem *EdgeItem::destNode() const
@@ -33,10 +33,10 @@ NodeItem *EdgeItem::destNode() const
 
 void EdgeItem::adjust()
 {
-    if (!source || !dest)
+    if (!orig || !dest)
         return;
 
-    auto sourceNode = static_cast<NodeItem *>(source);
+    auto sourceNode = static_cast<NodeItem *>(orig);
     auto destNode = static_cast<NodeItem *>(dest);
 
     QLineF line(sourceNode->geometry().right(), sourceNode->geometry().center().y(),
@@ -59,7 +59,7 @@ void EdgeItem::adjust()
 
 QRectF EdgeItem::boundingRect() const
 {
-    if (!source || !dest)
+    if (!orig || !dest)
         return QRectF();
 
     qreal penWidth = 1;
@@ -73,7 +73,7 @@ QRectF EdgeItem::boundingRect() const
 
 void EdgeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    if (!source || !dest)
+    if (!orig || !dest)
         return;
 
     QLineF line(d_func()->sourcePoint, d_func()->destPoint);

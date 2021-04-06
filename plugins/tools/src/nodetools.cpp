@@ -208,20 +208,21 @@ void HistogramNode::proccess()
 
     for (auto &&edge : _edges)
     {
-        for (auto &&src : edge->origNode()->sources())
-        {
-            std::vector<cv::Mat> planes;
-            std::vector<cv::Mat> histograms;
-
-            cv::split(src, planes);
-            for (auto &plane : planes)
+        if (edge->destNode() == this)
+            for (auto &&src : edge->origNode()->sources())
             {
-                cv::Mat hist;
-                cv::calcHist(&plane, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
-                histograms.push_back(hist);
-            }
+                std::vector<cv::Mat> planes;
+                std::vector<cv::Mat> histograms;
 
-            emit newSeries(histograms);
-        }
+                cv::split(src, planes);
+                for (auto &plane : planes)
+                {
+                    cv::Mat hist;
+                    cv::calcHist(&plane, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, uniform, accumulate);
+                    histograms.push_back(hist);
+                }
+
+                emit newSeries(histograms);
+            }
     }
 };

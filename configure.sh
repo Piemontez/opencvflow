@@ -1,5 +1,3 @@
-#!/bin/bash
-
 CREATE_BUILD_FOLDER_IF_DOESNT_EXIST() {
     if [ ! -d build ]
     then
@@ -9,9 +7,12 @@ CREATE_BUILD_FOLDER_IF_DOESNT_EXIST() {
 
 INSTALL() {
     CREATE_BUILD_FOLDER_IF_DOESNT_EXIST;
-    cmake -D RELEASE=ON -H./ -B./build ../
-    cd build
-    make
+    cmake --no-warn-unused-cli \
+	    -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE \
+	    -DCMAKE_BUILD_TYPE:STRING=Release \
+	    -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/gcc \
+	    -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/g++ \
+	    -H./  -B./build  -G "Unix Makefiles"
 }
 
 INSTALL;

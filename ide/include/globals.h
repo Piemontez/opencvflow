@@ -15,6 +15,7 @@ namespace ocvflow
     enum ToolBarNames
     {
         FilesTB,
+        ArithmeticTB,
         SourcesTB,
         ProcessorsTB,
         ConnectorsTB,

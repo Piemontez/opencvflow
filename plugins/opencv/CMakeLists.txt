@@ -34,7 +34,8 @@ add_library(opencv SHARED
     src/videoioproperties.cpp
     src/imgcodecs.cpp
     src/imgcodecsproperties.cpp
-    src/opencvplugin.cpp)
+    src/opencvplugin.cpp
+    src/arithmetic.cpp)
 
 #add ide libraries
 target_link_libraries(opencv

@@ -37,5 +37,6 @@ build() {
 package() {
   msg2 "Installing OpenCV Flow"
   cd "$srcdir/pkgname/build"
-  make DESTDIR="$pkgdir/" install
+  export prefix_path=$pkgdir
+  make install DESTDIR="$pkgdir" 
 }

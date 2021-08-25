@@ -88,6 +88,7 @@ void MainWindow::makeToolbar()
 
     d_func()->toolbars.insert(FilesTB, new QToolBar);
     d_func()->toolbars.insert(SourcesTB, new QToolBar);
+    d_func()->toolbars.insert(ArithmeticTB, new QToolBar);
     d_func()->toolbars.insert(ProcessorsTB, new QToolBar);
     d_func()->toolbars.insert(ConnectorsTB, new QToolBar);
     d_func()->toolbars.insert(BuildTB, new QToolBar);
@@ -108,6 +109,12 @@ void MainWindow::makeToolbar()
 
     act = new QAction("Sources", this);
     act->setData(SourcesTB);
+    connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
+    menuBar()->addAction(act);
+    act->hover();
+
+    act = new QAction("Arithmetic", this);
+    act->setData(ArithmeticTB);
     connect(act, &QAction::hovered, this, &MainWindow::showToolBar);
     menuBar()->addAction(act);
     act->hover();

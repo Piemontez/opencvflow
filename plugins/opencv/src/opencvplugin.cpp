@@ -8,6 +8,7 @@
 #include "imgproc.h"
 #include "imgcodecs.h"
 #include "videoio.h"
+#include "arithmetic.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -21,6 +22,13 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
     rs.push_back(new VideoCaptureComponent);
     //imgcodecs
     rs.push_back(new ImReadComponent);
+
+    //arithmetic
+    rs.push_back(new ArithmeticPlusComponent);
+    rs.push_back(new ArithmeticSubComponent);
+    rs.push_back(new ArithmeticMultiplyComponent);
+    rs.push_back(new ArithmeticDivComponent);
+    rs.push_back(new ArithmeticMulComponent);
 
     //imgproc
     rs.push_back(new BlurComponent);

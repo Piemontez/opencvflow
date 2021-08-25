@@ -105,7 +105,6 @@ public:
  */
 class ArithmeticKernelNode: public ocvflow::NodeItem {
     cv::Mat kernel;
-    cv::Point anchor{cv::Point(-1,-1)};
 public:
     ArithmeticKernelNode();
 

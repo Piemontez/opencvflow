@@ -484,7 +484,9 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                         {
                             auto doubleSpinBox = new QDoubleSpinBox();
                             doubleSpinBox->setMaximum(999999);
+                            doubleSpinBox->setMinimum(-999999);
                             doubleSpinBox->setDecimals(3);
+                            doubleSpinBox->setSingleStep(.01);
                             doubleSpinBox->setValue(newMat.at<double>(k, j));
                             doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, j, k, entry](double value) {
                                 auto mat = this->property(entry.first).mat;

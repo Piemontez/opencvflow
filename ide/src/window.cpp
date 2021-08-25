@@ -340,6 +340,8 @@ void MainWindow::run()
             }
             if (!d_func()->runing)
                 break;
+            
+            QThread::msleep(10);//TODO Sem este videoio não funciona
         }
         for (auto item : items)
         {
@@ -375,6 +377,7 @@ void MainWindow::run()
                 {
                     item->setLastUpdateCall(float(last));
                     item->update();
+                    
                     QThread::msleep(20);
                 }
             }

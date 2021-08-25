@@ -327,4 +327,22 @@ public:
     CvtColorComponent();
     ocvflow::Node* createNode() override;
 };
+
+/**
+ * @brief The Filter2DNode class
+ */
+class Filter2DNode: public ocvflow::NodeItem {
+    //TODO adicionar demais parametros do filtro 2D
+public:
+    Filter2DNode();
+
+    void proccess() override;
+};
+
+
+class Filter2DComponent: public ocvflow::ProcessorComponent {
+public:
+    Filter2DComponent();
+    ocvflow::Node* createNode() override;
+};
 #endif // OPCVF_IMGPROC_H

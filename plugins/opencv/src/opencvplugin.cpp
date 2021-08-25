@@ -50,6 +50,7 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
     rs.push_back(new BoxFilterComponent);
 
     rs.push_back(new CvtColorComponent);
+    rs.push_back(new Filter2DComponent);
 
     return rs;
 }

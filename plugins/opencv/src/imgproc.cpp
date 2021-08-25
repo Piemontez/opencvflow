@@ -337,3 +337,32 @@ void CvtColorNode::proccess()
 
 CvtColorComponent::CvtColorComponent() : ProcessorComponent(ProcessorsTB, "CvtColor") {}
 Node *CvtColorComponent::createNode() { return new CvtColorNode; }
+
+/**
+ * @brief Filter2DNode::Filter2DNode
+ */
+Filter2DNode::Filter2DNode() : NodeItem(nullptr, "Filter2D") {}
+
+void Filter2DNode::proccess()
+{
+    _sources.clear();
+
+    cv::Mat kernel, out;
+
+    for (auto &&edge : _edges)
+    {
+        if (edge->destNode() == this)
+            for (auto &&mat : edge->origNode()->sources())
+            {
+                if (!kernel.rows)
+                    kernel = mat.clone();
+                else {
+                    cv::filter2D(mat, out, -1, kernel);
+                    _sources.push_back(out);
+                }
+            }
+    }
+}
+
+Filter2DComponent::Filter2DComponent() : ProcessorComponent(ProcessorsTB, "Filter2D") {}
+Node *Filter2DComponent::createNode() { return new Filter2DNode; }

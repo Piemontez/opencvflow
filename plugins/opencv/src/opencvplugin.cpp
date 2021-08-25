@@ -29,6 +29,7 @@ std::vector<ocvflow::Component *> OpenCVPlugin::components()
     rs.push_back(new ArithmeticMultiplyComponent);
     rs.push_back(new ArithmeticDivComponent);
     rs.push_back(new ArithmeticMulComponent);
+    rs.push_back(new ArithmeticKernelComponent);
 
     //imgproc
     rs.push_back(new BlurComponent);

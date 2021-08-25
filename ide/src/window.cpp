@@ -27,7 +27,8 @@ class ocvflow::MainWindowPrivate
 
     QDockWidget *propertiesDock;
 
-    QThread *runner;
+    QThread *processRunner;
+    QThread *repaintRunner;
     bool runing{false};
 
     //Utilizado para criar os edges que conectam 2 nodes
@@ -291,9 +292,7 @@ void MainWindow::run()
     MainWindow::stopRun();
     d_func()->runing = true;
 
-    d_func()->runner = QThread::create([this] {
-        std::clock_t last = std::clock();
-
+    d_func()->processRunner = QThread::create([this] {
         //Enfileira ordem de processamento.
         QList<NodeItem *> items;
         for (auto &&item : this->centralWidget()->items())
@@ -339,6 +338,35 @@ void MainWindow::run()
                 }
                 item->release();
             }
+            if (!d_func()->runing)
+                break;
+        }
+        for (auto item : items)
+        {
+            item->stop();
+        }
+    });
+
+    d_func()->repaintRunner = QThread::create([this] {
+        std::clock_t last = std::clock();
+        QThread::msleep(500);
+
+        QList<NodeItem *> items;
+        for (auto &&item : this->centralWidget()->items())
+        {
+            QGraphicsProxyWidget *pProxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item);
+            if (pProxy)
+            {
+                auto nodeItem = static_cast<NodeItem *>(pProxy->widget());
+                if (nodeItem)
+                {
+                    if (!items.contains(nodeItem))
+                        items.append(nodeItem);
+                }
+            }
+        }
+        forever
+        {
             //Atualiza a tela
             if (float(std::clock() - last) > 42)
             {
@@ -353,14 +381,13 @@ void MainWindow::run()
             if (!d_func()->runing)
                 break;
         }
-        for (auto item : items)
-        {
-            item->stop();
-        }
     });
 
-    d_func()->runner->start();
-    d_func()->runner->setPriority(QThread::LowestPriority);
+    d_func()->processRunner->start();
+    d_func()->processRunner->setPriority(QThread::LowestPriority);
+
+    d_func()->repaintRunner->start();
+    d_func()->repaintRunner->setPriority(QThread::LowPriority);
 }
 
 void MainWindow::stopRun()
@@ -368,12 +395,19 @@ void MainWindow::stopRun()
     if (d_func()->runing)
     {
         d_func()->runing = false;
-        if (d_func()->runner->wait(1000))
+        if (d_func()->processRunner->wait(1000))
         {
-            d_func()->runner->terminate();
-            d_func()->runner->wait();
+            d_func()->processRunner->terminate();
+            d_func()->processRunner->wait();
         }
-        d_func()->runner->deleteLater();
+        d_func()->processRunner->deleteLater();
+
+        if (d_func()->repaintRunner->wait(1000))
+        {
+            d_func()->repaintRunner->terminate();
+            d_func()->repaintRunner->wait();
+        }
+        d_func()->repaintRunner->deleteLater();
     }
 }
 

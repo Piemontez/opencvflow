@@ -162,7 +162,7 @@ Node *ArithmeticMulComponent::createNode() { return new ArithmeticMulNode; }
  */
 ArithmeticKernelNode::ArithmeticKernelNode() : NodeItem(nullptr, "Kernel")
 {
-    kernel = cv::Mat(cv::Size(10, 10), CV_32F, cv::Scalar(1));
+    kernel = cv::Mat(cv::Size(3, 3), CV_64F, cv::Scalar(1));
 }
 
 void ArithmeticKernelNode::proccess()

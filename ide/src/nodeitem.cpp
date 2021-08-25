@@ -375,7 +375,6 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
                 cv::Mat mat = this->property(entry.first).mat;
                 cv::Mat newMat = cv::Mat(sizeX->value(), sizeY->value(), mat.type(), cv::Scalar(1));
-
                 cv::Rect size = cv::Rect(
                     cv::Point(0, 0),
                     cv::Point(std::min(mat.cols, newMat.cols), std::min(mat.rows, newMat.rows)));
@@ -431,14 +430,14 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         }
         case ocvflow::DoubleTableProperties:
         {
-            
+
             auto sizeX = new QSpinBox();
             sizeX->setMaximum(std::numeric_limits<int>::max());
-            sizeX->setValue(3);
+            sizeX->setValue(this->property(entry.first).mat.rows);
 
             auto sizeY = new QSpinBox();
             sizeY->setMaximum(std::numeric_limits<int>::max());
-            sizeY->setValue(3);
+            sizeY->setValue(this->property(entry.first).mat.cols);
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(sizeX, pos, 1, 1, 1);
@@ -455,7 +454,15 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             layout->addWidget(gridW, pos, 0, 1, 3);
 
             auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
-                //removes excess widgets
+                cv::Mat mat = this->property(entry.first).mat;
+                cv::Mat newMat = cv::Mat(sizeX->value(), sizeY->value(), mat.type(), cv::Scalar(1));
+                cv::Rect size = cv::Rect(
+                    cv::Point(0, 0),
+                    cv::Point(std::min(mat.cols, newMat.cols), std::min(mat.rows, newMat.rows)));
+                mat(size).copyTo(newMat(size));
+
+                this->setProperty(entry.first, newMat);
+
                 for (int j = sizeX->value(); j < gridL->columnCount(); j++)
                 {
                     for (int k = sizeY->value(); k < gridL->rowCount(); k++)
@@ -474,7 +481,22 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                     for (int k = 0; k < sizeY->value(); k++)
                     {
                         if (!gridL->itemAtPosition(k, j))
-                            gridL->addWidget(new QDoubleSpinBox(), k, j, 1, 1);
+                        {
+                            auto doubleSpinBox = new QDoubleSpinBox();
+                            doubleSpinBox->setMaximum(999999);
+                            doubleSpinBox->setDecimals(3);
+                            doubleSpinBox->setValue(newMat.at<double>(k, j));
+                            doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, j, k, entry](double value) {
+                                auto mat = this->property(entry.first).mat;
+                                mat.at<double>(k, j) = value;
+
+                                if (!this->setProperty(entry.first, mat))
+                                {
+                                    doubleSpinBox->setValue(this->property(entry.first).mat.at<double>(k, j));
+                                }
+                            });
+                            gridL->addWidget(doubleSpinBox, k, j, 1, 1);
+                        }
                     }
                 }
             };

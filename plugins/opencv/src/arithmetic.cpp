@@ -174,3 +174,30 @@ void ArithmeticKernelNode::proccess()
 
 ArithmeticKernelComponent::ArithmeticKernelComponent() : ProcessorComponent(ArithmeticTB, "Kernel") {}
 Node *ArithmeticKernelComponent::createNode() { return new ArithmeticKernelNode; }
+
+/**
+ * + GaussianKernel
+ */
+GaussianKernelNode::GaussianKernelNode() : NodeItem(nullptr, "Gaussian Kernel")
+{
+    sigma = 1;
+    rows = 5;
+    cols = 5;
+
+    buildKernel();
+}
+
+void GaussianKernelNode::buildKernel()
+{
+    kernel = cv::getGaussianKernel(rows, sigma, CV_32F) * cv::getGaussianKernel(cols, sigma, CV_32F).t();
+}
+
+void GaussianKernelNode::proccess()
+{
+    _sources.clear();
+
+    _sources.push_back(kernel);
+}
+
+GaussianKernelComponent::GaussianKernelComponent() : ProcessorComponent(ArithmeticTB, "Gaussian Kernel") {}
+Node *GaussianKernelComponent::createNode() { return new GaussianKernelNode; }

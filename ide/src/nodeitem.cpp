@@ -133,7 +133,7 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 
     auto widget = new QWidget(parent);
     auto layout = new QGridLayout(widget);
-    layout->setHorizontalSpacing(4);
+    layout->setHorizontalSpacing(3);
     layout->setVerticalSpacing(0);
     widget->setLayout(layout);
 
@@ -147,12 +147,13 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             auto spinBox = new QSpinBox();
             spinBox->setMaximum(std::numeric_limits<int>::max());
             spinBox->setValue(this->property(entry.first).i);
-            spinBox->connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), spinBox, [this, spinBox, entry](int value) {
-                if (!this->setProperty(entry.first, value))
-                {
-                    spinBox->setValue(this->property(entry.first).i);
-                }
-            });
+            spinBox->connect(spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), spinBox, [this, spinBox, entry](int value)
+                             {
+                                 if (!this->setProperty(entry.first, value))
+                                 {
+                                     spinBox->setValue(this->property(entry.first).i);
+                                 }
+                             });
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(spinBox, pos, 1, 1, 1);
@@ -163,17 +164,18 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             auto lineEdit = new QLineEdit();
             lineEdit->setText(QString::fromStdString(this->property(entry.first).s));
 
-            lineEdit->connect(lineEdit, &QLineEdit::textEdited, lineEdit, [this, lineEdit, entry] {
-                QString fileName = QFileDialog::getOpenFileName(lineEdit, tr("Open File"), QDir::homePath(), tr("Images (*.png *.xpm *.jpg)"));
-                if (fileName.isEmpty() || !this->setProperty(entry.first, fileName.toStdString()))
-                {
-                    lineEdit->setText(QString::fromStdString(this->property(entry.first).s));
-                }
-                else
-                {
-                    lineEdit->setText(fileName);
-                }
-            });
+            lineEdit->connect(lineEdit, &QLineEdit::textEdited, lineEdit, [this, lineEdit, entry]
+                              {
+                                  QString fileName = QFileDialog::getOpenFileName(lineEdit, tr("Open File"), QDir::homePath(), tr("Images (*.png *.xpm *.jpg)"));
+                                  if (fileName.isEmpty() || !this->setProperty(entry.first, fileName.toStdString()))
+                                  {
+                                      lineEdit->setText(QString::fromStdString(this->property(entry.first).s));
+                                  }
+                                  else
+                                  {
+                                      lineEdit->setText(fileName);
+                                  }
+                              });
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(lineEdit, pos, 1, 1, 1);
@@ -183,24 +185,39 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
         case ocvflow::DoubleProperties:
         {
             auto doubleSpinBox = new QDoubleSpinBox();
-            doubleSpinBox->setMaximum(std::numeric_limits<double>::max());
-            doubleSpinBox->setValue(this->property(entry.first).d);
-            doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, entry](double value) {
-                switch (entry.second)
-                {
-                case ocvflow::FloatProperties:
-                    if (!this->setProperty(entry.first, (float)value))
-                    {
-                        doubleSpinBox->setValue(this->property(entry.first).i);
-                    }
-                case ocvflow::DoubleProperties:
-                default:
-                    if (!this->setProperty(entry.first, value))
-                    {
-                        doubleSpinBox->setValue(this->property(entry.first).i);
-                    }
-                }
-            });
+            doubleSpinBox->setSingleStep(.01);
+
+            if (entry.second == ocvflow::FloatProperties)
+            {
+                doubleSpinBox->setDecimals(3);
+                doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
+                doubleSpinBox->setMinimum(std::numeric_limits<float>::min());
+                doubleSpinBox->setValue(this->property(entry.first).f);
+            }
+            else
+            {
+                doubleSpinBox->setDecimals(6);
+                doubleSpinBox->setMaximum(std::numeric_limits<double>::max());
+                doubleSpinBox->setMinimum(std::numeric_limits<double>::min());
+                doubleSpinBox->setValue(this->property(entry.first).d);
+            }
+            doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, entry](double value)
+                                   {
+                                       switch (entry.second)
+                                       {
+                                       case ocvflow::FloatProperties:
+                                           if (!this->setProperty(entry.first, (float)value))
+                                           {
+                                               doubleSpinBox->setValue(this->property(entry.first).f);
+                                           }
+                                       case ocvflow::DoubleProperties:
+                                       default:
+                                           if (!this->setProperty(entry.first, value))
+                                           {
+                                               doubleSpinBox->setValue(this->property(entry.first).d);
+                                           }
+                                       }
+                                   });
 
             layout->addWidget(new QLabel(entry.first, widget), pos, 0, 1, 1);
             layout->addWidget(doubleSpinBox, pos, 1, 1, 1);
@@ -216,7 +233,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             spinBoxr->setMaximum(std::numeric_limits<int>::max());
             spinBoxr->setValue(std::get<1>(this->property(entry.first).sizeI));
 
-            auto func = [this, spinBoxl, spinBoxr, entry](int /*value*/) {
+            auto func = [this, spinBoxl, spinBoxr, entry](int /*value*/)
+            {
                 if (!this->setProperty(entry.first, ocvflow::PropertiesVariant(spinBoxl->value(), spinBoxr->value())))
                 {
                     spinBoxl->setValue(std::get<0>(this->property(entry.first).sizeI));
@@ -250,7 +268,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             spinBox3->setMaximum(std::numeric_limits<double>::max());
             spinBox3->setValue(std::get<3>(this->property(entry.first).scalar));
 
-            auto func = [this, spinBox0, spinBox1, spinBox2, spinBox3, entry](double /*value*/) {
+            auto func = [this, spinBox0, spinBox1, spinBox2, spinBox3, entry](double /*value*/)
+            {
                 if (!this->setProperty(entry.first, ocvflow::PropertiesVariant(spinBox0->value(), spinBox1->value(), spinBox2->value(), spinBox3->value())))
                 {
                     spinBox0->setValue(std::get<0>(this->property(entry.first).scalar));
@@ -277,12 +296,13 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
             auto checkbox = new QCheckBox();
             checkbox->setChecked(this->property(entry.first).b);
 
-            checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, entry](int value) {
-                if (!this->setProperty(entry.first, checkbox->isChecked()))
-                {
-                    checkbox->setChecked(this->property(entry.first).b);
-                }
-            });
+            checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, entry](int value)
+                              {
+                                  if (!this->setProperty(entry.first, checkbox->isChecked()))
+                                  {
+                                      checkbox->setChecked(this->property(entry.first).b);
+                                  }
+                              });
 
             layout->addWidget(checkbox, pos, 0, 1, 1);
             layout->addWidget(new QLabel(entry.first, widget), pos, 1, 1, 1);
@@ -312,7 +332,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 
             layout->addWidget(gridW, pos, 0, 1, 3);
 
-            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
+            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/)
+            {
                 //removes excess widgets
                 for (int j = sizeX->value(); j < gridL->columnCount(); j++)
                 {
@@ -372,7 +393,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 
             layout->addWidget(gridW, pos, 0, 1, 3);
 
-            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
+            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/)
+            {
                 cv::Mat mat = this->property(entry.first).mat;
                 cv::Mat newMat = cv::Mat(sizeX->value(), sizeY->value(), mat.type(), cv::Scalar(1));
                 cv::Rect size = cv::Rect(
@@ -403,17 +425,18 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                         {
                             auto checkbox = new QCheckBox();
                             checkbox->setChecked(newMat.at<int>(k, j));
-                            checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, j, k, entry](int value) {
-                                auto isChecked = value == Qt::Checked;
+                            checkbox->connect(checkbox, static_cast<void (QCheckBox::*)(int)>(&QCheckBox::stateChanged), checkbox, [this, checkbox, j, k, entry](int value)
+                                              {
+                                                  auto isChecked = value == Qt::Checked;
 
-                                auto mat = this->property(entry.first).mat;
-                                mat.at<int>(k, j) = isChecked ? 1 : 0;
+                                                  auto mat = this->property(entry.first).mat;
+                                                  mat.at<int>(k, j) = isChecked ? 1 : 0;
 
-                                if (!this->setProperty(entry.first, mat))
-                                {
-                                    checkbox->setChecked(this->property(entry.first).mat.at<int>(k, j));
-                                }
-                            });
+                                                  if (!this->setProperty(entry.first, mat))
+                                                  {
+                                                      checkbox->setChecked(this->property(entry.first).mat.at<int>(k, j));
+                                                  }
+                                              });
 
                             gridL->addWidget(checkbox, k, j, 1, 1);
                         }
@@ -453,7 +476,8 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
 
             layout->addWidget(gridW, pos, 0, 1, 3);
 
-            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/) {
+            auto func = [this, gridL, sizeX, sizeY, entry](int /*value*/)
+            {
                 cv::Mat mat = this->property(entry.first).mat;
                 cv::Mat newMat = cv::Mat(sizeX->value(), sizeY->value(), mat.type(), cv::Scalar(1));
                 cv::Rect size = cv::Rect(
@@ -483,20 +507,21 @@ QWidget *NodeItem::createPropertiesWidget(QWidget *parent)
                         if (!gridL->itemAtPosition(k, j))
                         {
                             auto doubleSpinBox = new QDoubleSpinBox();
-                            doubleSpinBox->setMaximum(999999);
-                            doubleSpinBox->setMinimum(-999999);
+                            doubleSpinBox->setMaximum(std::numeric_limits<float>::max());
+                            doubleSpinBox->setMinimum(std::numeric_limits<float>::max() * -1);
                             doubleSpinBox->setDecimals(3);
                             doubleSpinBox->setSingleStep(.01);
                             doubleSpinBox->setValue(newMat.at<double>(k, j));
-                            doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, j, k, entry](double value) {
-                                auto mat = this->property(entry.first).mat;
-                                mat.at<double>(k, j) = value;
+                            doubleSpinBox->connect(doubleSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), doubleSpinBox, [this, doubleSpinBox, j, k, entry](double value)
+                                                   {
+                                                       auto mat = this->property(entry.first).mat;
+                                                       mat.at<double>(k, j) = value;
 
-                                if (!this->setProperty(entry.first, mat))
-                                {
-                                    doubleSpinBox->setValue(this->property(entry.first).mat.at<double>(k, j));
-                                }
-                            });
+                                                       if (!this->setProperty(entry.first, mat))
+                                                       {
+                                                           doubleSpinBox->setValue(this->property(entry.first).mat.at<double>(k, j));
+                                                       }
+                                                   });
                             gridL->addWidget(doubleSpinBox, k, j, 1, 1);
                         }
                     }
@@ -558,13 +583,21 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
         {
             d_func()->lastViewUpdated = d_func()->lastUpdateCall;
 
-            cv::Mat out;
+            double wRat, hRat, fitRatio;
             for (auto &&mat : sources())
             {
+                wRat = (double)region.width() / mat.cols;
+                hRat = (double)region.height() / mat.rows;
+                fitRatio = std::min(wRat, hRat);
                 try
                 {
-                    //Redimenciona a imagem para o tamanho do widget
-                    cv::resize(mat, out, cv::Size(region.width(), region.height()));
+                    cv::Mat out(region.height(), region.width(), mat.type(), cv::Scalar(0));
+                    if (wRat > hRat) {
+                        cv::resize(mat, out, cv::Size(mat.cols * fitRatio, mat.rows * fitRatio));
+                    } else {
+                        cv::resize(mat, out, cv::Size(mat.cols * fitRatio, mat.rows * fitRatio));
+                    }
+
                     d_func()->contentViewCache = cvMatToQImage(out);
                 }
                 catch (...)

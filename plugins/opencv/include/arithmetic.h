@@ -99,7 +99,6 @@ public:
     ocvflow::Node* createNode() override;
 };
 
-
 /**
  * @brief The KernelNode class
  */
@@ -115,10 +114,37 @@ public:
     void proccess() override;
 };
 
-
 class ArithmeticKernelComponent: public ocvflow::ProcessorComponent
 {
 public:
     ArithmeticKernelComponent();
+    ocvflow::Node* createNode() override;
+};
+
+/**
+ * @brief The GaussianKernel class
+ */
+class GaussianKernelNode: public ocvflow::NodeItem {
+    double sigma;
+    int rows;
+    int cols;
+    cv::Mat kernel;
+public:
+    GaussianKernelNode();
+
+    QMap<QString, ocvflow::Properties> properties() override;
+    ocvflow::PropertiesVariant property(const QString &property) override;
+    bool setProperty(const QString& property, const ocvflow::PropertiesVariant& value) override;
+
+    void proccess() override;
+
+private:
+    void buildKernel();
+};
+
+class GaussianKernelComponent: public ocvflow::ProcessorComponent
+{
+public:
+    GaussianKernelComponent();
     ocvflow::Node* createNode() override;
 };

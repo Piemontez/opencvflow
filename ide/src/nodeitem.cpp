@@ -589,19 +589,18 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
             {
                 posXStart = mat.cols * region.x() / this->size().width();
                 posYStart = mat.rows * region.y() / this->size().height();
-                mCols = mat.cols - posXStart;
-                mRols = mat.rows - posYStart;
+                mCols = mat.cols * (region.x() + region.width()) / this->size().width();
+                mRols = mat.rows * (region.y() + region.height()) / this->size().height();
                 cv::Rect visibleRegion(posXStart, posYStart, mCols, mRols); //Extrai apenas a região visível
 
                 wRat = (double)region.width() / mCols;  //Proporcao horizontal
                 hRat = (double)region.height() / mRols; //Proporcao vertical
-                fitRatio = std::min(wRat, hRat);        //Menor proporcao 
+                fitRatio = std::min(wRat, hRat);        //Menor proporcao
                 newCols = mCols * fitRatio;
                 newRows = mRols * fitRatio;
                 try
                 {
                     cv::Mat cache(region.height(), region.width(), mat.type(), cv::Scalar(0)); //Nova imagem
-
                     if (wRat > hRat)
                     {
                         cv::Rect destRegion((region.width() - newCols) / 2, 0, newCols, newRows); //Região de destino

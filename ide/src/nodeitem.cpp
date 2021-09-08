@@ -562,11 +562,11 @@ void NodeItem::paintEvent(QPaintEvent *event)
     painter.begin(this);
 
     contentPaint(event->rect(), &painter);
-    //contentPaint(d_func()->contentSize, &painter);
 
     painter.end();
 }
 
+#include <QDebug>
 void NodeItem::contentPaint(const QRect &region, QPainter *painter)
 {
     acquire();
@@ -585,23 +585,38 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
 
             double wRat, hRat, fitRatio;
             int newRows, newCols;
+            int wStartPost, hStartPost, mWidth, mHeihjt;
             for (auto &&mat : sources())
             {
-                wRat = (double)region.width() / mat.cols;
-                hRat = (double)region.height() / mat.rows;
-                fitRatio = std::min(wRat, hRat);
+                wStartPost = mat.cols * region.x() / this->size().width();
+                hStartPost = mat.rows * region.y() / this->size().height();
+                mWidth = mat.cols - wStartPost;
+                mHeihjt = mat.rows - hStartPost;
+                qDebug() << "----------";
+                qDebug() << this->size().width() << this->size().height();
+                qDebug() << region.x() << " " << region.y() << " - " << region.width() << " " << region.height();
+                cv::Rect visibleRegion(wStartPost, hStartPost, mWidth, mHeihjt); //Extrai região visível
+
+                wRat = (double)region.width() / mWidth;  //Proporcao horizontal
+                hRat = (double)region.height() / mHeihjt; //Proporcao vertical
+                fitRatio = std::min(wRat, hRat);           //Menor proporcao // Redimencionamento maior
+                newCols = mWidth * fitRatio;
+                newRows = mHeihjt * fitRatio;
+                wStartPost = 0;
+                wStartPost = 0;
                 try
                 {
-                    newCols = mat.cols * fitRatio;
-                    newRows = mat.rows * fitRatio;
-                    cv::Mat cache(region.height(), region.width(), mat.type(), cv::Scalar(0));
+                    cv::Mat cache(region.height(), region.width(), mat.type(), cv::Scalar(0)); //Nova imagem
+
                     if (wRat > hRat)
                     {
-                        cv::resize(mat, cache(cv::Rect((region.width() - newCols) / 2, 0, newCols, newRows)), cv::Size(newCols, newRows));
+                        cv::Rect destRegion((region.width() - newCols) / 2, 0, newCols, newRows); //Região de destino
+                        cv::resize(mat(visibleRegion), cache(destRegion), cv::Size(newCols, newRows));
                     }
                     else
                     {
-                        cv::resize(mat, cache(cv::Rect(0, (region.height() - newRows) / 2, newCols, newRows)), cv::Size(newCols, newRows));
+                        cv::Rect destRegion(0, (region.height() - newRows) / 2, newCols, newRows); //Região de destino
+                        cv::resize(mat(visibleRegion), cache(destRegion), cv::Size(newCols, newRows));
                     }
 
                     d_func()->contentViewCache = cvMatToQImage(cache);

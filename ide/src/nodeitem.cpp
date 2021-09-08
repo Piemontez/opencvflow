@@ -584,6 +584,7 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
             d_func()->lastViewUpdated = d_func()->lastUpdateCall;
 
             double wRat, hRat, fitRatio;
+            int newRows, newCols;
             for (auto &&mat : sources())
             {
                 wRat = (double)region.width() / mat.cols;
@@ -591,14 +592,19 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
                 fitRatio = std::min(wRat, hRat);
                 try
                 {
-                    cv::Mat out(region.height(), region.width(), mat.type(), cv::Scalar(0));
-                    if (wRat > hRat) {
-                        cv::resize(mat, out, cv::Size(mat.cols * fitRatio, mat.rows * fitRatio));
-                    } else {
-                        cv::resize(mat, out, cv::Size(mat.cols * fitRatio, mat.rows * fitRatio));
+                    newCols = mat.cols * fitRatio;
+                    newRows = mat.rows * fitRatio;
+                    cv::Mat cache(region.height(), region.width(), mat.type(), cv::Scalar(0));
+                    if (wRat > hRat)
+                    {
+                        cv::resize(mat, cache(cv::Rect((region.width() - newCols) / 2, 0, newCols, newRows)), cv::Size(newCols, newRows));
+                    }
+                    else
+                    {
+                        cv::resize(mat, cache(cv::Rect(0, (region.height() - newRows) / 2, newCols, newRows)), cv::Size(newCols, newRows));
                     }
 
-                    d_func()->contentViewCache = cvMatToQImage(out);
+                    d_func()->contentViewCache = cvMatToQImage(cache);
                 }
                 catch (...)
                 {

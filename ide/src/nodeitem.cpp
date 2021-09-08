@@ -566,7 +566,6 @@ void NodeItem::paintEvent(QPaintEvent *event)
     painter.end();
 }
 
-#include <QDebug>
 void NodeItem::contentPaint(const QRect &region, QPainter *painter)
 {
     acquire();
@@ -585,25 +584,20 @@ void NodeItem::contentPaint(const QRect &region, QPainter *painter)
 
             double wRat, hRat, fitRatio;
             int newRows, newCols;
-            int wStartPost, hStartPost, mWidth, mHeihjt;
+            int posXStart, posYStart, mCols, mRols;
             for (auto &&mat : sources())
             {
-                wStartPost = mat.cols * region.x() / this->size().width();
-                hStartPost = mat.rows * region.y() / this->size().height();
-                mWidth = mat.cols - wStartPost;
-                mHeihjt = mat.rows - hStartPost;
-                qDebug() << "----------";
-                qDebug() << this->size().width() << this->size().height();
-                qDebug() << region.x() << " " << region.y() << " - " << region.width() << " " << region.height();
-                cv::Rect visibleRegion(wStartPost, hStartPost, mWidth, mHeihjt); //Extrai região visível
+                posXStart = mat.cols * region.x() / this->size().width();
+                posYStart = mat.rows * region.y() / this->size().height();
+                mCols = mat.cols - posXStart;
+                mRols = mat.rows - posYStart;
+                cv::Rect visibleRegion(posXStart, posYStart, mCols, mRols); //Extrai apenas a região visível
 
-                wRat = (double)region.width() / mWidth;  //Proporcao horizontal
-                hRat = (double)region.height() / mHeihjt; //Proporcao vertical
-                fitRatio = std::min(wRat, hRat);           //Menor proporcao // Redimencionamento maior
-                newCols = mWidth * fitRatio;
-                newRows = mHeihjt * fitRatio;
-                wStartPost = 0;
-                wStartPost = 0;
+                wRat = (double)region.width() / mCols;  //Proporcao horizontal
+                hRat = (double)region.height() / mRols; //Proporcao vertical
+                fitRatio = std::min(wRat, hRat);        //Menor proporcao 
+                newCols = mCols * fitRatio;
+                newRows = mRols * fitRatio;
                 try
                 {
                     cv::Mat cache(region.height(), region.width(), mat.type(), cv::Scalar(0)); //Nova imagem

@@ -1,0 +1,30 @@
+{
+  "name": "opencvflow",
+  "version": "0.2.0",
+  "description": "Open Computer Vision - Flow is an IDE for computer vision studies and testing. In just 3 steps you can visualize the result of different computer vision techniques.",
+  "scripts": {
+    "build": "webpack --config ./webpack.config.js",
+    "start:dev": "yarn build && electron ./ide/index.js"
+  },
+  "repository": "https://github.com/Piemontez/opencvflow",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@types/react": "^17.0.36",
+    "@types/react-dom": "^17.0.11",
+    "electron": "^16.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.2",
+    "webpack": "^5.64.2",
+    "webpack-cli": "^4.9.1"
+  }
+}

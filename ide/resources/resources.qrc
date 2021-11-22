@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/theme">
-        <file>base.css</file>
-        <file>widgets.css</file>
-    </qresource>
-</RCC>

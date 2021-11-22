@@ -169,7 +169,8 @@ void MainWindow::makeActions()
 void MainWindow::makeDocks()
 {
     //propertiesDock
-    d_func()->propertiesDock = new QDockWidget(this->tr("Propriedades"), this);
+    d_func()->propertiesDock = new QDockWidget(this->tr("Properties"), this);
+    d_func()->propertiesDock->setMaximumWidth(400);
     d_func()->propertiesDock->setObjectName("propertiesDock");
     d_func()->propertiesDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
@@ -426,6 +427,7 @@ QGraphicsProxyWidget *MainWindow::addNode(NodeItem *node)
 void MainWindow::removeNode(NodeItem *node)
 {
     centralWidget()->scene()->removeItem(node->proxyWidget());
+    delete node;
 }
 
 void MainWindow::connectNode(NodeItem *source, NodeItem *dest)

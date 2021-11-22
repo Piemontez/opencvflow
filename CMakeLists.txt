@@ -6,7 +6,7 @@ set(CMAKE_BUILD_TYPE Debug)
 file(GLOB SOURCES "*.cpp")
 
 #flags
-#c++11flags
+#c++14flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 
 set(CVFLOW_INSTALL_DIR      "${CMAKE_CURRENT_BINARY_DIR}/dist")

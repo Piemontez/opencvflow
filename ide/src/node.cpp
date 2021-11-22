@@ -9,6 +9,15 @@ Node::Node()
 {
     semaphore = new QSemaphore(1);
 }
+Node::~Node()
+{
+    acquire();
+    _edges.clear();
+    _sources.clear();
+    release();
+
+    delete semaphore;
+}
 void Node::addEdge(Edge *edge)
 {
     _edges.push_back( edge );

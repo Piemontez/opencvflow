@@ -5,42 +5,45 @@
 
 class QSemaphore;
 
-namespace cv {
+namespace cv
+{
     class VideoCapture;
     class Mat;
-}
+} // namespace cv
 
-namespace ocvflow {
+namespace ocvflow
+{
 
-class Edge;
-class EdgeItem;
-class CentralWidget;
+    class Edge;
+    class EdgeItem;
+    class CentralWidget;
 
-/**
+    /**
  * @brief The Node;
  */
-class Node
-{
-public:
-    explicit Node();
+    class Node
+    {
+    public:
+        explicit Node();
+        ~Node();
 
-    void addEdge(Edge *edge);
-    std::vector<Edge *>& edges();
-    std::vector<cv::Mat>& sources();
+        void addEdge(Edge *edge);
+        std::vector<Edge *> &edges();
+        std::vector<cv::Mat> &sources();
 
-    virtual void start();
-    virtual void proccess() = 0;
-    virtual void stop();
+        virtual void start();
+        virtual void proccess() = 0;
+        virtual void stop();
 
-    //Semaphore
-    void acquire();
-    void release();
+        //Semaphore
+        void acquire();
+        void release();
 
-protected:
-    QSemaphore *semaphore;
-    std::vector<Edge *> _edges;
-    std::vector<cv::Mat> _sources;
-};
+    protected:
+        QSemaphore *semaphore;
+        std::vector<Edge *> _edges;
+        std::vector<cv::Mat> _sources;
+    };
 
-}
+} // namespace ocvflow
 #endif // NODE_H

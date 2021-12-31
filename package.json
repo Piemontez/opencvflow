@@ -177,6 +177,7 @@
     "@types/react-router-dom": "^5.3.2",
     "@types/react-test-renderer": "^17.0.1",
     "@types/terser-webpack-plugin": "^5.0.4",
+    "@types/uuid": "^8.3.3",
     "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "browserslist-config-erb": "^0.0.3",
@@ -239,12 +240,15 @@
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
     "history": "4.x.x",
+    "mobx": "^6.3.10",
+    "mobx-react": "^7.2.1",
     "react": "^17.0.2",
     "react-bootstrap": "2.1.0",
     "react-dom": "^17.0.2",
     "react-flow-renderer": "^9.7.1",
     "react-router-dom": "^5.3.0",
-    "regenerator-runtime": "^0.13.9"
+    "regenerator-runtime": "^0.13.9",
+    "uuid": "^8.3.2"
   },
   "devEngines": {
     "node": ">=14.x",

@@ -6,7 +6,7 @@ import Header from './components/Header';
 
 const AppContent = () => {
   return (
-    <Row className="d-flex flex-fill flex-column align-items-stretch">
+    <Row className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
       <Header />
       <Body />
       <Footer />

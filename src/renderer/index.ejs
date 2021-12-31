@@ -2,10 +2,20 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Hello Electron React!</title>
+    <title>OpenCV-Flow!</title>
+    <style>
+      .wrapper, html, body {
+          height: 100%;
+          margin: 0;
+      }
+      .wrapper {
+          display: flex;
+          flex-direction: column;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root" class="wrapper"></div>
   </body>
   <script>
     window.electron.ipcRenderer.once('ipc-example', (arg) => {

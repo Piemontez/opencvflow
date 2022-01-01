@@ -1,5 +1,9 @@
 import { Nav } from 'react-bootstrap';
-
+/**
+ * Rodapé, 
+ * contém resumos do dos elemento sendo processados
+ * ou jánelas/node que foram clicados
+ */
 const Footer = () => {
   return (
     <Nav

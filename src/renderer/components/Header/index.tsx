@@ -1,5 +1,10 @@
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 
+/**
+ * Menu principal
+ * As opções do menu são adicionadas via plugin,
+ * inclusive os plugins instalados junto com a aplicação.
+ */
 const Header = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="sm">

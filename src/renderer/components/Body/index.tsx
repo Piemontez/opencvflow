@@ -23,6 +23,7 @@ const Body = () => {
   return (
     <ReactFlow
       className="flex-fill"
+      nodeTypes={noteStore.nodeTypes}
       elements={noteStore.elements}
       onElementsRemove={noteStore.onElementsRemove}
       onConnect={noteStore.onConnect}

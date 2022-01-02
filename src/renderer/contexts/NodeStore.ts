@@ -1,10 +1,8 @@
 import { observable, action, computed, reaction } from 'mobx';
-import { removeElements, addEdge } from 'react-flow-renderer';
+import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
 import { createContext } from 'react';
-import { OCVFEdge } from 'renderer/types/edge';
-import { OCVFNode } from 'renderer/types/node';
-//import { v4 as uuidv4 } from 'uuid';
-
+import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
+import { CVFNode } from 'renderer/types/node';
 
 const mockInitialElements: any /*Elements*/ = [
   {
@@ -116,8 +114,7 @@ const mockInitialElements: any /*Elements*/ = [
   },
 ];
 
-
-type OCVFlowElement = OCVFNode | OCVFEdge;
+type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
 
 class NodeStore {
@@ -128,13 +125,14 @@ class NodeStore {
     );
   }
 
+  @observable nodeTypes: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
 
-  @action addNode = (node: OCVFNode) => {
+  @action addNode = (node: CVFNode) => {
     this.elements.push(node);
   };
 
-  @action removeNode = (node: OCVFNode) => {
+  @action removeNode = (node: CVFNode) => {
     const idx = this.elements.indexOf(node);
     if (idx > -1) {
       this.elements.splice(idx, 1);
@@ -151,8 +149,15 @@ class NodeStore {
     //this.elements.push(todo)
   };*/
 
-  @action removeEdge = (edge: OCVFEdge) => {
-    const idx = this.elements.indexOf(edge);
+  @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
+    let idx = -1;
+    if ((edge as OCVFEdge).data) {
+      //OCVFEdge
+      idx = this.elements.indexOf(edge as OCVFEdge);
+    } else {
+      //CVFEdgeData
+      idx = this.elements.findIndex((_) => _.data === edge);
+    }
     if (idx > -1) {
       this.elements.splice(idx, 1);
     }

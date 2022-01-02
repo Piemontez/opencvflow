@@ -1,6 +1,6 @@
 import { Edge } from 'react-flow-renderer';
 
-class CVFEdgeData {
+export class CVFEdgeData {
   source?: CVFEdgeData;
   target?: CVFEdgeData;
 

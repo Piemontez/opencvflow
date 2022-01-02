@@ -3,6 +3,7 @@ import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
 import { createContext } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
+import { CVFComponent } from 'renderer/types/component';
 
 const mockInitialElements: any /*Elements*/ = [
   {
@@ -127,6 +128,10 @@ class NodeStore {
 
   @observable nodeTypes: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
+
+  @action addNodeType = (component: CVFComponent) => {
+    this.nodeTypes[component.name] = component;
+  };
 
   @action addNode = (node: CVFNode) => {
     this.elements.push(node);

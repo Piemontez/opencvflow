@@ -3,20 +3,25 @@ import { Handle } from 'react-flow-renderer';
 import { SourceHandleDef, TargetHandleDef } from './handle';
 import { CVFNodeProcessor } from './node';
 
-type ComponentData = {
+type OCVComponentData = {
   id: string;
-  data?: CVFNodeProcessor;
+  data: CVFNodeProcessor;
   type: string;
 };
 
 /**
- * Componente/Widget exibido
+ * Componente/NodeType
  */
-export abstract class Component extends React.Component<ComponentData> {
+export abstract class CVFComponent extends React.Component<OCVComponentData> {
   //Conexões que o componente pode receber
   targets: TargetHandleDef[] = [];
   //Conexões que o componente irá disparar
   sources: SourceHandleDef[] = [];
+
+  //Nome do componente. Por padrão tem o mesmo nome do nó processador
+  get name():string {
+    return this.props.data.name;
+  }
 
   render() {
     const { data } = this.props;
@@ -30,7 +35,7 @@ export abstract class Component extends React.Component<ComponentData> {
           />
         ))}
 
-        <div>{data?.title}</div>
+        <div>{data.title}</div>
 
         {this.sources.map((source) => (
           <Handle

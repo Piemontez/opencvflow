@@ -1,4 +1,8 @@
-export declare type ActionMenu = {
+export declare type MenuAction = {
+  tabTitle: string;
   title: string;
-  action: Function;
+  order?: number;
+  action?: Function;
 };
+
+export declare type ComponentMenuAction = {} & MenuAction;

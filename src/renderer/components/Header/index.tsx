@@ -7,7 +7,7 @@ import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
  */
 const Header = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="sm">
+    <Navbar id="header" bg="dark" variant="dark" expand="sm">
       <Container>
         <Navbar.Brand href="#home">OpenCV-FLOW</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

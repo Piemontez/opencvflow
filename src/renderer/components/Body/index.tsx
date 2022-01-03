@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import { useContext } from 'react';
 
 import ReactFlow from 'react-flow-renderer';
-import NodeStore from 'renderer/contexts/NodeStore';
+import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 
 const onLoad = (reactFlowInstance: any) => reactFlowInstance.fitView();
 
@@ -18,7 +18,7 @@ const onNodeContextMenu = (event: any, node: any) => {
 };
 
 const Body = () => {
-  const noteStore = useContext(NodeStore);
+  const noteStore = useContext(NodeStoreContext);
 
   return (
     <ReactFlow

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Handle } from 'react-flow-renderer';
-import { SourceHandleDef, TargetHandleDef } from './handle';
-import { CVFNodeProcessor } from './node';
+import { SourceHandle, TargetHandle } from './handle';
+import { ComponentMenuAction } from './menu';
+import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
 
 type OCVComponentData = {
   id: string;
@@ -9,22 +10,31 @@ type OCVComponentData = {
   type: string;
 };
 
+type OCVComponentProcessor = (() => CVFNodeProcessor) | typeof CVFNodeProcessor;
+
 /**
  * Componente/NodeType
  */
 export abstract class CVFComponent extends React.Component<OCVComponentData> {
   //Conexões que o componente pode receber
-  targets: TargetHandleDef[] = [];
+  targets: TargetHandle[] = [];
   //Conexões que o componente irá disparar
-  sources: SourceHandleDef[] = [];
+  sources: SourceHandle[] = [];
+  //Função responsável em instanciar o NodeProcessor
+  processor: OCVComponentProcessor = () => new EmptyNodeProcessor();
+  //Definição do menu que ira aparecer 
+  menu?: ComponentMenuAction;
 
   //Nome do componente. Por padrão tem o mesmo nome do nó processador
-  get name():string {
+  get name(): string {
     return this.props.data.name;
+  }
+  //Titulo exibido em tela. Por padrão exibe o nome do componente.
+  get title(): string {
+    return this.name;
   }
 
   render() {
-    const { data } = this.props;
     return (
       <div style={componentStyles}>
         {this.targets.map((target) => (
@@ -35,7 +45,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
           />
         ))}
 
-        <div>{data.title}</div>
+        <div>{this.title}</div>
 
         {this.sources.map((source) => (
           <Handle

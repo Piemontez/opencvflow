@@ -129,7 +129,7 @@ class NodeStore {
   @observable nodeTypes: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
 
-  @action addNodeType = (component: CVFComponent) => {
+  @action addNodeType = (component: typeof CVFComponent) => {
     this.nodeTypes[component.name] = component;
   };
 
@@ -181,4 +181,7 @@ class NodeStore {
   }
 }
 
-export default createContext(new NodeStore());
+const instance = new NodeStore();
+
+export default instance;
+export const NodeStoreContext = createContext(new NodeStore());

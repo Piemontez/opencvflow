@@ -1,16 +1,16 @@
 import { Nav } from 'react-bootstrap';
 /**
- * Rodapé, 
+ * Rodapé,
  * contém resumos do dos elemento sendo processados
  * ou jánelas/node que foram clicados
  */
 const Footer = () => {
   return (
-    <Nav
-      justify
-    >
+    <Nav justify id="footer">
       <Nav.Item>
-        <Nav.Link eventKey="components" disabled>Components Add: 0</Nav.Link>
+        <Nav.Link eventKey="components" disabled>
+          Components Add: 0
+        </Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="https://www.linkedin.com/in/piemontez/" target="_blank">

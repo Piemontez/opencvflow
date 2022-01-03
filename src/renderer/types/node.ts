@@ -10,10 +10,6 @@ type Mat = Uint8Array;
 export abstract class CVFNodeProcessor {
   //Nome do processador
   name: string = '';
-  //Titulo exibido em tela
-  get title(): string {
-    return this.name;
-  }
 
   edges: Array<CVFEdgeData> = [];
   //Contéudo da primeira saída
@@ -31,6 +27,10 @@ export abstract class CVFNodeProcessor {
   async proccess(): Promise<void> {}
   //Função chamada ao para o processamento. Chamada uma única vez
   async stop(): Promise<void> {}
+}
+
+export class EmptyNodeProcessor extends CVFNodeProcessor {
+  name = 'EmptyNodeProcessor';
 }
 
 /**

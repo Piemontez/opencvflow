@@ -1,6 +1,5 @@
-import { ElementId, Node, XYPosition } from 'react-flow-renderer';
+import { Node } from 'react-flow-renderer';
 import { CVFEdgeData } from './edge';
-import { v4 as uuidv4 } from 'uuid';
 
 type Mat = Uint8Array;
 
@@ -37,13 +36,4 @@ export class EmptyNodeProcessor extends CVFNodeProcessor {
  * Definição dos nós vinculados ao React-Flow-Renderes
  * Classe utilizada internamente
  */
-export class CVFNode implements Node<CVFNodeProcessor> {
-  id: ElementId;
-  position: XYPosition;
-  data?: CVFNodeProcessor;
-
-  constructor() {
-    this.id = uuidv4();
-    this.position = { x: 0, y: 0 };
-  }
-}
+export interface CVFNode extends Node<CVFNodeProcessor> {}

@@ -12,7 +12,7 @@ interface MenuStoreI {
   //Adiciona o menu ao navbar
   addMenuAction(action: MenuAction): void;
   //Modifica o menu que esta sendo exibido
-  changeCurrentTab(tab: MenuTab): void;
+  changeCurrentTab(tabOrTitle: MenuTab | string): void;
 }
 
 type MenuTab = {
@@ -36,20 +36,26 @@ class MenuStore {
       const tab = this.findOrCreateTab(action.tabTitle);
       tab.actions.push(action);
       this.actions.push(action);
+      console.log(this.findOrCreateTab(action.tabTitle).actions);
     }
   };
 
   @action addComponentMenuAction = (component: typeof CVFComponent) => {
     if (component.menu) {
+      //Altera para o menu ser arrastável
+      component.menu.draggable = true;
+
       const tab = this.findOrCreateTab(component.menu.tabTitle);
       tab.actions.push(component.menu);
       this.actions.push(component.menu);
     }
   };
 
-  @action changeCurrentTab(tab: MenuTab) {
-    console.log(111);
-    this.currentTab = tab;
+  @action changeCurrentTab(tabOrTitle: MenuTab | string) {
+    if (typeof tabOrTitle === 'string') {
+      tabOrTitle = this.findOrCreateTab(tabOrTitle);
+    }
+    this.currentTab = tabOrTitle;
   }
 
   @action findOrCreateTab(tabTitle: string): MenuTab {

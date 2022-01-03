@@ -1,8 +1,11 @@
+import { MouseEventHandler } from 'react';
+
 export type MenuAction = {
   tabTitle: string;
   title: string;
   order?: number;
-  action?: Function;
+  draggable?: boolean;
+  action?: MouseEventHandler<HTMLButtonElement>;
 };
 
-export type ComponentMenuAction = Omit<MenuAction, "action">;
+export type ComponentMenuAction = Omit<MenuAction, 'action'>;

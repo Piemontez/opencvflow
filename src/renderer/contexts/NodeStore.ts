@@ -1,9 +1,11 @@
 import { observable, action, computed } from 'mobx';
 import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
-import { createContext } from 'react';
+import { createContext, RefObject } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
 import { CVFComponent } from 'renderer/types/component';
+import { v4 as uuidv4 } from 'uuid';
+import { ComponentMenuAction } from 'renderer/types/menu';
 
 const mockInitialElements: any /*Elements*/ = [
   {
@@ -119,6 +121,9 @@ type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
 
 class NodeStore {
+  reactFlowInstance: any;
+  reactFlowWrapper?: RefObject<HTMLDivElement>;
+
   /*constructor() {
     reaction(
       () => this.elements,
@@ -127,10 +132,14 @@ class NodeStore {
   }*/
 
   @observable nodeTypes: NodeTypesType = {};
+  @observable nodeTypesByMenu: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
 
   @action addNodeType = (component: typeof CVFComponent) => {
     this.nodeTypes[component.name] = component;
+    if (component.menu?.title) {
+      this.nodeTypesByMenu[component.menu?.title] = component;
+    }
   };
 
   @action addNode = (node: CVFNode) => {
@@ -167,10 +176,52 @@ class NodeStore {
       this.elements.splice(idx, 1);
     }
   };
+  /**
+   * Eventos disparados pelo ReactFlow
+   * @param instance
+   */
 
+  onLoad = (instance: any) => {
+    this.reactFlowInstance = instance;
+    this.reactFlowInstance.fitView();
+  };
+
+  //Evento disparado pelo painel ao remover um elemento
   onElementsRemove = (elementsToRemove: any[]) =>
     removeElements(elementsToRemove, this.elements);
+  //Evento disparado pelo painel ao conectar 2 nós
   onConnect = (params: any) => addEdge(params, this.elements);
+  onDrop = (event: any) => {
+    event.preventDefault();
+
+    const reactFlowBounds = this.reactFlowWrapper!.current!.getBoundingClientRect();
+    const menuAction = event.dataTransfer.getData(
+      'application/cvf/action'
+    ) as ComponentMenuAction;
+    const type = (this.nodeTypesByMenu[menuAction.title] as typeof CVFComponent)
+      .name;
+    const position = this.reactFlowInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+
+    const newNode: CVFNode = {
+      id: uuidv4(),
+      type,
+      position,
+    };
+
+    this.elements.concat(newNode);
+  };
+  onDragOver = (event: any) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  };
+  onDragStart = (event: any, menuAction: ComponentMenuAction) => {
+    //DragEvent
+    event.dataTransfer.setData('application/cvf/action', menuAction);
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   @computed get nodes() {
     return this.elements.filter(() => false);

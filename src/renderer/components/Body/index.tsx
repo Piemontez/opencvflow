@@ -4,8 +4,6 @@ import { useContext } from 'react';
 import ReactFlow from 'react-flow-renderer';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 
-const onLoad = (reactFlowInstance: any) => reactFlowInstance.fitView();
-
 const onNodeMouseEnter = (_event: any, node: any) =>
   console.log('mouse enter:', node);
 const onNodeMouseMove = (_event: any, node: any) =>
@@ -21,19 +19,23 @@ const Body = () => {
   const noteStore = useContext(NodeStoreContext);
 
   return (
-    <ReactFlow
-      className="flex-fill"
-      nodeTypes={noteStore.nodeTypes}
-      elements={noteStore.elements}
-      onElementsRemove={noteStore.onElementsRemove}
-      onConnect={noteStore.onConnect}
-      onLoad={onLoad}
-      selectNodesOnDrag={false}
-      onNodeMouseEnter={onNodeMouseEnter}
-      onNodeMouseMove={onNodeMouseMove}
-      onNodeMouseLeave={onNodeMouseLeave}
-      onNodeContextMenu={onNodeContextMenu}
-    />
+    <div className="reactflow-wrapper" ref={noteStore.reactFlowWrapper}>
+      <ReactFlow
+        className="flex-fill"
+        nodeTypes={noteStore.nodeTypes}
+        elements={noteStore.elements}
+        onLoad={noteStore.onLoad}
+        onElementsRemove={noteStore.onElementsRemove}
+        onConnect={noteStore.onConnect}
+        selectNodesOnDrag={false}
+        onDrop={noteStore.onDrop}
+        onDragOver={noteStore.onDragOver}
+        onNodeMouseEnter={onNodeMouseEnter}
+        onNodeMouseMove={onNodeMouseMove}
+        onNodeMouseLeave={onNodeMouseLeave}
+        onNodeContextMenu={onNodeContextMenu}
+      />
+    </div>
   );
 };
 

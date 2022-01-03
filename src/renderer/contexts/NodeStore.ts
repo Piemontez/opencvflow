@@ -1,4 +1,4 @@
-import { observable, action, computed, reaction } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
 import { createContext } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
@@ -119,12 +119,12 @@ type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
 
 class NodeStore {
-  constructor() {
+  /*constructor() {
     reaction(
       () => this.elements,
       (_) => console.log(this.elements.length)
     );
-  }
+  }*/
 
   @observable nodeTypes: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
@@ -184,4 +184,4 @@ class NodeStore {
 const instance = new NodeStore();
 
 export default instance;
-export const NodeStoreContext = createContext(new NodeStore());
+export const NodeStoreContext = createContext(instance);

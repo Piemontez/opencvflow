@@ -35,7 +35,7 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
 }
 
 export class CVVideoCaptureComponent extends CVFComponent {
-  menu = { tabTitle: tabName, title: 'Sobel' };
+  static menu = { tabTitle: tabName, title: 'Sobel' };
 
   get title() {
     return 'Video Capture';

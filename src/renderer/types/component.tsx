@@ -23,7 +23,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   //Função responsável em instanciar o NodeProcessor
   processor: OCVComponentProcessor = () => new EmptyNodeProcessor();
   //Definição do menu que ira aparecer 
-  menu?: ComponentMenuAction;
+  static menu?: ComponentMenuAction;
 
   //Nome do componente. Por padrão tem o mesmo nome do nó processador
   get name(): string {

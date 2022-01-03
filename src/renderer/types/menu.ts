@@ -1,8 +1,8 @@
-export declare type MenuAction = {
+export type MenuAction = {
   tabTitle: string;
   title: string;
   order?: number;
   action?: Function;
 };
 
-export declare type ComponentMenuAction = {} & MenuAction;
+export type ComponentMenuAction = Omit<MenuAction, "action">;

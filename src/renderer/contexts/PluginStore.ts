@@ -1,7 +1,12 @@
+import { MenuAction } from 'renderer/types/menu';
+import { createContext } from 'react';
 import { observable, action, makeObservable } from 'mobx';
 import * as glob from 'glob';
 import { PluginFile, PluginType } from 'renderer/types/plugin';
 import NodeStore from './NodeStore';
+import MenuStore from './MenuStore';
+import * as localPlugins from 'plugins';
+import { CVFComponent } from 'renderer/types/component';
 
 interface PluginStoreI {
   //Inicializa e carrega os plugins ao iniciar a aplicação
@@ -17,28 +22,34 @@ interface PluginStoreI {
 }
 
 class PluginStore {
-  filesPaths: string[] = [];
+  filesPaths: string[] = ['../plugins'];
   filesNames: string[] = [];
+
+  @observable plugins = [] as PluginFile[];
 
   constructor() {
     makeObservable(this);
   }
 
-  @observable plugins = [] as PluginFile[];
-
   @action async init() {
-    //TODO: Carregar via configuração
-    this.filesPaths = [];
+    //Carrega os plugins instalados no sistema
+    const localPluginsValues = Object.values(localPlugins);
+    console.log(`IDE plugins found: ${localPluginsValues.length}`);
+    for (const plugin of localPluginsValues) {
+      await this.addPlugin({ fileName: plugin.name, plugin: plugin });
+    }
 
+    //Carrega os plugins instaladas na pasta plugins
     this.filesNames = await this.searchFiles();
     const plugins = await this.loadFiles();
     for (const plugin of plugins) {
       await this.addPlugin(plugin);
     }
   }
+
   async searchFiles(): Promise<string[]> {
     //TODO: Adicionar logger
-    console.log(`Searching for plugins.`);
+    console.log(`Searching for externals plugins.`);
 
     let allFiles: string[] = [];
     for (const file of this.filesPaths) {
@@ -47,7 +58,7 @@ class PluginStore {
     }
 
     //TODO: Adicionar logger
-    console.log(`Plugins files found: ${allFiles.length}`);
+    console.log(`Externals plugins files found: ${allFiles.length}`);
     return allFiles;
   }
 
@@ -71,7 +82,7 @@ class PluginStore {
       console.log(`Loading: ${fileName.replace(/^.*plugins/, 'plugins')}`);
 
       //Importa o plugin
-      pluginFile = (await import(fileName)) as PluginFile;
+      pluginFile = (await eval(`import(${fileName})`)) as PluginFile;
       pluginFile.fileName = fileName;
 
       const df = pluginFile.plugin;
@@ -92,14 +103,31 @@ class PluginStore {
     return pluginFile;
   }
 
-  async addPlugin(pluginFile: PluginFile) {
+  @action async addPlugin(pluginFile: PluginFile) {
     //Adiciona arquivo a lista de plugins carregados
     this.plugins.push(pluginFile);
     if (pluginFile.plugin) {
       const plugin: PluginType = pluginFile.plugin;
-      plugin.components.forEach((_) => NodeStore.addNodeType(_));
+
+      console.log(`Add components from: ${plugin.name}`);
+      for (const comp of plugin.components) {
+        if ((comp as MenuAction).tabTitle) {
+          const compAs = comp as MenuAction;
+          console.log(`Add action: ${compAs.title}`);
+          MenuStore.addMenuAction(compAs);
+        } else {
+          const compAs = comp as typeof CVFComponent;
+          console.log(`Add component: ${compAs.name}`);
+          if (compAs.menu) {
+            MenuStore.addComponentMenuAction(compAs);
+          }
+          NodeStore.addNodeType(compAs);
+        }
+      }
     }
   }
 }
 
-export default new PluginStore() as PluginStoreI;
+const instance = new PluginStore() as PluginStoreI;
+export default instance;
+export const NodeStoreContext = createContext(instance);

@@ -1,4 +1,5 @@
 import { CVFComponent } from './component';
+import { MenuAction } from './menu';
 
 /**
  * Plugin Type
@@ -6,7 +7,7 @@ import { CVFComponent } from './component';
  */
 export type PluginType = {
   name: string;
-  components: typeof CVFComponent[];
+  components: Array<typeof CVFComponent | MenuAction>;
 };
 
 /**

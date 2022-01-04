@@ -1,20 +1,19 @@
 import { Node } from 'react-flow-renderer';
 import { CVFEdgeData } from './edge';
-
-type Mat = Uint8Array;
+import cv from 'opencv4nodejs';
 
 /**
  * Classe com definições
  */
 export abstract class CVFNodeProcessor {
   edges: Array<CVFEdgeData> = [];
-  //Contéudo da primeira saída
-  sources: Array<Mat> = [];
+  //Saídas
+  sources: Array<cv.Mat> = [];
 
   //Conteúdo exebido pelo processador
   //Por padrão exibe o conteúdo do primeiro source
-  get output(): Mat {
-    return this.sources?.[0] || [];
+  get output(): cv.Mat {
+    return this.sources?.[0];
   }
 
   //Função chamada ao iniciar o processamento(clicar em run). Chamada uma única vez

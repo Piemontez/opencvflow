@@ -1,35 +1,23 @@
 import { CVFOutputComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
+import { VideoCapture } from 'opencv4nodejs';
 
 const tabName = 'Inputs';
 
 class VideoCaptureProcessor extends CVFNodeProcessor {
-  constructor() {
-    super();
-    //cap = new cv::VideoCapture();
-  }
+  cap?: VideoCapture;
 
   async start() {
-    //cap->open(index);
+    this.cap = new VideoCapture(0);
   }
 
   async proccess() {
-    /*
-    _sources.clear();
-
-    if(!cap->isOpened())
-        return;
-
-    cv::Mat frame;
-    *cap >> frame;
-
-    _sources.push_back(frame);
-    */
+    this.sources = [this.cap!.read()];
   }
 
   async stop() {
-    //if(cap->isOpened())
-    //cap->release();
+    delete this.cap;
+    this.cap = undefined;
   }
 }
 
@@ -40,5 +28,4 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
   get title() {
     return 'Video Capture';
   }
-  
 }

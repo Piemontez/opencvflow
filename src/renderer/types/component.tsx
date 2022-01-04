@@ -34,8 +34,9 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   render() {
     return (
       <div style={componentStyles.border}>
-        {this.targets.map((target) => (
+        {this.targets.map((target, idx) => (
           <Handle
+            key={`t${idx}`}
             type="target"
             position={target.position}
             style={{ borderRadius: 0 }}
@@ -43,10 +44,12 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
         ))}
 
         <div style={componentStyles.header}>{this.title}</div>
-        <div style={componentStyles.body}></div>
 
-        {this.sources.map((source) => (
+        {this.props.data.body() || <div style={componentStyles.body}></div>}
+
+        {this.sources.map((source, idx) => (
           <Handle
+            key={`s${idx}`}
             type="target"
             position={source.position}
             style={{ borderRadius: 0 }}

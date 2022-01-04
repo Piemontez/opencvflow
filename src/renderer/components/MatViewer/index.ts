@@ -1,4 +1,4 @@
-import { Mat } from 'opencv4nodejs';
+import { Mat } from 'opencv-ts';
 
 const MatViewer = (mat: Mat) => {
   return mat.rows;

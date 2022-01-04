@@ -36,7 +36,6 @@ class MenuStore {
       const tab = this.findOrCreateTab(action.tabTitle);
       tab.actions.push(action);
       this.actions.push(action);
-      console.log(this.findOrCreateTab(action.tabTitle).actions);
     }
   };
 

@@ -9,6 +9,8 @@ import * as localPlugins from 'plugins';
 import { CVFComponent } from 'renderer/types/component';
 
 interface PluginStoreI {
+  //True ao finalizar a tarefa de carregas os plugins
+  loaded:boolean;
   //Inicializa e carrega os plugins ao iniciar a aplicação
   init(): Promise<void>;
   //Procura os plugins instalados nas pastas de plugins
@@ -25,6 +27,7 @@ class PluginStore {
   filesPaths: string[] = ['../plugins'];
   filesNames: string[] = [];
 
+  @observable loaded = false;
   @observable plugins = [] as PluginFile[];
 
   constructor() {
@@ -45,6 +48,7 @@ class PluginStore {
     for (const plugin of plugins) {
       await this.addPlugin(plugin);
     }
+    this.loaded = true;
   }
 
   async searchFiles(): Promise<string[]> {
@@ -130,4 +134,4 @@ class PluginStore {
 
 const instance = new PluginStore() as PluginStoreI;
 export default instance;
-export const NodeStoreContext = createContext(instance);
+export const PluginStoreContext = createContext(instance);

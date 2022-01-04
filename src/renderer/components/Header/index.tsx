@@ -23,7 +23,7 @@ const Header = () => {
               {menuStore.tabs.map((tab) => (
                 <Nav.Link
                   key={tab.title}
-                  onMouseOver={() => menuStore.changeCurrentTab(tab.title)}
+                  onClick={() => menuStore.changeCurrentTab(tab.title)}
                 >
                   {tab.title}
                 </Nav.Link>

@@ -7,35 +7,40 @@ import { CVFComponent } from 'renderer/types/component';
 import { v4 as uuidv4 } from 'uuid';
 import { ComponentMenuAction } from 'renderer/types/menu';
 
-const mockInitialElements: any /*Elements*/ = [
-  {
-    id: 'horizontal-1',
-    sourcePosition: 'right',
-    type: 'input',
-    className: 'dark-node',
-    data: { label: 'Input' },
-    position: { x: 0, y: 80 },
-  },
-  {
-    id: 'horizontal-2',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'A Node' },
-    position: { x: 250, y: 0 },
-  },
-  {
-    id: 'horizontal-e1-2',
-    source: 'horizontal-1',
-    type: 'smoothstep',
-    target: 'horizontal-2',
-    animated: true,
-  },
-];
-
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
 
+interface NodeStoreI {
+  running: boolean;
+  elements: OCVElements;
+  nodeTypes: NodeTypesType;
+
+  addNodeType(component: typeof CVFComponent): void;
+  addNode(node: CVFNode): void;
+  removeNode(nodeOrId: CVFNode | string): void;
+  addEdge(source: CVFNode, target: CVFNode): void;
+  removeEdge(edge: OCVFEdge | CVFEdgeData): void;
+
+  run(): void;
+  stop(): void;
+
+  //Utilizado pelo componente React Flow
+  reactFlowWrapper?: RefObject<HTMLDivElement>;
+
+  onLoad(instance: any): void;
+  onElementsRemove(elementsToRemove: any[]): void;
+  onConnect(params: any): void;
+  onDrop(event: any): void;
+  onDragOver(event: any): void;
+  onDragStart(event: any, menuAction: ComponentMenuAction): void;
+  onNodeContextMenu(event: any, node: any): void;
+}
+
 class NodeStore {
+  @observable running: boolean = false;
+  @observable elements: OCVElements = [];
+  nodeTypes: NodeTypesType = {};
+  nodeTypesByMenu: NodeTypesType = {};
   reactFlowInstance: any;
   reactFlowWrapper?: RefObject<HTMLDivElement>;
 
@@ -46,10 +51,6 @@ class NodeStore {
       (_) => console.log(this.elements.length)
     );*/
   }
-
-  nodeTypes: NodeTypesType = {};
-  nodeTypesByMenu: NodeTypesType = {};
-  @observable elements: OCVElements = mockInitialElements;
 
   @action addNodeType = (component: typeof CVFComponent) => {
     this.nodeTypes[component.name] = component;
@@ -62,22 +63,31 @@ class NodeStore {
     this.elements.push(node);
   };
 
-  @action removeNode = (node: CVFNode) => {
-    const idx = this.elements.indexOf(node);
+  @action removeNode = (nodeOrId: CVFNode | string) => {
+    const idx =
+      typeof nodeOrId === 'string'
+        ? this.elements.findIndex((_) => _.id === nodeOrId)
+        : this.elements.indexOf(nodeOrId);
     if (idx > -1) {
-      this.elements.splice(idx, 1);
+      const node = this.elements.splice(idx, 1)[0] as CVFNode;
       if (node.data?.edges) {
         for (const edge of node.data.edges) {
           this.removeEdge(edge);
         }
       }
+      this.elements = [...this.elements];
     }
   };
 
-  /*
-  @action addEdge = (lnode: OCVFNode, rnode: OCVFNode) => {
-    //this.elements.push(todo)
-  };*/
+  @action addEdge = (source: CVFNode, target: CVFNode) => {
+    const newEdge: OCVFEdge = {
+      id: uuidv4(),
+      source: source.id,
+      target: target.id,
+      data: new CVFEdgeData(source.data, target.data),
+    };
+    this.elements.push(newEdge);
+  };
 
   @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
     let idx = -1;
@@ -92,6 +102,24 @@ class NodeStore {
       this.elements.splice(idx, 1);
     }
   };
+
+  @action run = () => {
+    if (this.running) return;
+    this.running = true;
+
+    const nodes = this.nodes;
+    for (const node of nodes) {
+      node.data.start();
+    }
+  };
+
+  @action stop = () => {
+    const nodes = this.nodes;
+    for (const node of nodes) {
+      node.data.stop();
+    }
+  };
+
   /**
    * Eventos disparados pelo ReactFlow
    * @param instance
@@ -141,16 +169,25 @@ class NodeStore {
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  @computed get nodes() {
-    return this.elements.filter(() => false);
+  onNodeContextMenu = (event: any, node: any) => {
+    event.preventDefault();
+    console.log('context menu:', node);
+  };
+
+  @computed get nodes(): Array<CVFNode> {
+    return this.elements.filter(
+      (el) => !(el as OCVFEdge).sourceHandle
+    ) as Array<CVFNode>;
   }
 
-  @computed get edges() {
-    return this.elements.filter(() => false);
+  @computed get edges(): Array<OCVFEdge> {
+    return this.elements.filter(
+      (el) => (el as OCVFEdge).sourceHandle
+    ) as Array<OCVFEdge>;
   }
 }
 
-const instance = new NodeStore();
+const instance = new NodeStore() as NodeStoreI;
 
 export default instance;
 export const NodeStoreContext = createContext(instance);

@@ -1,13 +1,18 @@
 import { Edge } from 'react-flow-renderer';
+import { CVFNodeProcessor } from './node';
 
 export class CVFEdgeData {
-  source?: CVFEdgeData;
-  target?: CVFEdgeData;
+  //Origem da aresta
+  source?: CVFNodeProcessor;
+  //Destino da aresta
+  target?: CVFNodeProcessor;
 
-  CVFEdgeData(source?: CVFEdgeData, target?: CVFEdgeData) {
-    this.target = target;
+  constructor(source?: CVFNodeProcessor, target?: CVFNodeProcessor) {
     this.source = source;
+    this.target = target;
   }
 }
 
-export declare type OCVFEdge = Edge<CVFEdgeData>;
+export interface OCVFEdge extends Edge<CVFEdgeData> {
+  data: CVFEdgeData;
+}

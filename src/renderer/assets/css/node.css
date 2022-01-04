@@ -1,0 +1,27 @@
+.node {
+  min-width: 100px;
+  border: 1px solid;
+  border-color: rgb(var(--bs-dark-rgb));
+  border-radius: 3px;
+}
+
+.node-header {
+  padding: 3px;
+  background: rgb(var(--bs-dark-rgb));
+  color: var(--bs-light);
+  font-size: 0.5rem;
+  width: 100%;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.node-header button {
+  font-size: 0.5rem;
+  padding: 2px;
+  float: right;
+}
+
+.node-body {
+  min-height: 60;
+  width: 100%;
+}

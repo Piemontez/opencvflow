@@ -1,0 +1,39 @@
+@import "./node.css";
+
+.wrapper,
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/*HEADER*/
+#header,
+#subheader {
+  padding: 2px;
+}
+
+#header {
+    padding-bottom: 0;
+}
+
+#header a,
+#subheader a {
+  font-size: 0.85rem;
+  padding: 2px 4px 2px 4px;
+}
+
+/*FOOTER*/
+#footer {
+  border-top: 1px solid var(--bs-dark);
+  background-color: var(--bs-light);
+  padding-top: 2px;
+}
+#footer a {
+  font-size: 0.7rem;
+  padding: 2px;
+}

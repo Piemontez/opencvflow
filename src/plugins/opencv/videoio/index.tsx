@@ -7,7 +7,6 @@ class VideoCapture extends cv.VideoCapture {}
 
 class VideoCaptureProcessor extends CVFNodeProcessor {
   video: HTMLVideoElement | null = null;
-  canvas: HTMLCanvasElement | null = null;
   cap?: VideoCapture;
 
   constructor() {
@@ -18,22 +17,13 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   }
 
   body() {
-    setTimeout(() => this.start(), 1000);
     return (
-      <>
-        <video
-          autoPlay
-          muted={true}
-          playsInline
-          ref={(ref) => (this.video = ref)}
-        />
-        <canvas
-          id="canvasOutput"
-          width="320"
-          height="240"
-          ref={(ref) => (this.canvas = ref)}
-        />
-      </>
+      <video
+        autoPlay
+        muted={true}
+        playsInline
+        ref={(ref) => (this.video = ref)}
+      />
     );
   }
 
@@ -55,12 +45,10 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
 
   async proccess() {
     let src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
-    
+
     this.cap!.read(src);
 
     this.sources = [src];
-
-    cv.imshow(this.canvas!, src);
   }
 
   async stop() {

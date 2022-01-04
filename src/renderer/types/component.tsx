@@ -1,5 +1,7 @@
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
+import NodeDisplay from 'renderer/components/NodeDisplay';
+import NodeTab from 'renderer/components/NodeTab';
 import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction } from './menu';
 import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
@@ -33,7 +35,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
 
   render() {
     return (
-      <div style={componentStyles.border}>
+      <div className="node">
         {this.targets.map((target, idx) => (
           <Handle
             key={`t${idx}`}
@@ -43,14 +45,16 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
           />
         ))}
 
-        <div style={componentStyles.header}>{this.title}</div>
+        <NodeTab component={this} />
 
-        {this.props.data.body() || <div style={componentStyles.body}></div>}
+        <div className="node-body">
+          {this.props.data.body() || <NodeDisplay component={this} />}
+        </div>
 
         {this.sources.map((source, idx) => (
           <Handle
             key={`s${idx}`}
-            type="target"
+            type="source"
             position={source.position}
             style={{ borderRadius: 0 }}
           />
@@ -59,27 +63,15 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
     );
   }
 }
+
 export abstract class CVFOutputComponent extends CVFComponent {
   //Conexões que o componente irá disparar
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 }
 
-const componentStyles = {
-  border: {
-    minWidth: 100,
-    border: '1px solid',
-    borderColor: 'rgb(var(--bs-dark-rgb))',
-    borderRadius: 3,
-  },
-  header: {
-    padding: 3,
-    background: 'rgb(var(--bs-dark-rgb))',
-    color: 'var(--bs-light)',
-    fontSize: '0.5rem',
-    width: '100%',
-  },
-  body: {
-    minHeight: 60,
-    width: '100%',
-  },
-};
+export abstract class CVFIOComponent extends CVFComponent {
+  //Conexões que o componente irá receber
+  targets: TargetHandle[] = [{ title: 'in', position: Position.Left }];
+  //Conexões que o componente irá disparar
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+}

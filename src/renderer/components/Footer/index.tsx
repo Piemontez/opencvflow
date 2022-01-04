@@ -14,11 +14,7 @@ const Footer = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="https://www.linkedin.com/in/piemontez/" target="_blank">
-          Developed by @piemontez
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item>
-        <Nav.Link eventKey="disabled" disabled>
+          Developed by @piemontez 
           Version: 0.1.1
         </Nav.Link>
       </Nav.Item>

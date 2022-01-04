@@ -13,6 +13,8 @@ import { CVVideoCaptureComponent } from './videoio';
 const OpenCVPlugin: PluginType = {
   name: "OpenCV Plugin",
   components: [
+    //video
+    CVVideoCaptureComponent,
     //arithmetic
     CVPlusComponent,
     CVSubComponent,
@@ -20,8 +22,6 @@ const OpenCVPlugin: PluginType = {
     CVDivComponent,
     CVMulComponent,
     CVKernelComponent,
-    //video
-    CVVideoCaptureComponent,
     //imgproc
     CVSobelComponent,
   ],

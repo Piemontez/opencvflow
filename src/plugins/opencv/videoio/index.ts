@@ -1,10 +1,9 @@
-import { CVFComponent } from 'renderer/types/component';
+import { CVFOutputComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 
 const tabName = 'Inputs';
 
 class VideoCaptureProcessor extends CVFNodeProcessor {
-  name = 'cv_videocapture';
   constructor() {
     super();
     //cap = new cv::VideoCapture();
@@ -34,12 +33,12 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   }
 }
 
-export class CVVideoCaptureComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: 'Sobel' };
+export class CVVideoCaptureComponent extends CVFOutputComponent {
+  static menu = { tabTitle: tabName, title: 'Video Capture' };
+  static processor = VideoCaptureProcessor;
 
   get title() {
     return 'Video Capture';
   }
   
-  processor = VideoCaptureProcessor;
 }

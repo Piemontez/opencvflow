@@ -1,5 +1,5 @@
 import React from 'react';
-import { Handle } from 'react-flow-renderer';
+import { Handle, Position } from 'react-flow-renderer';
 import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction } from './menu';
 import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
@@ -10,7 +10,8 @@ type OCVComponentData = {
   type: string;
 };
 
-type OCVComponentProcessor = (() => CVFNodeProcessor) | typeof CVFNodeProcessor;
+class ForkCVFNodeProcessor extends CVFNodeProcessor {}
+type OCVComponentProcessor = typeof ForkCVFNodeProcessor;
 
 /**
  * Componente/NodeType
@@ -21,22 +22,18 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   //Conexões que o componente irá disparar
   sources: SourceHandle[] = [];
   //Função responsável em instanciar o NodeProcessor
-  processor: OCVComponentProcessor = () => new EmptyNodeProcessor();
-  //Definição do menu que ira aparecer 
+  static processor: OCVComponentProcessor = EmptyNodeProcessor;
+  //Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
 
-  //Nome do componente. Por padrão tem o mesmo nome do nó processador
-  get name(): string {
-    return this.props.data.name;
-  }
   //Titulo exibido em tela. Por padrão exibe o nome do componente.
   get title(): string {
-    return this.name;
+    return this.constructor.name;
   }
 
   render() {
     return (
-      <div style={componentStyles}>
+      <div style={componentStyles.border}>
         {this.targets.map((target) => (
           <Handle
             type="target"
@@ -45,7 +42,8 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
           />
         ))}
 
-        <div>{this.title}</div>
+        <div style={componentStyles.header}>{this.title}</div>
+        <div style={componentStyles.body}></div>
 
         {this.sources.map((source) => (
           <Handle
@@ -58,9 +56,27 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
     );
   }
 }
+export abstract class CVFOutputComponent extends CVFComponent {
+  //Conexões que o componente irá disparar
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+}
 
 const componentStyles = {
-  background: '#9CA8B3',
-  color: '#FFF',
-  padding: 10,
+  border: {
+    minWidth: 100,
+    border: '1px solid',
+    borderColor: 'rgb(var(--bs-dark-rgb))',
+    borderRadius: 3,
+  },
+  header: {
+    padding: 3,
+    background: 'rgb(var(--bs-dark-rgb))',
+    color: 'var(--bs-light)',
+    fontSize: '0.5rem',
+    width: '100%',
+  },
+  body: {
+    minHeight: 60,
+    width: '100%',
+  },
 };

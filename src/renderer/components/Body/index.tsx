@@ -3,6 +3,7 @@ import { useContext } from 'react';
 
 import ReactFlow from 'react-flow-renderer';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
+import { CVVideoCaptureComponent } from 'plugins/opencv/videoio';
 
 const onNodeMouseEnter = (_event: any, node: any) =>
   console.log('mouse enter:', node);
@@ -19,10 +20,12 @@ const Body = () => {
   const noteStore = useContext(NodeStoreContext);
 
   return (
-    <div className="reactflow-wrapper" ref={noteStore.reactFlowWrapper}>
+    <div
+      className="reactflow-wrapper flex-fill"
+      ref={noteStore.reactFlowWrapper}
+    >
       <ReactFlow
-        className="flex-fill"
-        nodeTypes={noteStore.nodeTypes}
+        nodeTypes={{ CVVideoCaptureComponent: CVVideoCaptureComponent }}
         elements={noteStore.elements}
         onLoad={noteStore.onLoad}
         onElementsRemove={noteStore.onElementsRemove}

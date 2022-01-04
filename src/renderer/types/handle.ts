@@ -2,7 +2,7 @@ import { HandleProps, Position } from 'react-flow-renderer';
 
 type CVFHandleProps = {
   title: string;
-} & HandleProps;
+} & Omit<HandleProps, 'type'>;
 
 //Propriedades dos handles que serão conectados ao componente
 export declare type TargetHandle = {

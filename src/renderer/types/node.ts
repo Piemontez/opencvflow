@@ -7,9 +7,6 @@ type Mat = Uint8Array;
  * Classe com definições
  */
 export abstract class CVFNodeProcessor {
-  //Nome do processador
-  name: string = '';
-
   edges: Array<CVFEdgeData> = [];
   //Contéudo da primeira saída
   sources: Array<Mat> = [];
@@ -28,9 +25,7 @@ export abstract class CVFNodeProcessor {
   async stop(): Promise<void> {}
 }
 
-export class EmptyNodeProcessor extends CVFNodeProcessor {
-  name = 'EmptyNodeProcessor';
-}
+export class EmptyNodeProcessor extends CVFNodeProcessor {}
 
 /**
  * Definição dos nós vinculados ao React-Flow-Renderes

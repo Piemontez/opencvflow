@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, makeObservable } from 'mobx';
 import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
 import { createContext, RefObject } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
@@ -24,95 +24,10 @@ const mockInitialElements: any /*Elements*/ = [
     position: { x: 250, y: 0 },
   },
   {
-    id: 'horizontal-3',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'Node 3' },
-    position: { x: 250, y: 160 },
-  },
-  {
-    id: 'horizontal-4',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'Node 4' },
-    position: { x: 500, y: 0 },
-  },
-  {
-    id: 'horizontal-5',
-    sourcePosition: 'top',
-    targetPosition: 'bottom',
-    data: { label: 'Node 5' },
-    position: { x: 500, y: 100 },
-  },
-  {
-    id: 'horizontal-6',
-    sourcePosition: 'bottom',
-    targetPosition: 'top',
-    data: { label: 'Node 6' },
-    position: { x: 500, y: 230 },
-  },
-  {
-    id: 'horizontal-7',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'Node 7' },
-    position: { x: 750, y: 50 },
-  },
-  {
-    id: 'horizontal-8',
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    data: { label: 'Node 8' },
-    position: { x: 750, y: 300 },
-  },
-
-  {
     id: 'horizontal-e1-2',
     source: 'horizontal-1',
     type: 'smoothstep',
     target: 'horizontal-2',
-    animated: true,
-  },
-  {
-    id: 'horizontal-e1-3',
-    source: 'horizontal-1',
-    type: 'smoothstep',
-    target: 'horizontal-3',
-    animated: true,
-  },
-  {
-    id: 'horizontal-e1-4',
-    source: 'horizontal-2',
-    type: 'smoothstep',
-    target: 'horizontal-4',
-    label: 'edge label',
-  },
-  {
-    id: 'horizontal-e3-5',
-    source: 'horizontal-3',
-    type: 'smoothstep',
-    target: 'horizontal-5',
-    animated: true,
-  },
-  {
-    id: 'horizontal-e3-6',
-    source: 'horizontal-3',
-    type: 'smoothstep',
-    target: 'horizontal-6',
-    animated: true,
-  },
-  {
-    id: 'horizontal-e5-7',
-    source: 'horizontal-5',
-    type: 'smoothstep',
-    target: 'horizontal-7',
-    animated: true,
-  },
-  {
-    id: 'horizontal-e6-8',
-    source: 'horizontal-6',
-    type: 'smoothstep',
-    target: 'horizontal-8',
     animated: true,
   },
 ];
@@ -124,15 +39,16 @@ class NodeStore {
   reactFlowInstance: any;
   reactFlowWrapper?: RefObject<HTMLDivElement>;
 
-  /*constructor() {
-    reaction(
+  constructor() {
+    makeObservable(this);
+    /*reaction(
       () => this.elements,
       (_) => console.log(this.elements.length)
-    );
-  }*/
+    );*/
+  }
 
-  @observable nodeTypes: NodeTypesType = {};
-  @observable nodeTypesByMenu: NodeTypesType = {};
+  nodeTypes: NodeTypesType = {};
+  nodeTypesByMenu: NodeTypesType = {};
   @observable elements: OCVElements = mockInitialElements;
 
   @action addNodeType = (component: typeof CVFComponent) => {
@@ -194,32 +110,34 @@ class NodeStore {
   onDrop = (event: any) => {
     event.preventDefault();
 
-    const reactFlowBounds = this.reactFlowWrapper!.current!.getBoundingClientRect();
-    const menuAction = event.dataTransfer.getData(
-      'application/cvf/action'
-    ) as ComponentMenuAction;
-    const type = (this.nodeTypesByMenu[menuAction.title] as typeof CVFComponent)
-      .name;
+    //console.log(this.reactFlowWrapper);
+    //const reactFlowBounds = this.reactFlowWrapper!.current!.getBoundingClientRect();
+    const action = event.dataTransfer.getData('application/action');
+
+    const component = this.nodeTypesByMenu[action] as typeof CVFComponent;
     const position = this.reactFlowInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
+      x: event.clientX,
+      y: event.clientY,
     });
 
     const newNode: CVFNode = {
       id: uuidv4(),
-      type,
-      position,
+      type: component.name,
+      position: { x: Math.floor(position.y), y: Math.floor(position.y) },
+      data: new component.processor(),
     };
 
-    this.elements.concat(newNode);
+    this.elements = this.elements.concat(newNode);
   };
+
   onDragOver = (event: any) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   };
+
+  //Evento disparado ao arrastar o componente do menu
   onDragStart = (event: any, menuAction: ComponentMenuAction) => {
-    //DragEvent
-    event.dataTransfer.setData('application/cvf/action', menuAction);
+    event.dataTransfer.setData('application/action', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';
   };
 

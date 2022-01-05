@@ -1,4 +1,6 @@
 @import "./node.css";
+@import "./sidebar.css";
+@import "./reactflow.css";
 
 .wrapper,
 html,

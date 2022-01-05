@@ -11,7 +11,7 @@ const NodeDisplay = ({
   if (data.errorMessage)
     return <div className="node-display">{data.errorMessage}</div>;
 
-  return <canvas ref={canvasRef} width="640" height="480" />;
+  return <canvas ref={canvasRef} width="320" height="240" />;
 };
 
 export default NodeDisplay;

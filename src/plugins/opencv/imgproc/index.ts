@@ -1,6 +1,7 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
+import { PropertyType } from 'renderer/types/property';
 
 const tabName = 'ImgProc';
 
@@ -11,6 +12,23 @@ export class CVSobelComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Sobel' };
 
   static processor = class SobelProcessor extends CVFNodeProcessor {
+    static properties = [
+      { name: 'DDepth', type: PropertyType.Integer },
+      { name: 'DX', type: PropertyType.Integer },
+      { name: 'DY', type: PropertyType.Integer },
+      { name: 'KSize', type: PropertyType.Integer },
+      { name: 'Scale', type: PropertyType.Decimal },
+      { name: 'Delta', type: PropertyType.Decimal },
+    ];
+
+    DDepth: number = cv.CV_8U;
+    DX: number = 1;
+    DY: number = 0;
+    KSize: number = 3;
+    Scale: number = 1;
+    Delta: number = 0;
+    BorderType: number = cv.BORDER_DEFAULT;
+
     async proccess() {
       const inputs = this.inputs;
       if (inputs.length) {
@@ -20,7 +38,17 @@ export class CVSobelComponent extends CVFIOComponent {
           const dst = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
 
           cv.cvtColor(src, src, cv.COLOR_RGB2GRAY, 0);
-          cv.Sobel(src, dst, cv.CV_8U, 1, 0, 3, 1, 0, cv.BORDER_DEFAULT);
+          cv.Sobel(
+            src,
+            dst,
+            this.DDepth,
+            this.DX,
+            this.DY,
+            this.KSize,
+            this.Scale,
+            this.Delta,
+            this.BorderType
+          );
 
           this.sources.push(dst);
 

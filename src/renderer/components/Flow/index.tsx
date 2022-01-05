@@ -1,18 +1,18 @@
 import { observer } from 'mobx-react';
 import { useContext } from 'react';
 
-import ReactFlow from 'react-flow-renderer';
+import ReactFlow, { MiniMap } from 'react-flow-renderer';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { PluginStoreContext } from 'renderer/contexts/PluginStore';
 
-const Body = () => {
+const Flow = () => {
   const noteStore = useContext(NodeStoreContext);
   const pluginStore = useContext(PluginStoreContext);
 
   return (
     <div
       className="reactflow-wrapper flex-fill"
-      ref={noteStore.reactFlowWrapper}
+      ref={(ref) => (noteStore.reactFlowWrapper = ref)}
     >
       {!pluginStore.loaded ? (
         <p>Loading Plugin</p>
@@ -22,15 +22,22 @@ const Body = () => {
           elements={noteStore.elements}
           onLoad={noteStore.onLoad}
           onElementsRemove={noteStore.onElementsRemove}
+          onElementClick={noteStore.onElementClick}
           onConnect={noteStore.onConnect}
           selectNodesOnDrag={false}
           onDrop={noteStore.onDrop}
           onDragOver={noteStore.onDragOver}
           onNodeContextMenu={noteStore.onDragOver}
-        />
+        >
+          <MiniMap
+            className="minimap"
+            nodeStrokeColor={(_n) => '#666'}
+            nodeColor={(_n) => '#EEE'}
+          />
+        </ReactFlow>
       )}
     </div>
   );
 };
 
-export default observer(Body);
+export default observer(Flow);

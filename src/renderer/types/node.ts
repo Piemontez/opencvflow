@@ -1,11 +1,15 @@
 import { Node } from 'react-flow-renderer';
 import { CVFEdgeData } from './edge';
 import { Mat } from 'opencv-ts';
+import { NodeProperty } from './property';
 
 /**
  * Classe com definições
  */
 export abstract class CVFNodeProcessor {
+  //Definições das propriedades do nó.
+  static properties: Array<NodeProperty> = [];
+  //Arestas conectadas com o nó
   edges: Array<CVFEdgeData> = [];
   //Saídas
   sources: Array<Mat> = [];

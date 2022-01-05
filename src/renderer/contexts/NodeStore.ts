@@ -1,6 +1,11 @@
 import { observable, action, computed, makeObservable } from 'mobx';
-import { removeElements, NodeTypesType, XYPosition } from 'react-flow-renderer';
-import { createContext, RefObject } from 'react';
+import {
+  removeElements,
+  NodeTypesType,
+  XYPosition,
+  Elements,
+} from 'react-flow-renderer';
+import { createContext, MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
 import { CVFComponent } from 'renderer/types/component';
@@ -14,6 +19,7 @@ interface NodeStoreI {
   running: boolean;
   elements: OCVElements;
   nodeTypes: NodeTypesType;
+  currentElement?: OCVFlowElement;
 
   addNodeType(component: typeof CVFComponent): void;
   addNodeFromComponent(
@@ -28,10 +34,11 @@ interface NodeStoreI {
   stop(): Promise<void>;
 
   //Utilizado pelo componente React Flow
-  reactFlowWrapper?: RefObject<HTMLDivElement>;
+  reactFlowWrapper: HTMLDivElement | null;
 
   onLoad(instance: any): void;
-  onElementsRemove(elementsToRemove: any[]): void;
+  onElementClick(event: MouseEvent, element: any): void;
+  onElementsRemove(elements: Elements): void;
   onConnect(params: any): void;
   onDrop(event: any): void;
   onDragOver(event: any): void;
@@ -42,10 +49,11 @@ interface NodeStoreI {
 class NodeStore {
   @observable running: boolean = false;
   @observable elements: OCVElements = [];
+  @observable currentElement?: OCVFlowElement;
   nodeTypes: NodeTypesType = {};
   nodeTypesByMenu: NodeTypesType = {};
   reactFlowInstance: any;
-  reactFlowWrapper?: RefObject<HTMLDivElement>;
+  reactFlowWrapper: HTMLDivElement | null = null;
 
   constructor() {
     makeObservable(this);
@@ -70,7 +78,7 @@ class NodeStore {
     const newNode: CVFNode = {
       id: uuidv4(),
       type: component.name,
-      position: { x: Math.floor(position.y), y: Math.floor(position.y) },
+      position: position,
       data: processor,
     };
 
@@ -132,25 +140,31 @@ class NodeStore {
     if (this.running) return;
     this.running = true;
 
-    const nodes = this.nodes;
-    for (const node of nodes) {
-      if (node.data.start) {
-        await node.data.start();
-      }
-    }
-
-    while (this.running)
+    new Promise(async (resolver) => {
+      const nodes = this.nodes;
       for (const node of nodes) {
-        try {
-          await node.data.proccess();
-          if (node.data.errorMessage) {
-            delete node.data.errorMessage;
-          }
-        } catch (err: any) {
-          node.data.errorMessage = err.message;
+        if (node.data.start) {
+          await node.data.start();
         }
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (!this.running) break;
       }
+
+      while (this.running)
+        for (const node of nodes) {
+          try {
+            await node.data.proccess();
+            if (node.data.errorMessage) {
+              delete node.data.errorMessage;
+            }
+          } catch (err: any) {
+            node.data.errorMessage = err.message;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          if (!this.running) break;
+        }
+
+      resolver(true);
+    });
   };
 
   @action stop = async () => {
@@ -174,24 +188,32 @@ class NodeStore {
     this.reactFlowInstance.fitView();
   };
 
+  onElementClick = (_: MouseEvent, element: OCVFlowElement) => {
+    this.currentElement = element;
+  };
+
   //Evento disparado pelo painel ao remover um elemento
-  onElementsRemove = (elementsToRemove: any[]) =>
-    removeElements(elementsToRemove, this.elements);
+  onElementsRemove = (elements: Elements) =>
+    removeElements(elements, this.elements);
+
   //Evento disparado pelo painel ao conectar 2 nós
   @action onConnect = ({ source, target }: any) => {
     this.addEdge(source, target);
   };
-  onDrop = (event: any) => {
+
+  @action onDrop = (event: any) => {
     event.preventDefault();
 
-    //const reactFlowBounds = this.reactFlowWrapper!.current!.getBoundingClientRect();
     const action = event.dataTransfer.getData('application/action');
-    const component = this.nodeTypesByMenu[action] as typeof CVFComponent;
-    const position = this.reactFlowInstance.project({
-      x: event.clientX,
-      y: event.clientY,
-    });
-    this.addNodeFromComponent(component, position);
+    if (action) {
+      const reactFlowBounds = this.reactFlowWrapper!.getBoundingClientRect();
+      const component = this.nodeTypesByMenu[action] as typeof CVFComponent;
+      const position = this.reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+      this.addNodeFromComponent(component, position);
+    }
   };
 
   onDragOver = (event: any) => {

@@ -20,6 +20,8 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
     return (
       <video
         autoPlay
+        width="320"
+        height="240"
         muted={true}
         playsInline
         ref={(ref) => (this.video = ref)}
@@ -45,7 +47,11 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
 
   async proccess() {
     if (this.video!.width && this.video!.width) {
-      const src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
+      const src = new cv.Mat(
+        this.video!.height!,
+        this.video!.width!,
+        cv.CV_8UC4
+      );
 
       this.cap!.read(src);
 

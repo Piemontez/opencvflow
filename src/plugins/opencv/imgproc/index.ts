@@ -24,7 +24,7 @@ export class CVSobelComponent extends CVFIOComponent {
 
           this.sources.push(dst);
 
-          this.output(src);
+          this.output(dst);
         }
       }
     }

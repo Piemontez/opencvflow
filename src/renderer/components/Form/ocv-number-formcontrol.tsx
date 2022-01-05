@@ -4,7 +4,7 @@ import { CVFFormProps } from './index';
 
 export function CVFIntegerFormControl(props: CVFFormProps) {
     return (
-        <Form.Control autoComplete="off" type="text"
+        <Form.Control autoComplete="off" type="number"
             name={props.name}
             disabled={props.disabled}
             value={props.description || props.value}

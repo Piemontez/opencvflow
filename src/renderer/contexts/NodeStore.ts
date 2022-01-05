@@ -188,7 +188,7 @@ class NodeStore {
     this.reactFlowInstance.fitView();
   };
 
-  onElementClick = (_: MouseEvent, element: OCVFlowElement) => {
+  @action onElementClick = (_: MouseEvent, element: OCVFlowElement) => {
     this.currentElement = element;
   };
 

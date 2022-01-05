@@ -91,7 +91,7 @@ export function CVFFormGroup(props: CVFFormProps) {
   return (
     <Form.Group as={props.groupAs}>
       {props.title && (
-        <Form.Label column={props.column} sm={props.column ? 2 : undefined}>
+        <Form.Label column={props.column} sm={props.column ? 3 : undefined}>
           {props.title}
         </Form.Label>
       )}

@@ -1,24 +1,31 @@
 import { observer } from 'mobx-react';
 import { useContext } from 'react';
+import { Row } from 'react-bootstrap';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { CVFNodeProcessor } from 'renderer/types/node';
+import { CVFFormGroup } from '../Form';
 
 const PropertyBar = () => {
   const noteStore = useContext(NodeStoreContext);
-  const curElTypeof = noteStore.currentElement?.data
-    ?.constructor as typeof CVFNodeProcessor;
+  const processor = noteStore.currentElement?.data as CVFNodeProcessor;
+  const curElTypeof = processor?.constructor as typeof CVFNodeProcessor;
 
   return (
     <div className="propertybar">
-      <h1 className="header">
-      {curElTypeof?.name} Props
-      </h1>
-      {curElTypeof?.properties?.map((prop) => (
-        <span>
-          {prop.name}
-          {prop.type}
-          <br/>
-        </span>
+      <h1 className="header">{curElTypeof?.name} Props</h1>
+      {curElTypeof?.properties?.map(({ name, title, ...prop }) => (
+        <CVFFormGroup
+          groupAs={Row}
+          column={true}
+          key={name}
+          name={name}
+          title={title || name}
+          {...prop}
+          value={(processor as any)[name]}
+          onChange={(value) => {
+            (processor as any)[name] = value;
+          }}
+        />
       ))}
     </div>
   );

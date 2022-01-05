@@ -2,23 +2,23 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { PropertyType } from 'renderer/types/property';
-import { WmsBooleanFormControl } from './wms-boolean-formcontrol';
-import { WmsChoiceFormControl } from './wms-choice-formcontrol';
+import { CVFBooleanFormControl } from './ocv-boolean-formcontrol';
+import { CVFChoiceFormControl } from './ocv-choice-formcontrol';
 import {
-  WmsDecimalFormControl,
-  WmsIntegerFormControl,
-} from './wms-number-formcontrol';
-import { WmsTextFormControl } from './wms-text-formcontrol';
+  CVFDecimalFormControl,
+  CVFIntegerFormControl,
+} from './ocv-number-formcontrol';
+import { CVFTextFormControl } from './ocv-text-formcontrol';
 
 /**
  * Definição das opções de um campo selecionavel
  */
 
-export type WmsOptionValue = {
+export type CVFOptionValue = {
   value: any;
   columns: string[];
 };
-export type WmsFormEvent =
+export type CVFFormEvent =
   | React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
@@ -27,16 +27,16 @@ export type WmsFormEvent =
  * Definição da função chamada ao alterar um formulario
  *
  */
-declare type WmsFormEventHandler = (
+declare type CVFFormEventHandler = (
   value: any | null,
   description: string[] | string | null,
-  event: WmsFormEvent
+  event: CVFFormEvent
 ) => void;
 
 /**
  * Propriedades do formulário
  */
-export declare type WmsFormProps = {
+export declare type CVFFormProps = {
   type: PropertyType;
   name: string;
   title?: string;
@@ -56,35 +56,35 @@ export declare type WmsFormProps = {
   //propriedades do campo selecionável
   multi?: boolean;
   header?: string[];
-  options?: WmsOptionValue[];
+  options?: CVFOptionValue[];
   //control
   controlClassName?: string;
 
-  onChange?: WmsFormEventHandler;
+  onChange?: CVFFormEventHandler;
 };
 
-export function WmsFormGroup(props: WmsFormProps) {
+export function CVFFormGroup(props: CVFFormProps) {
   let Control, Column;
   switch (props.type) {
     case PropertyType.Text:
-      Control = WmsTextFormControl(props);
+      Control = CVFTextFormControl(props);
       break;
     case PropertyType.Decimal:
-      Control = WmsDecimalFormControl(props);
+      Control = CVFDecimalFormControl(props);
       break;
     case PropertyType.Boolean:
-      Control = WmsBooleanFormControl(props);
+      Control = CVFBooleanFormControl(props);
       break;
     case PropertyType.MultiChoice:
       props.multi = true;
-      Control = WmsChoiceFormControl(props);
+      Control = CVFChoiceFormControl(props);
       break;
     case PropertyType.Choice:
-      Control = WmsChoiceFormControl(props);
+      Control = CVFChoiceFormControl(props);
       break;
     case PropertyType.Integer:
     default:
-      Control = WmsIntegerFormControl(props);
+      Control = CVFIntegerFormControl(props);
       break;
   }
   Column = props.column ? <Col>{Control}</Col> : Control;

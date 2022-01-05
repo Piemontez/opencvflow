@@ -1,8 +1,8 @@
 import Form from 'react-bootstrap/Form';
-import { WmsFormProps } from './index';
-import { WmsPicker } from './wms-picker';
+import { CVFFormProps } from './index';
+import { CVFPicker } from './ocv-picker';
 
-export function WmsChoiceFormControl(props: WmsFormProps) {
+export function CVFChoiceFormControl(props: CVFFormProps) {
   let pickerRef: any = null;
   let option = props.description;
   if (!option) {
@@ -20,7 +20,7 @@ export function WmsChoiceFormControl(props: WmsFormProps) {
       >
         <option>{option}</option>
       </Form.Control>
-      <WmsPicker
+      <CVFPicker
         onSel={(value: any | null, row: any, event: any) =>
           props.onChange && props.onChange(value, row, event)
         }

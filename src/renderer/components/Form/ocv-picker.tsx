@@ -3,8 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import { toIlikeRegex } from '../../commons/tools';
-import { WmsOptionValue } from './index';
+import { toIlikeRegex } from 'renderer/commons/tools';
+import { CVFOptionValue } from './index';
 
 declare type PickerProps = {
   clearButton?: boolean;
@@ -13,7 +13,7 @@ declare type PickerProps = {
   //Cabeçalho da listagem
   header?: string[];
   //Itens
-  options?: WmsOptionValue[];
+  options?: CVFOptionValue[];
   //Texts
   title?: string;
   subtitle?: string;
@@ -25,11 +25,11 @@ declare type PickerProps = {
   onSel?: (value: any | null, row: any, event: any) => void;
 };
 
-export class WmsPicker<T = unknown> extends React.Component<T & PickerProps> {
+export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
   searchInput = React.createRef<HTMLInputElement>();
   state = {
-    contents: [] as WmsOptionValue[],
-    contentsBkp: [] as WmsOptionValue[],
+    contents: [] as CVFOptionValue[],
+    contentsBkp: [] as CVFOptionValue[],
     //Selecinado
     selected: [] as any[],
     selectedItems: [] as string[][],
@@ -137,7 +137,7 @@ export class WmsPicker<T = unknown> extends React.Component<T & PickerProps> {
     }
   }
 
-  setOptions = (options: WmsOptionValue[]) => {
+  setOptions = (options: CVFOptionValue[]) => {
     this.setState({
       contents: options,
     });

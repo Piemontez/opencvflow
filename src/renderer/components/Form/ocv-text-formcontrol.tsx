@@ -1,8 +1,7 @@
-import React from 'react';
 import Form from 'react-bootstrap/Form';
-import { WmsFormProps } from './index';
+import { CVFFormProps } from './index';
 
-export function WmsTextFormControl(props: WmsFormProps) {
+export function CVFTextFormControl(props: CVFFormProps) {
   return (
     <Form.Control
       autoComplete="off"

@@ -1,8 +1,8 @@
 import numeral from 'numeral';
 import Form from 'react-bootstrap/Form';
-import { WmsFormProps } from './index';
+import { CVFFormProps } from './index';
 
-export function WmsIntegerFormControl(props: WmsFormProps) {
+export function CVFIntegerFormControl(props: CVFFormProps) {
     return (
         <Form.Control autoComplete="off" type="text"
             name={props.name}
@@ -22,7 +22,7 @@ export function WmsIntegerFormControl(props: WmsFormProps) {
     );
 }
 
-export function WmsDecimalFormControl(props: WmsFormProps) {
+export function CVFDecimalFormControl(props: CVFFormProps) {
     return (
         <Form.Control autoComplete="off" type="text"
             name={props.name}

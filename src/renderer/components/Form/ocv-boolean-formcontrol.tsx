@@ -1,7 +1,7 @@
 import Form from 'react-bootstrap/Form';
-import { WmsFormProps } from './index'
+import { CVFFormProps } from './index'
 
-export function WmsBooleanFormControl(props: WmsFormProps) {
+export function CVFBooleanFormControl(props: CVFFormProps) {
     return (
         <Form.Check autoComplete="off" type="switch"
             checked={props.checked}

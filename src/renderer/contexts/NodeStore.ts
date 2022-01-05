@@ -1,5 +1,5 @@
 import { observable, action, computed, makeObservable } from 'mobx';
-import { removeElements, addEdge, NodeTypesType } from 'react-flow-renderer';
+import { removeElements, NodeTypesType, XYPosition } from 'react-flow-renderer';
 import { createContext, RefObject } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
@@ -16,13 +16,16 @@ interface NodeStoreI {
   nodeTypes: NodeTypesType;
 
   addNodeType(component: typeof CVFComponent): void;
-  addNode(node: CVFNode): void;
+  addNodeFromComponent(
+    component: typeof CVFComponent,
+    position: XYPosition
+  ): void;
   removeNode(nodeOrId: CVFNode | string): void;
   addEdge(source: CVFNode, target: CVFNode): void;
   removeEdge(edge: OCVFEdge | CVFEdgeData): void;
 
-  run(): void;
-  stop(): void;
+  run(): Promise<void>;
+  stop(): Promise<void>;
 
   //Utilizado pelo componente React Flow
   reactFlowWrapper?: RefObject<HTMLDivElement>;
@@ -59,8 +62,19 @@ class NodeStore {
     }
   };
 
-  @action addNode = (node: CVFNode) => {
-    this.elements.push(node);
+  @action addNodeFromComponent = (
+    component: typeof CVFComponent,
+    position: XYPosition
+  ) => {
+    const processor = new component.processor();
+    const newNode: CVFNode = {
+      id: uuidv4(),
+      type: component.name,
+      position: { x: Math.floor(position.y), y: Math.floor(position.y) },
+      data: processor,
+    };
+
+    this.elements = this.elements.concat(newNode);
   };
 
   @action removeNode = (nodeOrId: CVFNode | string) => {
@@ -79,14 +93,25 @@ class NodeStore {
     }
   };
 
-  @action addEdge = (source: CVFNode, target: CVFNode) => {
+  @action addEdge = (sourceOrId: CVFNode, targetOrId: CVFNode) => {
+    const source =
+      typeof sourceOrId === 'string'
+        ? (this.elements.find((_) => _.id === sourceOrId) as CVFNode)
+        : sourceOrId;
+    const target =
+      typeof targetOrId === 'string'
+        ? (this.elements.find((_) => _.id === targetOrId) as CVFNode)
+        : targetOrId;
+    const dataEdge = new CVFEdgeData(source.data, target.data);
     const newEdge: OCVFEdge = {
       id: uuidv4(),
       source: source.id,
       target: target.id,
-      data: new CVFEdgeData(source.data, target.data),
+      data: dataEdge,
     };
-    this.elements.push(newEdge);
+    source.data.edges.push(dataEdge);
+    target.data.edges.push(dataEdge);
+    this.elements = this.elements.concat(newEdge);
   };
 
   @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
@@ -103,20 +128,39 @@ class NodeStore {
     }
   };
 
-  @action run = () => {
+  @action run = async () => {
     if (this.running) return;
     this.running = true;
 
     const nodes = this.nodes;
     for (const node of nodes) {
-      node.data.start();
+      if (node.data.start) {
+        await node.data.start();
+      }
     }
+
+    while (this.running)
+      for (const node of nodes) {
+        try {
+          await node.data.proccess();
+          if (node.data.errorMessage) {
+            delete node.data.errorMessage;
+          }
+        } catch (err: any) {
+          node.data.errorMessage = err.message;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
   };
 
-  @action stop = () => {
+  @action stop = async () => {
+    this.running = false;
+
     const nodes = this.nodes;
     for (const node of nodes) {
-      node.data.stop();
+      if (node.data.stop) {
+        await node.data.stop();
+      }
     }
   };
 
@@ -134,28 +178,20 @@ class NodeStore {
   onElementsRemove = (elementsToRemove: any[]) =>
     removeElements(elementsToRemove, this.elements);
   //Evento disparado pelo painel ao conectar 2 nós
-  onConnect = (params: any) => addEdge(params, this.elements);
+  @action onConnect = ({ source, target }: any) => {
+    this.addEdge(source, target);
+  };
   onDrop = (event: any) => {
     event.preventDefault();
 
-    //console.log(this.reactFlowWrapper);
     //const reactFlowBounds = this.reactFlowWrapper!.current!.getBoundingClientRect();
     const action = event.dataTransfer.getData('application/action');
-
     const component = this.nodeTypesByMenu[action] as typeof CVFComponent;
     const position = this.reactFlowInstance.project({
       x: event.clientX,
       y: event.clientY,
     });
-
-    const newNode: CVFNode = {
-      id: uuidv4(),
-      type: component.name,
-      position: { x: Math.floor(position.y), y: Math.floor(position.y) },
-      data: new component.processor(),
-    };
-
-    this.elements = this.elements.concat(newNode);
+    this.addNodeFromComponent(component, position);
   };
 
   onDragOver = (event: any) => {

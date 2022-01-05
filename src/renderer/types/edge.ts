@@ -3,11 +3,11 @@ import { CVFNodeProcessor } from './node';
 
 export class CVFEdgeData {
   //Origem da aresta
-  source?: CVFNodeProcessor;
+  source: CVFNodeProcessor;
   //Destino da aresta
-  target?: CVFNodeProcessor;
+  target: CVFNodeProcessor;
 
-  constructor(source?: CVFNodeProcessor, target?: CVFNodeProcessor) {
+  constructor(source: CVFNodeProcessor, target: CVFNodeProcessor) {
     this.source = source;
     this.target = target;
   }

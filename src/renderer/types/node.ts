@@ -9,11 +9,16 @@ export abstract class CVFNodeProcessor {
   edges: Array<CVFEdgeData> = [];
   //Saídas
   sources: Array<Mat> = [];
+  //Exibe mensagem de erro dentro do widget
+  errorMessage?: string;
 
-  //Conteúdo exebido pelo processador
-  //Por padrão exibe o conteúdo do primeiro source
-  get output(): Mat {
-    return this.sources?.[0];
+  //Exibe o conteudo em tela
+  output: (mat: Mat) => void = () => {};
+
+  get inputs(): Array<CVFNodeProcessor> {
+    return this.edges
+      .filter((edge) => edge.target === this)
+      .map((edge) => edge.source);
   }
 
   body(): JSX.Element | void {}

@@ -1,3 +1,4 @@
+import cv, { Mat } from 'opencv-ts';
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
 import NodeDisplay from 'renderer/components/NodeDisplay';
@@ -19,6 +20,7 @@ type OCVComponentProcessor = typeof ForkCVFNodeProcessor;
  * Componente/NodeType
  */
 export abstract class CVFComponent extends React.Component<OCVComponentData> {
+  output: HTMLCanvasElement | null = null;
   //Conexões que o componente pode receber
   targets: TargetHandle[] = [];
   //Conexões que o componente irá disparar
@@ -31,6 +33,15 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   //Titulo exibido em tela. Por padrão exibe o nome do componente.
   get title(): string {
     return this.constructor.name;
+  }
+
+  componentDidMount() {
+    const processor = this.props.data;
+    processor.output = (mat: Mat) => {
+      if (this.output) {
+        cv.imshow(this.output, mat);
+      }
+    };
   }
 
   render() {
@@ -48,7 +59,12 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
         <NodeTab component={this} />
 
         <div className="node-body">
-          {this.props.data.body() || <NodeDisplay component={this} />}
+          {this.props.data.body() || (
+            <NodeDisplay
+              component={this}
+              canvasRef={(ref) => (this.output = ref)}
+            />
+          )}
         </div>
 
         {this.sources.map((source, idx) => (

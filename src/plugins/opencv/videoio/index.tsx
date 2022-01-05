@@ -30,7 +30,7 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   async start() {
     this.cap = new cv.VideoCapture(this.video!);
 
-    navigator.mediaDevices
+    await navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then((mediaStream) => {
         this.video!.srcObject = mediaStream;
@@ -44,11 +44,13 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   }
 
   async proccess() {
-    let src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
+    if (this.video!.width && this.video!.width) {
+      const src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
 
-    this.cap!.read(src);
+      this.cap!.read(src);
 
-    this.sources = [src];
+      this.sources = [src];
+    }
   }
 
   async stop() {
@@ -58,10 +60,9 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
 }
 
 export class CVVideoCaptureComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Video Capture' };
-  static processor = VideoCaptureProcessor;
-
   get title() {
     return 'Video Capture';
   }
+  static menu = { tabTitle: tabName, title: 'Video Capture' };
+  static processor = VideoCaptureProcessor;
 }

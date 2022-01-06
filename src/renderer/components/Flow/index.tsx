@@ -18,6 +18,8 @@ const Flow = () => {
         <p>Loading Plugin</p>
       ) : (
         <ReactFlow
+          defaultZoom={0.8}
+          minZoom={0.1}
           nodeTypes={noteStore.nodeTypes}
           elements={noteStore.elements}
           selectNodesOnDrag={false}
@@ -31,8 +33,8 @@ const Flow = () => {
         >
           <MiniMap
             className="minimap"
-            nodeStrokeColor={(_n) => '#666'}
-            nodeColor={(_n) => '#EEE'}
+            nodeStrokeColor={(_n) => '#333'}
+            nodeColor={(_n) => '#DDD'}
           />
         </ReactFlow>
       )}

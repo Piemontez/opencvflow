@@ -161,7 +161,7 @@ class NodeStore {
     if (this.running) return;
     this.running = true;
 
-    this.runner = new Promise(async (resolver) => {
+    this.runner = new Promise(async () => {
       const nodes = this.nodes;
       for (const node of nodes) {
         if (node.data.start) {

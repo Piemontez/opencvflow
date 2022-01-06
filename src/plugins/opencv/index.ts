@@ -1,31 +1,17 @@
 import { PluginType } from 'renderer/types/plugin';
-import {
-  CVPlusComponent,
-  CVSubComponent,
-  CVMultiplyComponent,
-  CVDivisionComponent,
-  CVMulComponent,
-  CVKernelComponent,
-  CVGaussianKernelComponent,
-} from './arithmetic';
-import { CVSobelComponent } from './imgproc';
-import { CVVideoCaptureComponent } from './videoio';
+import * as arithmetic from './arithmetic';
+import * as imgproc from './imgproc';
+import * as videoio from './videoio';
 
 const OpenCVPlugin: PluginType = {
   name: "OpenCV Plugin",
   components: [
     //video
-    CVVideoCaptureComponent,
-    //arithmetic
-    CVPlusComponent,
-    CVSubComponent,
-    CVMultiplyComponent,
-    CVDivisionComponent,
-    CVMulComponent,
-    CVKernelComponent,
-    CVGaussianKernelComponent,
+    ...Object.values(videoio),
     //imgproc
-    CVSobelComponent,
+    ...Object.values(arithmetic),
+    //arithmetic
+    ...Object.values(imgproc),
   ],
 };
 

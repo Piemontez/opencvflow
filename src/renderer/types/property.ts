@@ -7,7 +7,9 @@ export enum PropertyType {
   MultiChoice,
   BooleanMatrix,
   IntMatrix,
-  DoubleMatrix
+  DoubleMatrix,
+  //
+  BorderType = 1000
 }
 
 export declare type NodeProperty = {

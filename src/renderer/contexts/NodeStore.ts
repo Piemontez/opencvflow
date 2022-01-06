@@ -4,6 +4,7 @@ import {
   NodeTypesType,
   XYPosition,
   Elements,
+  Connection,
 } from 'react-flow-renderer';
 import { createContext, MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
@@ -27,7 +28,12 @@ interface NodeStoreI {
     position: XYPosition
   ): void;
   removeNode(nodeOrId: CVFNode | string): void;
-  addEdge(source: CVFNode, target: CVFNode): void;
+  addEdge(
+    source: CVFNode | string,
+    target: CVFNode | string,
+    sourceHandle: string | null,
+    targetHandle: string | null
+  ): void;
   removeEdge(edge: OCVFEdge | CVFEdgeData): void;
 
   run(): Promise<void>;
@@ -39,7 +45,7 @@ interface NodeStoreI {
   onLoad(instance: any): void;
   onElementClick(event: MouseEvent, element: any): void;
   onElementsRemove(elements: Elements): void;
-  onConnect(params: any): void;
+  onConnect(connection: any): void;
   onDrop(event: any): void;
   onDragOver(event: any): void;
   onDragStart(event: any, menuAction: ComponentMenuAction): void;
@@ -54,6 +60,7 @@ class NodeStore {
   nodeTypesByMenu: NodeTypesType = {};
   reactFlowInstance: any;
   reactFlowWrapper: HTMLDivElement | null = null;
+  runner: Promise<never> | null = null;
 
   constructor() {
     makeObservable(this);
@@ -94,31 +101,45 @@ class NodeStore {
       const node = this.elements.splice(idx, 1)[0] as CVFNode;
       if (node.data?.edges) {
         for (const edge of node.data.edges) {
-          this.removeEdge(edge);
+          if (edge) {
+            this.removeEdge(edge);
+          }
         }
       }
       this.elements = [...this.elements];
     }
   };
 
-  @action addEdge = (sourceOrId: CVFNode, targetOrId: CVFNode) => {
+  @action addEdge = (
+    sourceOrId: CVFNode | string,
+    targetOrId: CVFNode | string,
+    sourceHandle: string | null = null,
+    targetHandle: string | null = null
+  ) => {
+    /*origem*/
     const source =
       typeof sourceOrId === 'string'
         ? (this.elements.find((_) => _.id === sourceOrId) as CVFNode)
         : sourceOrId;
+    /*destino*/
     const target =
       typeof targetOrId === 'string'
         ? (this.elements.find((_) => _.id === targetOrId) as CVFNode)
         : targetOrId;
     const dataEdge = new CVFEdgeData(source.data, target.data);
+    //Aresta/Conexão
     const newEdge: OCVFEdge = {
       id: uuidv4(),
       source: source.id,
       target: target.id,
+      sourceHandle: sourceHandle,
+      targetHandle: targetHandle,
       data: dataEdge,
     };
-    source.data.edges.push(dataEdge);
-    target.data.edges.push(dataEdge);
+    //Adicionando a aresta aos nós
+    source.data.outEdges.push(dataEdge);
+    target.data.inEdges.push(dataEdge);
+    //Adicionar a aresta nos elementos da tela
     this.elements = this.elements.concat(newEdge);
   };
 
@@ -140,7 +161,7 @@ class NodeStore {
     if (this.running) return;
     this.running = true;
 
-    new Promise(async (resolver) => {
+    this.runner = new Promise(async (resolver) => {
       const nodes = this.nodes;
       for (const node of nodes) {
         if (node.data.start) {
@@ -162,13 +183,15 @@ class NodeStore {
           await new Promise((resolve) => setTimeout(resolve, 10));
           if (!this.running) break;
         }
-
-      resolver(true);
     });
   };
 
   @action stop = async () => {
     this.running = false;
+    if (this.runner) {
+      await this.runner;
+      this.runner = null;
+    }
 
     const nodes = this.nodes;
     for (const node of nodes) {
@@ -197,8 +220,13 @@ class NodeStore {
     removeElements(elements, this.elements);
 
   //Evento disparado pelo painel ao conectar 2 nós
-  @action onConnect = ({ source, target }: any) => {
-    this.addEdge(source, target);
+  @action onConnect = ({
+    source,
+    target,
+    sourceHandle,
+    targetHandle,
+  }: Connection) => {
+    this.addEdge(source!, target!, sourceHandle, targetHandle);
   };
 
   @action onDrop = (event: any) => {

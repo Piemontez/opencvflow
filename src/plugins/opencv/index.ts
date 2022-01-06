@@ -3,9 +3,10 @@ import {
   CVPlusComponent,
   CVSubComponent,
   CVMultiplyComponent,
-  CVDivComponent,
+  CVDivisionComponent,
   CVMulComponent,
   CVKernelComponent,
+  CVGaussianKernelComponent,
 } from './arithmetic';
 import { CVSobelComponent } from './imgproc';
 import { CVVideoCaptureComponent } from './videoio';
@@ -19,9 +20,10 @@ const OpenCVPlugin: PluginType = {
     CVPlusComponent,
     CVSubComponent,
     CVMultiplyComponent,
-    CVDivComponent,
+    CVDivisionComponent,
     CVMulComponent,
     CVKernelComponent,
+    CVGaussianKernelComponent,
     //imgproc
     CVSobelComponent,
   ],

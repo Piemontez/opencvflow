@@ -4,7 +4,10 @@ export enum PropertyType {
   Decimal,
   Boolean,
   Choice,
-  MultiChoice
+  MultiChoice,
+  BooleanMatrix,
+  IntMatrix,
+  DoubleMatrix
 }
 
 export declare type NodeProperty = {

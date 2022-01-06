@@ -78,11 +78,11 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: false
       //preload: path.join(__dirname, 'preload.js'),
     },
   });
-
+  
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -94,6 +94,7 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
+    mainWindow.webContents.closeDevTools()
   });
 
   mainWindow.on('closed', () => {

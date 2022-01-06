@@ -1,3 +1,8 @@
+.react-flow__handle {
+  width: 10px;
+  height: 10px;
+}
+
 .reactflow-wrapper {
   height: 100%;
 }

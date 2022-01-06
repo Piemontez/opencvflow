@@ -62,6 +62,8 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   async stop() {
     delete this.cap;
     this.cap = undefined;
+    
+    this.video!.pause();
   }
 }
 

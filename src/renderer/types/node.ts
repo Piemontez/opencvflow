@@ -9,8 +9,10 @@ import { NodeProperty } from './property';
 export abstract class CVFNodeProcessor {
   //Definições das propriedades do nó.
   static properties: Array<NodeProperty> = [];
-  //Arestas conectadas com o nó
-  edges: Array<CVFEdgeData> = [];
+  //Arestas conectadas à entreda
+  inEdges: Array<CVFEdgeData | null> = [];
+  //Arestas conectadas à saída
+  outEdges: Array<CVFEdgeData | null> = [];
   //Saídas
   sources: Array<Mat> = [];
   //Exibe mensagem de erro dentro do widget
@@ -19,10 +21,12 @@ export abstract class CVFNodeProcessor {
   //Exibe o conteudo em tela
   output: (mat: Mat) => void = () => {};
 
-  get inputs(): Array<CVFNodeProcessor> {
-    return this.edges
-      .filter((edge) => edge.target === this)
-      .map((edge) => edge.source);
+  get edges(): Array<CVFEdgeData | null> {
+    return this.inEdges.concat(this.outEdges);
+  }
+
+  get inputs(): Array<Mat> {
+    return this.inEdges.map((edge) => edge!.source.sources[0]);
   }
 
   body(): JSX.Element | void {}

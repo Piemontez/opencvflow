@@ -20,11 +20,11 @@ const Flow = () => {
         <ReactFlow
           nodeTypes={noteStore.nodeTypes}
           elements={noteStore.elements}
+          selectNodesOnDrag={false}
           onLoad={noteStore.onLoad}
           onElementsRemove={noteStore.onElementsRemove}
           onElementClick={noteStore.onElementClick}
           onConnect={noteStore.onConnect}
-          selectNodesOnDrag={false}
           onDrop={noteStore.onDrop}
           onDragOver={noteStore.onDragOver}
           onNodeContextMenu={noteStore.onDragOver}

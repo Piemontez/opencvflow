@@ -5,11 +5,15 @@ export enum PropertyType {
   Boolean,
   Choice,
   MultiChoice,
-  BooleanMatrix,
+  OneZeroMatrix,
   IntMatrix,
   DoubleMatrix,
   //
-  BorderType = 1000
+  Size = 1000,
+  Point,
+  Scalar,
+  ColorConversionCodes,
+  BorderType
 }
 
 export declare type NodeProperty = {

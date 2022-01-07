@@ -44,6 +44,7 @@ interface NodeStoreI {
 
   onLoad(instance: any): void;
   onElementClick(event: MouseEvent, element: any): void;
+  refreshCurrentElement(): void;
   onElementsRemove(elements: Elements): void;
   onConnect(connection: any): void;
   onDrop(event: any): void;
@@ -213,6 +214,10 @@ class NodeStore {
 
   @action onElementClick = (_: MouseEvent, element: OCVFlowElement) => {
     this.currentElement = element;
+  };
+
+  @action refreshCurrentElement = () => {
+    this.currentElement = { ...this.currentElement } as OCVFlowElement;
   };
 
   //Evento disparado pelo painel ao remover um elemento

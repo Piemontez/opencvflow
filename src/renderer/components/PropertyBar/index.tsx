@@ -5,6 +5,9 @@ import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import { CVFFormGroup } from '../Form';
 
+/**
+ * Exibe as propriedades do componete/nó selecionado
+ */
 const PropertyBar = () => {
   const noteStore = useContext(NodeStoreContext);
   const processor = noteStore.currentElement?.data as CVFNodeProcessor;
@@ -24,6 +27,7 @@ const PropertyBar = () => {
           value={(processor as any)[name]}
           onChange={(value) => {
             (processor as any)[name] = value;
+            noteStore.refreshCurrentElement();
           }}
         />
       ))}

@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { PropertyType } from 'renderer/types/property';
 import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
 import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
+import { OCVOneZeroMatrixFormControl } from './cvf-matrix-formcontrol';
 import {
   CVFDecimalFormControl,
   CVFIntegerFormControl,
@@ -88,6 +89,9 @@ export function CVFFormGroup(props: CVFFormProps) {
       Control = OCVPointFormControl(props);
       break;
     //Default
+    case PropertyType.OneZeroMatrix:
+      Control = OCVOneZeroMatrixFormControl(props);
+      break;
     case PropertyType.Text:
       Control = CVFTextFormControl(props);
       break;

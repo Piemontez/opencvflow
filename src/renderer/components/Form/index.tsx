@@ -2,13 +2,18 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { PropertyType } from 'renderer/types/property';
-import { CVFBooleanFormControl } from './ocv-boolean-formcontrol';
-import { CVFChoiceFormControl } from './ocv-choice-formcontrol';
+import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
+import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
 import {
   CVFDecimalFormControl,
   CVFIntegerFormControl,
-} from './ocv-number-formcontrol';
-import { CVFTextFormControl } from './ocv-text-formcontrol';
+} from './cvf-number-formcontrol';
+import { CVFTextFormControl } from './cvf-text-formcontrol';
+import { OCVBorderTypeFormControl } from './ocv-bordertype-formcontrol';
+import { OCVColorConversionCodesFormControl } from './ocv-colorconversioncodes-formcontrol';
+import { OCVPointFormControl } from './ocv-point-formcontrol';
+import { OCVScalarFormControl } from './ocv-scalar-formcontrol';
+import { OCVSizeFormControl } from './ocv-size-formcontrol';
 
 /**
  * Definição das opções de um campo selecionavel
@@ -66,11 +71,25 @@ export declare type CVFFormProps = {
 export function CVFFormGroup(props: CVFFormProps) {
   let Control, Column;
   switch (props.type) {
+    //Open
+    case PropertyType.BorderType:
+      Control = <OCVBorderTypeFormControl {...props} />;
+      break;
+    case PropertyType.ColorConversionCodes:
+      Control = <OCVColorConversionCodesFormControl {...props} />;
+      break;
+    case PropertyType.Scalar:
+      Control = OCVScalarFormControl(props);
+      break;
+    case PropertyType.Size:
+      Control = OCVSizeFormControl(props);
+      break;
+    case PropertyType.Point:
+      Control = OCVPointFormControl(props);
+      break;
+    //Default
     case PropertyType.Text:
       Control = CVFTextFormControl(props);
-      break;
-    case PropertyType.Decimal:
-      Control = CVFDecimalFormControl(props);
       break;
     case PropertyType.Boolean:
       Control = CVFBooleanFormControl(props);
@@ -81,6 +100,9 @@ export function CVFFormGroup(props: CVFFormProps) {
       break;
     case PropertyType.Choice:
       Control = CVFChoiceFormControl(props);
+      break;
+    case PropertyType.Decimal:
+      Control = CVFDecimalFormControl(props);
       break;
     case PropertyType.Integer:
     default:

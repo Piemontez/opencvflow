@@ -3,6 +3,7 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Scalar, Point, Mat, Size } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
+import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 
 const tabName = 'ImgProc';
 
@@ -515,7 +516,7 @@ export class CvtColorComponent extends CVFIOComponent {
       { name: 'dstCn', type: PropertyType.Integer },
     ];
 
-    code: number = cv.COLOR_BGR2GRAY; 
+    code: ColorConversionCodes = cv.COLOR_BGR2GRAY; 
     dstCn: number = 0; 
 
     async proccess() {

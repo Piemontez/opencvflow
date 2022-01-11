@@ -9,6 +9,7 @@ export enum PropertyType {
   OneZeroMatrix,
   IntMatrix,
   DoubleMatrix,
+  FileUrl,
   //OpenCV Types
   Size = 1000,
   Point,

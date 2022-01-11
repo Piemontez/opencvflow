@@ -1,11 +1,11 @@
-# opencvflow
+# [OpenCV-Flow](http://opencvflow.org/)
 
 Open Computer Vision - Flow is an IDE for computer vision studies and testing.
 
 
-## Build Requiriment
+## compatibility
 
-The OpencvFlow require node and opencv4 installed on computer.
+Compatible with OpenCV 4.5 version
 
 
 ## Install

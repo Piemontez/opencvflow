@@ -57,7 +57,8 @@ class MenuStore {
     this.currentTab = tabOrTitle;
   }
 
-  @action findOrCreateTab(tabTitle: string): MenuTab {
+  @action findOrCreateTab(tabTitle?: string): MenuTab {
+    tabTitle = tabTitle ?? 'ThirdParty'
     if (this.tabsByName[tabTitle]) return this.tabsByName[tabTitle];
     const tab: MenuTab = {
       title: tabTitle,

@@ -9,7 +9,8 @@
   padding: 3px;
   background: rgb(var(--bs-dark-rgb));
   color: var(--bs-light);
-  font-size: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
   width: 100%;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -17,7 +18,8 @@
 
 .node-header button {
   font-size: 0.5rem;
-  padding: 2px;
+  font-weight: 600;
+  padding: 2px 4px;
   float: right;
 }
 

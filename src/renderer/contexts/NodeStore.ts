@@ -61,7 +61,7 @@ class NodeStore {
   nodeTypesByMenu: NodeTypesType = {};
   reactFlowInstance: any;
   reactFlowWrapper: HTMLDivElement | null = null;
-  runner: Promise<never> | null = null;
+  runner: Promise<true> | null = null;
 
   constructor() {
     makeObservable(this);
@@ -162,7 +162,7 @@ class NodeStore {
     if (this.running) return;
     this.running = true;
 
-    this.runner = new Promise(async () => {
+    this.runner = new Promise(async (resolve) => {
       const nodes = this.nodes;
       for (const node of nodes) {
         if (node.data.start) {
@@ -171,7 +171,7 @@ class NodeStore {
         if (!this.running) break;
       }
 
-      while (this.running)
+      while (this.running) {
         for (const node of nodes) {
           try {
             await node.data.proccess();
@@ -184,6 +184,8 @@ class NodeStore {
           await new Promise((resolve) => setTimeout(resolve, 10));
           if (!this.running) break;
         }
+      }
+      resolve(true);
     });
   };
 

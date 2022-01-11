@@ -37,7 +37,6 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
       .then((mediaStream) => {
         this.video!.srcObject = mediaStream;
         this.video!.onloadedmetadata = () => {
-          setTimeout(() => this.proccess(), 1000);
           this.video!.width = this.video!.videoWidth;
           this.video!.height = this.video!.videoHeight;
           this.video!.play();
@@ -60,10 +59,10 @@ class VideoCaptureProcessor extends CVFNodeProcessor {
   }
 
   async stop() {
+    this.video!.pause();
+    
     delete this.cap;
     this.cap = undefined;
-    
-    this.video!.pause();
   }
 }
 

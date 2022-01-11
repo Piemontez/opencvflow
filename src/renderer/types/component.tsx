@@ -58,7 +58,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
             position={target.position}
             style={{
               content: target.title,
-              top: 35 + 15 * idx,
+              top: 40 + 20 * idx,
               borderRadius: 0,
             }}
           />
@@ -81,7 +81,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
             key={`s${idx}`}
             type="source"
             position={source.position}
-            style={{ top: 35 + 15 * idx, borderRadius: 0 }}
+            style={{ top: 40 + 20 * idx, borderRadius: 0 }}
           />
         ))}
       </div>

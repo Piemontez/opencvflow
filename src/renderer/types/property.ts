@@ -1,4 +1,5 @@
 export enum PropertyType {
+  //IDE Types
   Text,
   Integer,
   Decimal,
@@ -8,7 +9,7 @@ export enum PropertyType {
   OneZeroMatrix,
   IntMatrix,
   DoubleMatrix,
-  //
+  //OpenCV Types
   Size = 1000,
   Point,
   Scalar,

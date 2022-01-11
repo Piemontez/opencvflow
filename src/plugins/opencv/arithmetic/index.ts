@@ -24,8 +24,8 @@ export class CVPlusComponent extends CVFComponent {
     async proccess() {
       const inputs = this.inputs;
       if (inputs.length > 1) {
-        const out: Mat = new cv.Mat(3, 3, cv.CV_64F, new cv.Scalar(0));
         const [src1, src2, masc] = inputs;
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
 
         if (src1 && src2) {
           if (masc) {
@@ -57,8 +57,8 @@ export class CVSubComponent extends CVFComponent {
     async proccess() {
       const inputs = this.inputs;
       if (inputs.length > 1) {
-        const out: Mat = new cv.Mat(3, 3, cv.CV_64F, new cv.Scalar(0));
         const [src1, src2, masc] = inputs;
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
 
         if (src1 && src2) {
           if (masc) {

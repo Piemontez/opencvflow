@@ -1,7 +1,7 @@
 import { MouseEventHandler } from 'react';
 
 export type MenuAction = {
-  tabTitle: string;
+  tabTitle?: string;
   title: string;
   order?: number;
   draggable?: boolean;

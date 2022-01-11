@@ -1,5 +1,5 @@
 import { CVFComponent } from './component';
-import { MenuAction } from './menu';
+import { MenuActionProps } from './menu';
 
 /**
  * Plugin Type
@@ -7,7 +7,7 @@ import { MenuAction } from './menu';
  */
 export type PluginType = {
   name: string;
-  components: Array<typeof CVFComponent | MenuAction>;
+  components: Array<typeof CVFComponent | MenuActionProps>;
 };
 
 /**

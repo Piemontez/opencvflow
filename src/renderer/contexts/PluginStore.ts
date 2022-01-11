@@ -1,4 +1,4 @@
-import { MenuAction } from 'renderer/types/menu';
+import { MenuActionProps } from 'renderer/types/menu';
 import { createContext } from 'react';
 import { observable, action, makeObservable } from 'mobx';
 import * as glob from 'glob';
@@ -115,8 +115,8 @@ class PluginStore {
 
       console.log(`Add components from: ${plugin.name}`);
       for (const comp of plugin.components) {
-        if ((comp as MenuAction).tabTitle) {
-          const compAs = comp as MenuAction;
+        if ((comp as MenuActionProps).tabTitle) {
+          const compAs = comp as MenuActionProps;
           console.log(`Add action: ${compAs.title}`);
           MenuStore.addMenuAction(compAs);
         } else {

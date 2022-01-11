@@ -4,7 +4,7 @@ import { Handle, Position } from 'react-flow-renderer';
 import NodeDisplay from 'renderer/components/NodeDisplay';
 import NodeTab from 'renderer/components/NodeTab';
 import { SourceHandle, TargetHandle } from './handle';
-import { ComponentMenuAction } from './menu';
+import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
 import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
 
 type OCVComponentData = {
@@ -32,10 +32,8 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
 
   //Titulo exibido em tela. Por padrão exibe o título definido no menu ou o nome do componente.
   get title(): string {
-    return (
-      (this.constructor as typeof CVFComponent).menu?.title ||
-      this.constructor.name
-    );
+    const menu = (this.constructor as typeof CVFComponent).menu;
+    return ((menu as MenuWithElementTitleProps)?.name || menu?.title as string || this.constructor.name);
   }
 
   componentDidMount() {

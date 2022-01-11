@@ -1,7 +1,7 @@
 import { observable, action, makeObservable } from 'mobx';
 import { createContext } from 'react';
 import { CVFComponent } from 'renderer/types/component';
-import { MenuAction } from 'renderer/types/menu';
+import { MenuActionProps } from 'renderer/types/menu';
 import { StringMap } from 'renderer/types/utils';
 
 interface MenuStoreI {
@@ -10,14 +10,14 @@ interface MenuStoreI {
   //Adiciona o menu ao navbar
   addComponentMenuAction(component: typeof CVFComponent): void;
   //Adiciona o menu ao navbar
-  addMenuAction(action: MenuAction): void;
+  addMenuAction(action: MenuActionProps): void;
   //Modifica o menu que esta sendo exibido
   changeCurrentTab(tabOrTitle: MenuTab | string): void;
 }
 
 type MenuTab = {
   title: string;
-  actions: MenuAction[];
+  actions: MenuActionProps[];
 };
 
 class MenuStore {
@@ -27,11 +27,11 @@ class MenuStore {
 
   @observable tabs: Array<MenuTab> = [];
   @observable currentTab?: MenuTab;
-  @observable actions: Array<MenuAction> = [];
+  @observable actions: Array<MenuActionProps> = [];
 
   tabsByName: StringMap<MenuTab> = {};
 
-  @action addMenuAction = (action: MenuAction) => {
+  @action addMenuAction = (action: MenuActionProps) => {
     if (action) {
       const tab = this.findOrCreateTab(action.tabTitle);
       tab.actions.push(action);

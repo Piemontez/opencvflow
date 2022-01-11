@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { MenuStoreContext } from 'renderer/contexts/MenuStore';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
+import { MenuWithElementTitleProps } from 'renderer/types/menu';
 
 /**
  * Menu principal
@@ -36,10 +37,13 @@ const Header = () => {
         <Container fluid>
           {menuStore.currentTab && (
             <Nav>
-              {menuStore.currentTab.actions.map((action) =>
-                action.draggable ? (
+              {menuStore.currentTab.actions.map((action) => {
+                const key =
+                  (action as MenuWithElementTitleProps).name ||
+                  (action.title as string);
+                return action.draggable ? (
                   <Nav.Item
-                    key={action.title}
+                    key={key}
                     onDragStart={(event: any) =>
                       nodeStore.onDragStart(event, action)
                     }
@@ -50,13 +54,13 @@ const Header = () => {
                     </Nav.Link>
                   </Nav.Item>
                 ) : (
-                  <Nav.Item key={action.title}>
+                  <Nav.Item key={key}>
                     <Nav.Link eventKey="components" onClick={action.action}>
                       {action.title}
                     </Nav.Link>
                   </Nav.Item>
-                )
-              )}
+                );
+              })}
             </Nav>
           )}
         </Container>

@@ -1,8 +1,9 @@
 import NodeStore from 'renderer/contexts/NodeStore';
-import { MenuAction } from 'renderer/types/menu';
+import { MenuActionProps } from 'renderer/types/menu';
 import { PluginType } from 'renderer/types/plugin';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const FileExitAction: MenuAction = {
+const FileExitAction: MenuActionProps = {
   tabTitle: 'File',
   title: 'Exit',
   action: () => {
@@ -10,17 +11,19 @@ const FileExitAction: MenuAction = {
   },
 };
 
-const RunAction: MenuAction = {
+const RunAction: MenuActionProps = {
   tabTitle: 'Build',
-  title: 'Run',
+  name: 'run',
+  title: <FontAwesomeIcon className="text-success" icon={'play-circle'} />,
   action: () => {
     NodeStore.run();
   },
 };
 
-const StopAction: MenuAction = {
+const StopAction: MenuActionProps = {
   tabTitle: 'Build',
-  title: 'Stop',
+  name: 'stop',
+  title: <FontAwesomeIcon className="text-danger" icon={'stop-circle'} />,
   action: () => {
     NodeStore.stop();
   },

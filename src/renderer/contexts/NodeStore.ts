@@ -11,7 +11,10 @@ import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
 import { CVFComponent } from 'renderer/types/component';
 import { v4 as uuidv4 } from 'uuid';
-import { ComponentMenuAction } from 'renderer/types/menu';
+import {
+  ComponentMenuAction,
+  MenuWithElementTitleProps,
+} from 'renderer/types/menu';
 
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
@@ -74,7 +77,10 @@ class NodeStore {
   @action addNodeType = (component: typeof CVFComponent) => {
     this.nodeTypes[component.name] = component;
     if (component.menu?.title) {
-      this.nodeTypesByMenu[component.menu?.title] = component;
+      const key =
+        (component.menu as MenuWithElementTitleProps).name ||
+        (component.menu.title as string);
+      this.nodeTypesByMenu[key] = component;
     }
   };
 
@@ -164,25 +170,27 @@ class NodeStore {
 
     this.runner = new Promise(async (resolve) => {
       const nodes = this.nodes;
-      for (const node of nodes) {
-        if (node.data.start) {
-          await node.data.start();
-        }
-        if (!this.running) break;
-      }
-
-      while (this.running) {
+      if (nodes.length) {
         for (const node of nodes) {
-          try {
-            await node.data.proccess();
-            if (node.data.errorMessage) {
-              delete node.data.errorMessage;
+          if (node.data.start) {
+            await node.data.start();
+          }
+          if (!this.running) break;
+        }
+
+        while (this.running) {
+          for (const node of nodes) {
+            try {
+              await node.data.proccess();
+              if (node.data.errorMessage) {
+                delete node.data.errorMessage;
+              }
+            } catch (err: any) {
+              node.data.errorMessage = err.message;
             }
-          } catch (err: any) {
-            node.data.errorMessage = err.message;
+            if (!this.running) break;
           }
           await new Promise((resolve) => setTimeout(resolve, 10));
-          if (!this.running) break;
         }
       }
       resolve(true);

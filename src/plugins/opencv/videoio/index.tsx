@@ -42,12 +42,15 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
       await navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
         .then((mediaStream) => {
-          this.video!.srcObject = mediaStream;
-          this.video!.onloadedmetadata = () => {
-            //this.video!.width = this.video!.videoWidth;
-            //this.video!.height = this.video!.videoHeight;
-            this.video!.play();
-          };
+          if (this.video) {
+            this.video.srcObject = mediaStream;
+            this.video.onloadedmetadata = () => {
+              //this.video!.width = this.video!.videoWidth;
+              //this.video!.height = this.video!.videoHeight;
+              this.video!.play();
+            };
+          }
+          return null;
         });
     }
 

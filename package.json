@@ -248,7 +248,7 @@
     "mobx": "^6.3.10",
     "mobx-react": "^7.2.1",
     "numeral": "^2.0.6",
-    "opencv-ts": "^1.2.22",
+    "opencv-ts": "^1.2.26",
     "react": "^17.0.2",
     "react-bootstrap": "2.1.0",
     "react-dom": "^17.0.2",

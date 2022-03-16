@@ -7192,10 +7192,10 @@ opencollective-postinstall@^2.0.3:
   resolved "https://registry.yarnpkg.com/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz#7a0fff978f6dbfa4d006238fbac98ed4198c3259"
   integrity sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==
 
-opencv-ts@^1.2.22:
-  version "1.2.22"
-  resolved "https://registry.yarnpkg.com/opencv-ts/-/opencv-ts-1.2.22.tgz#57409f50c01fb4efff06de9795f15c7b14b4ef07"
-  integrity sha512-7DfDNF1R2FmEDR85ag/mR8u2uy0Mj6eKXKw1Eul7JkMAB2epylKbRj1vMkb6ymyoSqI5gWzut+Kau3/jGjpH4A==
+opencv-ts@^1.2.26:
+  version "1.2.26"
+  resolved "https://registry.yarnpkg.com/opencv-ts/-/opencv-ts-1.2.26.tgz#e1bebb38f550293568314881547e7d47e4851d40"
+  integrity sha512-wQUoEW3NAiygaAtl3dDDqtHzNxp66rNDFAXbBAPRj7GVn6tzTyWqNQtSIs6oIa4GgmhabzzgMdPaZe7BtHgvQw==
   dependencies:
     typescript "^4.2.3"
 

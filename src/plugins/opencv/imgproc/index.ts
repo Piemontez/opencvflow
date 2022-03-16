@@ -1,6 +1,12 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, { Scalar, Point, Mat, Size } from 'opencv-ts';
+import cv, {
+  Scalar,
+  Point,
+  Mat,
+  Size,
+  BackgroundSubtractorMOG2,
+} from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
@@ -183,8 +189,8 @@ export class GaussianBlurComponent extends CVFIOComponent {
     ];
 
     size: Size = new cv.Size(3, 3);
-    sigmaX: number = 1; 
-    sigmaY: number = 0; 
+    sigmaX: number = 1;
+    sigmaY: number = 0;
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
@@ -222,9 +228,9 @@ export class BilateralFilterComponent extends CVFIOComponent {
       { name: 'borderType', type: PropertyType.BorderType },
     ];
 
-    d: number = 1; 
-    sigmaColor: number = 1; 
-    sigmaSpace: number = 1; 
+    d: number = 1;
+    sigmaColor: number = 1;
+    sigmaSpace: number = 1;
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
@@ -263,7 +269,7 @@ export class BoxFilterComponent extends CVFIOComponent {
       { name: 'borderType', type: PropertyType.BorderType },
     ];
 
-    ddepth: number = -1; 
+    ddepth: number = -1;
     ksize: Size = new cv.Size(3, 3);
     anchor: Point = new cv.Point(-1, -1);
     normalize: boolean = true;
@@ -516,8 +522,8 @@ export class CvtColorComponent extends CVFIOComponent {
       { name: 'dstCn', type: PropertyType.Integer },
     ];
 
-    code: ColorConversionCodes = cv.COLOR_BGR2GRAY; 
-    dstCn: number = 0; 
+    code: ColorConversionCodes = cv.COLOR_BGR2GRAY;
+    dstCn: number = 0;
 
     async proccess() {
       const inputs = this.inputs;
@@ -573,6 +579,51 @@ export class Filter2DComponent extends CVFIOComponent {
             this.output(out);
           }
         }
+      }
+    }
+  };
+}
+
+/**
+ * BackgroundSubtractorMOG2 component and node
+ */
+ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'BGSubtractorMog2' };
+  static processor = class MedianBlurNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'history', type: PropertyType.Integer },
+      { name: 'varThreshold', type: PropertyType.Decimal },
+      { name: 'detectShadows', type: PropertyType.Boolean },
+    ];
+
+    history: number = 500;
+    varThreshold: number = 16;
+    detectShadows: boolean = true;
+
+    subtractor?: BackgroundSubtractorMOG2;
+    fgmask?: Mat;
+
+    async start() {
+      this.subtractor = new cv.BackgroundSubtractorMOG2(
+        this.history,
+        this.varThreshold,
+        this.detectShadows
+      );
+    }
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        inputs.forEach((src) => {
+          if (!this.fgmask)
+            this.fgmask = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
+
+          this.subtractor!.apply(src, this.fgmask);
+
+          this.sources.push(this.fgmask);
+          this.output(this.fgmask);
+        });
       }
     }
   };

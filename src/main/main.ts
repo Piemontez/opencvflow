@@ -78,11 +78,11 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
       //preload: path.join(__dirname, 'preload.js'),
     },
   });
-  
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -94,7 +94,7 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
     }
-    mainWindow.webContents.closeDevTools()
+    mainWindow.webContents.closeDevTools();
   });
 
   mainWindow.on('closed', () => {
@@ -109,6 +109,8 @@ const createWindow = async () => {
     event.preventDefault();
     shell.openExternal(url);
   });
+
+  process.env.MAIN_WINDOW_ID = mainWindow.id.toString();
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

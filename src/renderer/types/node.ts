@@ -36,6 +36,15 @@ export abstract class CVFNodeProcessor {
   async proccess(): Promise<void> {}
   //Função chamada ao para o processamento. Chamada uma única vez
   async stop(): Promise<void> {}
+
+  get propertiesMap(): any {
+    const curElTypeof = this?.constructor as typeof CVFNodeProcessor;
+    const map: any = {};
+    curElTypeof?.properties?.forEach(({ name }) => {
+      map[name] = (this as any)[name];
+    });
+    return map;
+  }
 }
 
 export class EmptyNodeProcessor extends CVFNodeProcessor {}

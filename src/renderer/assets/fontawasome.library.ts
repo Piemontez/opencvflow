@@ -16,10 +16,12 @@ import {
   faCogs,
   faColumns,
   faDatabase,
+  faDoorOpen,
   faEdit,
   faEye,
   faFile,
   faFilter,
+  faFolderOpen,
   faHistory,
   faLayerGroup,
   faMap,
@@ -30,6 +32,7 @@ import {
   faPlus,
   faQuestion,
   faQuestionCircle,
+  faSave,
   faSearch,
   faSignOutAlt,
   faSitemap,
@@ -104,5 +107,8 @@ library.add(
   faPlay,
   faPlayCircle,
   faStop,
-  faStopCircle
+  faStopCircle,
+  faSave,
+  faFolderOpen,
+  faDoorOpen
 );

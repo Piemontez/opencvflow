@@ -25,6 +25,7 @@ interface NodeStoreI {
   nodeTypes: NodeTypesType;
   currentElement?: OCVFlowElement;
 
+  getNodeTypeFromName(name: string): typeof CVFComponent | null;
   addNodeType(component: typeof CVFComponent): void;
   addNodeFromComponent(
     component: typeof CVFComponent,
@@ -73,6 +74,10 @@ class NodeStore {
       (_) => console.log(this.elements.length)
     );*/
   }
+
+  getNodeTypeFromName = (name: string): typeof CVFComponent | null => {
+    return this.nodeTypesByMenu[name] as typeof CVFComponent;
+  };
 
   @action addNodeType = (component: typeof CVFComponent) => {
     this.nodeTypes[component.name] = component;
@@ -204,8 +209,7 @@ class NodeStore {
       this.runner = null;
     }
 
-    const nodes = this.nodes;
-    for (const node of nodes) {
+    for (const node of this.nodes) {
       if (node.data.stop) {
         await node.data.stop();
       }

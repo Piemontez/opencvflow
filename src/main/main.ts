@@ -12,6 +12,7 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import * as remoteMain from '@electron/remote/main';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -59,6 +60,8 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
+  remoteMain.initialize();
+
   if (isDevelopment) {
     await installExtensions();
   }
@@ -109,11 +112,11 @@ const createWindow = async () => {
     event.preventDefault();
     shell.openExternal(url);
   });
-
-  process.env.MAIN_WINDOW_ID = mainWindow.id.toString();
-
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
+
+  remoteMain.enable(mainWindow.webContents);
+
   new AppUpdater();
 };
 

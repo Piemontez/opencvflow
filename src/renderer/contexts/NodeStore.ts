@@ -25,7 +25,7 @@ interface NodeStoreI {
   nodeTypes: NodeTypesType;
   currentElement?: OCVFlowElement;
 
-  getNodeTypeFromName(name: string): typeof CVFComponent | null;
+  getNodeType(name: string): typeof CVFComponent | null;
   addNodeType(component: typeof CVFComponent): void;
   addNodeFromComponent(
     component: typeof CVFComponent,
@@ -43,7 +43,7 @@ interface NodeStoreI {
   run(): Promise<void>;
   stop(): Promise<void>;
 
-  //Utilizado pelo componente React Flow
+  // Utilizado pelo componente React Flow
   reactFlowWrapper: HTMLDivElement | null;
 
   onLoad(instance: any): void;
@@ -69,14 +69,14 @@ class NodeStore {
 
   constructor() {
     makeObservable(this);
-    /*reaction(
+    /* reaction(
       () => this.elements,
       (_) => console.log(this.elements.length)
-    );*/
+    ); */
   }
 
-  getNodeTypeFromName = (name: string): typeof CVFComponent | null => {
-    return this.nodeTypesByMenu[name] as typeof CVFComponent;
+  getNodeType = (name: string): typeof CVFComponent | null => {
+    return this.nodeTypes[name] as typeof CVFComponent;
   };
 
   @action addNodeType = (component: typeof CVFComponent) => {
@@ -128,18 +128,18 @@ class NodeStore {
     sourceHandle: string | null = null,
     targetHandle: string | null = null
   ) => {
-    /*origem*/
+    /* origem */
     const source =
       typeof sourceOrId === 'string'
         ? (this.elements.find((_) => _.id === sourceOrId) as CVFNode)
         : sourceOrId;
-    /*destino*/
+    /* destino */
     const target =
       typeof targetOrId === 'string'
         ? (this.elements.find((_) => _.id === targetOrId) as CVFNode)
         : targetOrId;
     const dataEdge = new CVFEdgeData(source.data, target.data);
-    //Aresta/Conexão
+    // Aresta/Conexão
     const newEdge: OCVFEdge = {
       id: uuidv4(),
       source: source.id,
@@ -148,20 +148,20 @@ class NodeStore {
       targetHandle: targetHandle,
       data: dataEdge,
     };
-    //Adicionando a aresta aos nós
+    // Adicionando a aresta aos nós
     source.data.outEdges.push(dataEdge);
     target.data.inEdges.push(dataEdge);
-    //Adicionar a aresta nos elementos da tela
+    // Adicionar a aresta nos elementos da tela
     this.elements = this.elements.concat(newEdge);
   };
 
   @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
     let idx = -1;
     if ((edge as OCVFEdge).data) {
-      //OCVFEdge
+      // OCVFEdge
       idx = this.elements.indexOf(edge as OCVFEdge);
     } else {
-      //CVFEdgeData
+      // CVFEdgeData
       idx = this.elements.findIndex((_) => _.data === edge);
     }
     if (idx > -1) {
@@ -174,7 +174,7 @@ class NodeStore {
     this.running = true;
 
     this.runner = new Promise(async (resolve) => {
-      const nodes = this.nodes;
+      const { nodes } = this;
       if (nodes.length) {
         for (const node of nodes) {
           if (node.data.start) {
@@ -195,7 +195,7 @@ class NodeStore {
             }
             if (!this.running) break;
           }
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await new Promise((_res) => setTimeout(_res, 10));
         }
       }
       resolve(true);
@@ -234,11 +234,11 @@ class NodeStore {
     this.currentElement = { ...this.currentElement } as OCVFlowElement;
   };
 
-  //Evento disparado pelo painel ao remover um elemento
+  // Evento disparado pelo painel ao remover um elemento
   onElementsRemove = (elements: Elements) =>
     removeElements(elements, this.elements);
 
-  //Evento disparado pelo painel ao conectar 2 nós
+  // Evento disparado pelo painel ao conectar 2 nós
   @action onConnect = ({
     source,
     target,
@@ -268,7 +268,7 @@ class NodeStore {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  //Evento disparado ao arrastar o componente do menu
+  // Evento disparado ao arrastar o componente do menu
   onDragStart = (event: any, menuAction: ComponentMenuAction) => {
     event.dataTransfer.setData('application/action', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';

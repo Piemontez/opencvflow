@@ -1,21 +1,13 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, {
-  Scalar,
-  Point,
-  Mat,
-  Size,
-  BackgroundSubtractorMOG2,
-} from 'opencv-ts';
+import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
-import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 
 const tabName = 'Segmentation';
 
 /**
- * CvtColor component and node
+ * Threshold component and node
  */
 export class ThresholdComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Threshold' };
@@ -35,7 +27,11 @@ export class ThresholdComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
-          cv.threshold(src, src, this.thresh, this.maxval, this.type);
+          const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
+          cv.threshold(src, out, this.thresh, this.maxval, this.type);
+
+          this.sources.push(out);
+          this.output(out);
         }
       }
     }

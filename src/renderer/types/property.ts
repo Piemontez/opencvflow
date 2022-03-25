@@ -17,6 +17,8 @@ export enum PropertyType {
   ColorConversionCodes,
   BorderType,
   ThresholdTypes,
+  DistanceTypes,
+  DistanceTransformMasks = PropertyType.Integer,
 }
 
 export declare type NodeProperty = {

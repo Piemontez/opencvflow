@@ -12,6 +12,10 @@ import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import * as segmentation from './segmentation';
 import * as edge from './edge';
+import {
+  DistanceTransformMasks,
+  DistanceTypes,
+} from 'opencv-ts/src/ImageProcessing/Misc';
 
 export const ThresholdComponent = segmentation.ThresholdComponent;
 export const WatershedComponent = segmentation.WatershedComponent;
@@ -494,6 +498,36 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
           this.sources.push(this.fgmask);
           this.output(this.fgmask);
         });
+      }
+    }
+  };
+}
+
+/**
+ * Threshold component and node
+ */
+export class DistanceTransformComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Distance Transform' };
+  static processor = class CvtColorNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'distanceType', type: PropertyType.DistanceTypes },
+      { name: 'maskSize', type: PropertyType.DistanceTransformMasks },
+    ];
+
+    distanceType: DistanceTypes = cv.DIST_L2;
+    maskSize: DistanceTransformMasks = cv.DIST_MASK_3;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          cv.distanceTransform(src, out, this.distanceType, this.maskSize);
+
+          this.sources.push(out);
+          this.output(out);
+        }
       }
     }
   };

@@ -1,7 +1,7 @@
 import cv from 'opencv-ts';
 import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from "CVFFormProps";
+import { CVFFormProps } from "./types/CVFFormProps";
 import { CVFPicker } from './cvf-picker';
 
 export class OCVBorderTypeFormControl extends Component<CVFFormProps> {
@@ -29,7 +29,7 @@ export class OCVBorderTypeFormControl extends Component<CVFFormProps> {
           onSel={(value: any | null, row: any, event: any) =>
             this.props.onChange && this.props.onChange(value, row, event)
           }
-          title={this.props.title}
+          title={this.props.title || 'Border Type'}
           header={this.props.header}
           multi={this.props.multi}
           ref={(ref) => (this.pickerRef = ref)}

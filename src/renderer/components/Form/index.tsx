@@ -18,6 +18,7 @@ import { OCVScalarFormControl } from './ocv-scalar-formcontrol';
 import { OCVSizeFormControl } from './ocv-size-formcontrol';
 import { OCVThresholdTypesFormControl } from './ocv-thresholdtypes-formcontrol';
 import { CVFFormEvent } from './types/CVFFormEvent';
+import { OCVDistanceTypesFormControl } from './ocv-distancetypes-formcontrol';
 
 /**
  * Definição da função chamada ao alterar um formulario
@@ -41,6 +42,9 @@ export function CVFFormGroup(props: CVFFormProps) {
       break;
     case PropertyType.ColorConversionCodes:
       Control = <OCVColorConversionCodesFormControl {...props} />;
+      break;
+    case PropertyType.DistanceTypes:
+      Control = <OCVDistanceTypesFormControl {...props} />;
       break;
     case PropertyType.Scalar:
       Control = OCVScalarFormControl(props);

@@ -29,7 +29,7 @@ export class OCVThresholdTypesFormControl extends Component<CVFFormProps> {
           onSel={(value: any | null, row: any, event: any) =>
             this.props.onChange && this.props.onChange(value, row, event)
           }
-          title={this.props.title}
+          title={this.props.title || 'Threshold Types'}
           header={this.props.header}
           multi={this.props.multi}
           ref={(ref) => (this.pickerRef = ref)}

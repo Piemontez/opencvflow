@@ -10,6 +10,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'max-classes-per-file': 'off',
     'no-await-in-loop': 'off',
+    'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
   },
   parserOptions: {

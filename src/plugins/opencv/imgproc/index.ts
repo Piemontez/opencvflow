@@ -10,146 +10,16 @@ import cv, {
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
+import * as segmentation from './segmentation';
+import * as edge from './edge';
+
+export const ThresholdComponent = segmentation.ThresholdComponent;
+export const WatershedComponent = segmentation.WatershedComponent;
+export const CVSobelComponent = edge.CVSobelComponent;
+export const CannyComponent = edge.CannyComponent;
+export const LaplacianComponent = edge.LaplacianComponent;
 
 const tabName = 'ImgProc';
-
-/**
- * Sobel component and node
- */
-export class CVSobelComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Sobel' };
-
-  static processor = class SobelProcessor extends CVFNodeProcessor {
-    static properties = [
-      { name: 'dDepth', type: PropertyType.Integer },
-      { name: 'dX', type: PropertyType.Integer },
-      { name: 'dY', type: PropertyType.Integer },
-      { name: 'kSize', type: PropertyType.Integer },
-      { name: 'scale', type: PropertyType.Decimal },
-      { name: 'delta', type: PropertyType.Decimal },
-      { name: 'borderType', type: PropertyType.BorderType },
-    ];
-
-    dDepth: number = cv.CV_8U;
-    dX: number = 1;
-    dY: number = 0;
-    kSize: number = 3;
-    scale: number = 1;
-    delta: number = 0;
-    borderType: BorderTypes = cv.BORDER_DEFAULT;
-
-    async proccess() {
-      const inputs = this.inputs;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const dst = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
-
-          cv.cvtColor(src, src, cv.COLOR_RGB2GRAY, 0);
-          cv.Sobel(
-            src,
-            dst,
-            this.dDepth,
-            this.dX,
-            this.dY,
-            this.kSize,
-            this.scale,
-            this.delta,
-            this.borderType
-          );
-
-          this.sources.push(dst);
-
-          this.output(dst);
-        }
-      }
-    }
-  };
-}
-
-/**
- * Canny component and node
- */
-export class CannyComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Canny' };
-  static processor = class CannyNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'tthreshold1', type: PropertyType.Decimal },
-      { name: 'threshold2', type: PropertyType.Decimal },
-      { name: 'aperturesize', type: PropertyType.Integer },
-      { name: 'l2gradiente', type: PropertyType.Boolean },
-    ];
-
-    tthreshold1: number = 80;
-    threshold2: number = 170;
-    aperturesize: number = 3;
-    l2gradiente: boolean = false;
-
-    async proccess() {
-      const inputs = this.inputs;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          cv.Canny(
-            src,
-            out,
-            this.tthreshold1,
-            this.tthreshold1
-            //this.aperturesize, TODO: opencv-ts ainda não recebe este
-            //this.L2gradiente, TODO: opencv-ts ainda não recebe este
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * Laplacian component and node
- */
-export class LaplacianComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Laplacian' };
-  static processor = class LaplacianNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'dDepth', type: PropertyType.Integer },
-      { name: 'kSize', type: PropertyType.Integer },
-      { name: 'scale', type: PropertyType.Decimal },
-      { name: 'delta', type: PropertyType.Decimal },
-      { name: 'borderType', type: PropertyType.BorderType },
-    ];
-
-    dDepth: number = cv.CV_8U;
-    kSize: number = 3;
-    scale: number = 1;
-    delta: number = 0;
-    borderType: BorderTypes = cv.BORDER_DEFAULT;
-
-    async proccess() {
-      const inputs = this.inputs;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          cv.Laplacian(
-            src,
-            out,
-            this.dDepth,
-            this.kSize,
-            this.scale,
-            this.delta,
-            this.borderType
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
 /**
  * MedianBlur component and node
  */
@@ -161,7 +31,7 @@ export class MedianBlurComponent extends CVFIOComponent {
     kSize: number = 3;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -194,7 +64,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -234,7 +104,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -276,7 +146,7 @@ export class BoxFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -312,14 +182,14 @@ export class SqrBoxFilterComponent extends CVFIOComponent {
       { name: 'borderType', type: PropertyType.BorderType },
     ];
 
-    ddepth: number = -1; //int
+    ddepth: number = -1;
     ksize: Size = new cv.Size(3, 3);
     anchor: Point = new cv.Point(-1, -1);
     normalize: boolean = true;
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -358,7 +228,7 @@ export class BlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -395,7 +265,7 @@ export class ScharrComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -438,12 +308,12 @@ export class DilateComponent extends CVFIOComponent {
       new cv.Point(-1, -1)
     );
     anchor: Point = new cv.Point(-1, -1);
-    iterations: number = 1; //int
-    borderType: BorderTypes = cv.BORDER_CONSTANT; //int
+    iterations: number = 1;
+    borderType: BorderTypes = cv.BORDER_CONSTANT;
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -484,12 +354,12 @@ export class ErodeComponent extends CVFIOComponent {
       new cv.Point(-1, -1)
     );
     anchor: Point = new cv.Point(-1, -1);
-    iterations: number = 1; //int
+    iterations: number = 1;
     BorderType: BorderTypes = cv.BORDER_CONSTANT;
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -526,7 +396,7 @@ export class CvtColorComponent extends CVFIOComponent {
     dstCn: number = 0;
 
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -559,7 +429,7 @@ export class Filter2DComponent extends CVFIOComponent {
     async proccess() {
       let kernel: Mat | null = null;
 
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -587,7 +457,7 @@ export class Filter2DComponent extends CVFIOComponent {
 /**
  * BackgroundSubtractorMOG2 component and node
  */
- export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
+export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'BGSubtractorMog2' };
   static processor = class MedianBlurNode extends CVFNodeProcessor {
     static properties = [

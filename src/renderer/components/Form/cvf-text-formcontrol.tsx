@@ -1,5 +1,5 @@
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from './index';
+import { CVFFormProps } from "./types/CVFFormProps";
 
 export function CVFTextFormControl(props: CVFFormProps) {
   return (

@@ -4,23 +4,23 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import { toIlikeRegex } from 'renderer/commons/tools';
-import { CVFOptionValue } from './index';
+import { CVFOptionValue } from './types/CVFOptionValue';
 
 declare type PickerProps = {
   clearButton?: boolean;
   multi?: boolean;
   paginated?: boolean;
-  //Cabeçalho da listagem
+  // Cabeçalho da listagem
   header?: string[];
-  //Itens
+  // Itens
   options?: CVFOptionValue[];
-  //Texts
+  // Texts
   title?: string;
   subtitle?: string;
   footertitle?: string;
   placeholder?: boolean;
   addText?: boolean;
-  //Callbacks
+  // Callbacks
   onAdd?: (search: string) => void;
   onSel?: (value: any | null, row: any, event: any) => void;
 };

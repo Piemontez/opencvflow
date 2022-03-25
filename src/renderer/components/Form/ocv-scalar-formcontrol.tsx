@@ -1,7 +1,7 @@
 import numeral from 'numeral';
 import { Col, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from './index';
+import { CVFFormProps } from "./types/CVFFormProps";
 
 export function OCVScalarFormControl(props: CVFFormProps) {
   const length = (props.value as []).length;

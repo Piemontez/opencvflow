@@ -1,5 +1,5 @@
 export enum PropertyType {
-  //IDE Types
+  // IDE Types
   Text,
   Integer,
   Decimal,
@@ -10,12 +10,13 @@ export enum PropertyType {
   IntMatrix,
   DoubleMatrix,
   FileUrl,
-  //OpenCV Types
+  // OpenCV Types
   Size = 1000,
   Point,
   Scalar,
   ColorConversionCodes,
-  BorderType
+  BorderType,
+  ThresholdTypes,
 }
 
 export declare type NodeProperty = {

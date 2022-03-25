@@ -1,6 +1,6 @@
 import numeral from 'numeral';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from './index';
+import { CVFFormProps } from "./types/CVFFormProps";
 
 export function CVFIntegerFormControl(props: CVFFormProps) {
     return (

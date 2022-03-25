@@ -1,7 +1,7 @@
 import cv from 'opencv-ts';
 import { Component } from 'react';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from '.';
+import { CVFFormProps } from "CVFFormProps";
 import { CVFPicker } from './cvf-picker';
 
 export class OCVColorConversionCodesFormControl extends Component<CVFFormProps> {

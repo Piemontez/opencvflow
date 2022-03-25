@@ -1,11 +1,12 @@
 import cv, { Mat } from 'opencv-ts';
 import numeral from 'numeral';
 import { Col, Row, Form } from 'react-bootstrap';
-import { CVFFormEvent, CVFFormProps } from './index';
+import { CVFFormEvent } from "./types/CVFFormEvent";
+import { CVFFormProps } from "./types/CVFFormProps";
 
 /**
  * Cria um componente para editar o Mat com atributos 0 e 1
- * @param props 
+ * @param props
  */
 export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
   props.groupAs = undefined;

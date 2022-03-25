@@ -2,7 +2,7 @@ import cv, { Size } from 'opencv-ts';
 import numeral from 'numeral';
 import { Col, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from './index';
+import { CVFFormProps } from "./types/CVFFormProps";
 
 export function OCVSizeFormControl(props: CVFFormProps) {
   const value = props.value as Size;

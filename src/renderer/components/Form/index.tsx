@@ -1,4 +1,3 @@
-import React from 'react';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { PropertyType } from 'renderer/types/property';
@@ -11,64 +10,24 @@ import {
   CVFIntegerFormControl,
 } from './cvf-number-formcontrol';
 import { CVFTextFormControl } from './cvf-text-formcontrol';
+import { CVFFormProps } from './types/CVFFormProps';
 import { OCVBorderTypeFormControl } from './ocv-bordertype-formcontrol';
 import { OCVColorConversionCodesFormControl } from './ocv-colorconversioncodes-formcontrol';
 import { OCVPointFormControl } from './ocv-point-formcontrol';
 import { OCVScalarFormControl } from './ocv-scalar-formcontrol';
 import { OCVSizeFormControl } from './ocv-size-formcontrol';
+import { OCVThresholdTypesFormControl } from './ocv-thresholdtypes-formcontrol';
+import { CVFFormEvent } from './types/CVFFormEvent';
 
-/**
- * Definição das opções de um campo selecionavel
- */
-
-export type CVFOptionValue = {
-  value: any;
-  columns: string[];
-};
-export type CVFFormEvent =
-  | React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
-  | React.SyntheticEvent<any>;
 /**
  * Definição da função chamada ao alterar um formulario
  *
  */
-declare type CVFFormEventHandler = (
+export declare type CVFFormEventHandler = (
   value: any | null,
   description: string[] | string | null,
   event: CVFFormEvent
 ) => void;
-
-/**
- * Propriedades do formulário
- */
-export declare type CVFFormProps = {
-  type: PropertyType;
-  name: string;
-  title?: string;
-  placeholder?: string;
-  value?: any | [any] | null;
-  description?: string;
-  disabled?: boolean;
-
-  filters?: any;
-  //propriedade do formGroup
-  groupAs?: any;
-  column?: any;
-  //propriedades do campo text
-  multiline?: number;
-  //propriedades do campo boolean
-  checked?: boolean;
-  //propriedades do campo selecionável
-  multi?: boolean;
-  header?: string[];
-  options?: CVFOptionValue[];
-  //control
-  controlClassName?: string;
-
-  onChange?: CVFFormEventHandler;
-};
 
 export function CVFFormGroup(props: CVFFormProps) {
   let Control, Column;
@@ -76,6 +35,9 @@ export function CVFFormGroup(props: CVFFormProps) {
     //Open
     case PropertyType.BorderType:
       Control = <OCVBorderTypeFormControl {...props} />;
+      break;
+    case PropertyType.ThresholdTypes:
+      Control = <OCVThresholdTypesFormControl {...props} />;
       break;
     case PropertyType.ColorConversionCodes:
       Control = <OCVColorConversionCodesFormControl {...props} />;

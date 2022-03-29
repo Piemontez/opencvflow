@@ -1,8 +1,8 @@
 import cv, { Mat } from 'opencv-ts';
 import numeral from 'numeral';
 import { Col, Row, Form } from 'react-bootstrap';
-import { CVFFormEvent } from "./types/CVFFormEvent";
-import { CVFFormProps } from "./types/CVFFormProps";
+import { CVFFormEvent } from './types/CVFFormEvent';
+import { CVFFormProps } from './types/CVFFormProps';
 
 /**
  * Cria um componente para editar o Mat com atributos 0 e 1
@@ -22,7 +22,13 @@ export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
     event: CVFFormEvent
   ) => {
     if (props.onChange) {
-      if (cols !== null) {
+      if (!value.cols && !value.rows) {
+        props.onChange(
+          new cv.Mat(1, 1, cv.CV_8U, new cv.Scalar(0)),
+          null,
+          event
+        );
+      } else if (cols !== null) {
         if (cols > value.cols) {
           const zs = new cv.Mat(value.rows, 1, value.type(), new cv.Scalar(0));
           const vector = new cv.MatVector();
@@ -80,7 +86,7 @@ export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
             <Col key={col}>
               <Form.Check
                 type="checkbox"
-                checked={value.data.at(row * rows + col)}
+                checked={value.data?.at(row * rows + col)}
                 onClick={() =>
                   (value.data[row * rows + col] = !value.data.at(
                     row * rows + col

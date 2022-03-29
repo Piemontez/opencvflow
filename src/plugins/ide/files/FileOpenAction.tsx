@@ -40,13 +40,15 @@ const FileOpenAction: MenuActionProps = {
       const json = JSON.parse(fileDdata);
       json.elements = (json.elements as Array<any>).map(({ data, ...rest }) => {
         const element = rest as CVFNode | OCVFEdge;
-        console.log(data);
-        console.log(element);
         if (element.type) {
           const component = NodeStore.getNodeType(element.type);
           if (component) {
             element.data = new component.processor();
-            Object.assign(element.data, data);
+            Object.keys(element.data.propertiesMap).forEach((key) => {
+              if (data[key]) {
+                Object.assign((element.data as any)[key], data[key]);
+              }
+            });
           }
         }
         return element;

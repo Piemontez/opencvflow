@@ -32,6 +32,7 @@ const FileSaveAction: MenuActionProps = {
       data: (data as CVFNodeProcessor)?.propertiesMap,
       ...rest,
     }));
+
     const rs = await dialog.showSaveDialog(
       getCurrentWindow(),
       options as SaveDialogOptions

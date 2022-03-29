@@ -21,16 +21,16 @@ type OCVComponentProcessor = typeof ForkCVFNodeProcessor;
  */
 export abstract class CVFComponent extends React.Component<OCVComponentData> {
   output: HTMLCanvasElement | null = null;
-  //Conexões que o componente pode receber
+  // Conexões que o componente pode receber
   targets: TargetHandle[] = [];
-  //Conexões que o componente irá disparar
+  // Conexões que o componente irá disparar
   sources: SourceHandle[] = [];
-  //Função responsável em instanciar o NodeProcessor
+  // Função responsável em instanciar o NodeProcessor
   static processor: OCVComponentProcessor = EmptyNodeProcessor;
-  //Definição do menu que ira aparecer
+  // Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
 
-  //Titulo exibido em tela. Por padrão exibe o título definido no menu ou o nome do componente.
+  // Titulo exibido em tela. Por padrão exibe o título definido no menu ou o nome do componente.
   get title(): string {
     const menu = (this.constructor as typeof CVFComponent).menu;
     return ((menu as MenuWithElementTitleProps)?.name || menu?.title as string || this.constructor.name);
@@ -88,20 +88,20 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
 }
 
 export abstract class CVFOutputComponent extends CVFComponent {
-  //Conexões que o componente irá disparar
+  // Conexões que o componente irá disparar
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 }
 
 export abstract class CVFIOComponent extends CVFComponent {
-  //Conexões que o componente irá receber
+  // Conexões que o componente irá receber
   targets: TargetHandle[] = [{ title: 'in', position: Position.Left }];
-  //Conexões que o componente irá disparar
+  // Conexões que o componente irá disparar
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 }
 
 export abstract class CVFIOEndlessComponent extends CVFComponent {
-  //Conexões que o componente irá receber
+  // Conexões que o componente irá receber
   targets: TargetHandle[] = [{ title: 'in', position: Position.Left }];
-  //Conexões que o componente irá disparar
+  // Conexões que o componente irá disparar
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 }

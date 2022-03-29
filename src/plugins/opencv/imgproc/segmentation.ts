@@ -13,8 +13,8 @@ export class ThresholdComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Threshold' };
   static processor = class CvtColorNode extends CVFNodeProcessor {
     static properties = [
-      { name: 'thresh', type: PropertyType.Integer },
-      { name: 'maxval', type: PropertyType.Integer },
+      { name: 'thresh', type: PropertyType.Decimal },
+      { name: 'maxval', type: PropertyType.Decimal },
       { name: 'type', type: PropertyType.ThresholdTypes },
     ];
 

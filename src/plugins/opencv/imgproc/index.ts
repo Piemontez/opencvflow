@@ -16,6 +16,7 @@ import {
   DistanceTransformMasks,
   DistanceTypes,
 } from 'opencv-ts/src/ImageProcessing/Misc';
+import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 
 export const ThresholdComponent = segmentation.ThresholdComponent;
 export const WatershedComponent = segmentation.WatershedComponent;
@@ -307,7 +308,7 @@ export class DilateComponent extends CVFIOComponent {
     ];
 
     kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_ELLIPSE,
+      cv.MORPH_RECT,
       new cv.Size(3, 3),
       new cv.Point(-1, -1)
     );
@@ -353,13 +354,13 @@ export class ErodeComponent extends CVFIOComponent {
       { name: 'borderValue', type: PropertyType.Scalar },
     ];
     kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_ELLIPSE,
+      cv.MORPH_RECT,
       new cv.Size(3, 3),
       new cv.Point(-1, -1)
     );
     anchor: Point = new cv.Point(-1, -1);
     iterations: number = 1;
-    BorderType: BorderTypes = cv.BORDER_CONSTANT;
+    borderType: BorderTypes = cv.BORDER_CONSTANT;
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
 
     async proccess() {
@@ -374,7 +375,7 @@ export class ErodeComponent extends CVFIOComponent {
             this.kernel,
             this.anchor,
             this.iterations,
-            this.BorderType,
+            this.borderType,
             this.borderValue
           );
           this.sources.push(out);
@@ -406,6 +407,38 @@ export class CvtColorComponent extends CVFIOComponent {
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           cv.cvtColor(src, out, this.code, this.dstCn);
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
+ * CvtColor component and node
+ */
+export class ConverToComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'ConverTo' };
+  static processor = class CvtColorNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'rtype', type: PropertyType.Integer },
+      { name: 'alpha', type: PropertyType.Decimal },
+      { name: 'beta', type: PropertyType.Decimal },
+    ];
+
+    rtype: DataTypes = cv.CV_8U;
+    alpha: number = 1;
+    beta: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          src.convertTo(out, this.rtype, this.alpha, this.beta);
+
           this.sources.push(out);
           this.output(out);
         }
@@ -499,6 +532,11 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
           this.output(this.fgmask);
         });
       }
+    }
+
+    async stop() {
+      this.fgmask?.delete();
+      this.fgmask = undefined;
     }
   };
 }

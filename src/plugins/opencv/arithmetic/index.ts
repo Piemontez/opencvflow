@@ -4,6 +4,7 @@ import {
   CVFOutputComponent,
   CVFIOEndlessComponent,
   CVFComponent,
+  CVFIOComponent,
 } from 'renderer/types/component';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { CVFNodeProcessor } from 'renderer/types/node';
@@ -25,7 +26,12 @@ export class CVPlusComponent extends CVFComponent {
       const inputs = this.inputs;
       if (inputs.length > 1) {
         const [src1, src2, masc] = inputs;
-        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
 
         if (src1 && src2) {
           if (masc) {
@@ -58,7 +64,12 @@ export class CVSubComponent extends CVFComponent {
       const inputs = this.inputs;
       if (inputs.length > 1) {
         const [src1, src2, masc] = inputs;
-        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
 
         if (src1 && src2) {
           if (masc) {
@@ -220,6 +231,34 @@ export class CVGaussianKernelComponent extends CVFOutputComponent {
       this.output(this.kernel!);
 
       this.sources = [this.kernel!];
+    }
+  };
+}
+
+export class CVNormalizeComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Normalize' };
+
+  static processor = class NormalizeProcessor extends CVFNodeProcessor {
+    static properties = [
+      { name: 'alpha', type: PropertyType.Integer },
+      { name: 'beta', type: PropertyType.Integer },
+    ];
+
+    alpha: number = 1;
+    beta: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
+          cv.normalize(src, out, this.alpha, this.beta, cv.NORM_INF);
+
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
     }
   };
 }

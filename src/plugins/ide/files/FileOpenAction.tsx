@@ -37,23 +37,34 @@ const FileOpenAction: MenuActionProps = {
         encoding: 'utf-8',
         flag: 'r',
       });
-      const json = JSON.parse(fileDdata);
-      json.elements = (json.elements as Array<any>).map(({ data, ...rest }) => {
-        const element = rest as CVFNode | OCVFEdge;
-        if (element.type) {
-          const component = NodeStore.getNodeType(element.type);
-          if (component) {
-            element.data = new component.processor();
-            Object.keys(element.data.propertiesMap).forEach((key) => {
-              if (data[key]) {
-                Object.assign((element.data as any)[key], data[key]);
-              }
-            });
+      const { elements } = JSON.parse(fileDdata);
+
+      // Adiciona os componentes
+      const components = (elements as Array<any>)
+        .filter((el) => !(el as OCVFEdge).source && !(el as OCVFEdge).target)
+        .map(({ data, ...rest }) => {
+          const element = rest as CVFNode | OCVFEdge;
+          if (element.type) {
+            const component = NodeStore.getNodeType(element.type);
+            if (component) {
+              element.data = new component.processor();
+              Object.keys(element.data.propertiesMap).forEach((key) => {
+                if (data[key]) {
+                  Object.assign((element.data as any)[key], data[key]);
+                }
+              });
+            }
           }
-        }
-        return element;
-      });
-      NodeStore.elements = json.elements;
+          return element;
+        });
+      NodeStore.elements = components;
+
+      // Adiciona as conecções
+      (elements as Array<any>)
+        .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target)
+        .forEach(({ data, ...rest }) => {
+          NodeStore.onConnect(rest as OCVFEdge);
+        });
     }
   },
 };

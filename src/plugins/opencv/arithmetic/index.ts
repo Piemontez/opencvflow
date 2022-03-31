@@ -1,4 +1,6 @@
 import cv, { Mat } from 'opencv-ts';
+import { NormTypes } from 'opencv-ts/src/core/CoreArray';
+import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'react-flow-renderer';
 import {
   CVFOutputComponent,
@@ -23,7 +25,7 @@ export class CVPlusComponent extends CVFComponent {
 
   static processor = class PlusProcessor extends CVFNodeProcessor {
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length > 1) {
         const [src1, src2, masc] = inputs;
         const out: Mat = new cv.Mat(
@@ -61,7 +63,7 @@ export class CVSubComponent extends CVFComponent {
 
   static processor = class SubProcessor extends CVFNodeProcessor {
     async proccess() {
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length > 1) {
         const [src1, src2, masc] = inputs;
         const out: Mat = new cv.Mat(
@@ -94,7 +96,7 @@ export class CVMultiplyComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -122,7 +124,7 @@ export class CVDivisionComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -150,7 +152,7 @@ export class CVMulComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const inputs = this.inputs;
+      const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -242,18 +244,29 @@ export class CVNormalizeComponent extends CVFIOComponent {
     static properties = [
       { name: 'alpha', type: PropertyType.Integer },
       { name: 'beta', type: PropertyType.Integer },
+      { name: 'normType', type: PropertyType.Integer },
+      { name: 'dtype', type: PropertyType.Integer },
     ];
 
     alpha: number = 1;
     beta: number = 0;
+    normType: NormTypes = cv.NORM_INF;
+    dtype: DataTypes = cv.CV_8U;
 
     async proccess() {
       const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
-          cv.normalize(src, out, this.alpha, this.beta, cv.NORM_INF);
+          const out = new cv.Mat(src.rows, src.cols, this.dtype);
+          cv.normalize(
+            src,
+            out,
+            this.alpha,
+            this.beta,
+            this.normType,
+            this.dtype
+          );
 
           this.sources.push(out);
           this.output(out);

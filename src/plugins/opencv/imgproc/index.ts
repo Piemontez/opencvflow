@@ -1,17 +1,12 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, {
-  Scalar,
-  Point,
-  Mat,
-  Size,
-  BackgroundSubtractorMOG2,
-} from 'opencv-ts';
+import cv, { Point, Mat, Size, BackgroundSubtractorMOG2 } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import * as segmentation from './segmentation';
 import * as edge from './edge';
+import * as morphology from './morphology';
 import {
   DistanceTransformMasks,
   DistanceTypes,
@@ -19,10 +14,14 @@ import {
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 
 export const ThresholdComponent = segmentation.ThresholdComponent;
+export const ConnectedComponentsComponent =
+  segmentation.ConnectedComponentsComponent;
 export const WatershedComponent = segmentation.WatershedComponent;
 export const CVSobelComponent = edge.CVSobelComponent;
 export const CannyComponent = edge.CannyComponent;
 export const LaplacianComponent = edge.LaplacianComponent;
+export const DilateComponent = morphology.DilateComponent;
+export const ErodeComponent = morphology.ErodeComponent;
 
 const tabName = 'ImgProc';
 /**
@@ -294,99 +293,6 @@ export class ScharrComponent extends CVFIOComponent {
 }
 
 /**
- * Dilate component and node
- */
-export class DilateComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Dilate' };
-  static processor = class DilateNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'kernel', type: PropertyType.OneZeroMatrix },
-      { name: 'anchor', type: PropertyType.Point },
-      { name: 'iterations', type: PropertyType.Integer },
-      { name: 'borderType', type: PropertyType.BorderType },
-      { name: 'borderValue', type: PropertyType.Scalar },
-    ];
-
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
-    anchor: Point = new cv.Point(-1, -1);
-    iterations: number = 1;
-    borderType: BorderTypes = cv.BORDER_CONSTANT;
-    borderValue: Scalar = cv.morphologyDefaultBorderValue();
-
-    async proccess() {
-      const { inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          cv.dilate(
-            src,
-            out,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * Erode component and node
- */
-export class ErodeComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Erode' };
-  static processor = class ErodeNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'kernel', type: PropertyType.OneZeroMatrix },
-      { name: 'anchor', type: PropertyType.Point },
-      { name: 'iterations', type: PropertyType.Integer },
-      { name: 'borderType', type: PropertyType.BorderType },
-      { name: 'borderValue', type: PropertyType.Scalar },
-    ];
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
-    anchor: Point = new cv.Point(-1, -1);
-    iterations: number = 1;
-    borderType: BorderTypes = cv.BORDER_CONSTANT;
-    borderValue: Scalar = cv.morphologyDefaultBorderValue();
-
-    async proccess() {
-      const { inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          cv.erode(
-            src,
-            out,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
  * CvtColor component and node
  */
 export class CvtColorComponent extends CVFIOComponent {
@@ -416,11 +322,11 @@ export class CvtColorComponent extends CVFIOComponent {
 }
 
 /**
- * CvtColor component and node
+ * ConverTo component and node
  */
 export class ConverToComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'ConverTo' };
-  static processor = class CvtColorNode extends CVFNodeProcessor {
+  static processor = class ConverToNode extends CVFNodeProcessor {
     static properties = [
       { name: 'rtype', type: PropertyType.Integer },
       { name: 'alpha', type: PropertyType.Decimal },
@@ -433,6 +339,7 @@ export class ConverToComponent extends CVFIOComponent {
 
     async proccess() {
       const { inputs } = this;
+
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

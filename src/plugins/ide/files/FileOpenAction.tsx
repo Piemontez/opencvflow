@@ -41,7 +41,7 @@ const FileOpenAction: MenuActionProps = {
 
       // Adiciona os componentes
       const components = (elements as Array<any>)
-        .filter((el) => !(el as OCVFEdge).source && !(el as OCVFEdge).target)
+        .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target))
         .map(({ data, ...rest }) => {
           const element = rest as CVFNode | OCVFEdge;
           if (element.type) {

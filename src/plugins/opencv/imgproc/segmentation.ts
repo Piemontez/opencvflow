@@ -11,7 +11,7 @@ const tabName = 'Segmentation';
  */
 export class ThresholdComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Threshold' };
-  static processor = class CvtColorNode extends CVFNodeProcessor {
+  static processor = class ThresholdNode extends CVFNodeProcessor {
     static properties = [
       { name: 'thresh', type: PropertyType.Decimal },
       { name: 'maxval', type: PropertyType.Decimal },
@@ -24,11 +24,38 @@ export class ThresholdComponent extends CVFIOComponent {
 
     async proccess() {
       const { inputs } = this;
+
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
           cv.threshold(src, out, this.thresh, this.maxval, this.type);
+
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
+ * Threshold component and node
+ */
+export class ConnectedComponentsComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Connected Components' };
+  static processor = class CvtColorNode extends CVFNodeProcessor {
+    static properties = [{ name: 'display', type: PropertyType.Decimal }];
+
+    display: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat();
+          cv.connectedComponents(src, out);
 
           this.sources.push(out);
           this.output(out);
@@ -80,6 +107,7 @@ export class WatershedComponent extends CVFIOComponent {
           cv.subtract(coinsBg, coinsFg, unknown);
           // get connected components markers
           cv.connectedComponents(coinsFg, markers);
+
           for (let i = 0; i < markers.rows; i++) {
             for (let j = 0; j < markers.cols; j++) {
               markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;

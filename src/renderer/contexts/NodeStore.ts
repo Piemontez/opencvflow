@@ -191,7 +191,10 @@ class NodeStore {
                 delete node.data.errorMessage;
               }
             } catch (err: any) {
-              node.data.errorMessage = err.message;
+              node.data.errorMessage =
+                typeof err === 'number'
+                  ? `Code error: ${err}`
+                  : err?.message || 'Not detected';
             }
             if (!this.running) break;
           }

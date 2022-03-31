@@ -8,11 +8,9 @@ export class OCVThresholdTypesFormControl extends Component<CVFFormProps> {
   pickerRef: any = null;
 
   render() {
-    //const value = this.props.value as ThresholdTypess;
     let option = this.props.description;
     if (!option) {
-      if (typeof this.props.value === 'string') option = this.props.value;
-      else option = '';
+      option = '' + this.props.value;
     }
     return (
       <>

@@ -83,7 +83,7 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
 export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'File Loader' };
 
-  static processor = class VideoCaptureProcessor extends CVFNodeProcessor {
+  static processor = class FileLoaderProcessor extends CVFNodeProcessor {
     static properties = [
       { name: 'filename', type: PropertyType.FileUrl },
       { name: 'loop', type: PropertyType.Boolean },

@@ -48,9 +48,15 @@ const FileOpenAction: MenuActionProps = {
             const component = NodeStore.getNodeType(element.type);
             if (component) {
               element.data = new component.processor();
+
               Object.keys(element.data.propertiesMap).forEach((key) => {
-                if (data[key]) {
-                  Object.assign((element.data as any)[key], data[key]);
+                if (data[key] !== undefined) {
+                  const el = element.data as any;
+                  if (typeof el[key] === 'object') {
+                    Object.assign(el[key], data[key]);
+                  } else {
+                    el[key] = data[key];
+                  }
                 }
               });
             }

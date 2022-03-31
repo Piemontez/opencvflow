@@ -251,21 +251,21 @@ export class CVNormalizeComponent extends CVFIOComponent {
     alpha: number = 1;
     beta: number = 0;
     normType: NormTypes = cv.NORM_INF;
-    dtype: DataTypes = cv.CV_8U;
+    dtype?: DataTypes;
 
     async proccess() {
       const { inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, this.dtype);
+          const out = new cv.Mat(src.rows, src.cols, src.type());
           cv.normalize(
             src,
             out,
             this.alpha,
             this.beta,
             this.normType,
-            this.dtype
+            this.dtype === undefined ? src.type() : this.dtype
           );
 
           this.sources.push(out);

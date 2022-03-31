@@ -86,57 +86,8 @@ export class WatershedComponent extends CVFComponent {
 
         cv.watershed(src, markers);
 
-        this.output(src);
+        this.output(markers);
         this.sources = [markers];
-
-        /*for (const src of inputs) {
-
-          const gray = new cv.Mat();
-          const opening = new cv.Mat();
-          const coinsBg = new cv.Mat();
-          const distTrans = new cv.Mat();
-          cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
-          cv.threshold(
-            gray,
-            gray,
-            0,
-            255,
-            cv.THRESH_BINARY_INV + cv.THRESH_OTSU
-          );
-          const M = new cv.Mat.ones(3, 3, cv.CV_8U);
-          cv.erode(gray, gray, M);
-          cv.dilate(gray, opening, M);
-          cv.dilate(opening, coinsBg, M, new cv.Point(-1, -1), 3);
-
-          // distance transform
-          cv.distanceTransform(opening, distTrans, cv.DIST_L2, 5);
-          cv.normalize(distTrans, distTrans, 1, 0, cv.NORM_INF);
-
-          const coinsFg = new cv.Mat();
-          const unknown = new cv.Mat();
-          const markers = new cv.Mat();
-
-          // get foreground
-          cv.threshold(distTrans, coinsFg, 0.7 * 1, 255, cv.THRESH_BINARY);
-          coinsFg.convertTo(coinsFg, cv.CV_8U, 1, 0);
-          cv.subtract(coinsBg, coinsFg, unknown);
-          // get connected components markers
-          cv.connectedComponents(coinsFg, markers);
-
-
-          cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
-          cv.watershed(src, markers);
-          for (let i = 0; i < markers.rows; i++) {
-            for (let j = 0; j < markers.cols; j++) {
-              if (markers.intPtr(i, j)[0] === -1) {
-                src.ucharPtr(i, j)[0] = 255; // R
-                src.ucharPtr(i, j)[1] = 0; // G
-                src.ucharPtr(i, j)[2] = 0; // B
-              }
-            }
-          }
-          this.output(src);
-        }*/
       }
     }
   };

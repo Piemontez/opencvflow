@@ -1,8 +1,10 @@
-import { CVFIOComponent } from 'renderer/types/component';
+import { CVFComponent, CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
+import { Position } from 'react-flow-renderer';
+import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 
 const tabName = 'Segmentation';
 
@@ -68,14 +70,27 @@ export class ConnectedComponentsComponent extends CVFIOComponent {
 /**
  * Watershed component and node
  */
-export class WatershedComponent extends CVFIOComponent {
+export class WatershedComponent extends CVFComponent {
   static menu = { tabTitle: tabName, title: 'Watershed' };
+  targets: TargetHandle[] = [
+    { title: 'image', position: Position.Left },
+    { title: 'markers', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
   static processor = class Filter2DNode extends CVFNodeProcessor {
     async proccess() {
       const { inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
+      if (inputs.length === 2) {
+        const [src, markers] = inputs;
+
+        cv.watershed(src, markers);
+
+        this.output(src);
+        this.sources = [markers];
+
+        /*for (const src of inputs) {
+
           const gray = new cv.Mat();
           const opening = new cv.Mat();
           const coinsBg = new cv.Mat();
@@ -108,14 +123,7 @@ export class WatershedComponent extends CVFIOComponent {
           // get connected components markers
           cv.connectedComponents(coinsFg, markers);
 
-          for (let i = 0; i < markers.rows; i++) {
-            for (let j = 0; j < markers.cols; j++) {
-              markers.intPtr(i, j)[0] = markers.ucharPtr(i, j)[0] + 1;
-              if (unknown.ucharPtr(i, j)[0] === 255) {
-                markers.intPtr(i, j)[0] = 0;
-              }
-            }
-          }
+
           cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
           cv.watershed(src, markers);
           for (let i = 0; i < markers.rows; i++) {
@@ -128,7 +136,7 @@ export class WatershedComponent extends CVFIOComponent {
             }
           }
           this.output(src);
-        }
+        }*/
       }
     }
   };

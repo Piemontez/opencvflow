@@ -1,3 +1,6 @@
+# Custom Components
+./src/plugins/custom/
+
 # Logs
 logs
 *.log

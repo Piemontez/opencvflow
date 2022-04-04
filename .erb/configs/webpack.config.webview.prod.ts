@@ -99,6 +99,9 @@ export default merge(baseConfig, {
     minimizer: [
       new TerserPlugin({
         parallel: true,
+        terserOptions: {
+          keep_classnames: true
+        }
       }),
       new CssMinimizerPlugin(),
     ],
@@ -137,6 +140,7 @@ export default merge(baseConfig, {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
         removeComments: true,
+
       },
       isBrowser: true,
       isDevelopment: process.env.NODE_ENV !== 'production',

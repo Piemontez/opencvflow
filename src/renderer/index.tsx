@@ -1,11 +1,15 @@
+import { lazy, Suspense } from 'react';
 import { render } from 'react-dom';
-import App from './App';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'renderer/assets/css/main.css';
 import 'renderer/assets/fontawasome.library';
 
-import PluginStore from './contexts/PluginStore';
-PluginStore.init();
+const App = lazy(() => import('./App'));
 
-render(<App />, document.getElementById('root'));
+render(
+  <Suspense fallback={<div>Loading...</div>}>
+    <App />
+  </Suspense>,
+
+  document.getElementById('root')
+);

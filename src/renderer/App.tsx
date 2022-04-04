@@ -4,6 +4,9 @@ import Flow from './components/Flow';
 import Footer from './components/Footer';
 import PropertyBar from './components/PropertyBar';
 import Header from './components/Header';
+import PluginStore from './contexts/PluginStore';
+
+PluginStore.init();
 
 const AppContent = () => {
   return (

@@ -107,7 +107,18 @@ export default merge(baseConfig, {
       },
     ],
   },
+
   plugins: [
+    new webpack.NormalModuleReplacementPlugin(
+      new RegExp(`(.*)${webpackPaths.moduleNameReplace}(\.*)`),
+      function (resource) {
+        resource.request = resource.request.replace(
+          webpackPaths.moduleNameReplace,
+          webpackPaths.rendererModuleName
+        );
+      }
+    ),
+
     requiredByDLLConfig
       ? null
       : new webpack.DllReferencePlugin({

@@ -1,16 +1,16 @@
 import { MenuActionProps } from 'renderer/types/menu';
 import { createContext } from 'react';
 import { observable, action, makeObservable } from 'mobx';
-import * as glob from 'glob';
 import { PluginFile, PluginType } from 'renderer/types/plugin';
 import NodeStore from './NodeStore';
 import MenuStore from './MenuStore';
 import * as localPlugins from 'plugins';
 import { CVFComponent } from 'renderer/types/component';
+import { searchFiles, evalFile } from 'plugins/tools';
 
 interface PluginStoreI {
   //True ao finalizar a tarefa de carregas os plugins
-  loaded:boolean;
+  loaded: boolean;
   //Inicializa e carrega os plugins ao iniciar a aplicação
   init(): Promise<void>;
   //Procura os plugins instalados nas pastas de plugins
@@ -57,7 +57,7 @@ class PluginStore {
 
     let allFiles: string[] = [];
     for (const file of this.filesPaths) {
-      const files = glob.sync(file);
+      const files = searchFiles(file);
       allFiles = allFiles.concat(files);
     }
 
@@ -86,7 +86,7 @@ class PluginStore {
       console.log(`Loading: ${fileName.replace(/^.*plugins/, 'plugins')}`);
 
       //Importa o plugin
-      pluginFile = (await eval(`import(${fileName})`)) as PluginFile;
+      pluginFile = (await evalFile(fileName)) as PluginFile;
       pluginFile.fileName = fileName;
 
       const df = pluginFile.plugin;

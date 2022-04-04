@@ -30,7 +30,7 @@ export default merge(baseConfig, {
 
   mode: 'production',
 
-  target: 'electron-renderer',
+  target: 'web',
 
   entry: [
     'core-js',
@@ -39,12 +39,12 @@ export default merge(baseConfig, {
   ],
 
   output: {
-    path: webpackPaths.distRendererPath,
+    path: webpackPaths.distWebviewPath,
     publicPath: './',
-    filename: 'renderer.js',
-    //library: {
-    //  type: 'umd',
-    //},
+    filename: 'bundle.js',
+    library: {
+      type: 'umd',
+    },
   },
 
   module: {
@@ -110,7 +110,7 @@ export default merge(baseConfig, {
       function (resource) {
         resource.request = resource.request.replace(
           webpackPaths.moduleNameReplace,
-          webpackPaths.rendererModuleName
+          webpackPaths.webviewModuleName
         );
       }
     ),
@@ -132,13 +132,13 @@ export default merge(baseConfig, {
 
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.join(webpackPaths.srcRendererPath, 'index.ejs'),
+      template: path.join(webpackPaths.srcRendererPath, 'index.webview.ejs'),
       minify: {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
         removeComments: true,
       },
-      isBrowser: false,
+      isBrowser: true,
       isDevelopment: process.env.NODE_ENV !== 'production',
     }),
   ],

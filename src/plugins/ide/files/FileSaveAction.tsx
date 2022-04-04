@@ -1,7 +1,6 @@
 import NodeStore from 'renderer/contexts/NodeStore';
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import path from 'path';
 import { toJS } from 'mobx';
 import { OCVFEdge } from 'renderer/types/edge';
 import { CVFNode, CVFNodeProcessor } from 'renderer/types/node';

@@ -18,8 +18,13 @@ const srcNodeModulesPath = path.join(srcPath, 'node_modules');
 const distPath = path.join(appPath, 'dist');
 const distMainPath = path.join(distPath, 'main');
 const distRendererPath = path.join(distPath, 'renderer');
+const distWebviewPath = path.join(distPath, 'webview');
 
 const buildPath = path.join(releasePath, 'build');
+
+const moduleNameReplace = '-factory';
+const webviewModuleName = '-webview';
+const rendererModuleName = '-renderer';
 
 export default {
   rootPath,
@@ -36,5 +41,9 @@ export default {
   distPath,
   distMainPath,
   distRendererPath,
+  distWebviewPath,
   buildPath,
+  moduleNameReplace,
+  webviewModuleName,
+  rendererModuleName,
 };

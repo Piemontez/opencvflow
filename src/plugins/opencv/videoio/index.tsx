@@ -2,6 +2,7 @@ import { CVFOutputComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
+import GCStore from 'renderer/contexts/GCStore';
 
 const tabName = 'Inputs';
 class VideoCapture extends cv.VideoCapture {}
@@ -63,6 +64,8 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
         );
 
         this.cap!.read(src);
+
+        GCStore.add(src);
 
         this.sources = [src];
       }
@@ -131,6 +134,8 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
         );
 
         this.cap!.read(src);
+
+        GCStore.add(src);
 
         this.sources = [src];
       }

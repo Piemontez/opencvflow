@@ -12,6 +12,7 @@ import {
   DistanceTypes,
 } from 'opencv-ts/src/ImageProcessing/Misc';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
+import GCStore from 'renderer/contexts/GCStore';
 
 export const ThresholdComponent = segmentation.ThresholdComponent;
 export const ConnectedComponentsComponent =
@@ -40,6 +41,8 @@ export class MedianBlurComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.medianBlur(src, out, this.kSize);
           this.sources.push(out);
           this.output(out);
@@ -73,6 +76,8 @@ export class GaussianBlurComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.GaussianBlur(
             src,
             out,
@@ -113,6 +118,8 @@ export class BilateralFilterComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.bilateralFilter(
             src,
             out,
@@ -155,6 +162,8 @@ export class BoxFilterComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.boxFilter(
             src,
             out,
@@ -198,6 +207,8 @@ export class SqrBoxFilterComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.sqrBoxFilter(
             src,
             out,
@@ -237,6 +248,8 @@ export class BlurComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.blur(src, out, this.ksize, this.anchor, this.borderType);
           this.sources.push(out);
           this.output(out);
@@ -274,6 +287,8 @@ export class ScharrComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.Scharr(
             src,
             out,
@@ -312,6 +327,8 @@ export class CvtColorComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.cvtColor(src, out, this.code, this.dstCn);
           this.sources.push(out);
           this.output(out);
@@ -344,6 +361,8 @@ export class ConverToComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           src.convertTo(out, this.rtype, this.alpha, this.beta);
 
           this.sources.push(out);
@@ -380,6 +399,8 @@ export class Filter2DComponent extends CVFIOComponent {
           if (!kernel?.rows) kernel = src.clone();
           else {
             const out = new cv.Mat(src.rows, src.cols, src.type());
+            GCStore.add(out);
+
             cv.filter2D(
               src,
               out,
@@ -468,6 +489,8 @@ export class DistanceTransformComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.distanceTransform(src, out, this.distanceType, this.maskSize);
 
           this.sources.push(out);

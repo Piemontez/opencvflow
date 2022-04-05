@@ -3,6 +3,7 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Scalar, Point, Mat } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
+import GCStore from 'renderer/contexts/GCStore';
 
 const tabName = 'Morphology';
 
@@ -36,6 +37,8 @@ export class DilateComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.dilate(
             src,
             out,
@@ -82,6 +85,8 @@ export class ErodeComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.erode(
             src,
             out,

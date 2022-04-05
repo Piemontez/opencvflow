@@ -3,6 +3,7 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
+import GCStore from 'renderer/contexts/GCStore';
 
 const tabName = 'Edge';
 
@@ -36,12 +37,12 @@ export class CVSobelComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
-          const dst = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
+          const out = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
+          GCStore.add(out);
 
-          cv.cvtColor(src, src, cv.COLOR_RGB2GRAY, 0);
           cv.Sobel(
             src,
-            dst,
+            out,
             this.dDepth,
             this.dX,
             this.dY,
@@ -51,9 +52,9 @@ export class CVSobelComponent extends CVFIOComponent {
             this.borderType
           );
 
-          this.sources.push(dst);
+          this.sources.push(out);
 
-          this.output(dst);
+          this.output(out);
         }
       }
     }
@@ -84,6 +85,8 @@ export class CannyComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.Canny(
             src,
             out,
@@ -126,6 +129,8 @@ export class LaplacianComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.Laplacian(
             src,
             out,

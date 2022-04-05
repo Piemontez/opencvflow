@@ -15,6 +15,7 @@ import {
   ComponentMenuAction,
   MenuWithElementTitleProps,
 } from 'renderer/types/menu';
+import GCStore from './GCStore';
 
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
@@ -171,36 +172,46 @@ class NodeStore {
 
   @action run = async () => {
     if (this.running) return;
+    const { nodes } = this;
+    if (!nodes.length) {
+      alert('No flow defined.');
+      return;
+    }
+
     this.running = true;
 
     this.runner = new Promise(async (resolve) => {
-      const { nodes } = this;
-      if (nodes.length) {
+      for (const node of nodes) {
+        if (node.data.start) {
+          await node.data.start();
+        }
+        if (!this.running) break;
+      }
+
+      let cycle = 0;
+      while (this.running) {
         for (const node of nodes) {
-          if (node.data.start) {
-            await node.data.start();
+          try {
+            await node.data.proccess();
+            if (node.data.errorMessage) {
+              delete node.data.errorMessage;
+            }
+          } catch (err: any) {
+            node.data.errorMessage =
+              typeof err === 'number'
+                ? `Code error: ${err}`
+                : err?.message || 'Not detected';
           }
           if (!this.running) break;
         }
+        await new Promise((_res) => setTimeout(_res, 10));
 
-        while (this.running) {
-          for (const node of nodes) {
-            try {
-              await node.data.proccess();
-              if (node.data.errorMessage) {
-                delete node.data.errorMessage;
-              }
-            } catch (err: any) {
-              node.data.errorMessage =
-                typeof err === 'number'
-                  ? `Code error: ${err}`
-                  : err?.message || 'Not detected';
-            }
-            if (!this.running) break;
-          }
-          await new Promise((_res) => setTimeout(_res, 10));
-        }
+        GCStore.clear(cycle - 1);
+        GCStore.replaceCycle(cycle++);
       }
+
+      GCStore.clear();
+
       resolve(true);
     });
   };
@@ -253,6 +264,11 @@ class NodeStore {
 
   @action onDrop = (event: any) => {
     event.preventDefault();
+
+    if (this.running) {
+      alert('Application is running. Stop application first.');
+      return;
+    }
 
     const action = event.dataTransfer.getData('application/action');
     if (action) {

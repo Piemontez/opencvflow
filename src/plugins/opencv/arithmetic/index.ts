@@ -2,6 +2,7 @@ import cv, { Mat } from 'opencv-ts';
 import { NormTypes } from 'opencv-ts/src/core/CoreArray';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'react-flow-renderer';
+import GCStore from 'renderer/contexts/GCStore';
 import {
   CVFOutputComponent,
   CVFIOEndlessComponent,
@@ -26,28 +27,30 @@ export class CVPlusComponent extends CVFComponent {
   static processor = class PlusProcessor extends CVFNodeProcessor {
     async proccess() {
       const { inputs } = this;
-      if (inputs.length > 1) {
-        const [src1, src2, masc] = inputs;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, src2, masc] = inputs;
+
+      if (src1 && src2) {
         const out: Mat = new cv.Mat(
           src1.rows,
           src1.cols,
           src1.type(),
           new cv.Scalar(0)
         );
+        GCStore.add(out);
 
-        if (src1 && src2) {
-          if (masc) {
-            cv.add(src1, src2, out, masc);
-          } else if (inputs.length === 2) {
-            cv.add(src1, src2, out);
-          }
-
-          this.output(out);
-          this.sources = [out];
+        if (masc) {
+          cv.add(src1, src2, out, masc);
+        } else if (inputs.length === 2) {
+          cv.add(src1, src2, out);
         }
-        return;
+
+        this.output(out);
+        this.sources = [out];
       }
-      this.sources = [];
     }
   };
 }
@@ -64,28 +67,30 @@ export class CVSubComponent extends CVFComponent {
   static processor = class SubProcessor extends CVFNodeProcessor {
     async proccess() {
       const { inputs } = this;
-      if (inputs.length > 1) {
-        const [src1, src2, masc] = inputs;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, src2, masc] = inputs;
+
+      if (src1 && src2) {
         const out: Mat = new cv.Mat(
           src1.rows,
           src1.cols,
           src1.type(),
           new cv.Scalar(0)
         );
+        GCStore.add(out);
 
-        if (src1 && src2) {
-          if (masc) {
-            cv.subtract(src1, src2, out, masc);
-          } else if (inputs.length === 2) {
-            cv.subtract(src1, src2, out);
-          }
-
-          this.output(out);
-          this.sources = [out];
+        if (masc) {
+          cv.subtract(src1, src2, out, masc);
+        } else if (inputs.length === 2) {
+          cv.subtract(src1, src2, out);
         }
-        return;
+
+        this.output(out);
+        this.sources = [out];
       }
-      this.sources = [];
     }
   };
 }
@@ -102,6 +107,7 @@ export class CVMultiplyComponent extends CVFIOEndlessComponent {
         for (const src of inputs) {
           if (!out) {
             out = src.clone();
+            GCStore.add(out);
           } else {
             cv.multiply(out, src, out, 1);
           }
@@ -130,6 +136,7 @@ export class CVDivisionComponent extends CVFIOEndlessComponent {
         for (const src of inputs) {
           if (!out) {
             out = src.clone();
+            GCStore.add(out);
           } else {
             cv.divide(out, src, out, 1);
           }
@@ -158,6 +165,7 @@ export class CVMulComponent extends CVFIOEndlessComponent {
         for (const src of inputs) {
           if (!out) {
             out = src.clone();
+            GCStore.add(out);
           } else {
             out = out.mul(src);
           }
@@ -259,6 +267,8 @@ export class CVNormalizeComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
           cv.normalize(
             src,
             out,

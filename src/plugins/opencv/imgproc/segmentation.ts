@@ -5,6 +5,7 @@ import { PropertyType } from 'renderer/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'react-flow-renderer';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
+import GCStore from 'renderer/contexts/GCStore';
 
 const tabName = 'Segmentation';
 
@@ -13,6 +14,7 @@ const tabName = 'Segmentation';
  */
 export class ThresholdComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Threshold' };
+
   static processor = class ThresholdNode extends CVFNodeProcessor {
     static properties = [
       { name: 'thresh', type: PropertyType.Decimal },
@@ -31,6 +33,8 @@ export class ThresholdComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
+          GCStore.add(out);
+
           cv.threshold(src, out, this.thresh, this.maxval, this.type);
 
           this.sources.push(out);
@@ -46,7 +50,8 @@ export class ThresholdComponent extends CVFIOComponent {
  */
 export class ConnectedComponentsComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Connected Components' };
-  static processor = class CvtColorNode extends CVFNodeProcessor {
+
+  static processor = class ConnectedComponentsNode extends CVFNodeProcessor {
     static properties = [{ name: 'display', type: PropertyType.Decimal }];
 
     display: number = 0;
@@ -57,6 +62,8 @@ export class ConnectedComponentsComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           const out = new cv.Mat();
+          GCStore.add(out);
+
           cv.connectedComponents(src, out);
 
           this.sources.push(out);
@@ -78,16 +85,18 @@ export class WatershedComponent extends CVFComponent {
   ];
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 
-  static processor = class Filter2DNode extends CVFNodeProcessor {
+  static processor = class WatershedNode extends CVFNodeProcessor {
     async proccess() {
       const { inputs } = this;
       if (inputs.length === 2) {
         const [src, markers] = inputs;
+        const out = markers.clone();
+        GCStore.add(out);
 
-        cv.watershed(src, markers);
+        cv.watershed(src, out);
 
-        this.output(markers);
-        this.sources = [markers];
+        this.output(out);
+        this.sources = [out];
       }
     }
   };

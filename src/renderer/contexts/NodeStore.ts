@@ -206,8 +206,8 @@ class NodeStore {
         }
         await new Promise((_res) => setTimeout(_res, 10));
 
-        GCStore.clear(cycle - 1);
         GCStore.replaceCycle(cycle++);
+        GCStore.clear(cycle - 2);
       }
 
       GCStore.clear();

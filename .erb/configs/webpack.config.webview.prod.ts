@@ -41,7 +41,7 @@ export default merge(baseConfig, {
   output: {
     path: webpackPaths.distWebviewPath,
     publicPath: './',
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     library: {
       type: 'umd',
     },
@@ -100,8 +100,8 @@ export default merge(baseConfig, {
       new TerserPlugin({
         parallel: true,
         terserOptions: {
-          keep_classnames: true
-        }
+          keep_classnames: true,
+        },
       }),
       new CssMinimizerPlugin(),
     ],
@@ -140,7 +140,6 @@ export default merge(baseConfig, {
         collapseWhitespace: true,
         removeAttributeQuotes: true,
         removeComments: true,
-
       },
       isBrowser: true,
       isDevelopment: process.env.NODE_ENV !== 'production',

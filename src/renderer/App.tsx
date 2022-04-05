@@ -1,11 +1,13 @@
 import { Row } from 'react-bootstrap';
 import { MemoryRouter as Router, Switch, Route } from 'react-router-dom';
-import Flow from './components/Flow';
-import Footer from './components/Footer';
-import PropertyBar from './components/PropertyBar';
-import Header from './components/Header';
 import PluginStore from './contexts/PluginStore';
-import NotificationProvider from './components/Notification';
+import { lazy } from 'react';
+
+const NotificationProvider = lazy(() => import('./components/Notification'));
+const Header = lazy(() => import('./components/Header'));
+const Flow = lazy(() => import('./components/Flow'));
+const PropertyBar = lazy(() => import('./components/PropertyBar'));
+const Footer = lazy(() => import('./components/Footer'));
 
 PluginStore.init();
 

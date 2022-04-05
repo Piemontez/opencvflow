@@ -1,5 +1,6 @@
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { notify } from 'renderer/components/Notification';
 
 const FileSaveAction: MenuActionProps = {
   tabTitle: 'File',
@@ -10,7 +11,7 @@ const FileSaveAction: MenuActionProps = {
     </>
   ),
   action: () => {
-    alert('Only implemented in desktop version');
+    notify.warn('Only implemented in desktop version');
   },
 };
 
@@ -24,7 +25,7 @@ const FileOpenAction: MenuActionProps = {
     </>
   ),
   action: () => {
-    alert('Only implemented in desktop version');
+    notify.warn('Only implemented in desktop version');
   },
 };
 

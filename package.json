@@ -249,6 +249,7 @@
     "history": "4.x.x",
     "mobx": "^6.3.10",
     "mobx-react": "^7.2.1",
+    "moment": "^2.29.2",
     "numeral": "^2.0.6",
     "opencv-ts": "^1.2.26",
     "react": "^17.0.2",

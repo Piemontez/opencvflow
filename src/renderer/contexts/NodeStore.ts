@@ -16,6 +16,7 @@ import {
   MenuWithElementTitleProps,
 } from 'renderer/types/menu';
 import GCStore from './GCStore';
+import { notify } from 'renderer/components/Notification';
 
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
@@ -174,7 +175,7 @@ class NodeStore {
     if (this.running) return;
     const { nodes } = this;
     if (!nodes.length) {
-      alert('No flow defined.');
+      notify.info('No flow defined.');
       return;
     }
 
@@ -266,7 +267,7 @@ class NodeStore {
     event.preventDefault();
 
     if (this.running) {
-      alert('Application is running. Stop application first.');
+      notify.info('Application is running. Stop application first.');
       return;
     }
 

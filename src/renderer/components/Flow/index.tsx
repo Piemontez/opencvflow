@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import { useContext } from 'react';
 
-import ReactFlow, { MiniMap } from 'react-flow-renderer';
+import ReactFlow, { MiniMap } from 'react-flow-renderer/nocss';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { PluginStoreContext } from 'renderer/contexts/PluginStore';
 

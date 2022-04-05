@@ -12,6 +12,7 @@ module.exports = {
     'no-await-in-loop': 'off',
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
+    'react/sort-comp': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

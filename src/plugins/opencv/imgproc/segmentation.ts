@@ -3,7 +3,7 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
-import { Position } from 'react-flow-renderer';
+import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import GCStore from 'renderer/contexts/GCStore';
 

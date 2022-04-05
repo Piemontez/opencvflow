@@ -1,4 +1,4 @@
-import { Edge } from 'react-flow-renderer';
+import { Edge } from 'react-flow-renderer/nocss';
 import { CVFNodeProcessor } from './node';
 
 export class CVFEdgeData {

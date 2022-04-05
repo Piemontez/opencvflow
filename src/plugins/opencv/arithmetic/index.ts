@@ -1,7 +1,7 @@
 import cv, { Mat } from 'opencv-ts';
 import { NormTypes } from 'opencv-ts/src/core/CoreArray';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
-import { Position } from 'react-flow-renderer';
+import { Position } from 'react-flow-renderer/nocss';
 import GCStore from 'renderer/contexts/GCStore';
 import {
   CVFOutputComponent,

@@ -14,7 +14,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(renderer.)*[jt]sx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'ts-loader',
@@ -35,7 +35,7 @@ export default {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    extensions: ['.js', '.renderer.tsx', '.renderer.ts','.jsx', '.json', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [webpackPaths.srcPath, 'node_modules'],
   },
 

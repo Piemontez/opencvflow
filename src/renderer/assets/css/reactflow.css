@@ -1,18 +1,31 @@
 .react-flow__handle {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
 }
 
 .react-flow__handle-left {
-  background-color: #EC6A96;
+  background-color: #ec6a96;
   border-color: #f48fb1;
   left: -7px;
 }
 
 .react-flow__handle-right {
-  background-color: #009C82;
+  background-color: #009c82;
   border-color: #0ceac5;
   right: -7px;
+}
+
+.react-flow__handle-left .handle-title {
+  position: relative;
+  direction: rtl;
+  right: 17px;
+  bottom: 6px;
+}
+
+.react-flow__handle-right .handle-title {
+  position: relative;
+  left: 17px;
+  bottom: 6px;
 }
 
 .reactflow-wrapper {
@@ -22,5 +35,5 @@
 .minimap {
   width: 150px;
   height: 100px;
-  border: 1px solid  var(--bs-gray-300);
+  border: 1px solid var(--bs-gray-300);
 }

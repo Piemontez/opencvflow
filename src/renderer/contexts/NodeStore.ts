@@ -5,7 +5,7 @@ import {
   XYPosition,
   Elements,
   Connection,
-} from 'react-flow-renderer';
+} from 'react-flow-renderer/nocss';
 import { createContext, MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
@@ -15,8 +15,8 @@ import {
   ComponentMenuAction,
   MenuWithElementTitleProps,
 } from 'renderer/types/menu';
-import GCStore from './GCStore';
 import { notify } from 'renderer/components/Notification';
+import GCStore from './GCStore';
 
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
@@ -146,13 +146,26 @@ class NodeStore {
       id: uuidv4(),
       source: source.id,
       target: target.id,
-      sourceHandle: sourceHandle,
-      targetHandle: targetHandle,
+      sourceHandle,
+      targetHandle,
       data: dataEdge,
     };
+
+    // Procura a posição da aresta a partir do nome da conexão/cabo
+    const sourceCompoType = this.getNodeType(source.type!);
+    const targetCompoType = this.getNodeType(target.type!);
+    const sourceCompo: CVFComponent = new (sourceCompoType as any)();
+    const targetCompo: CVFComponent = new (targetCompoType as any)();
+    const sourcesIdx = sourceCompo.sources.findIndex(
+      (s) => s.title === sourceHandle
+    );
+    const targetsIdx = targetCompo.targets.findIndex(
+      (s) => s.title === targetHandle
+    );
+
     // Adicionando a aresta aos nós
-    source.data.outEdges.push(dataEdge);
-    target.data.inEdges.push(dataEdge);
+    source.data.outEdges[sourcesIdx] = dataEdge;
+    target.data.inEdges[targetsIdx] = dataEdge;
     // Adicionar a aresta nos elementos da tela
     this.elements = this.elements.concat(newEdge);
   };

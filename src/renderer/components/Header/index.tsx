@@ -5,6 +5,7 @@ import { MenuStoreContext } from 'renderer/contexts/MenuStore';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { MenuWithElementTitleProps } from 'renderer/types/menu';
 import About from '../About';
+import Donate from '../Donate';
 import { notify } from '../Notification';
 
 /**
@@ -15,9 +16,11 @@ import { notify } from '../Notification';
 const Header = () => {
   const menuStore = useContext(MenuStoreContext);
   const nodeStore = useContext(NodeStoreContext);
+  const donateRef = useRef<Donate>(null);
   const aboutRef = useRef<About>(null);
   return (
     <>
+      <Donate ref={donateRef} />
       <About ref={aboutRef} />
       <Navbar id="header" bg="dark" variant="dark" expand="sm">
         <Container fluid>
@@ -43,7 +46,11 @@ const Header = () => {
                   Documentation
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.2">Donate</NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => donateRef!.current!.handleShow()}
+                >
+                  Donate
+                </NavDropdown.Item>
                 <NavDropdown.Item
                   onClick={() => aboutRef!.current!.handleShow()}
                 >

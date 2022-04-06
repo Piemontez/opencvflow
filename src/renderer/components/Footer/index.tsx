@@ -3,8 +3,6 @@ import { useContext } from 'react';
 import { Nav } from 'react-bootstrap';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { version } from '../../../../package.json';
-import brasilIcon from 'renderer/assets/imgs/brasil-48.png';
-import anarchismIcon from 'renderer/assets/imgs/anarchism.png';
 
 /**
  * Rodapé,
@@ -24,8 +22,6 @@ const Footer = () => {
       <Nav.Item>
         <Nav.Link href="https://www.linkedin.com/in/piemontez/" target="_blank">
           Developed by @piemontez{' '}
-          <img src={brasilIcon} height="16" alt="brazil" />{' '}
-          <img src={anarchismIcon} height="16" alt="anarchism" />
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>

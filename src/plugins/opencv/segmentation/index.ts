@@ -6,6 +6,7 @@ import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import GCStore from 'renderer/contexts/GCStore';
+import messages from '../messages';
 
 const tabName = 'Segmentation';
 
@@ -32,6 +33,14 @@ export class ThresholdComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (src.channels() > 1) {
+            throw new Error(
+              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
+                '{1}',
+                src.channels().toString()
+              )
+            );
+          }
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
           GCStore.add(out);
 

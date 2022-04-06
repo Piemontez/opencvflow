@@ -20,6 +20,8 @@ export abstract class CVFNodeProcessor {
 
   // Exibe o conteudo em tela
   output: (mat: Mat) => void = () => {};
+  // Exibe adiciona uma mensagem na tela (uso interno)
+  outputMsg: (msg: string) => void = () => {};
 
   get edges(): Array<CVFEdgeData | null> {
     return this.inEdges.concat(this.outEdges);

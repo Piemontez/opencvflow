@@ -4,6 +4,7 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import { MenuStoreContext } from 'renderer/contexts/MenuStore';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { MenuWithElementTitleProps } from 'renderer/types/menu';
+import { notify } from '../Notification';
 
 /**
  * Menu principal
@@ -44,6 +45,11 @@ const Header = () => {
                 return action.draggable ? (
                   <Nav.Item
                     key={key}
+                    onClick={() => {
+                      notify.info(
+                        'Drag (with mouse) this menu and drop into the painel.'
+                      );
+                    }}
                     onDragStart={(event: any) =>
                       nodeStore.onDragStart(event, action)
                     }

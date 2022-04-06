@@ -99,7 +99,7 @@ class NodeStore {
     const newNode: CVFNode = {
       id: uuidv4(),
       type: component.name,
-      position: position,
+      position,
       data: processor,
     };
 
@@ -215,6 +215,8 @@ class NodeStore {
               typeof err === 'number'
                 ? `Code error: ${err}`
                 : err?.message || 'Not detected';
+
+            node.data.outputMsg(node.data.errorMessage!);
           }
           if (!this.running) break;
         }
@@ -280,14 +282,14 @@ class NodeStore {
     event.preventDefault();
 
     if (this.running) {
-      notify.info('Application is running. Stop application first.');
+      notify.warn('Application is running. Stop application first.');
       return;
     }
 
-    const action = event.dataTransfer.getData('application/action');
-    if (action) {
+    const appAction = event.dataTransfer.getData('application/action');
+    if (appAction) {
       const reactFlowBounds = this.reactFlowWrapper!.getBoundingClientRect();
-      const component = this.nodeTypesByMenu[action] as typeof CVFComponent;
+      const component = this.nodeTypesByMenu[appAction] as typeof CVFComponent;
       const position = this.reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,

@@ -19,6 +19,7 @@ import {
   faDoorOpen,
   faEdit,
   faEye,
+  faEyeSlash,
   faFile,
   faFilter,
   faFolderOpen,
@@ -53,6 +54,7 @@ import {
   faUser,
   faUserCircle,
   faUsers,
+  faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -96,6 +98,7 @@ library.add(
   faTrash,
   faSitemap,
   faEye,
+  faEyeSlash,
   faTimes,
   faUpload,
   faBoxOpen,
@@ -110,5 +113,6 @@ library.add(
   faStopCircle,
   faSave,
   faFolderOpen,
-  faDoorOpen
+  faDoorOpen,
+  faWindowClose
 );

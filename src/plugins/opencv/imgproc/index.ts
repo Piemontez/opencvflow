@@ -3,32 +3,11 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Point, Mat, Size, BackgroundSubtractorMOG2 } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
-import * as segmentation from './segmentation';
-import * as edge from './edge';
-import * as morphology from './morphology';
-import * as smoothing from './smoothing';
 import {
   DistanceTransformMasks,
   DistanceTypes,
 } from 'opencv-ts/src/ImageProcessing/Misc';
-import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import GCStore from 'renderer/contexts/GCStore';
-
-export const ThresholdComponent = segmentation.ThresholdComponent;
-export const ConnectedComponentsComponent =
-  segmentation.ConnectedComponentsComponent;
-export const WatershedComponent = segmentation.WatershedComponent;
-export const CVSobelComponent = edge.CVSobelComponent;
-export const CannyComponent = edge.CannyComponent;
-export const LaplacianComponent = edge.LaplacianComponent;
-export const DilateComponent = morphology.DilateComponent;
-export const ErodeComponent = morphology.ErodeComponent;
-export const BlurComponent = smoothing.BlurComponent;
-export const MedianBlurComponent = smoothing.MedianBlurComponent;
-export const GaussianBlurComponent = smoothing.GaussianBlurComponent;
-export const Filter2DComponent = smoothing.Filter2DComponent;
-export const BilateralFilterComponent = smoothing.BilateralFilterComponent;
 
 const tabName = 'ImgProc';
 
@@ -162,72 +141,6 @@ export class ScharrComponent extends CVFIOComponent {
             this.delta,
             this.borderType
           );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * CvtColor component and node
- */
-export class CvtColorComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'CvtColor' };
-  static processor = class CvtColorNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'code', type: PropertyType.ColorConversionCodes },
-      { name: 'dstCn', type: PropertyType.Integer },
-    ];
-
-    code: ColorConversionCodes = cv.COLOR_BGR2GRAY;
-    dstCn: number = 0;
-
-    async proccess() {
-      const { inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
-
-          cv.cvtColor(src, out, this.code, this.dstCn);
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * ConverTo component and node
- */
-export class ConverToComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'ConverTo' };
-  static processor = class ConverToNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'rtype', type: PropertyType.Integer },
-      { name: 'alpha', type: PropertyType.Decimal },
-      { name: 'beta', type: PropertyType.Decimal },
-    ];
-
-    rtype: DataTypes = cv.CV_8U;
-    alpha: number = 1;
-    beta: number = 0;
-
-    async proccess() {
-      const { inputs } = this;
-
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
-
-          src.convertTo(out, this.rtype, this.alpha, this.beta);
-
           this.sources.push(out);
           this.output(out);
         }

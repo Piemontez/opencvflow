@@ -16,6 +16,13 @@ type OCVComponentData = {
 class ForkCVFNodeProcessor extends CVFNodeProcessor {}
 type OCVComponentProcessor = typeof ForkCVFNodeProcessor;
 
+export enum CVFComponentOptions {
+  NONE = 0,
+  NOT_DISPLAY = 1,
+  NEXT_OPTION_02 = 2,
+  NEXT_OPTION_01 = 4,
+}
+
 /**
  * Componente/NodeType
  */
@@ -29,6 +36,10 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   static processor: OCVComponentProcessor = EmptyNodeProcessor;
   // Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
+  // Opções
+  state = {
+    options: CVFComponentOptions.NONE,
+  };
 
   // Titulo exibido em tela. Por padrão exibe o título definido no menu ou o nome do componente.
   get title(): string {
@@ -40,11 +51,37 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
     );
   }
 
+  addOption(opt: number) {
+    const { options } = this.state;
+    this.setState({
+      options: options | opt,
+    });
+  }
+
+  removeOption(opt: number) {
+    const { options } = this.state;
+    this.setState({
+      options: options & ~opt,
+    });
+  }
+
   componentDidMount() {
     const { data: processor } = this.props;
     processor.output = (mat: Mat) => {
       if (this.output) {
-        cv.imshow(this.output, mat);
+        const { options } = this.state;
+        const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
+        if (!notDisplay) {
+          cv.imshow(this.output, mat);
+        }
+      }
+    };
+    processor.outputMsg = (msg: string) => {
+      if (this.output) {
+        const ctx = this.output.getContext('2d');
+        if (ctx) {
+          ctx.fillText(msg, 15, 15);
+        }
       }
     };
   }

@@ -12,6 +12,7 @@ module.exports = {
     'no-await-in-loop': 'off',
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
+    'no-bitwise': 'off',
     'react/sort-comp': 'off',
   },
   parserOptions: {

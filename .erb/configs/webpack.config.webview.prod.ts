@@ -15,10 +15,12 @@ import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 import checkNodeEnv from '../scripts/check-node-env';
 import deleteSourceMaps from '../scripts/delete-source-maps';
+import { version } from '../../package.json';
 
 checkNodeEnv('production');
 deleteSourceMaps();
 
+const versionFormated = version.replace(/\./, '_');
 const devtoolsConfig =
   process.env.DEBUG_PROD === 'true'
     ? {
@@ -42,7 +44,7 @@ export default merge(baseConfig, {
   output: {
     path: webpackPaths.distWebviewPath,
     publicPath: './',
-    filename: '[name].bundle.js',
+    filename: `[name].bundle_${versionFormated}.js`,
     library: {
       type: 'umd',
     },
@@ -156,12 +158,15 @@ export default merge(baseConfig, {
           from: `${webpackPaths.srcAssetsPath}/imgs/*`,
           to({ context, absoluteFilename }) {
             const toPath = path.relative(context, absoluteFilename);
-            const renderPath = path.relative(context, webpackPaths.srcRendererPath);
-            return `./${toPath.replace(renderPath,'')}`;
+            const renderPath = path.relative(
+              context,
+              webpackPaths.srcRendererPath
+            );
+            return `./${toPath.replace(renderPath, '')}`;
           },
           info: {
-            minimized: true
-          }
+            minimized: true,
+          },
         },
       ],
     }),

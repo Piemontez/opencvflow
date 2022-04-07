@@ -13,6 +13,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
     'no-bitwise': 'off',
+    'no-continue': 'off',
     'react/sort-comp': 'off',
   },
   parserOptions: {

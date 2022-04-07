@@ -3,6 +3,7 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
+import messages from '../messages';
 
 const tabName = 'Inputs';
 class VideoCapture extends cv.VideoCapture {}
@@ -62,10 +63,9 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
           this.video!.width!,
           cv.CV_8UC4
         );
+        GCStore.add(src);
 
         this.cap!.read(src);
-
-        GCStore.add(src);
 
         this.sources = [src];
       }
@@ -88,13 +88,18 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
 
   static processor = class FileLoaderProcessor extends CVFNodeProcessor {
     static properties = [
-      { name: 'filename', type: PropertyType.FileUrl },
+      { name: 'file', type: PropertyType.FileUrl },
       { name: 'loop', type: PropertyType.Boolean },
     ];
-    filename: string = '';
+
+    file?: File;
     loop: boolean = false;
 
+    isImg: boolean = false;
+    isVideo: boolean = false;
     video: HTMLVideoElement | null = null;
+    img: HTMLImageElement | null = null;
+
     cap?: VideoCapture;
 
     constructor() {
@@ -106,36 +111,69 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
 
     body() {
       return (
-        <video
-          autoPlay
-          width="320"
-          height="240"
-          muted={true}
-          playsInline
-          ref={(ref) => (this.video = ref)}
-        />
+        <div style={{ padding: 0, margin: 0, minHeight: 240, minWidth: 320 }}>
+          <img
+            width="320"
+            height="240"
+            alt=""
+            style={this.isImg ? {} : { display: 'none' }}
+            ref={(ref) => (this.img = ref)}
+          />
+          <video
+            autoPlay
+            width="320"
+            height="240"
+            muted
+            playsInline
+            style={this.isVideo ? {} : { display: 'none' }}
+            ref={(ref) => (this.video = ref)}
+          />
+        </div>
       );
     }
 
     async start() {
-      this.video!.src = this.filename;
-      this.video!.loop = this.loop;
-      this.video!.play();
+      const url = this.file ? URL.createObjectURL(this.file) : null;
 
-      this.cap = new cv.VideoCapture(this.video!);
+      this.isImg = false;
+      this.isVideo = false;
+      this.video!.src = '';
+      this.img!.src = '';
+      if (url) {
+        if (this.file!.type.match('image.*')) {
+          this.isImg = true;
+          this.img!.src = url;
+        } else if (this.file!.type.match('video.*')) {
+          this.isVideo = true;
+          this.video!.src = url;
+          this.video!.loop = this.loop;
+          await this.video!.play();
+
+          this.cap = new cv.VideoCapture(this.video!);
+        } else {
+          throw new Error(messages.INVALID_IMAGE_OR_VIDEO_FILE);
+        }
+      } else {
+        throw new Error(messages.IMG_VID_FILE_REQUIRED);
+      }
     }
 
     async proccess() {
-      if (this.video!.width && this.video!.width) {
+      if (this.isImg) {
+        const src = cv.imread(this.img!);
+        GCStore.add(src);
+
+        this.sources = [src];
+      }
+      if (this.isVideo && this.cap && this.video!.width && this.video!.width) {
         const src = new cv.Mat(
           this.video!.height!,
           this.video!.width!,
           cv.CV_8UC4
         );
-
-        this.cap!.read(src);
-
         GCStore.add(src);
+
+        this.cap.read(src);
 
         this.sources = [src];
       }

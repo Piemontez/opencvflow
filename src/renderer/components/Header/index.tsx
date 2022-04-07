@@ -1,9 +1,11 @@
 import { observer } from 'mobx-react';
-import { useContext } from 'react';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { useContext, useRef } from 'react';
+import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 import { MenuStoreContext } from 'renderer/contexts/MenuStore';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { MenuWithElementTitleProps } from 'renderer/types/menu';
+import About from '../About';
+import Donate from '../Donate';
 import { notify } from '../Notification';
 
 /**
@@ -14,8 +16,12 @@ import { notify } from '../Notification';
 const Header = () => {
   const menuStore = useContext(MenuStoreContext);
   const nodeStore = useContext(NodeStoreContext);
+  const donateRef = useRef<Donate>(null);
+  const aboutRef = useRef<About>(null);
   return (
     <>
+      <Donate ref={donateRef} />
+      <About ref={aboutRef} />
       <Navbar id="header" bg="dark" variant="dark" expand="sm">
         <Container fluid>
           <Navbar.Brand href="#home">OpenCV-FLOW</Navbar.Brand>
@@ -30,6 +36,27 @@ const Header = () => {
                   {tab.title}
                 </Nav.Link>
               ))}
+            </Nav>
+            <Nav>
+              <NavDropdown title="Help" id="collasible-nav-dropdown">
+                <NavDropdown.Item
+                  href="https://opencvflow.org/docs/v_0"
+                  target="_blank"
+                >
+                  Documentation
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item
+                  onClick={() => donateRef!.current!.handleShow()}
+                >
+                  Donate
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  onClick={() => aboutRef!.current!.handleShow()}
+                >
+                  About
+                </NavDropdown.Item>
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Container>

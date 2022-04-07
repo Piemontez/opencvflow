@@ -37,6 +37,8 @@ export class CVSobelComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
           GCStore.add(out);
 
@@ -84,6 +86,8 @@ export class CannyComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
@@ -128,6 +132,8 @@ export class LaplacianComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 

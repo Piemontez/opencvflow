@@ -62,10 +62,9 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
           this.video!.width!,
           cv.CV_8UC4
         );
+        GCStore.add(src);
 
         this.cap!.read(src);
-
-        GCStore.add(src);
 
         this.sources = [src];
       }
@@ -120,7 +119,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
     async start() {
       this.video!.src = this.filename;
       this.video!.loop = this.loop;
-      this.video!.play();
+      await this.video!.play();
 
       this.cap = new cv.VideoCapture(this.video!);
     }
@@ -132,10 +131,9 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
           this.video!.width!,
           cv.CV_8UC4
         );
+        GCStore.add(src);
 
         this.cap!.read(src);
-
-        GCStore.add(src);
 
         this.sources = [src];
       }

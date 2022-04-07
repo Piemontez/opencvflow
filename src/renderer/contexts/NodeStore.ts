@@ -185,7 +185,10 @@ class NodeStore {
   };
 
   @action run = async () => {
-    if (this.running) return;
+    if (this.running) {
+      notify.info('The flow is already running.');
+      return;
+    }
     const { nodes } = this;
     if (!nodes.length) {
       notify.info('No flow defined.');
@@ -196,8 +199,15 @@ class NodeStore {
 
     this.runner = new Promise(async (resolve) => {
       for (const node of nodes) {
-        if (node.data.start) {
+        try {
           await node.data.start();
+        } catch (err: any) {
+          node.data.errorMessage =
+            typeof err === 'number'
+              ? `Code error: ${err}`
+              : err?.message || 'Not detected';
+
+          notify.danger(`Node ${node.id}: ${node.data.errorMessage}`);
         }
         if (!this.running) break;
       }
@@ -241,7 +251,11 @@ class NodeStore {
 
     for (const node of this.nodes) {
       if (node.data.stop) {
-        await node.data.stop();
+        try {
+          await node.data.stop();
+        } catch (err: any) {
+          console.error(err);
+        }
       }
     }
   };

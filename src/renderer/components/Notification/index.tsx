@@ -88,8 +88,14 @@ function Notification({
   detail,
 }: NotificationProps) {
   const [show, setShow] = useState(true);
+  const isError = className?.includes('bg-danger') || false;
   return (
-    <Toast onClose={() => setShow(false)} show={show} delay={5000} autohide>
+    <Toast
+      onClose={() => setShow(false)}
+      show={show}
+      delay={isError ? 7000 : 5000}
+      autohide
+    >
       <Toast.Header className={className}>
         <strong className="mr-auto">{title}</strong>
         &nbsp;&nbsp;

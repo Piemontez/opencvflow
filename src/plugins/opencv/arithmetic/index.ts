@@ -182,22 +182,6 @@ export class CVMulComponent extends CVFIOEndlessComponent {
   };
 }
 
-export class CVKernelComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Kernel' };
-
-  static processor = class KernelProcessor extends CVFNodeProcessor {
-    static properties = [{ name: 'kernel', type: PropertyType.DoubleMatrix }];
-
-    kernel: Mat = new cv.Mat(3, 3, cv.CV_64F, new cv.Scalar(0));
-
-    async proccess() {
-      this.output(this.kernel!);
-
-      this.sources = [this.kernel!];
-    }
-  };
-}
-
 export class CVGaussianKernelComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'GausKernel' };
 

@@ -4,7 +4,7 @@ import { PropertyType } from 'renderer/types/property';
 import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
 import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
 import { CVFFileUrlFormControl } from './cvf-fileurl-formcontrol';
-import { OCVOneZeroMatrixFormControl } from './cvf-matrix-formcontrol';
+import { OCVIntMatrixFormControl, OCVOneZeroMatrixFormControl } from './cvf-matrix-formcontrol';
 import {
   CVFDecimalFormControl,
   CVFIntegerFormControl,
@@ -58,6 +58,10 @@ export function CVFFormGroup(props: CVFFormProps) {
     //Default
     case PropertyType.FileUrl:
       Control = CVFFileUrlFormControl(props);
+      break;
+    case PropertyType.DoubleMatrix:
+    case PropertyType.IntMatrix:
+      Control = OCVIntMatrixFormControl(props);
       break;
     case PropertyType.OneZeroMatrix:
       Control = OCVOneZeroMatrixFormControl(props);

@@ -26,7 +26,7 @@ const FileOpenAction: MenuActionProps = {
   ),
   action: () => {
     notify.warn(
-      'Only implemented in desktop version. If you want to open an image file, access the Inputs -> File Loader menu.'
+      'Only implemented in desktop version. If you want to open an image/video file, access the Inputs -> File Loader menu.'
     );
   },
 };

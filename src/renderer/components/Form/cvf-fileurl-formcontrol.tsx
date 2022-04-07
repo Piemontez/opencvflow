@@ -1,5 +1,5 @@
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from "./types/CVFFormProps";
+import { CVFFormProps } from './types/CVFFormProps';
 
 export function CVFFileUrlFormControl(props: CVFFormProps) {
   return (
@@ -12,8 +12,12 @@ export function CVFFileUrlFormControl(props: CVFFormProps) {
       disabled={props.disabled}
       onChange={(event) => {
         const files = (event.target as HTMLInputElement).files;
-        const url = files?.length ? URL.createObjectURL(files[0]) : null;
-        props.onChange && props.onChange(url, event.target.value, event)
+        props.onChange &&
+          props.onChange(
+            files?.length ? files[0] : null,
+            event.target.value,
+            event
+          );
       }}
     />
   );

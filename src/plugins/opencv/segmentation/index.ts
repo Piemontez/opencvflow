@@ -1,6 +1,6 @@
 import { CVFComponent, CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, { Point } from 'opencv-ts';
+import cv, { Mat, Point } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'react-flow-renderer/nocss';
@@ -100,7 +100,7 @@ export class RegionGrowing extends CVFComponent {
     thresh: number = 3;
 
     async proccess() {
-      const { inputsAsMat: inputs } = this;
+      const { inputs } = this;
       if (inputs.length === 2) {
         const [src, seed] = inputs;
 
@@ -108,41 +108,60 @@ export class RegionGrowing extends CVFComponent {
           return;
         }
 
-        if (src.rows !== seed.rows && src.cols !== seed.cols) {
-          throw new Error(messages.INPUTS_SAME_SIZES);
-        }
-        if (seed.channels() > 1) {
-          throw new Error(
-            messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
-              '{1}',
-              seed.channels().toString()
-            )
-          );
-        }
-
-        const toVisited = [] as Array<Point>;
         const out = new cv.Mat(
-          seed.rows,
-          seed.cols,
+          (src as Mat).rows,
+          (src as Mat).cols,
           cv.CV_16U,
           new cv.Scalar(0)
         );
         GCStore.add(out);
 
-        let label = 1;
-        for (let j = seed.rows - 1; j > -1; j--) {
-          for (let k = seed.cols - 1; k > -1; k--) {
-            if (seed.ptr(j, k)[0]) {
-              out.ushortPtr(j, k)[0] = label++;
-              toVisited.push(new cv.Point(j, k));
+        let toVisited = [] as Array<Point>;
+        // Seed é do tipo Array<Point>
+        if (Array.isArray(seed)) {
+          toVisited = seed as Array<Point>;
+          let label = 1;
+          for (const sd of toVisited) {
+            out.ushortPtr(sd.x && sd.y)[0] = label++;
+          }
+        }
+        // Seed é do tipo Point
+        else if ((seed as Point).x && (seed as Point).y) {
+          out.ushortPtr((seed as Point).x && (seed as Point).y)[0] = 1;
+          toVisited.push(seed as Point);
+        }
+        // Seed é do tipo Mat
+        else if ((seed as Mat).cols && (seed as Mat).rows) {
+          if (
+            (src as Mat).rows !== (seed as Mat).rows &&
+            (src as Mat).cols !== (seed as Mat).cols
+          ) {
+            throw new Error(messages.INPUTS_SAME_SIZES);
+          }
+          if ((seed as Mat).channels() > 1) {
+            throw new Error(
+              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
+                '{1}',
+                (seed as Mat).channels().toString()
+              )
+            );
+          }
+
+          let label = 1;
+          for (let j = (src as Mat).rows - 1; j > -1; j--) {
+            for (let k = (src as Mat).cols - 1; k > -1; k--) {
+              if ((seed as Mat).ptr(j, k)[0]) {
+                out.ushortPtr(j, k)[0] = label++;
+                toVisited.push(new cv.Point(j, k));
+              }
             }
           }
         }
 
         let next = toVisited.pop();
         while (next) {
-          label = out.ushortAt(next!.x, next!.y);
-          const center = src.ptr(next!.x, next!.y)[0];
+          const label = out.ushortAt(next!.x, next!.y);
+          const center = (src as Mat).ptr(next!.x, next!.y)[0];
           const roi = new cv.Rect(
             next!.x ? next!.x - 1 : 0,
             next!.y ? next!.y - 1 : 0,
@@ -154,7 +173,7 @@ export class RegionGrowing extends CVFComponent {
             for (let k = roi.y + roi.height; k > roi.y; k--) {
               const isVisited = out.ushortAt(j, k);
               if (!isVisited) {
-                const value = src.ptr(j, k)[0];
+                const value = (src as Mat).ptr(j, k)[0];
                 if (Math.abs(center - value) >= this.thresh) {
                   out.ushortPtr(j, k)[0] = label;
                   toVisited.push(new cv.Point(j, k));

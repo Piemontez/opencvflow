@@ -1,7 +1,16 @@
 import { Node } from 'react-flow-renderer/nocss';
 import { CVFEdgeData } from './edge';
-import { Mat, MatVector } from 'opencv-ts';
+import { Mat, MatVector, Point } from 'opencv-ts';
 import { NodeProperty } from './property';
+import { Moments } from 'opencv-ts/src/core/Moments';
+
+type NodeSourceDef =
+  | Mat
+  | MatVector
+  | Point
+  | Array<Point>
+  | Moments
+  | Array<Moments>;
 
 /**
  * Classe com definições
@@ -14,7 +23,7 @@ export abstract class CVFNodeProcessor {
   // Arestas conectadas à saída
   outEdges: Array<CVFEdgeData | null> = [];
   // Saídas
-  sources: Array<Mat | MatVector> = [];
+  sources: Array<NodeSourceDef> = [];
   // Exibe mensagem de erro dentro do widget
   errorMessage?: string;
 
@@ -27,7 +36,7 @@ export abstract class CVFNodeProcessor {
     return this.inEdges.concat(this.outEdges);
   }
 
-  get inputs(): Array<Mat | MatVector> {
+  get inputs(): Array<NodeSourceDef> {
     return this.inEdges.map((edge) => edge!.source.sources[0]);
   }
 

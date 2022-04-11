@@ -7,6 +7,8 @@ import * as segmentation from './segmentation';
 import * as edge from './edge';
 import * as morphology from './morphology';
 import * as smoothing from './smoothing';
+import * as draw from './draw';
+import * as utils from './utils';
 
 const OpenCVPlugin: PluginType = {
   name: "OpenCV Plugin",
@@ -27,6 +29,10 @@ const OpenCVPlugin: PluginType = {
     ...Object.values(edge),
     // imgproc
     ...Object.values(imgproc),
+    // draw
+    ...Object.values(draw),
+    // utils
+    ...Object.values(utils),
   ],
 };
 

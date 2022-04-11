@@ -85,7 +85,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
                 value={value.data?.at(row * rows + col)}
                 onChange={(event) => {
                   const parser = numeral(event.target.value);
-                  value.data[row * rows + col] = parser.value() || 0;
+                  value.data16S[row * rows + col] = parser.value() || 0;
                 }}
               />
             </Col>

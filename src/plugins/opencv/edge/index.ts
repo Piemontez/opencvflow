@@ -1,4 +1,4 @@
-import { CVFComponent, CVFIOComponent } from 'renderer/types/component';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
@@ -171,10 +171,14 @@ export class FindContoursComponent extends CVFComponent {
     { title: 'hierarchy', position: Position.Right },
   ];
 
+  componentDidMount() {
+    this.addOption(CVFComponentOptions.NOT_DISPLAY);
+  }
+
   static processor = class FindContoursNode extends CVFNodeProcessor {
     static properties = [
       { name: 'mode', type: PropertyType.Integer },
-      { name: 'method', type: PropertyType.Boolean },
+      { name: 'method', type: PropertyType.Integer },
     ];
 
     mode: RetrievalModes = cv.RETR_TREE;
@@ -194,9 +198,6 @@ export class FindContoursComponent extends CVFComponent {
         cv.findContours(src, contours, hierarchy, this.mode, this.method);
 
         this.sources = [contours, hierarchy];
-        if (contours.size()) {
-          this.output(contours.get(0));
-        }
       } else {
         this.sources = [];
       }

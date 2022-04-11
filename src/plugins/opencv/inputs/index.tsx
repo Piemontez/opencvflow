@@ -194,7 +194,7 @@ export class CVKernelComponent extends CVFOutputComponent {
   static processor = class KernelProcessor extends CVFNodeProcessor {
     static properties = [{ name: 'kernel', type: PropertyType.DoubleMatrix }];
 
-    kernel: Mat = new cv.Mat(3, 3, cv.CV_32F, new cv.Scalar(0));
+    kernel: Mat = new cv.Mat(3, 3, cv.CV_16S, new cv.Scalar(0));
 
     async proccess() {
       this.output(this.kernel!);

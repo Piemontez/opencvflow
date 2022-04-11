@@ -67,12 +67,12 @@ export class ContoursCentersComponent extends CVFIOComponent {
           const out = [] as Array<Point>;
           for (const m of ms) {
             if (m.m00) {
-              const cx = m.m10 / m.m00;
-              const cy = m.m11 / m.m00;
+              const cx = Math.floor(m.m10 / m.m00);
+              const cy = Math.floor(m.m01 / m.m00);
               out.push(new cv.Point(cx, cy));
             }
           }
-          this.sources = out;
+          this.sources = [out];
         }
       }
     }

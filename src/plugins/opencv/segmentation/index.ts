@@ -119,7 +119,7 @@ export class RegionGrowing extends CVFComponent {
         let toVisited = [] as Array<Point>;
         // Seed é do tipo Array<Point>
         if (Array.isArray(seed)) {
-          toVisited = seed as Array<Point>;
+          toVisited = ([] as Array<Point>).concat(seed as Array<Point>);
           let label = 1;
           for (const sd of toVisited) {
             out.ushortPtr(sd.x && sd.y)[0] = label++;
@@ -160,6 +160,11 @@ export class RegionGrowing extends CVFComponent {
 
         let next = toVisited.pop();
         while (next) {
+          if (out.rows < next!.x || out.cols < next!.y) {
+            next = toVisited.pop();
+            continue;
+          }
+
           const label = out.ushortAt(next!.x, next!.y);
           const center = (src as Mat).ptr(next!.x, next!.y)[0];
           const roi = new cv.Rect(

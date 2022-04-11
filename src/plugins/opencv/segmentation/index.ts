@@ -174,11 +174,13 @@ export class RegionGrowing extends CVFComponent {
             out.cols - next!.y > 3 ? 3 : out.cols - next!.y
           );
 
+          console.log(label, center, roi);
           for (let j = roi.x + roi.width; j > roi.x; j--) {
             for (let k = roi.y + roi.height; k > roi.y; k--) {
               const isVisited = out.ushortAt(j, k);
               if (!isVisited) {
                 const value = (src as Mat).ptr(j, k)[0];
+                console.log(Math.abs(center - value));
                 if (Math.abs(center - value) >= this.thresh) {
                   out.ushortPtr(j, k)[0] = label;
                   toVisited.push(new cv.Point(j, k));

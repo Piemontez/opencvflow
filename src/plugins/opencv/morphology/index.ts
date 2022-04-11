@@ -96,7 +96,7 @@ export class ErodeComponent extends CVFIOComponent {
             this.borderType,
             this.borderValue
           );
-          console.log(out.channels());
+
           this.sources.push(out);
           this.output(out);
         }

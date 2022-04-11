@@ -82,10 +82,10 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
             <Col key={col}>
               <Form.Control
                 type="number"
-                value={value.data?.at(row * rows + col)}
+                value={value.shortAt(row, col)}
                 onChange={(event) => {
                   const parser = numeral(event.target.value);
-                  value.data16S[row * rows + col] = parser.value() || 0;
+                  value.shortPtr(row, col)[0] = parser.value() || 0;
                 }}
               />
             </Col>

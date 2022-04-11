@@ -250,6 +250,8 @@ export class CVNormalizeComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 

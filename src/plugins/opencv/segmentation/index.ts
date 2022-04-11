@@ -1,6 +1,6 @@
 import { CVFComponent, CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv from 'opencv-ts';
+import cv, { Point } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'react-flow-renderer/nocss';
@@ -78,6 +78,95 @@ export class ConnectedComponentsComponent extends CVFIOComponent {
           this.sources.push(out);
           this.output(out);
         }
+      }
+    }
+  };
+}
+
+/**
+ * RegionGrowing component and node
+ */
+export class RegionGrowing extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'Region Growing' };
+  targets: TargetHandle[] = [
+    { title: 'src', position: Position.Left },
+    { title: 'seed', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
+  static processor = class RegionGrowingNode extends CVFNodeProcessor {
+    static properties = [{ name: 'thresh', type: PropertyType.Decimal }];
+
+    thresh: number = 3;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length === 2) {
+        const [src, seed] = inputs;
+
+        if (!src || !seed) {
+          return;
+        }
+
+        if (src.rows !== seed.rows && src.cols !== seed.cols) {
+          throw new Error(messages.INPUTS_SAME_SIZES);
+        }
+        if (seed.channels() > 1) {
+          throw new Error(
+            messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
+              '{1}',
+              seed.channels().toString()
+            )
+          );
+        }
+
+        const toVisited = [] as Array<Point>;
+        const out = new cv.Mat(
+          seed.rows,
+          seed.cols,
+          cv.CV_16U,
+          new cv.Scalar(0)
+        );
+        GCStore.add(out);
+
+        let label = 1;
+        for (let j = seed.rows - 1; j > -1; j--) {
+          for (let k = seed.cols - 1; k > -1; k--) {
+            if (seed.ptr(j, k)[0]) {
+              out.ushortPtr(j, k)[0] = label++;
+              toVisited.push(new cv.Point(j, k));
+            }
+          }
+        }
+
+        let next = toVisited.pop();
+        while (next) {
+          label = out.ushortAt(next!.x, next!.y);
+          const center = src.ptr(next!.x, next!.y)[0];
+          const roi = new cv.Rect(
+            next!.x ? next!.x - 1 : 0,
+            next!.y ? next!.y - 1 : 0,
+            out.rows - next!.x > 3 ? 3 : out.rows - next!.x,
+            out.cols - next!.y > 3 ? 3 : out.cols - next!.y
+          );
+
+          for (let j = roi.x + roi.width; j > roi.x; j--) {
+            for (let k = roi.y + roi.height; k > roi.y; k--) {
+              const isVisited = out.ushortAt(j, k);
+              if (!isVisited) {
+                const value = src.ptr(j, k)[0];
+                if (Math.abs(center - value) >= this.thresh) {
+                  out.ushortPtr(j, k)[0] = label;
+                  toVisited.push(new cv.Point(j, k));
+                }
+              }
+            }
+          }
+          next = toVisited.pop();
+        }
+
+        this.output(out);
+        this.sources = [out];
       }
     }
   };

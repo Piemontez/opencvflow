@@ -97,7 +97,7 @@ export class RegionGrowing extends CVFComponent {
   static processor = class RegionGrowingNode extends CVFNodeProcessor {
     static properties = [{ name: 'thresh', type: PropertyType.Decimal }];
 
-    thresh: number = 3;
+    thresh: number = 7;
 
     async proccess() {
       const { inputs } = this;
@@ -116,19 +116,19 @@ export class RegionGrowing extends CVFComponent {
         );
         GCStore.add(out);
 
-        let toVisited = [] as Array<Point>;
+        const neighborhood = [[]] as Array<Array<Point>>;
         // Seed é do tipo Array<Point>
         if (Array.isArray(seed)) {
-          toVisited = ([] as Array<Point>).concat(seed as Array<Point>);
           let label = 1;
-          for (const sd of toVisited) {
-            out.ushortPtr(sd.x && sd.y)[0] = label++;
+          for (const sd of seed as Array<Point>) {
+            neighborhood.push([sd]);
+            out.ushortPtr(sd.y, sd.x)[0] = label++;
           }
         }
         // Seed é do tipo Point
         else if ((seed as Point).x && (seed as Point).y) {
-          out.ushortPtr((seed as Point).x && (seed as Point).y)[0] = 1;
-          toVisited.push(seed as Point);
+          out.ushortPtr((seed as Point).y && (seed as Point).x)[0] = 1;
+          neighborhood.push([seed as Point]);
         }
         // Seed é do tipo Mat
         else if ((seed as Mat).cols && (seed as Mat).rows) {
@@ -152,43 +152,54 @@ export class RegionGrowing extends CVFComponent {
             for (let k = (src as Mat).cols - 1; k > -1; k--) {
               if ((seed as Mat).ptr(j, k)[0]) {
                 out.ushortPtr(j, k)[0] = label++;
-                toVisited.push(new cv.Point(j, k));
+                neighborhood.push([new cv.Point(j, k)]);
               }
             }
           }
         }
 
-        let next = toVisited.pop();
-        while (next) {
-          if (out.rows < next!.x || out.cols < next!.y) {
-            next = toVisited.pop();
-            continue;
-          }
+        let neighbors = neighborhood.shift();
+        while (neighbors) {
+          const toVisit = [] as Array<Point>;
 
-          const label = out.ushortAt(next!.x, next!.y);
-          const center = (src as Mat).ptr(next!.x, next!.y)[0];
-          const roi = new cv.Rect(
-            next!.x ? next!.x - 1 : 0,
-            next!.y ? next!.y - 1 : 0,
-            out.rows - next!.x > 3 ? 3 : out.rows - next!.x,
-            out.cols - next!.y > 3 ? 3 : out.cols - next!.y
-          );
+          let nextNb = neighbors.pop();
+          let center = 0;
+          while (nextNb) {
+            if (out.rows < nextNb!.y || out.cols < nextNb!.x) {
+              nextNb = neighbors.pop();
+              continue;
+            }
 
-          console.log(label, center, roi);
-          for (let j = roi.x + roi.width; j > roi.x; j--) {
-            for (let k = roi.y + roi.height; k > roi.y; k--) {
-              const isVisited = out.ushortAt(j, k);
-              if (!isVisited) {
-                const value = (src as Mat).ptr(j, k)[0];
-                console.log(Math.abs(center - value));
-                if (Math.abs(center - value) >= this.thresh) {
-                  out.ushortPtr(j, k)[0] = label;
-                  toVisited.push(new cv.Point(j, k));
+            const label = out.ushortAt(nextNb!.y, nextNb!.x);
+            if (!center) {
+              center = (src as Mat).ptr(nextNb!.y, nextNb!.y)[0];
+            }
+            const roi = new cv.Rect(
+              nextNb!.x ? nextNb!.x - 1 : 0,
+              nextNb!.y ? nextNb!.y - 1 : 0,
+              out.cols - nextNb!.x > 3 ? 3 : out.cols - nextNb!.x,
+              out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y
+            );
+
+            for (let row = roi.y + roi.height; row > roi.y; row--) {
+              for (let col = roi.x + roi.width; col > roi.x; col--) {
+                const isVisited = out.ushortAt(row, col);
+                if (!isVisited) {
+                  const value = (src as Mat).ptr(row, col)[0];
+                  if (Math.abs(center - value) <= this.thresh && label) {
+                    out.ushortPtr(row, col)[0] = label;
+                    neighbors.push(new cv.Point(row, col));
+                    toVisit.push(new cv.Point(row, col));
+                  }
                 }
               }
             }
+            nextNb = neighbors.pop();
           }
-          next = toVisited.pop();
+          if (toVisit.length) {
+            neighborhood.push(toVisit);
+          }
+          neighbors = neighborhood.shift();
         }
 
         this.output(out);

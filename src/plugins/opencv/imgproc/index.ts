@@ -34,7 +34,7 @@ export class BoxFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -79,7 +79,7 @@ export class SqrBoxFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -126,7 +126,7 @@ export class ScharrComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -179,7 +179,7 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
     }
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         inputs.forEach((src) => {
@@ -216,7 +216,7 @@ export class DistanceTransformComponent extends CVFIOComponent {
     maskSize: DistanceTransformMasks = cv.DIST_MASK_3;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -258,7 +258,7 @@ export class Filter2DComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_CONSTANT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length === 2) {
         this.sources = [];
         const [src, kernel] = inputs;

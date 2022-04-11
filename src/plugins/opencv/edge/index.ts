@@ -4,7 +4,7 @@ import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from 'renderer/contexts/GCStore';
-import { Position } from 'react-flow-renderer';
+import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import {
   ContourApproximationModes,
@@ -39,7 +39,7 @@ export class CVSobelComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -88,7 +88,7 @@ export class CannyComponent extends CVFIOComponent {
     l2gradiente: boolean = false;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -134,7 +134,7 @@ export class LaplacianComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -177,17 +177,16 @@ export class FindContoursComponent extends CVFComponent {
       { name: 'method', type: PropertyType.Boolean },
     ];
 
-    mode: RetrievalModes = RetrievalModes.RETR_TREE;
-    method: ContourApproximationModes =
-      ContourApproximationModes.CHAIN_APPROX_SIMPLE;
+    mode: RetrievalModes = cv.RETR_TREE;
+    method: ContourApproximationModes = cv.CHAIN_APPROX_SIMPLE;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         const [src] = inputs;
         if (!src) return;
 
-        const contours = new cv.Mat();
+        const contours = new cv.MatVector();
         const hierarchy = new cv.Mat();
         GCStore.add(contours);
         GCStore.add(hierarchy);
@@ -195,7 +194,9 @@ export class FindContoursComponent extends CVFComponent {
         cv.findContours(src, contours, hierarchy, this.mode, this.method);
 
         this.sources = [contours, hierarchy];
-        this.output(contours);
+        if (contours.size()) {
+          this.output(contours.get(0));
+        }
       } else {
         this.sources = [];
       }

@@ -18,7 +18,7 @@ export class MedianBlurComponent extends CVFIOComponent {
     kSize: number = 3;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -53,7 +53,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -93,7 +93,7 @@ export class BlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -128,7 +128,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

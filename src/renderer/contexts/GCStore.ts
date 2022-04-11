@@ -1,4 +1,4 @@
-import { Mat } from 'opencv-ts';
+import { Mat, MatVector } from 'opencv-ts';
 
 type MathCycle = { cycle?: number; ref: Mat };
 
@@ -6,14 +6,14 @@ type MathCycle = { cycle?: number; ref: Mat };
  * Garbage Collector
  */
 interface GCStoreI {
-  mCollection: Array<MathCycle>;
+  mCollection: Array<MathCycle | MatVector>;
 
   /**
    * Adiciona ao Garbage Collector
    * @param ref cv.Mat que devera ser removido
    * @param cycle ciclo de execução
    */
-  add(ref: Mat, cycle?: number): void;
+  add(ref: Mat | MatVector, cycle?: number): void;
 
   // Limpa Garbage Collector
   clear(cycle?: number): void;

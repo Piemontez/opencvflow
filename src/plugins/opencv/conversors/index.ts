@@ -23,7 +23,7 @@ export class CvtColorComponent extends CVFIOComponent {
     dstCn: number = 0;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -57,7 +57,7 @@ export class ConverToComponent extends CVFIOComponent {
     beta: number = 0;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
 
       if (inputs.length) {
         this.sources = [];

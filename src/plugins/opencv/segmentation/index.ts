@@ -28,7 +28,7 @@ export class ThresholdComponent extends CVFIOComponent {
     type: ThresholdTypes = cv.THRESH_BINARY_INV + cv.THRESH_OTSU;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
 
       if (inputs.length) {
         this.sources = [];
@@ -66,7 +66,7 @@ export class ConnectedComponentsComponent extends CVFIOComponent {
     display: number = 0;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -100,7 +100,7 @@ export class RegionGrowing extends CVFComponent {
     thresh: number = 3;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length === 2) {
         const [src, seed] = inputs;
 
@@ -185,7 +185,7 @@ export class WatershedComponent extends CVFComponent {
 
   static processor = class WatershedNode extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length === 2) {
         const [src, markers] = inputs;
         const out = markers.clone();

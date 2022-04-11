@@ -32,7 +32,7 @@ export class DilateComponent extends CVFIOComponent {
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -80,7 +80,7 @@ export class ErodeComponent extends CVFIOComponent {
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

@@ -26,7 +26,7 @@ export class CVPlusComponent extends CVFComponent {
 
   static processor = class PlusProcessor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length < 2) {
         this.sources = [];
         return;
@@ -66,7 +66,7 @@ export class CVSubComponent extends CVFComponent {
 
   static processor = class SubProcessor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length < 2) {
         this.sources = [];
         return;
@@ -101,7 +101,7 @@ export class CVMultiplyComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -130,7 +130,7 @@ export class CVDivisionComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -159,7 +159,7 @@ export class CVMulComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -246,7 +246,7 @@ export class CVNormalizeComponent extends CVFIOComponent {
     dtype?: DataTypes;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

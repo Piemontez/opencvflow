@@ -35,7 +35,7 @@ export class DrawContourComponent extends CVFComponent {
               out,
               contours as MatVector,
               i,
-              new cv.Scalar(255, 255, 255),
+              new cv.Scalar(250, 100, 50),
               5
             );
           }

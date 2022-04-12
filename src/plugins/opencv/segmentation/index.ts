@@ -116,7 +116,7 @@ export class RegionGrowing extends CVFComponent {
         );
         GCStore.add(out);
 
-        const neighborhood = [[]] as Array<Array<Point>>;
+        const neighborhood: Array<Array<Point>> = [];
         // Seed é do tipo Array<Point>
         if (Array.isArray(seed)) {
           let label = 1;
@@ -148,11 +148,11 @@ export class RegionGrowing extends CVFComponent {
           }
 
           let label = 1;
-          for (let j = (src as Mat).rows - 1; j > -1; j--) {
-            for (let k = (src as Mat).cols - 1; k > -1; k--) {
-              if ((seed as Mat).ptr(j, k)[0]) {
-                out.ushortPtr(j, k)[0] = label++;
-                neighborhood.push([new cv.Point(j, k)]);
+          for (let row = (src as Mat).rows - 1; row > -1; row--) {
+            for (let col = (src as Mat).cols - 1; col > -1; col--) {
+              if ((seed as Mat).ptr(row, col)[0]) {
+                out.ushortPtr(row, col)[0] = label++;
+                neighborhood.push([new cv.Point(col, row)]);
               }
             }
           }
@@ -169,11 +169,10 @@ export class RegionGrowing extends CVFComponent {
               nextNb = neighbors.pop();
               continue;
             }
-
-            const label = out.ushortAt(nextNb!.y, nextNb!.x);
             if (!center) {
               center = (src as Mat).ptr(nextNb!.y, nextNb!.y)[0];
             }
+            const label = out.ushortAt(nextNb!.y, nextNb!.x);
             const roi = new cv.Rect(
               nextNb!.x ? nextNb!.x - 1 : 0,
               nextNb!.y ? nextNb!.y - 1 : 0,
@@ -181,15 +180,18 @@ export class RegionGrowing extends CVFComponent {
               out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y
             );
 
-            for (let row = roi.y + roi.height; row > roi.y; row--) {
-              for (let col = roi.x + roi.width; col > roi.x; col--) {
+            for (let row = roi.y + roi.height - 1; row >= roi.y; row--) {
+              for (let col = roi.x + roi.width - 1; col >= roi.x; col--) {
                 const isVisited = out.ushortAt(row, col);
                 if (!isVisited) {
                   const value = (src as Mat).ptr(row, col)[0];
-                  if (Math.abs(center - value) <= this.thresh && label) {
-                    out.ushortPtr(row, col)[0] = label;
-                    neighbors.push(new cv.Point(row, col));
-                    toVisit.push(new cv.Point(row, col));
+                  if (Math.abs(center - value) <= this.thresh) {
+                    if (label) {
+                      out.ushortPtr(row, col)[0] = label;
+                      neighbors.push(new cv.Point(col, row));
+                    }
+                  } else {
+                    //toVisit.push(new cv.Point(row, col));
                   }
                 }
               }

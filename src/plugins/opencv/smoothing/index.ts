@@ -1,6 +1,6 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, { Point, Mat, Size } from 'opencv-ts';
+import cv, { Point, Size } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from 'renderer/contexts/GCStore';
@@ -18,7 +18,7 @@ export class MedianBlurComponent extends CVFIOComponent {
     kSize: number = 3;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -53,7 +53,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -93,7 +93,7 @@ export class BlurComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -103,52 +103,6 @@ export class BlurComponent extends CVFIOComponent {
           cv.blur(src, out, this.ksize, this.anchor, this.borderType);
           this.sources.push(out);
           this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * Filter2D component and node
- */
-export class Filter2DComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'Filter2D' };
-  static processor = class Filter2DNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'anchor', type: PropertyType.Point },
-      { name: 'delta', type: PropertyType.Decimal },
-      { name: 'borderType', type: PropertyType.BorderType },
-    ];
-
-    anchor: Point = new cv.Point(-1, -1);
-    delta: number = 0;
-    borderType: BorderTypes = cv.BORDER_CONSTANT;
-
-    async proccess() {
-      let kernel: Mat | null = null;
-
-      const { inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          if (!kernel?.rows) kernel = src.clone();
-          else {
-            const out = new cv.Mat(src.rows, src.cols, src.type());
-            GCStore.add(out);
-
-            cv.filter2D(
-              src,
-              out,
-              -1,
-              kernel!,
-              this.anchor,
-              this.delta,
-              this.borderType
-            );
-            this.sources.push(out);
-            this.output(out);
-          }
         }
       }
     }
@@ -174,7 +128,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

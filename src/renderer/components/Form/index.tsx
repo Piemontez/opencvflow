@@ -4,7 +4,10 @@ import { PropertyType } from 'renderer/types/property';
 import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
 import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
 import { CVFFileUrlFormControl } from './cvf-fileurl-formcontrol';
-import { OCVOneZeroMatrixFormControl } from './cvf-matrix-formcontrol';
+import {
+  OCVIntMatrixFormControl,
+  OCVOneZeroMatrixFormControl,
+} from './cvf-matrix-formcontrol';
 import {
   CVFDecimalFormControl,
   CVFIntegerFormControl,
@@ -32,6 +35,7 @@ export declare type CVFFormEventHandler = (
 
 export function CVFFormGroup(props: CVFFormProps) {
   let Control, Column;
+
   switch (props.type) {
     //Open
     case PropertyType.BorderType:
@@ -59,11 +63,12 @@ export function CVFFormGroup(props: CVFFormProps) {
     case PropertyType.FileUrl:
       Control = CVFFileUrlFormControl(props);
       break;
+    case PropertyType.DoubleMatrix:
+    case PropertyType.IntMatrix:
+      Control = OCVIntMatrixFormControl(props);
+      break;
     case PropertyType.OneZeroMatrix:
       Control = OCVOneZeroMatrixFormControl(props);
-      break;
-    case PropertyType.Text:
-      Control = CVFTextFormControl(props);
       break;
     case PropertyType.Boolean:
       Control = CVFBooleanFormControl(props);
@@ -79,8 +84,15 @@ export function CVFFormGroup(props: CVFFormProps) {
       Control = CVFDecimalFormControl(props);
       break;
     case PropertyType.Integer:
-    default:
       Control = CVFIntegerFormControl(props);
+      break;
+    case PropertyType.Label:
+      props.disabled = true;
+      Control = CVFTextFormControl(props);
+      break;
+    case PropertyType.Text:
+    default:
+      Control = CVFTextFormControl(props);
       break;
   }
   Column = props.column ? <Col>{Control}</Col> : Control;

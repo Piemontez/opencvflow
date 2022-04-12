@@ -9,7 +9,7 @@ export class Custom01Component extends CVFIOEndlessComponent {
   static menu = { tabTitle: tabName, title: 'Custom 01' };
   static processor = class Custom01Processor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -27,7 +27,7 @@ export class Custom02Component extends CVFIOEndlessComponent {
   static menu = { tabTitle: tabName, title: 'Custom 02' };
   static processor = class Custom01Processor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {

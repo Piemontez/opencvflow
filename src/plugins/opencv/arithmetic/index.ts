@@ -26,7 +26,7 @@ export class CVPlusComponent extends CVFComponent {
 
   static processor = class PlusProcessor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length < 2) {
         this.sources = [];
         return;
@@ -66,7 +66,7 @@ export class CVSubComponent extends CVFComponent {
 
   static processor = class SubProcessor extends CVFNodeProcessor {
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length < 2) {
         this.sources = [];
         return;
@@ -101,7 +101,7 @@ export class CVMultiplyComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -130,7 +130,7 @@ export class CVDivisionComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -159,7 +159,7 @@ export class CVMulComponent extends CVFIOEndlessComponent {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -178,22 +178,6 @@ export class CVMulComponent extends CVFIOEndlessComponent {
       } else {
         this.sources = [];
       }
-    }
-  };
-}
-
-export class CVKernelComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Kernel' };
-
-  static processor = class KernelProcessor extends CVFNodeProcessor {
-    static properties = [{ name: 'kernel', type: PropertyType.DoubleMatrix }];
-
-    kernel: Mat = new cv.Mat(3, 3, cv.CV_64F, new cv.Scalar(0));
-
-    async proccess() {
-      this.output(this.kernel!);
-
-      this.sources = [this.kernel!];
     }
   };
 }
@@ -262,10 +246,12 @@ export class CVNormalizeComponent extends CVFIOComponent {
     dtype?: DataTypes;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 

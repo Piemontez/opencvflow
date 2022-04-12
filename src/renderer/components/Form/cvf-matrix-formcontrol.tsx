@@ -4,11 +4,7 @@ import { Col, Row, Form } from 'react-bootstrap';
 import { CVFFormEvent } from './types/CVFFormEvent';
 import { CVFFormProps } from './types/CVFFormProps';
 
-/**
- * Cria um componente para editar o Mat com atributos 0 e 1
- * @param props
- */
-export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
+function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
   props.groupAs = undefined;
   props.column = undefined;
 
@@ -77,10 +73,29 @@ export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
   const rowsSeries = Array.from(Array(rows).keys());
   const colsSeries = Array.from(Array(cols).keys());
 
-  return (
-    <>
-      <MatrixSizeComp rows={rows} cols={cols} changeSize={changeSize} />
-      {rowsSeries.map((row) => (
+  let fields = null;
+  switch (type) {
+    case 1:
+      fields = rowsSeries.map((row) => (
+        <Row key={row}>
+          {colsSeries.map((col) => (
+            <Col key={col}>
+              <Form.Control
+                type="number"
+                value={value.shortAt(row, col)}
+                onChange={(event) => {
+                  const parser = numeral(event.target.value);
+                  value.shortPtr(row, col)[0] = parser.value() || 0;
+                }}
+              />
+            </Col>
+          ))}
+        </Row>
+      ));
+      break;
+    case 0:
+    default:
+      fields = rowsSeries.map((row) => (
         <Row key={row}>
           {colsSeries.map((col) => (
             <Col key={col}>
@@ -96,9 +111,30 @@ export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
             </Col>
           ))}
         </Row>
-      ))}
+      ));
+  }
+  return (
+    <>
+      <MatrixSizeComp rows={rows} cols={cols} changeSize={changeSize} />
+      {fields}
     </>
   );
+}
+
+/**
+ * Cria um componente para editar o Mat com atributos inteiros
+ * @param props
+ */
+export function OCVIntMatrixFormControl(props: CVFFormProps) {
+  return BaseMatrixFormControl(props, 1);
+}
+
+/**
+ * Cria um componente para editar o Mat com atributos 0 e 1
+ * @param props
+ */
+export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
+  return BaseMatrixFormControl(props, 0);
 }
 
 export function MatrixSizeComp({

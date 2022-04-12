@@ -1,6 +1,6 @@
 import { CVFOutputComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv from 'opencv-ts';
+import cv, { Mat } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
 import messages from '../messages';
@@ -184,6 +184,22 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
 
       delete this.cap;
       this.cap = undefined;
+    }
+  };
+}
+
+export class CVKernelComponent extends CVFOutputComponent {
+  static menu = { tabTitle: tabName, title: 'Kernel' };
+
+  static processor = class KernelProcessor extends CVFNodeProcessor {
+    static properties = [{ name: 'kernel', type: PropertyType.DoubleMatrix }];
+
+    kernel: Mat = new cv.Mat(3, 3, cv.CV_16S, new cv.Scalar(0));
+
+    async proccess() {
+      this.output(this.kernel!);
+
+      this.sources = [this.kernel!];
     }
   };
 }

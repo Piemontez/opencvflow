@@ -140,6 +140,16 @@ class NodeStore {
       typeof targetOrId === 'string'
         ? (this.elements.find((_) => _.id === targetOrId) as CVFNode)
         : targetOrId;
+
+    if (!source) {
+      notify.warn(`Source ${sourceOrId} not found.`);
+      return;
+    }
+    if (!target) {
+      notify.warn(`Target ${targetOrId} not found.`);
+      return;
+    }
+
     const dataEdge = new CVFEdgeData(source.data, target.data);
     // Aresta/Conexão
     const newEdge: OCVFEdge = {

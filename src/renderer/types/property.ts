@@ -1,5 +1,6 @@
 export enum PropertyType {
   // IDE Types
+  Label,
   Text,
   Integer,
   Decimal,

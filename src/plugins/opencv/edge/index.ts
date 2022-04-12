@@ -1,9 +1,15 @@
-import { CVFIOComponent } from 'renderer/types/component';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from 'renderer/contexts/GCStore';
+import { Position } from 'react-flow-renderer/nocss';
+import { SourceHandle, TargetHandle } from 'renderer/types/handle';
+import {
+  ContourApproximationModes,
+  RetrievalModes,
+} from 'opencv-ts/src/ImageProcessing/Shape';
 
 const tabName = 'Edge';
 
@@ -33,7 +39,7 @@ export class CVSobelComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -82,7 +88,7 @@ export class CannyComponent extends CVFIOComponent {
     l2gradiente: boolean = false;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -128,7 +134,7 @@ export class LaplacianComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputs } = this;
+      const { inputsAsMat: inputs } = this;
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
@@ -149,6 +155,99 @@ export class LaplacianComponent extends CVFIOComponent {
           this.sources.push(out);
           this.output(out);
         }
+      }
+    }
+  };
+}
+
+/**
+ * Scharr component and node
+ */
+export class ScharrComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Scharr' };
+  static processor = class ScharrNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'ddepth', type: PropertyType.Integer },
+      { name: 'dx', type: PropertyType.Integer },
+      { name: 'dy', type: PropertyType.Integer },
+      { name: 'scale', type: PropertyType.Decimal },
+      { name: 'delta', type: PropertyType.Decimal },
+      { name: 'borderType', type: PropertyType.BorderType },
+    ];
+
+    ddepth: number = -1;
+    dx: number = 1;
+    dy: number = 0;
+    scale: number = 1;
+    delta: number = 0;
+    borderType: BorderTypes = cv.BORDER_DEFAULT;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
+          cv.Scharr(
+            src,
+            out,
+            this.ddepth,
+            this.dx,
+            this.dy,
+            this.scale,
+            this.delta,
+            this.borderType
+          );
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
+ * FindContours component and node
+ */
+export class FindContoursComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'Find Contours' };
+  targets: TargetHandle[] = [{ title: 'src', position: Position.Left }];
+  sources: SourceHandle[] = [
+    { title: 'contours', position: Position.Right },
+    { title: 'hierarchy', position: Position.Right },
+  ];
+
+  componentDidMount() {
+    this.addOption(CVFComponentOptions.NOT_DISPLAY);
+  }
+
+  static processor = class FindContoursNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'mode', type: PropertyType.Integer },
+      { name: 'method', type: PropertyType.Integer },
+    ];
+
+    mode: RetrievalModes = cv.RETR_TREE;
+    method: ContourApproximationModes = cv.CHAIN_APPROX_SIMPLE;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        const [src] = inputs;
+        if (!src) return;
+
+        const contours = new cv.MatVector();
+        const hierarchy = new cv.Mat();
+        GCStore.add(contours);
+        GCStore.add(hierarchy);
+
+        cv.findContours(src, contours, hierarchy, this.mode, this.method);
+
+        this.sources = [contours, hierarchy];
+      } else {
+        this.sources = [];
       }
     }
   };

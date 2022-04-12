@@ -1,12 +1,9 @@
-import NodeStore from 'renderer/contexts/NodeStore';
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { toJS } from 'mobx';
-import { OCVFEdge } from 'renderer/types/edge';
-import { CVFNode, CVFNodeProcessor } from 'renderer/types/node';
 import { app, dialog, getCurrentWindow } from '@electron/remote';
 import { SaveDialogOptions } from 'electron';
 import * as fs from 'fs';
+import nodeStoreToJson from 'renderer/utils/nodeStoreToJson';
 
 const options: SaveDialogOptions = {
   title: 'Save file - OpenCV Flow',
@@ -26,11 +23,7 @@ const FileSaveAction: MenuActionProps = {
     </>
   ),
   action: async () => {
-    const elements: Array<CVFNode | OCVFEdge> = toJS(NodeStore.elements);
-    const elementsUsefulData = elements.map(({ data, ...rest }) => ({
-      data: (data as CVFNodeProcessor)?.propertiesMap,
-      ...rest,
-    }));
+    const json = nodeStoreToJson();
 
     const rs = await dialog.showSaveDialog(
       getCurrentWindow(),
@@ -40,14 +33,10 @@ const FileSaveAction: MenuActionProps = {
       const filePath =
         rs.filePath.indexOf('.') > 0 ? rs.filePath : `${rs.filePath}.cvflow`;
 
-      fs.writeFileSync(
-        filePath,
-        JSON.stringify({ elements: elementsUsefulData }),
-        {
-          encoding: 'utf-8',
-          flag: 'w',
-        }
-      );
+      fs.writeFileSync(filePath, JSON.stringify(json), {
+        encoding: 'utf-8',
+        flag: 'w',
+      });
     }
     return null;
   },

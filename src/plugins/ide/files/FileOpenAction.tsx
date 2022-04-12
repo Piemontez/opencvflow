@@ -1,12 +1,9 @@
-import NodeStore from 'renderer/contexts/NodeStore';
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import path from 'path';
 import { app, dialog, getCurrentWindow } from '@electron/remote';
 import { OpenDialogOptions } from 'electron';
 import * as fs from 'fs';
-import { CVFNode } from 'renderer/types/node';
-import { OCVFEdge } from 'renderer/types/edge';
+import jsonToNodeStore from 'renderer/utils/jsonToNodeStore';
 
 const options: OpenDialogOptions = {
   title: 'Save file - OpenCV Flow',
@@ -37,40 +34,8 @@ const FileOpenAction: MenuActionProps = {
         encoding: 'utf-8',
         flag: 'r',
       });
-      const { elements } = JSON.parse(fileDdata);
-
-      // Adiciona os componentes
-      const components = (elements as Array<any>)
-        .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target))
-        .map(({ data, ...rest }) => {
-          const element = rest as CVFNode | OCVFEdge;
-          if (element.type) {
-            const component = NodeStore.getNodeType(element.type);
-            if (component) {
-              element.data = new component.processor();
-
-              Object.keys(element.data.propertiesMap).forEach((key) => {
-                if (data[key] !== undefined) {
-                  const el = element.data as any;
-                  if (typeof el[key] === 'object') {
-                    Object.assign(el[key], data[key]);
-                  } else {
-                    el[key] = data[key];
-                  }
-                }
-              });
-            }
-          }
-          return element;
-        });
-      NodeStore.elements = components;
-
-      // Adiciona as conecções
-      (elements as Array<any>)
-        .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target)
-        .forEach(({ data, ...rest }) => {
-          NodeStore.onConnect(rest as OCVFEdge);
-        });
+      const json = JSON.parse(fileDdata);
+      jsonToNodeStore(json);
     }
   },
 };

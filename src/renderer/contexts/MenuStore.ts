@@ -58,8 +58,10 @@ class MenuStore {
   }
 
   @action findOrCreateTab(tabTitle?: string): MenuTab {
-    tabTitle = tabTitle ?? 'ThirdParty'
-    if (this.tabsByName[tabTitle]) return this.tabsByName[tabTitle];
+    tabTitle = tabTitle ?? 'ThirdParty';
+    if (this.tabsByName[tabTitle]) {
+      return this.tabsByName[tabTitle];
+    }
     const tab: MenuTab = {
       title: tabTitle,
       actions: [],

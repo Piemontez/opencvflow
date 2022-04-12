@@ -17,10 +17,6 @@ class AppContent extends Component {
     });
   }
 
-  shouldComponentUpdate() {
-    return false;
-  }
-
   render() {
     return (
       <Row className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">

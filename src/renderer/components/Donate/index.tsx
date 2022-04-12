@@ -26,11 +26,11 @@ export default class Donate extends React.Component {
           <p>Any contribution is welcome.</p>
           <br />
           <div className="d-grid gap-2">
-            <Button variant="light" size="sm" href="" target="_black">
-              PayPal
+            <Button variant="outline-primary" size="sm" href="" target="_black">
+              By PayPal
             </Button>
-            <Button variant="light" size="sm">
-              Brazilian PIX: {process.env.PIX_KEY}
+            <Button variant="outline-secondary" size="sm">
+              By Brazilian PIX: {process.env.PIX_KEY}
             </Button>
           </div>
         </Modal.Body>

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrentWindow } from '@electron/remote';
 import FileSaveAction from './FileSaveAction';
 import FileOpenAction from './FileOpenAction';
+import FileNewAction from './FileNewAction';
 
 const FileExitAction: MenuActionProps = {
   tabTitle: 'File',
@@ -17,4 +18,4 @@ const FileExitAction: MenuActionProps = {
   },
 };
 
-export { FileSaveAction, FileOpenAction, FileExitAction };
+export { FileNewAction, FileSaveAction, FileOpenAction, FileExitAction };

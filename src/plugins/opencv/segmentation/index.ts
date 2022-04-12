@@ -95,8 +95,12 @@ export class RegionGrowing extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 
   static processor = class RegionGrowingNode extends CVFNodeProcessor {
-    static properties = [{ name: 'thresh', type: PropertyType.Decimal }];
+    static properties = [
+      { name: 'alert', type: PropertyType.Label },
+      { name: 'thresh', type: PropertyType.Decimal },
+    ];
 
+    alert: string = 'This is an experimental operator';
     thresh: number = 7;
 
     async proccess() {

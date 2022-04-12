@@ -161,6 +161,54 @@ export class LaplacianComponent extends CVFIOComponent {
 }
 
 /**
+ * Scharr component and node
+ */
+export class ScharrComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Scharr' };
+  static processor = class ScharrNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'ddepth', type: PropertyType.Integer },
+      { name: 'dx', type: PropertyType.Integer },
+      { name: 'dy', type: PropertyType.Integer },
+      { name: 'scale', type: PropertyType.Decimal },
+      { name: 'delta', type: PropertyType.Decimal },
+      { name: 'borderType', type: PropertyType.BorderType },
+    ];
+
+    ddepth: number = -1;
+    dx: number = 1;
+    dy: number = 0;
+    scale: number = 1;
+    delta: number = 0;
+    borderType: BorderTypes = cv.BORDER_DEFAULT;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
+          cv.Scharr(
+            src,
+            out,
+            this.ddepth,
+            this.dx,
+            this.dy,
+            this.scale,
+            this.delta,
+            this.borderType
+          );
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
  * FindContours component and node
  */
 export class FindContoursComponent extends CVFComponent {

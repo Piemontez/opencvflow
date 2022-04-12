@@ -1,6 +1,7 @@
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { notify } from 'renderer/components/Notification';
+import FileNewAction from './FileNewAction';
 
 const FileSaveAction: MenuActionProps = {
   tabTitle: 'File',
@@ -31,4 +32,4 @@ const FileOpenAction: MenuActionProps = {
   },
 };
 
-export { FileSaveAction, FileOpenAction };
+export { FileNewAction, FileSaveAction, FileOpenAction };

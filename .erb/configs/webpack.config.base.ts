@@ -5,6 +5,7 @@
 import webpack from 'webpack';
 import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 export default {
   externals: [...Object.keys(externals || {})],
@@ -40,6 +41,7 @@ export default {
   },
 
   plugins: [
+    new MonacoWebpackPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),

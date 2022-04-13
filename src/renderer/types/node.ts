@@ -49,7 +49,7 @@ export abstract class CVFNodeProcessor {
   async start(): Promise<void> {}
   // Função chamada a cada novo ciclo de operação
   async proccess(): Promise<void> {}
-  // Função chamada ao para o processamento. Chamada uma única vez
+  // Função chamada antes de finalizar o processamento. Chamada uma única vez
   async stop(): Promise<void> {}
 
   get propertiesMap(): Readonly<any> {

@@ -20,17 +20,7 @@ import { version } from '../../package.json';
 checkNodeEnv('production');
 deleteSourceMaps();
 
-const versionFormated = version.replace(/\./, '_');
-const devtoolsConfig =
-  process.env.DEBUG_PROD === 'true'
-    ? {
-        devtool: 'source-map',
-      }
-    : {};
-
 export default merge(baseConfig, {
-  ...devtoolsConfig,
-
   mode: 'production',
 
   target: 'web',
@@ -44,11 +34,16 @@ export default merge(baseConfig, {
   output: {
     path: webpackPaths.distWebviewPath,
     publicPath: './',
-    filename: `[name].bundle_${versionFormated}.js`,
+    filename: `[name].bundle_[contenthash].js`,
     library: {
+      name: 'opencvflow',
       type: 'umd',
     },
   },
+
+  /*experiments: {
+    outputModule: true,
+  },*/
 
   module: {
     rules: [
@@ -98,7 +93,7 @@ export default merge(baseConfig, {
   },
 
   optimization: {
-    minimize: true,
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         parallel: true,
@@ -110,16 +105,30 @@ export default merge(baseConfig, {
     ],
     splitChunks: {
       cacheGroups: {
+        monacoeditor: {
+          test: /[\\/]node_modules[\\/]monaco-editor[\\/]/,
+          name: 'monacoeditor',
+          priority: -10,
+          reuseExistingChunk: true,
+          chunks: 'all',
+        },
+        opencvts: {
+          test: /[\\/]node_modules[\\/]opencv-ts[\\/]/,
+          name: 'opencvts',
+          priority: -20,
+          reuseExistingChunk: true,
+          chunks: 'all',
+        },
         commons: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          priority: -10,
+          priority: -30,
           reuseExistingChunk: true,
           chunks: 'all',
         },
         default: {
           minChunks: 2,
-          priority: -20,
+          priority: -40,
           reuseExistingChunk: true,
         },
       },

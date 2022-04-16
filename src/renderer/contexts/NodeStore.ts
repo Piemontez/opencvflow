@@ -283,12 +283,12 @@ class NodeStore {
     if (this.runner) {
       await this.runner;
       this.runner = null;
-    }
 
-    for (const node of this.nodes) {
-      if (node.data.stop) {
+      for (const node of this.nodes) {
         try {
-          await node.data.stop();
+          if (node.data.stop) {
+            await node.data.stop();
+          }
         } catch (err: any) {
           console.error(err);
         }

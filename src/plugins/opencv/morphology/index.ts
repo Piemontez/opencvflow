@@ -222,7 +222,7 @@ export class MorphologyExComponent extends CVFComponent {
 
   static processor = class MorphologyExNode extends CVFNodeProcessor {
     static properties = [
-      { name: 'op', type: PropertyType.OneZeroMatrix },
+      { name: 'op', type: PropertyType.MorphTypes },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
       { name: 'borderType', type: PropertyType.BorderType },

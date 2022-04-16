@@ -17,6 +17,7 @@ export enum PropertyType {
   Scalar,
   ColorConversionCodes,
   BorderType,
+  MorphTypes,
   ThresholdTypes,
   DistanceTypes,
   DistanceTransformMasks = PropertyType.Integer,

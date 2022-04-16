@@ -1,4 +1,5 @@
 import { observable, action, computed, makeObservable } from 'mobx';
+import jsonToNodeStore from '../utils/jsonToNodeStore';
 import {
   removeElements,
   NodeTypesType,
@@ -17,6 +18,8 @@ import {
 } from 'renderer/types/menu';
 import { notify } from 'renderer/components/Notification';
 import GCStore from './GCStore';
+import Storage from 'renderer/utils/Storage';
+import nodeStoreToJson from 'renderer/utils/nodeStoreToJson';
 
 type OCVFlowElement = CVFNode | OCVFEdge;
 type OCVElements = Array<OCVFlowElement>;
@@ -26,6 +29,8 @@ interface NodeStoreI {
   elements: OCVElements;
   nodeTypes: NodeTypesType;
   currentElement?: OCVFlowElement;
+
+  init(): void;
 
   getNodeType(name: string): typeof CVFComponent | null;
   addNodeType(component: typeof CVFComponent): void;
@@ -77,6 +82,23 @@ class NodeStore {
     ); */
   }
 
+  init() {
+    setTimeout(() => {
+      try {
+        const json = Storage.get('NodeStore', 'this');
+        jsonToNodeStore(json);
+      } catch (err: any) {
+        console.error(err);
+        notify.danger(err.message);
+      }
+    }, 500);
+  }
+
+  storage() {
+    const json = nodeStoreToJson();
+    Storage.set('NodeStore', 'this', json);
+  }
+
   getNodeType = (name: string): typeof CVFComponent | null => {
     return this.nodeTypes[name] as typeof CVFComponent;
   };
@@ -104,6 +126,7 @@ class NodeStore {
     };
 
     this.elements = this.elements.concat(newNode);
+    this.storage();
   };
 
   @action removeNode = (nodeOrId: CVFNode | string) => {
@@ -121,6 +144,7 @@ class NodeStore {
         }
       }
       this.elements = [...this.elements];
+      this.storage();
     }
   };
 
@@ -178,6 +202,7 @@ class NodeStore {
     target.data.inEdges[targetsIdx] = dataEdge;
     // Adicionar a aresta nos elementos da tela
     this.elements = this.elements.concat(newEdge);
+    this.storage();
   };
 
   @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
@@ -191,6 +216,7 @@ class NodeStore {
     }
     if (idx > -1) {
       this.elements.splice(idx, 1);
+      this.storage();
     }
   };
 
@@ -257,12 +283,12 @@ class NodeStore {
     if (this.runner) {
       await this.runner;
       this.runner = null;
-    }
 
-    for (const node of this.nodes) {
-      if (node.data.stop) {
+      for (const node of this.nodes) {
         try {
-          await node.data.stop();
+          if (node.data.stop) {
+            await node.data.stop();
+          }
         } catch (err: any) {
           console.error(err);
         }

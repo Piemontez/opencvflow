@@ -1,27 +1,28 @@
 import { PluginType } from 'renderer/types/plugin';
-// import cv, { Mat } from 'opencv-ts';
 import { CVFIOEndlessComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
+import { MenuActionProps } from 'renderer/types/menu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React from 'react';
+import { EditComponenteModal } from './EditComponenteModal';
 
-const tabName = 'Custom Components';
+export const tabName = 'Custom Components';
 
-export class Custom01Component extends CVFIOEndlessComponent {
-  static menu = { tabTitle: tabName, title: 'Custom 01' };
-  static processor = class Custom01Processor extends CVFNodeProcessor {
-    async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = src.clone();
+const editCompRef = React.createRef<EditComponenteModal>();
+const ECM6Fix = () => <EditComponenteModal ref={editCompRef} />;
 
-          this.output(out);
-          this.sources = [out];
-        }
-      }
-    }
-  };
-}
+const NewComponentAction: MenuActionProps = {
+  tabTitle: tabName,
+  name: 'new',
+  title: (
+    <>
+      <ECM6Fix />
+      <span onClick={() => editCompRef.current?.handleShow()}>
+        <FontAwesomeIcon className="text-info" icon={'plus'} /> new
+      </span>
+    </>
+  ),
+};
 
 export class Custom02Component extends CVFIOEndlessComponent {
   static menu = { tabTitle: tabName, title: 'Custom 02' };
@@ -43,7 +44,7 @@ export class Custom02Component extends CVFIOEndlessComponent {
 
 const OpenCVPlugin: PluginType = {
   name: 'Custom Plugin',
-  components: [Custom01Component, Custom02Component],
+  components: [NewComponentAction, Custom02Component],
 };
 
 export default OpenCVPlugin;

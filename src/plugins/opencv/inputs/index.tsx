@@ -197,9 +197,18 @@ export class CVKernelComponent extends CVFOutputComponent {
     kernel: Mat = new cv.Mat(3, 3, cv.CV_16S, new cv.Scalar(0));
 
     async proccess() {
-      this.output(this.kernel!);
+      this.sources = [this.kernel];
 
-      this.sources = [this.kernel!];
+      const out = new cv.Mat();
+      const dsize = new cv.Size(
+        Math.max(150, this.kernel.cols),
+        Math.max(150, this.kernel.rows)
+      );
+      cv.resize(this.kernel, out, dsize, 0, 0, cv.INTER_AREA);
+
+      GCStore.add(out);
+
+      this.output(out);
     }
   };
 }

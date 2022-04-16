@@ -30,7 +30,7 @@ export default class Donate extends React.Component {
               By PayPal
             </Button>
             <Button variant="outline-secondary" size="sm">
-              By Brazilian PIX: {process.env.PIX_KEY}
+              By Brazilian PIX:
             </Button>
           </div>
         </Modal.Body>

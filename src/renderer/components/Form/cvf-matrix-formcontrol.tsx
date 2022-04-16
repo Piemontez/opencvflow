@@ -3,6 +3,7 @@ import numeral from 'numeral';
 import { Col, Row, Form } from 'react-bootstrap';
 import { CVFFormEvent } from './types/CVFFormEvent';
 import { CVFFormProps } from './types/CVFFormProps';
+import GCStore from 'renderer/contexts/GCStore';
 
 function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
   props.groupAs = undefined;
@@ -19,11 +20,9 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
   ) => {
     if (props.onChange) {
       if (!value.cols && !value.rows) {
-        props.onChange(
-          new cv.Mat(1, 1, cv.CV_8U, new cv.Scalar(0)),
-          null,
-          event
-        );
+        const startMat = new cv.Mat(1, 1, cv.CV_8U, new cv.Scalar(0));
+        //GCStore.add(value);
+        props.onChange(startMat, null, event);
       } else if (cols !== null) {
         if (cols > value.cols) {
           const zs = new cv.Mat(value.rows, 1, value.type(), new cv.Scalar(0));
@@ -37,13 +36,16 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
             new cv.Scalar(0)
           );
           cv.hconcat(vector, dst);
+
+          GCStore.add(value);
+          GCStore.add(zs);
+          GCStore.add(vector);
+
           props.onChange(dst, null, event);
         } else {
-          props.onChange(
-            value.roi(new cv.Rect(0, 0, cols, value.rows)),
-            null,
-            event
-          );
+          GCStore.add(value);
+          const roi = value.roi(new cv.Rect(0, 0, cols, value.rows));
+          props.onChange(roi, null, event);
         }
       } else if (rows !== null) {
         if (rows > value.rows) {
@@ -58,13 +60,16 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
             new cv.Scalar(0)
           );
           cv.vconcat(vector, dst);
+
+          GCStore.add(value);
+          GCStore.add(zs);
+          GCStore.add(vector);
+
           props.onChange(dst, null, event);
         } else {
-          props.onChange(
-            value.roi(new cv.Rect(0, 0, value.cols, rows)),
-            null,
-            event
-          );
+          GCStore.add(value);
+          const roi = value.roi(new cv.Rect(0, 0, value.cols, rows));
+          props.onChange(roi, null, event);
         }
       }
     }
@@ -86,6 +91,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
                 onChange={(event) => {
                   const parser = numeral(event.target.value);
                   value.shortPtr(row, col)[0] = parser.value() || 0;
+                  if (props.onChange) props.onChange(value, null, event);
                 }}
               />
             </Col>
@@ -102,11 +108,12 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
               <Form.Check
                 type="checkbox"
                 checked={value.data?.at(row * rows + col)}
-                onClick={() =>
-                  (value.data[row * rows + col] = !value.data.at(
+                onClick={(event) => {
+                  value.data[row * rows + col] = !value.data.at(
                     row * rows + col
-                  ))
-                }
+                  );
+                  if (props.onChange) props.onChange(value, null, event);
+                }}
               />
             </Col>
           ))}

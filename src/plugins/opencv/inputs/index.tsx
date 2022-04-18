@@ -212,3 +212,50 @@ export class CVKernelComponent extends CVFOutputComponent {
     }
   };
 }
+
+export class CVGaussianKernelComponent extends CVFOutputComponent {
+  static menu = { tabTitle: tabName, title: 'GausKernel' };
+
+  static processor = class GaussianKernelProcessor extends CVFNodeProcessor {
+    static properties = [
+      { name: 'sigma', type: PropertyType.Decimal },
+      { name: 'rows', type: PropertyType.Integer },
+      { name: 'cols', type: PropertyType.Integer },
+    ];
+
+    sigma: number = 1;
+    rows: number = 5;
+    cols: number = 5;
+    kernel?: Mat;
+
+    buildKernel() {
+      this.kernel = new cv.Mat(
+        this.rows,
+        this.cols,
+        cv.CV_32F,
+        new cv.Scalar(0)
+      );
+
+      cv.multiply(
+        cv.getGaussianKernel(this.rows, this.sigma, cv.CV_32F),
+        cv.getGaussianKernel(this.cols, this.sigma, cv.CV_32F).t(),
+        this.kernel,
+        1
+      );
+    }
+
+    async proccess() {
+      if (
+        !this.kernel ||
+        this.kernel.rows !== this.rows ||
+        this.kernel.cols !== this.cols
+      ) {
+        this.buildKernel();
+      }
+
+      this.output(this.kernel!);
+
+      this.sources = [this.kernel!];
+    }
+  };
+}

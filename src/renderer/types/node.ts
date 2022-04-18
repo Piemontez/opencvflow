@@ -10,7 +10,8 @@ type NodeSourceDef =
   | Point
   | Array<Point>
   | Moments
-  | Array<Moments>;
+  | Array<Moments>
+  | number;
 
 /**
  * Classe com definições

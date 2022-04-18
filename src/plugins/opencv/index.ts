@@ -1,6 +1,6 @@
 import { PluginType } from 'renderer/types/plugin';
 import * as arithmetic from './arithmetic';
-import * as imgproc from './imgproc';
+import * as others from './others';
 import * as conversors from './conversors';
 import * as inputs from './inputs';
 import * as segmentation from './segmentation';
@@ -27,8 +27,8 @@ const OpenCVPlugin: PluginType = {
     ...Object.values(edge),
     // segmentation
     ...Object.values(segmentation),
-    // imgproc
-    ...Object.values(imgproc),
+    // others
+    ...Object.values(others),
     // draw
     ...Object.values(draw),
     // utils

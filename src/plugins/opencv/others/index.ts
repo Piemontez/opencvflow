@@ -12,10 +12,10 @@ import GCStore from 'renderer/contexts/GCStore';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { Position } from 'react-flow-renderer/nocss';
 
-const tabName = 'ImgProc';
+const tabName = 'Others';
 
 /**
- * Threshold component and node
+ * Distance Transform component and node
  */
 export class DistanceTransformComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Distance Transform' };

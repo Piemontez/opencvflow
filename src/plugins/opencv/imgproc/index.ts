@@ -183,6 +183,7 @@ export class GrabCutComponent extends CVFIOComponent {
           if (!src) continue;
 
           const out = src.clone();
+          GCStore.add(out);
 
           cv.grabCut(
             out,

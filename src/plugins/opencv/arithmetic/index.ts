@@ -271,3 +271,35 @@ export class CVNormalizeComponent extends CVFIOComponent {
     }
   };
 }
+
+export class CVConvertScaleAbsComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Convert Scale Abs' };
+
+  static processor = class ConvertScaleAbsProcessor extends CVFNodeProcessor {
+    static properties = [
+      { name: 'alpha', type: PropertyType.Integer },
+      { name: 'beta', type: PropertyType.Integer },
+    ];
+
+    alpha: number = 1;
+    beta: number = 0;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          if (!src) continue;
+
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
+          cv.convertScaleAbs(src, out, this.alpha, this.beta);
+
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}

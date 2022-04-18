@@ -21,12 +21,12 @@ const OpenCVPlugin: PluginType = {
     ...Object.values(arithmetic),
     // smoothing
     ...Object.values(smoothing),
-    // segmentation
-    ...Object.values(segmentation),
     // morphology
     ...Object.values(morphology),
     // edge
     ...Object.values(edge),
+    // segmentation
+    ...Object.values(segmentation),
     // imgproc
     ...Object.values(imgproc),
     // draw

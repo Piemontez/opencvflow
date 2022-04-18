@@ -28,6 +28,8 @@ export default class About extends React.Component {
           Version: {version}
           <br />
           OpenCV: 4.0 +
+          <br />
+          Monaco Editor: 0.33
         </Modal.Body>
         <Modal.Footer>
           <img src={brasilIcon} height="16" alt="brazil" />{' '}

@@ -34,7 +34,7 @@ export default merge(baseConfig, {
   output: {
     path: webpackPaths.distWebviewPath,
     publicPath: './',
-    filename: `[name].bundle_[contenthash].js`,
+    filename: `[name].[contenthash].js`,
     library: {
       name: 'opencvflow',
       type: 'umd',
@@ -181,6 +181,7 @@ export default merge(baseConfig, {
     }),
 
     new HtmlWebpackPlugin({
+      inject: false,
       filename: 'index.html',
       template: path.join(webpackPaths.srcRendererPath, 'index.webview.ejs'),
       minify: {
@@ -189,7 +190,7 @@ export default merge(baseConfig, {
         removeComments: true,
       },
       isBrowser: true,
-      isDevelopment: process.env.NODE_ENV !== 'production',
+      isDevelopment: 'production',
     }),
   ],
 });

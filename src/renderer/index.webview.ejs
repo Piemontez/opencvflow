@@ -136,7 +136,7 @@
               var clength = xhr.getResponseHeader('Content-Length');
               if (clength && !asset.size) {
                 asset.size = clength;
-                _this.totalSize += asset.size;
+                _this.totalSize += parseInt(asset.size);
               }
             };
             //set listeners

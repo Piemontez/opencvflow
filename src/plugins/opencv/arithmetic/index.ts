@@ -4,7 +4,6 @@ import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'react-flow-renderer/nocss';
 import GCStore from 'renderer/contexts/GCStore';
 import {
-  CVFOutputComponent,
   CVFIOEndlessComponent,
   CVFComponent,
   CVFIOComponent,

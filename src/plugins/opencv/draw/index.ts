@@ -23,11 +23,11 @@ export class CVRectangleComponent extends CVFComponent {
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
-  static processor = class RectangleProcessor extends CVFNodeProcessor {,
-    color: Scalar = new cv.Scalar(100,100,100);
+  static processor = class RectangleProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
     thickness: number = 1;
     lineType: LineTypes = cv.LINE_AA;
-    shift: number =0;
+    shift: number = 0;
 
     async proccess() {
       const { inputs } = this;
@@ -38,7 +38,15 @@ export class CVRectangleComponent extends CVFComponent {
           const out = (src as Mat).clone();
           GCStore.add(out);
 
-          cv.rectangle(out, point1 as Point, point2 as Point, this.color, this.thickness, this.lineType, this.shift);
+          cv.rectangle(
+            out,
+            point1 as Point,
+            point2 as Point,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
 
           this.sources = [out];
           this.output(out);
@@ -58,11 +66,11 @@ export class CVLineComponent extends CVFComponent {
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
-  static processor = class LineProcessor extends CVFNodeProcessor {,
-    color: Scalar = new cv.Scalar(100,100,100);
+  static processor = class LineProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
     thickness: number = 1;
     lineType: LineTypes = cv.LINE_AA;
-    shift: number =0;
+    shift: number = 0;
 
     async proccess() {
       const { inputs } = this;
@@ -73,7 +81,15 @@ export class CVLineComponent extends CVFComponent {
           const out = (src as Mat).clone();
           GCStore.add(out);
 
-          cv.line(out, point1 as Point, point2 as Point, this.color, this.thickness, this.lineType, this.shift);
+          cv.line(
+            out,
+            point1 as Point,
+            point2 as Point,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
 
           this.sources = [out];
           this.output(out);
@@ -93,11 +109,11 @@ export class CVCircleComponent extends CVFComponent {
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
-  static processor = class CircleProcessor extends CVFNodeProcessor {,
-    color: Scalar = new cv.Scalar(100,100,100);
+  static processor = class CircleProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
     thickness: number = 1;
     lineType: LineTypes = cv.LINE_AA;
-    shift: number =0;
+    shift: number = 0;
 
     async proccess() {
       const { inputs } = this;
@@ -108,7 +124,15 @@ export class CVCircleComponent extends CVFComponent {
           const out = (src as Mat).clone();
           GCStore.add(out);
 
-          cv.circle(out, point1 as Point, radius as number, this.color, this.thickness, this.lineType, this.shift);
+          cv.circle(
+            out,
+            point1 as Point,
+            radius as number,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
 
           this.sources = [out];
           this.output(out);

@@ -1,6 +1,6 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, { Point, Mat, Size, BackgroundSubtractorMOG2 } from 'opencv-ts';
+import cv, { Point, Mat, BackgroundSubtractorMOG2 } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import {
@@ -12,96 +12,6 @@ import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { Position } from 'react-flow-renderer/nocss';
 
 const tabName = 'ImgProc';
-
-/**
- * BoxFilter component and node
- */
-export class BoxFilterComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'BoxFilter' };
-  static processor = class BoxFilterNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'ddepth', type: PropertyType.Integer },
-      { name: 'ksize', type: PropertyType.Size },
-      { name: 'anchor', type: PropertyType.Point },
-      { name: 'normalize', type: PropertyType.Boolean },
-      { name: 'borderType', type: PropertyType.BorderType },
-    ];
-
-    ddepth: number = -1;
-    ksize: Size = new cv.Size(3, 3);
-    anchor: Point = new cv.Point(-1, -1);
-    normalize: boolean = true;
-    borderType: BorderTypes = cv.BORDER_DEFAULT;
-
-    async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
-
-          cv.boxFilter(
-            src,
-            out,
-            this.ddepth,
-            this.ksize,
-            this.anchor,
-            this.normalize,
-            this.borderType
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
-
-/**
- * SqrBoxFilter component and node
- */
-export class SqrBoxFilterComponent extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'SqrBox' };
-  static processor = class SqrBoxFilterNode extends CVFNodeProcessor {
-    static properties = [
-      { name: 'ddepth', type: PropertyType.Integer },
-      { name: 'ksize', type: PropertyType.Size },
-      { name: 'anchor', type: PropertyType.Point },
-      { name: 'normalize', type: PropertyType.Boolean },
-      { name: 'borderType', type: PropertyType.BorderType },
-    ];
-
-    ddepth: number = -1;
-    ksize: Size = new cv.Size(3, 3);
-    anchor: Point = new cv.Point(-1, -1);
-    normalize: boolean = true;
-    borderType: BorderTypes = cv.BORDER_DEFAULT;
-
-    async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
-
-          cv.sqrBoxFilter(
-            src,
-            out,
-            this.ddepth,
-            this.ksize,
-            this.anchor,
-            this.normalize,
-            this.borderType
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
-      }
-    }
-  };
-}
 
 /**
  * BackgroundSubtractorMOG2 component and node

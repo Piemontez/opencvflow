@@ -150,3 +150,94 @@ export class BilateralFilterComponent extends CVFIOComponent {
     }
   };
 }
+
+
+/**
+ * BoxFilter component and node
+ */
+ export class BoxFilterComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'BoxFilter' };
+  static processor = class BoxFilterNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'ddepth', type: PropertyType.Integer },
+      { name: 'ksize', type: PropertyType.Size },
+      { name: 'anchor', type: PropertyType.Point },
+      { name: 'normalize', type: PropertyType.Boolean },
+      { name: 'borderType', type: PropertyType.BorderType },
+    ];
+
+    ddepth: number = -1;
+    ksize: Size = new cv.Size(3, 3);
+    anchor: Point = new cv.Point(-1, -1);
+    normalize: boolean = true;
+    borderType: BorderTypes = cv.BORDER_DEFAULT;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
+          cv.boxFilter(
+            src,
+            out,
+            this.ddepth,
+            this.ksize,
+            this.anchor,
+            this.normalize,
+            this.borderType
+          );
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
+ * SqrBoxFilter component and node
+ */
+export class SqrBoxFilterComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'SqrBox' };
+  static processor = class SqrBoxFilterNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'ddepth', type: PropertyType.Integer },
+      { name: 'ksize', type: PropertyType.Size },
+      { name: 'anchor', type: PropertyType.Point },
+      { name: 'normalize', type: PropertyType.Boolean },
+      { name: 'borderType', type: PropertyType.BorderType },
+    ];
+
+    ddepth: number = -1;
+    ksize: Size = new cv.Size(3, 3);
+    anchor: Point = new cv.Point(-1, -1);
+    normalize: boolean = true;
+    borderType: BorderTypes = cv.BORDER_DEFAULT;
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(out);
+
+          cv.sqrBoxFilter(
+            src,
+            out,
+            this.ddepth,
+            this.ksize,
+            this.anchor,
+            this.normalize,
+            this.borderType
+          );
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}

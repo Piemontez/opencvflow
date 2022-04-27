@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import brasilIcon from 'renderer/assets/imgs/brasil-48.png';
 import anarchismIcon from 'renderer/assets/imgs/anarchism.png';
-import { version } from '../../../../package.json';
+import { dependencies, version } from '../../../../package.json';
 
 export default class About extends React.Component {
   state = {
@@ -27,9 +27,11 @@ export default class About extends React.Component {
           <br />
           Version: {version}
           <br />
-          OpenCV: 4.0 +
+          OpenCV: 4.5 +
           <br />
-          Monaco Editor: 0.33
+          Monaco Editor: {dependencies['monaco-editor']}
+          <br />
+          React: {dependencies.react}
         </Modal.Body>
         <Modal.Footer>
           <img src={brasilIcon} height="16" alt="brazil" />{' '}

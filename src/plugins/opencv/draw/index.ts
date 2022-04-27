@@ -1,5 +1,6 @@
-import cv, { Mat, MatVector } from 'opencv-ts';
+import cv, { Mat, MatVector, Point, Scalar } from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
+import { LineTypes } from 'opencv-ts/src/ImageProcessing/DrawingFunctions';
 import { Position } from 'react-flow-renderer/nocss';
 import GCStore from 'renderer/contexts/GCStore';
 import {
@@ -11,6 +12,135 @@ import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { CVFNodeProcessor } from 'renderer/types/node';
 
 const tabName = 'Draw';
+
+export class CVRectangleComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'Rectangle' };
+
+  targets: TargetHandle[] = [
+    { title: 'src', position: Position.Left },
+    { title: 'point1', position: Position.Left },
+    { title: 'point2', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
+
+  static processor = class RectangleProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
+    thickness: number = 1;
+    lineType: LineTypes = cv.LINE_AA;
+    shift: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length === 3) {
+        const [src, point1, point2] = inputs;
+
+        if (src && point1 && point2) {
+          const out = (src as Mat).clone();
+          GCStore.add(out);
+
+          cv.rectangle(
+            out,
+            point1 as Point,
+            point2 as Point,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
+
+          this.sources = [out];
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+export class CVLineComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'Line' };
+
+  targets: TargetHandle[] = [
+    { title: 'src', position: Position.Left },
+    { title: 'point1', position: Position.Left },
+    { title: 'point2', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
+
+  static processor = class LineProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
+    thickness: number = 1;
+    lineType: LineTypes = cv.LINE_AA;
+    shift: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length === 3) {
+        const [src, point1, point2] = inputs;
+
+        if (src && point1 && point2) {
+          const out = (src as Mat).clone();
+          GCStore.add(out);
+
+          cv.line(
+            out,
+            point1 as Point,
+            point2 as Point,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
+
+          this.sources = [out];
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+export class CVCircleComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'Circle' };
+
+  targets: TargetHandle[] = [
+    { title: 'src', position: Position.Left },
+    { title: 'center', position: Position.Left },
+    { title: 'radius', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
+
+  static processor = class CircleProcessor extends CVFNodeProcessor {
+    color: Scalar = new cv.Scalar(100, 100, 100);
+    thickness: number = 1;
+    lineType: LineTypes = cv.LINE_AA;
+    shift: number = 0;
+
+    async proccess() {
+      const { inputs } = this;
+      if (inputs.length === 3) {
+        const [src, point1, radius] = inputs;
+
+        if (src && point1 && radius) {
+          const out = (src as Mat).clone();
+          GCStore.add(out);
+
+          cv.circle(
+            out,
+            point1 as Point,
+            radius as number,
+            this.color,
+            this.thickness,
+            this.lineType,
+            this.shift
+          );
+
+          this.sources = [out];
+          this.output(out);
+        }
+      }
+    }
+  };
+}
 
 export class DrawContourComponent extends CVFComponent {
   static menu = { tabTitle: tabName, title: 'Draw Contour' };
@@ -49,6 +179,8 @@ export class DrawContourComponent extends CVFComponent {
 
 export class ContoursCentersComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Contours Centers' };
+  targets: TargetHandle[] = [{ title: 'contours', position: Position.Left }];
+  sources: SourceHandle[] = [{ title: 'point', position: Position.Right }];
 
   componentDidMount() {
     this.addOption(CVFComponentOptions.NOT_DISPLAY);

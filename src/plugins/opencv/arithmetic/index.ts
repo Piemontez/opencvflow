@@ -4,7 +4,6 @@ import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'react-flow-renderer/nocss';
 import GCStore from 'renderer/contexts/GCStore';
 import {
-  CVFOutputComponent,
   CVFIOEndlessComponent,
   CVFComponent,
   CVFIOComponent,
@@ -16,7 +15,7 @@ import { PropertyType } from 'renderer/types/property';
 const tabName = 'Arithmetic';
 
 export class CVPlusComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: '+' };
+  static menu = { tabTitle: tabName, title: 'Add' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'src2', position: Position.Left },
@@ -56,7 +55,7 @@ export class CVPlusComponent extends CVFComponent {
 }
 
 export class CVSubComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: '-' };
+  static menu = { tabTitle: tabName, title: 'Subtract' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'src2', position: Position.Left },
@@ -96,15 +95,20 @@ export class CVSubComponent extends CVFComponent {
 }
 
 export class CVMultiplyComponent extends CVFIOEndlessComponent {
-  static menu = { tabTitle: tabName, title: '*' };
+  static menu = { tabTitle: tabName, title: 'Multiply' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+  ];
+
   static processor = class MultiplyProcessor extends CVFNodeProcessor {
     async proccess() {
       let out: Mat | null = null;
 
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
+      const { inputsAsMat } = this;
+      if (inputsAsMat.length) {
         this.sources = [];
-        for (const src of inputs) {
+        for (const src of inputsAsMat) {
           if (!out) {
             out = src.clone();
             GCStore.add(out);
@@ -125,7 +129,12 @@ export class CVMultiplyComponent extends CVFIOEndlessComponent {
 }
 
 export class CVDivisionComponent extends CVFIOEndlessComponent {
-  static menu = { tabTitle: tabName, title: '/' };
+  static menu = { tabTitle: tabName, title: 'Divide' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+  ];
+
   static processor = class DivisionProcessor extends CVFNodeProcessor {
     async proccess() {
       let out: Mat | null = null;
@@ -155,6 +164,11 @@ export class CVDivisionComponent extends CVFIOEndlessComponent {
 
 export class CVMulComponent extends CVFIOEndlessComponent {
   static menu = { tabTitle: tabName, title: 'Mul' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+  ];
+
   static processor = class MulProcessor extends CVFNodeProcessor {
     async proccess() {
       let out: Mat | null = null;
@@ -178,53 +192,6 @@ export class CVMulComponent extends CVFIOEndlessComponent {
       } else {
         this.sources = [];
       }
-    }
-  };
-}
-
-export class CVGaussianKernelComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'GausKernel' };
-
-  static processor = class GaussianKernelProcessor extends CVFNodeProcessor {
-    static properties = [
-      { name: 'sigma', type: PropertyType.Decimal },
-      { name: 'rows', type: PropertyType.Integer },
-      { name: 'cols', type: PropertyType.Integer },
-    ];
-
-    sigma: number = 1;
-    rows: number = 5;
-    cols: number = 5;
-    kernel?: Mat;
-
-    buildKernel() {
-      this.kernel = new cv.Mat(
-        this.rows,
-        this.cols,
-        cv.CV_32F,
-        new cv.Scalar(0)
-      );
-
-      cv.multiply(
-        cv.getGaussianKernel(this.rows, this.sigma, cv.CV_32F),
-        cv.getGaussianKernel(this.cols, this.sigma, cv.CV_32F).t(),
-        this.kernel,
-        1
-      );
-    }
-
-    async proccess() {
-      if (
-        !this.kernel ||
-        this.kernel.rows !== this.rows ||
-        this.kernel.cols !== this.cols
-      ) {
-        this.buildKernel();
-      }
-
-      this.output(this.kernel!);
-
-      this.sources = [this.kernel!];
     }
   };
 }

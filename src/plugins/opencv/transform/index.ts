@@ -5,9 +5,10 @@ import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from 'renderer/contexts/GCStore';
 import { SourceHandle } from 'renderer/types/handle';
-import { Position } from 'react-flow-renderer';
+import { Position } from 'react-flow-renderer/nocss';
+import messages from '../messages';
 
-const tabName = 'Others';
+const tabName = 'Transform';
 
 /**
  * DFT Transform component and node
@@ -15,7 +16,10 @@ const tabName = 'Others';
 export class DFTComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'DFT' };
 
-  sources: SourceHandle[] = [{ title: 'complexI', position: Position.Right }];
+  sources: SourceHandle[] = [
+    { title: 'dftComplexI', position: Position.Right },
+    { title: 'spectrum', position: Position.Right },
+  ];
 
   static processor = class DFTNode extends CVFNodeProcessor {
     static properties = [
@@ -31,11 +35,22 @@ export class DFTComponent extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         for (const src of inputs) {
+          if (!src) continue;
+          if (src.channels() > 1) {
+            throw new Error(
+              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
+                '{1}',
+                src.channels().toString()
+              )
+            );
+          }
+
           // get optimal size of DFT
           const optimalRows = cv.getOptimalDFTSize(src.rows);
           const optimalCols = cv.getOptimalDFTSize(src.cols);
           const s0 = cv.Scalar.all(0);
           const padded = new cv.Mat();
+
           cv.copyMakeBorder(
             src,
             padded,
@@ -65,7 +80,51 @@ export class DFTComponent extends CVFIOComponent {
           GCStore.add(plane1);
 
           this.sources.push(complexI);
-          //this.output(out);
+
+          // compute log(1 + sqrt(Re(DFT(img))**2 + Im(DFT(img))**2))
+
+          cv.split(complexI, planes);
+          cv.magnitude(planes.get(0), planes.get(1), planes.get(0));
+          const mag = planes.get(0);
+          const m1 = new cv.Mat.ones(mag.rows, mag.cols, mag.type());
+          cv.add(mag, m1, mag);
+          cv.log(mag, mag);
+
+          // crop the spectrum, if it has an odd number of rows or columns
+          const rect = new cv.Rect(0, 0, mag.cols & -2, mag.rows & -2);
+          const spectrum = mag.roi(rect);
+
+          // rearrange the quadrants of Fourier image
+          // so that the origin is at the image center
+          const cx = spectrum.cols / 2;
+          const cy = spectrum.rows / 2;
+          const tmp = new cv.Mat();
+
+          const rect0 = new cv.Rect(0, 0, cx, cy);
+          const rect1 = new cv.Rect(cx, 0, cx, cy);
+          const rect2 = new cv.Rect(0, cy, cx, cy);
+          const rect3 = new cv.Rect(cx, cy, cx, cy);
+
+          const q0 = spectrum.roi(rect0);
+          const q1 = spectrum.roi(rect1);
+          const q2 = spectrum.roi(rect2);
+          const q3 = spectrum.roi(rect3);
+
+          // exchange 1 and 4 quadrants
+          q0.copyTo(tmp);
+          q3.copyTo(q0);
+          tmp.copyTo(q3);
+
+          // exchange 2 and 3 quadrants
+          q1.copyTo(tmp);
+          q2.copyTo(q1);
+          tmp.copyTo(q2);
+
+          // The pixel value of cv.CV_32S type image ranges from 0 to 1.
+          cv.normalize(spectrum, spectrum, 0, 1, cv.NORM_MINMAX);
+          this.output(spectrum);
+
+          this.sources.push(spectrum);
         }
       }
     }

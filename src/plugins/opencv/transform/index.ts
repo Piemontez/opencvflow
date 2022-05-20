@@ -79,7 +79,6 @@ export class DFTComponent extends CVFIOComponent {
           GCStore.add(plane0);
           GCStore.add(plane1);
 
-          this.sources.push(complexI);
 
           // compute log(1 + sqrt(Re(DFT(img))**2 + Im(DFT(img))**2))
 
@@ -122,9 +121,9 @@ export class DFTComponent extends CVFIOComponent {
 
           // The pixel value of cv.CV_32S type image ranges from 0 to 1.
           cv.normalize(spectrum, spectrum, 0, 1, cv.NORM_MINMAX);
-          this.output(spectrum);
 
-          this.sources.push(spectrum);
+          this.sources = [complexI, spectrum];
+          this.output(spectrum);
         }
       }
     }
@@ -153,7 +152,8 @@ export class IDFTComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.pyrUp(src, out, this.dstsize, this.borderType);
+          cv.dft(src, out, cv.DCT_INVERSE | cv.DFT_REAL_OUTPUT, 0);
+          cv.normalize(out, out, 0, 1, cv.NORM_MINMAX);
 
           this.sources.push(out);
           this.output(out);

@@ -1,6 +1,4 @@
 import { PluginType } from 'renderer/types/plugin';
-import { CVFIOEndlessComponent } from 'renderer/types/component';
-import { CVFNodeProcessor } from 'renderer/types/node';
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -24,27 +22,9 @@ const NewComponentAction: MenuActionProps = {
   ),
 };
 
-export class Custom02Component extends CVFIOEndlessComponent {
-  static menu = { tabTitle: tabName, title: 'Custom 02' };
-  static processor = class Custom01Processor extends CVFNodeProcessor {
-    async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = src.clone();
-
-          this.output(out);
-          this.sources = [out];
-        }
-      }
-    }
-  };
-}
-
 const OpenCVPlugin: PluginType = {
   name: 'Custom Plugin',
-  components: [NewComponentAction, Custom02Component],
+  components: [NewComponentAction],
 };
 
 export default OpenCVPlugin;

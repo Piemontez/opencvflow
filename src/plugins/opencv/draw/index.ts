@@ -10,6 +10,7 @@ import {
 } from 'renderer/types/component';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { CVFNodeProcessor } from 'renderer/types/node';
+import { PropertyType } from 'renderer/types/property';
 
 const tabName = 'Draw';
 
@@ -110,6 +111,14 @@ export class CVCircleComponent extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
   static processor = class CircleProcessor extends CVFNodeProcessor {
+    static properties = [
+      { name: 'center', type: PropertyType.Point },
+      { name: 'radius', type: PropertyType.Integer },
+    ];
+
+    center: Point = new cv.Point(-1, -1);
+    radius: number = 0;
+
     color: Scalar = new cv.Scalar(100, 100, 100);
     thickness: number = 1;
     lineType: LineTypes = cv.LINE_AA;
@@ -117,26 +126,35 @@ export class CVCircleComponent extends CVFComponent {
 
     async proccess() {
       const { inputs } = this;
-      if (inputs.length === 3) {
-        const [src, point1, radius] = inputs;
+      let [src, center, radius] = inputs;
 
-        if (src && point1 && radius) {
-          const out = (src as Mat).clone();
-          GCStore.add(out);
-
-          cv.circle(
-            out,
-            point1 as Point,
-            radius as number,
-            this.color,
-            this.thickness,
-            this.lineType,
-            this.shift
-          );
-
-          this.sources = [out];
-          this.output(out);
+      if (!center) {
+        if (this.center.x > -1) {
+          center = this.center;
+        } else if ((src as Mat)?.cols) {
+          center = new cv.Point((src as Mat).cols / 2, (src as Mat).rows / 2);
         }
+      }
+      if (!radius) {
+        radius = this.radius;
+      }
+
+      if (src && center && radius) {
+        const out = (src as Mat).clone();
+        GCStore.add(out);
+
+        cv.circle(
+          out,
+          center as Point,
+          radius as number,
+          this.color,
+          this.thickness,
+          this.lineType,
+          this.shift
+        );
+
+        this.sources = [out];
+        this.output(out);
       }
     }
   };

@@ -120,8 +120,8 @@ export class CVCircleComponent extends CVFComponent {
     radius: number = 0;
 
     color: Scalar = new cv.Scalar(100, 100, 100);
-    thickness: number = 1;
-    lineType: LineTypes = cv.FILLED;
+    thickness: number = cv.FILLED;
+    lineType: LineTypes = cv.LINE_AA;
     shift: number = 0;
 
     async proccess() {

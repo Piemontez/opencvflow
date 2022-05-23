@@ -4,7 +4,7 @@ import { Mat, MatVector, Point } from 'opencv-ts';
 import { NodeProperty } from './property';
 import { Moments } from 'opencv-ts/src/core/Moments';
 
-type NodeSourceDef =
+export type NodeSourceDef =
   | Mat
   | MatVector
   | Point
@@ -38,11 +38,11 @@ export abstract class CVFNodeProcessor {
   }
 
   get inputs(): Array<NodeSourceDef> {
-    return this.inEdges.map((edge) => edge!.source.sources[0]);
+    return this.inEdges.map((edge) => edge!.source);
   }
 
   get inputsAsMat(): Array<Mat> {
-    return this.inEdges.map((edge) => edge!.source.sources[0] as Mat);
+    return this.inEdges.map((edge) => edge!.source as Mat);
   }
 
   body(): JSX.Element | void {}

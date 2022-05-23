@@ -1,14 +1,14 @@
 import { Edge } from 'react-flow-renderer/nocss';
-import { CVFNodeProcessor } from './node';
+import { CVFNodeProcessor, NodeSourceDef } from './node';
 
 export class CVFEdgeData {
   // Origem da aresta
-  source: CVFNodeProcessor;
+  sourceProcessor: CVFNodeProcessor;
   // Indíce da origem
   sourceIdx: number;
 
   // Destino da aresta
-  target: CVFNodeProcessor;
+  targetProcessor: CVFNodeProcessor;
   // Indíce do destino
   targetIdx: number;
 
@@ -18,10 +18,14 @@ export class CVFEdgeData {
     sourceIdx: number,
     targetIdx: number
   ) {
-    this.source = source;
-    this.target = target;
+    this.sourceProcessor = source;
+    this.targetProcessor = target;
     this.sourceIdx = sourceIdx;
     this.targetIdx = targetIdx;
+  }
+
+  get source(): NodeSourceDef {
+    return this.sourceProcessor.sources[this.sourceIdx];
   }
 }
 

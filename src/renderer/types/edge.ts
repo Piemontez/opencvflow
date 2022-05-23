@@ -2,14 +2,26 @@ import { Edge } from 'react-flow-renderer/nocss';
 import { CVFNodeProcessor } from './node';
 
 export class CVFEdgeData {
-  //Origem da aresta
+  // Origem da aresta
   source: CVFNodeProcessor;
-  //Destino da aresta
-  target: CVFNodeProcessor;
+  // Indíce da origem
+  sourceIdx: number;
 
-  constructor(source: CVFNodeProcessor, target: CVFNodeProcessor) {
+  // Destino da aresta
+  target: CVFNodeProcessor;
+  // Indíce do destino
+  targetIdx: number;
+
+  constructor(
+    source: CVFNodeProcessor,
+    target: CVFNodeProcessor,
+    sourceIdx: number,
+    targetIdx: number
+  ) {
     this.source = source;
     this.target = target;
+    this.sourceIdx = sourceIdx;
+    this.targetIdx = targetIdx;
   }
 }
 

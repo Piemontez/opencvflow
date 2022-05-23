@@ -174,17 +174,6 @@ class NodeStore {
       return;
     }
 
-    const dataEdge = new CVFEdgeData(source.data, target.data);
-    // Aresta/Conexão
-    const newEdge: OCVFEdge = {
-      id: uuidv4(),
-      source: source.id,
-      target: target.id,
-      sourceHandle,
-      targetHandle,
-      data: dataEdge,
-    };
-
     // Procura a posição da aresta a partir do nome da conexão/cabo
     const sourceCompoType = this.getNodeType(source.type!);
     const targetCompoType = this.getNodeType(target.type!);
@@ -196,6 +185,22 @@ class NodeStore {
     const targetsIdx = targetCompo.targets.findIndex(
       (s) => s.title === targetHandle
     );
+
+    // Aresta/Conexão
+    const dataEdge = new CVFEdgeData(
+      source.data,
+      target.data,
+      sourcesIdx,
+      targetsIdx
+    );
+    const newEdge: OCVFEdge = {
+      id: uuidv4(),
+      source: source.id,
+      target: target.id,
+      sourceHandle,
+      targetHandle,
+      data: dataEdge,
+    };
 
     // Adicionando a aresta aos nós
     source.data.outEdges[sourcesIdx] = dataEdge;

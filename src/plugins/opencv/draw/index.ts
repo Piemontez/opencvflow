@@ -143,7 +143,7 @@ export class CVCircleComponent extends CVFComponent {
         const out = (src as Mat).clone();
         GCStore.add(out);
 
-        cv.circle(
+        /*cv.circle(
           out,
           center as Point,
           radius as number,
@@ -151,7 +151,7 @@ export class CVCircleComponent extends CVFComponent {
           this.thickness,
           this.lineType,
           this.shift
-        );
+        );*/
 
         this.sources = [out];
         this.output(out);

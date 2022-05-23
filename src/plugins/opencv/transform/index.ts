@@ -18,6 +18,8 @@ export class DFTComponent extends CVFIOComponent {
 
   sources: SourceHandle[] = [
     { title: 'dftComplexI', position: Position.Right },
+    { title: 'magnitude', position: Position.Right },
+    { title: 'angle', position: Position.Right },
     { title: 'spectrum', position: Position.Right },
   ];
 
@@ -79,12 +81,16 @@ export class DFTComponent extends CVFIOComponent {
           GCStore.add(plane0);
           GCStore.add(plane1);
 
-
           // compute log(1 + sqrt(Re(DFT(img))**2 + Im(DFT(img))**2))
+          const angle = new cv.Mat();
+          const mag = new cv.Mat();
+
+          GCStore.add(mag);
+          GCStore.add(angle);
 
           cv.split(complexI, planes);
-          cv.magnitude(planes.get(0), planes.get(1), planes.get(0));
-          const mag = planes.get(0);
+          cv.cartToPolar(planes.get(0), planes.get(1), mag, angle);
+
           const m1 = new cv.Mat.ones(mag.rows, mag.cols, mag.type());
           cv.add(mag, m1, mag);
           cv.log(mag, mag);
@@ -122,7 +128,7 @@ export class DFTComponent extends CVFIOComponent {
           // The pixel value of cv.CV_32S type image ranges from 0 to 1.
           cv.normalize(spectrum, spectrum, 0, 1, cv.NORM_MINMAX);
 
-          this.sources = [complexI, spectrum];
+          this.sources = [complexI, mag, angle, spectrum];
           this.output(spectrum);
         }
       }

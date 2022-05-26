@@ -1,19 +1,19 @@
 import { Mat, MatVector } from 'opencv-ts';
 
-type MathCycle = { cycle?: number; ref: Mat };
+type MathCycle = { cycle?: number; ref: Mat | MatVector };
 
 /**
  * Garbage Collector
  */
 interface GCStoreI {
-  mCollection: Array<MathCycle | MatVector>;
+  mCollection: Array<MathCycle>;
 
   /**
    * Adiciona ao Garbage Collector
    * @param ref cv.Mat que devera ser removido
    * @param cycle ciclo de execução
    */
-  add(ref: Mat | MatVector, cycle?: number): void;
+  add<T extends Mat | MatVector>(ref: T, cycle?: number): T;
 
   // Limpa Garbage Collector
   clear(cycle?: number): void;
@@ -25,11 +25,12 @@ interface GCStoreI {
 class GCStore implements GCStoreI {
   mCollection: Array<MathCycle> = [];
 
-  add(ref: Mat, cycle?: number) {
+  add<T extends Mat | MatVector>(ref: T, cycle?: number): T {
     this.mCollection.push({
       ref,
       cycle,
     });
+    return ref;
   }
 
   clear(cycle?: number) {

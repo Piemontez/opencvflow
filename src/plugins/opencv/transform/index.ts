@@ -51,7 +51,7 @@ export class DFTComponent extends CVFIOComponent {
           const optimalRows = cv.getOptimalDFTSize(src.rows);
           const optimalCols = cv.getOptimalDFTSize(src.cols);
           const s0 = cv.Scalar.all(0);
-          const padded = new cv.Mat();
+          const padded = GCStore.add(new cv.Mat());
 
           cv.copyMakeBorder(
             src,
@@ -65,10 +65,13 @@ export class DFTComponent extends CVFIOComponent {
           );
 
           // use cv.MatVector to distribute space for real part and imaginary part
-          const planes = new cv.MatVector();
-          const complexI = new cv.Mat();
-          const plane0 = new cv.Mat();
-          const plane1 = new cv.Mat.zeros(padded.rows, padded.cols, cv.CV_32F);
+          const planes = GCStore.add(new cv.MatVector());
+          const complexI = GCStore.add(new cv.Mat());
+          const plane0 = GCStore.add(new cv.Mat());
+          const plane1 = GCStore.add(
+            new cv.Mat.zeros(padded.rows, padded.cols, cv.CV_32F)
+          ) as Mat;
+
           padded.convertTo(plane0, cv.CV_32F);
           planes.push_back(plane0);
           planes.push_back(plane1);
@@ -76,45 +79,39 @@ export class DFTComponent extends CVFIOComponent {
 
           cv.dft(complexI, complexI, 0, 0);
 
-          GCStore.add(planes);
-          GCStore.add(complexI);
-          GCStore.add(plane0);
-          GCStore.add(plane1);
-
           // compute log(1 + sqrt(Re(DFT(img))**2 + Im(DFT(img))**2))
-          const angle = new cv.Mat();
-          const mag = new cv.Mat();
-
-          GCStore.add(mag);
-          GCStore.add(angle);
+          const angle = GCStore.add(new cv.Mat());
+          const mag = GCStore.add(new cv.Mat());
 
           cv.split(complexI, planes);
           cv.cartToPolar(planes.get(0), planes.get(1), mag, angle);
 
-          const m1 = new cv.Mat.ones(mag.rows, mag.cols, mag.type());
+          const m1 = GCStore.add(
+            new cv.Mat.ones(mag.rows, mag.cols, mag.type())
+          ) as Mat;
+
           cv.add(mag, m1, mag);
           cv.log(mag, mag);
 
           // crop the spectrum, if it has an odd number of rows or columns
           const rect = new cv.Rect(0, 0, mag.cols & -2, mag.rows & -2);
-          const spectrum = mag.roi(rect);
+          const spectrum = GCStore.add(GCStore.add(mag.clone()).roi(rect));
 
           // rearrange the quadrants of Fourier image
           // so that the origin is at the image center
           const cx = spectrum.cols / 2;
           const cy = spectrum.rows / 2;
-          const tmp = new cv.Mat();
-          GCStore.add(tmp);
+          const tmp = GCStore.add(new cv.Mat());
 
           const rect0 = new cv.Rect(0, 0, cx, cy);
           const rect1 = new cv.Rect(cx, 0, cx, cy);
           const rect2 = new cv.Rect(0, cy, cx, cy);
           const rect3 = new cv.Rect(cx, cy, cx, cy);
 
-          const q0 = spectrum.roi(rect0);
-          const q1 = spectrum.roi(rect1);
-          const q2 = spectrum.roi(rect2);
-          const q3 = spectrum.roi(rect3);
+          const q0 = GCStore.add(spectrum.roi(rect0));
+          const q1 = GCStore.add(spectrum.roi(rect1));
+          const q2 = GCStore.add(spectrum.roi(rect2));
+          const q3 = GCStore.add(spectrum.roi(rect3));
 
           // exchange 1 and 4 quadrants
           q0.copyTo(tmp);
@@ -170,18 +167,16 @@ export class IDFTComponent extends CVFIOComponent {
         GCStore.add(out);
 
         if (angle) {
-          const planes = new cv.MatVector();
-          const x = new cv.Mat();
-          const y = new cv.Mat();
-          GCStore.add(planes);
-          GCStore.add(x);
-          GCStore.add(y);
+          const planes = GCStore.add(new cv.MatVector());
+          const x = GCStore.add(new cv.Mat());
+          const y = GCStore.add(new cv.Mat());
 
           cv.exp(compOrMag, compOrMag);
 
           cv.polarToCart(compOrMag, angle, x, y, false);
           planes.push_back(x);
           planes.push_back(y);
+
           cv.merge(planes, compOrMag);
         }
 

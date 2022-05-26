@@ -139,10 +139,9 @@ export class CVCircleComponent extends CVFComponent {
         radius = this.radius;
       }
 
-      if (src && center && radius) {
-        const out = (src as Mat).clone();
-        GCStore.add(out);
+      const out = GCStore.add((src as Mat).clone());
 
+      if (src && center && radius) {
         cv.circle(
           out,
           center as Point,
@@ -152,10 +151,10 @@ export class CVCircleComponent extends CVFComponent {
           this.lineType,
           this.shift
         );
-
-        this.sources = [out];
-        this.output(out);
       }
+
+      this.sources = [out];
+      this.output(out);
     }
   };
 }
@@ -176,8 +175,8 @@ export class DrawContourComponent extends CVFComponent {
         const [src, contours] = inputs;
 
         if ((contours as MatVector).size) {
-          const out = (src as Mat).clone();
-          GCStore.add(out);
+          const out = GCStore.add((src as Mat).clone());
+
           for (let i = 0; i < (contours as MatVector).size(); ++i) {
             cv.drawContours(
               out,

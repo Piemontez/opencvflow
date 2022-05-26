@@ -119,7 +119,7 @@ export class CVCircleComponent extends CVFComponent {
     center: Point = new cv.Point(-1, -1);
     radius: number = 0;
 
-    color: Scalar = new cv.Scalar(100, 100, 100);
+    color: Scalar = new cv.Scalar(0, 0, 0);
     thickness: number = cv.FILLED;
     lineType: LineTypes = cv.LINE_AA;
     shift: number = 0;

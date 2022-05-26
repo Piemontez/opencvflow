@@ -1,4 +1,7 @@
-import { CVFIOComponent } from 'renderer/types/component';
+import {
+  CVFIOComponent,
+  CVFIOEndlessComponent,
+} from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Point, Mat, BackgroundSubtractorMOG2, Size } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
@@ -37,6 +40,29 @@ export class DistanceTransformComponent extends CVFIOComponent {
           GCStore.add(out);
 
           cv.distanceTransform(src, out, this.distanceType, this.maskSize);
+
+          this.sources.push(out);
+          this.output(out);
+        }
+      }
+    }
+  };
+}
+
+/**
+ * Equalize Hist component and node
+ */
+export class EqualizeHistComponent extends CVFIOEndlessComponent {
+  static menu = { tabTitle: tabName, title: 'Equalize Hist' };
+  static processor = class EqualizeHistNode extends CVFNodeProcessor {
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+        for (const src of inputs) {
+          const out = GCStore.add(new cv.Mat(src.rows, src.cols, src.type()));
+
+          cv.equalizeHist(src, out);
 
           this.sources.push(out);
           this.output(out);

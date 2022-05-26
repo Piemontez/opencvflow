@@ -1,10 +1,10 @@
 import { CVFIOComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
-import cv, { Size } from 'opencv-ts';
+import cv, { Mat, Size } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from 'renderer/contexts/GCStore';
-import { SourceHandle } from 'renderer/types/handle';
+import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { Position } from 'react-flow-renderer/nocss';
 import messages from '../messages';
 
@@ -104,6 +104,7 @@ export class DFTComponent extends CVFIOComponent {
           const cx = spectrum.cols / 2;
           const cy = spectrum.rows / 2;
           const tmp = new cv.Mat();
+          GCStore.add(tmp);
 
           const rect0 = new cv.Rect(0, 0, cx, cy);
           const rect1 = new cv.Rect(cx, 0, cx, cy);
@@ -141,6 +142,11 @@ export class DFTComponent extends CVFIOComponent {
  */
 export class IDFTComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'IDFT' };
+  targets: TargetHandle[] = [
+    { title: 'complexOrMag', position: Position.Left },
+    { title: 'angle', position: Position.Left },
+  ];
+
   static processor = class IDFTNode extends CVFNodeProcessor {
     static properties = [
       { name: 'dstsize', type: PropertyType.Size },
@@ -151,19 +157,39 @@ export class IDFTComponent extends CVFIOComponent {
     borderType: BorderTypes = cv.BORDER_DEFAULT;
 
     async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
+      const { inputsAsMat } = this;
+      this.sources = [];
 
-          cv.dft(src, out, cv.DCT_INVERSE | cv.DFT_REAL_OUTPUT, 0);
-          cv.normalize(out, out, 0, 1, cv.NORM_MINMAX);
+      const [compOrMag, angle] = inputsAsMat;
+      if (compOrMag) {
+        const out = new cv.Mat(
+          compOrMag.rows,
+          compOrMag.cols,
+          compOrMag.type()
+        );
+        GCStore.add(out);
 
-          this.sources.push(out);
-          this.output(out);
+        if (angle) {
+          const planes = new cv.MatVector();
+          const x = new cv.Mat();
+          const y = new cv.Mat();
+          GCStore.add(planes);
+          GCStore.add(x);
+          GCStore.add(y);
+
+          cv.exp(compOrMag, compOrMag);
+
+          cv.polarToCart(compOrMag, angle, x, y, false);
+          planes.push_back(x);
+          planes.push_back(y);
+          cv.merge(planes, compOrMag);
         }
+
+        cv.dft(compOrMag as Mat, out, cv.DCT_INVERSE | cv.DFT_REAL_OUTPUT, 0);
+        cv.normalize(out, out, 0, 1, cv.NORM_MINMAX);
+
+        this.sources.push(out);
+        this.output(out);
       }
     }
   };

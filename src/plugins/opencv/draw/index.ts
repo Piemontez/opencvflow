@@ -107,6 +107,8 @@ export class CVCircleComponent extends CVFComponent {
     { title: 'src', position: Position.Left },
     { title: 'center', position: Position.Left },
     { title: 'radius', position: Position.Left },
+    { title: 'rows', position: Position.Left },
+    { title: 'cols', position: Position.Left },
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
@@ -114,6 +116,7 @@ export class CVCircleComponent extends CVFComponent {
     static properties = [
       { name: 'center', type: PropertyType.Point },
       { name: 'radius', type: PropertyType.Integer },
+      { name: 'color', type: PropertyType.Scalar },
     ];
 
     center: Point = new cv.Point(-1, -1);

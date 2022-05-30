@@ -109,6 +109,7 @@ export class CVCircleComponent extends CVFComponent {
     { title: 'radius', position: Position.Left },
     { title: 'rows', position: Position.Left },
     { title: 'cols', position: Position.Left },
+    { title: 'type', position: Position.Left },
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
@@ -130,6 +131,13 @@ export class CVCircleComponent extends CVFComponent {
     async proccess() {
       const { inputs } = this;
       let [src, center, radius] = inputs;
+      const [, , , rows, cols, type] = inputs;
+
+      if (!src && rows && cols) {
+        src = GCStore.add(
+          new cv.Mat(rows as number, cols as number, type as number, this.color)
+        );
+      }
 
       if (!center) {
         if (this.center.x > -1) {

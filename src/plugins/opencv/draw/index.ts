@@ -130,13 +130,16 @@ export class CVCircleComponent extends CVFComponent {
 
     async proccess() {
       const { inputs } = this;
-      let [src, center, radius] = inputs;
-      const [, , , rows, cols, type] = inputs;
+      let [, center, radius] = inputs;
+      const [src, , , rows, cols, type] = inputs;
 
+      let out: Mat | undefined;
       if (!src && rows && cols) {
-        src = GCStore.add(
+        out = GCStore.add(
           new cv.Mat(rows as number, cols as number, type as number, this.color)
         );
+      } else if (src) {
+        out = GCStore.add((src as Mat).clone());
       }
 
       if (!center) {
@@ -150,9 +153,7 @@ export class CVCircleComponent extends CVFComponent {
         radius = this.radius;
       }
 
-      const out = GCStore.add((src as Mat).clone());
-
-      if (src && center && radius) {
+      if (out && center && radius) {
         cv.circle(
           out,
           center as Point,
@@ -162,10 +163,10 @@ export class CVCircleComponent extends CVFComponent {
           this.lineType,
           this.shift
         );
-      }
 
-      this.sources = [out];
-      this.output(out);
+        this.sources = [out];
+        this.output(out);
+      }
     }
   };
 }

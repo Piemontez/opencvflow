@@ -4,7 +4,7 @@ import cv, { Mat } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
 import messages from '../messages';
-import { Position } from 'react-flow-renderer';
+import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle } from 'renderer/types/handle';
 
 const tabName = 'Inputs';

@@ -99,35 +99,35 @@ export class DFTComponent extends CVFIOComponent {
 
           // rearrange the quadrants of Fourier image
           // so that the origin is at the image center
-    /*      const cx = spectrum.cols / 2;
+          const cx = spectrum.cols / 2;
           const cy = spectrum.rows / 2;
-  /*        const tmp = GCStore.add(new cv.Mat());
+          const tmp = GCStore.add(new cv.Mat());
 
           const rect0 = new cv.Rect(0, 0, cx, cy);
           const rect1 = new cv.Rect(cx, 0, cx, cy);
           const rect2 = new cv.Rect(0, cy, cx, cy);
           const rect3 = new cv.Rect(cx, cy, cx, cy);
-/*
+
           const q0 = GCStore.add(spectrum.roi(rect0));
           const q1 = GCStore.add(spectrum.roi(rect1));
           const q2 = GCStore.add(spectrum.roi(rect2));
           const q3 = GCStore.add(spectrum.roi(rect3));
 
           // exchange 1 and 4 quadrants
-          /*q0.copyTo(tmp);
+          q0.copyTo(tmp);
           q3.copyTo(q0);
           tmp.copyTo(q3);
 
           // exchange 2 and 3 quadrants
           q1.copyTo(tmp);
           q2.copyTo(q1);
-          tmp.copyTo(q2);*/
+          tmp.copyTo(q2);
 
           // The pixel value of cv.CV_32S type image ranges from 0 to 1.
           cv.normalize(spectrum, spectrum, 0, 1, cv.NORM_MINMAX);
 
           this.sources = [complexI, mag, angle, spectrum];
-          this.output(mag);
+          this.output(spectrum);
         }
       }
     }

@@ -10,6 +10,7 @@ import {
 } from 'renderer/types/component';
 import { SourceHandle, TargetHandle } from 'renderer/types/handle';
 import { CVFNodeProcessor } from 'renderer/types/node';
+import { PropertyType } from 'renderer/types/property';
 
 const tabName = 'Draw';
 
@@ -106,37 +107,65 @@ export class CVCircleComponent extends CVFComponent {
     { title: 'src', position: Position.Left },
     { title: 'center', position: Position.Left },
     { title: 'radius', position: Position.Left },
+    { title: 'rows', position: Position.Left },
+    { title: 'cols', position: Position.Left },
+    { title: 'type', position: Position.Left },
   ];
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
   static processor = class CircleProcessor extends CVFNodeProcessor {
-    color: Scalar = new cv.Scalar(100, 100, 100);
-    thickness: number = 1;
+    static properties = [
+      { name: 'center', type: PropertyType.Point },
+      { name: 'radius', type: PropertyType.Integer },
+      { name: 'color', type: PropertyType.Scalar },
+    ];
+
+    center: Point = new cv.Point(-1, -1);
+    radius: number = 0;
+
+    color: Scalar = new cv.Scalar(0, 0, 0);
+    thickness: number = cv.FILLED;
     lineType: LineTypes = cv.LINE_AA;
     shift: number = 0;
 
     async proccess() {
       const { inputs } = this;
-      if (inputs.length === 3) {
-        const [src, point1, radius] = inputs;
+      let [, center, radius] = inputs;
+      const [src, , , rows, cols, type] = inputs;
 
-        if (src && point1 && radius) {
-          const out = (src as Mat).clone();
-          GCStore.add(out);
+      let out: Mat | undefined;
+      if (!src && rows && cols) {
+        out = GCStore.add(
+          new cv.Mat(rows as number, cols as number, type as number, this.color)
+        );
+      } else if (src) {
+        out = GCStore.add((src as Mat).clone());
+      }
 
-          cv.circle(
-            out,
-            point1 as Point,
-            radius as number,
-            this.color,
-            this.thickness,
-            this.lineType,
-            this.shift
-          );
-
-          this.sources = [out];
-          this.output(out);
+      if (!center) {
+        if (this.center.x > -1) {
+          center = this.center;
+        } else if ((src as Mat)?.cols) {
+          center = new cv.Point((src as Mat).cols / 2, (src as Mat).rows / 2);
         }
+      }
+      if (!radius) {
+        radius = this.radius;
+      }
+
+      if (out && center && radius) {
+        cv.circle(
+          out,
+          center as Point,
+          radius as number,
+          this.color,
+          this.thickness,
+          this.lineType,
+          this.shift
+        );
+
+        this.sources = [out];
+        this.output(out);
       }
     }
   };
@@ -158,8 +187,8 @@ export class DrawContourComponent extends CVFComponent {
         const [src, contours] = inputs;
 
         if ((contours as MatVector).size) {
-          const out = (src as Mat).clone();
-          GCStore.add(out);
+          const out = GCStore.add((src as Mat).clone());
+
           for (let i = 0; i < (contours as MatVector).size(); ++i) {
             cv.drawContours(
               out,

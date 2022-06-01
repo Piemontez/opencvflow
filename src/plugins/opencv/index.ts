@@ -7,6 +7,7 @@ import * as segmentation from './segmentation';
 import * as edge from './edge';
 import * as morphology from './morphology';
 import * as smoothing from './smoothing';
+import * as transform from './transform';
 import * as draw from './draw';
 import * as utils from './utils';
 
@@ -27,6 +28,8 @@ const OpenCVPlugin: PluginType = {
     ...Object.values(edge),
     // segmentation
     ...Object.values(segmentation),
+    // transform
+    ...Object.values(transform),
     // others
     ...Object.values(others),
     // draw

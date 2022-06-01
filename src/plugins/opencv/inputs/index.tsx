@@ -4,6 +4,8 @@ import cv, { Mat } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
 import messages from '../messages';
+import { Position } from 'react-flow-renderer/nocss';
+import { SourceHandle } from 'renderer/types/handle';
 
 const tabName = 'Inputs';
 class VideoCapture extends cv.VideoCapture {}
@@ -13,6 +15,14 @@ class VideoCapture extends cv.VideoCapture {}
  */
 export class CVVideoCaptureComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'Video Capture' };
+
+  sources: SourceHandle[] = [
+    { title: 'out', position: Position.Right },
+    { title: 'rows', position: Position.Right },
+    { title: 'cols', position: Position.Right },
+    { title: 'type', position: Position.Right },
+    { title: 'channels', position: Position.Right },
+  ];
 
   static processor = class VideoCaptureProcessor extends CVFNodeProcessor {
     video: HTMLVideoElement | null = null;
@@ -67,7 +77,7 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
 
         this.cap!.read(src);
 
-        this.sources = [src];
+        this.sources = [src, src.rows, src.cols, src.type(), src.channels()];
       }
     }
 
@@ -85,6 +95,14 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
  */
 export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'File Loader' };
+
+  sources: SourceHandle[] = [
+    { title: 'out', position: Position.Right },
+    { title: 'rows', position: Position.Right },
+    { title: 'cols', position: Position.Right },
+    { title: 'type', position: Position.Right },
+    { title: 'channels', position: Position.Right },
+  ];
 
   static processor = class FileLoaderProcessor extends CVFNodeProcessor {
     static properties = [
@@ -175,7 +193,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
 
         this.cap.read(src);
 
-        this.sources = [src];
+        this.sources = [src, src.rows, src.cols, src.type(),src.channels()];
       }
     }
 

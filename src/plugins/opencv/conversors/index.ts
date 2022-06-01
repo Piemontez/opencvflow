@@ -23,18 +23,18 @@ export class CvtColorComponent extends CVFIOComponent {
     dstCn: number = 0;
 
     async proccess() {
-      const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
+      const { inputsAsMat } = this;
+      this.sources = [];
+      for (const src of inputsAsMat) {
+        if (!src) continue;
 
-          cv.cvtColor(src, out, this.code, this.dstCn);
+        const out = new cv.Mat(src.rows, src.cols, src.type());
+        GCStore.add(out);
 
-          this.sources.push(out);
-          this.output(out);
-        }
+        cv.cvtColor(src, out, this.code, this.dstCn);
+
+        this.sources.push(out);
+        this.output(out);
       }
     }
   };

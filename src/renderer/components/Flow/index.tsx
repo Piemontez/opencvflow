@@ -30,6 +30,7 @@ const Flow = () => {
           onDrop={noteStore.onDrop}
           onDragOver={noteStore.onDragOver}
           onNodeContextMenu={noteStore.onDragOver}
+          onNodeDragStop={noteStore.onNodeDragStop}
         >
           <MiniMap
             className="minimap"

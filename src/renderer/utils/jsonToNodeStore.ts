@@ -1,8 +1,9 @@
 import NodeStore from 'renderer/contexts/NodeStore';
 import { CVFNode } from 'renderer/types/node';
 import { OCVFEdge } from 'renderer/types/edge';
+import { SaveContent } from 'renderer/types/save-content';
 
-const jsonToNodeStore = (json: any) => {
+const jsonToNodeStore = (json: SaveContent) => {
   // Adiciona os componentes
   const { elements } = json || {};
   if (Array.isArray(elements)) {

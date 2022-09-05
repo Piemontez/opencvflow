@@ -20,9 +20,7 @@ import { notify } from 'renderer/components/Notification';
 import GCStore from './GCStore';
 import Storage from 'renderer/utils/Storage';
 import nodeStoreToJson from 'renderer/utils/nodeStoreToJson';
-
-type OCVFlowElement = CVFNode | OCVFEdge;
-type OCVElements = Array<OCVFlowElement>;
+import { OCVElements, OCVFlowElement } from 'renderer/types/ocv-elements';
 
 interface NodeStoreI {
   running: boolean;
@@ -61,6 +59,7 @@ interface NodeStoreI {
   onDrop(event: any): void;
   onDragOver(event: any): void;
   onDragStart(event: any, menuAction: ComponentMenuAction): void;
+  onNodeDragStop(event: any, node: any): void;
   onNodeContextMenu(event: any, node: any): void;
 }
 
@@ -97,6 +96,7 @@ class NodeStore {
   storage() {
     const json = nodeStoreToJson();
     Storage.set('NodeStore', 'this', json);
+    //console.log(json);
   }
 
   getNodeType = (name: string): typeof CVFComponent | null => {
@@ -362,6 +362,15 @@ class NodeStore {
   onDragStart = (event: any, menuAction: ComponentMenuAction) => {
     event.dataTransfer.setData('application/action', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';
+  };
+
+  onNodeDragStop = (event: any, node: any) => {
+    event.preventDefault();
+    const storeNode = this.elements.find((_) => _.id === node.id) as CVFNode;
+    if (storeNode) {
+      storeNode.position = node.position;
+    }
+    this.storage()
   };
 
   onNodeContextMenu = (event: any, node: any) => {

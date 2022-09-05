@@ -20,8 +20,7 @@ const FileOpenAction: MenuActionProps = {
   name: 'open',
   title: (
     <>
-      <FontAwesomeIcon className="text-warning" icon={'folder-open'} /> Open
-      file
+      <FontAwesomeIcon className="text-warning" icon="folder-open" /> Open file
     </>
   ),
   action: async () => {

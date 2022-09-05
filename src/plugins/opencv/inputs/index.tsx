@@ -6,6 +6,7 @@ import GCStore from 'renderer/contexts/GCStore';
 import messages from '../messages';
 import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle } from 'renderer/types/handle';
+import { VideoSizes } from 'renderer/config/sizes';
 
 const tabName = 'Inputs';
 class VideoCapture extends cv.VideoCapture {}
@@ -39,9 +40,9 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
       return (
         <video
           autoPlay
-          width="320"
-          height="240"
-          muted={true}
+          width={VideoSizes.minWidth}
+          height={VideoSizes.minHeight}
+          muted
           playsInline
           ref={(ref) => (this.video = ref)}
         />
@@ -193,7 +194,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
 
         this.cap.read(src);
 
-        this.sources = [src, src.rows, src.cols, src.type(),src.channels()];
+        this.sources = [src, src.rows, src.cols, src.type(), src.channels()];
       }
     }
 

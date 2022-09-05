@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { app, dialog, getCurrentWindow } from '@electron/remote';
 import { OpenDialogOptions } from 'electron';
 import * as fs from 'fs';
-import jsonToNodeStore from 'renderer/utils/jsonToNodeStore';
+import jsonToNodeStore from 'renderer/commons/jsonToNodeStore';
 
 const options: OpenDialogOptions = {
   title: 'Save file - OpenCV Flow',

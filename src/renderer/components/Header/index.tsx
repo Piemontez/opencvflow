@@ -27,17 +27,9 @@ const Header = () => {
           <Navbar.Brand href="#home">OpenCV-FLOW</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              {menuStore.tabs.map((tab) => (
-                <Nav.Link
-                  key={tab.title}
-                  onClick={() => menuStore.changeCurrentTab(tab.title)}
-                >
-                  {tab.title}
-                </Nav.Link>
-              ))}
-            </Nav>
+            <Nav className="me-auto">{makeNavsLinks('left')}</Nav>
             <Nav>
+              {makeNavsLinks('rigth')}
               <NavDropdown title="Help" id="collasible-nav-dropdown">
                 <NavDropdown.Item
                   href="https://opencvflow.org/docs/v_0"
@@ -100,6 +92,31 @@ const Header = () => {
       </Navbar>
     </>
   );
+};
+
+const makeNavsLinks = (position: 'left' | 'rigth') => {
+  const menuStore = useContext(MenuStoreContext);
+
+  return menuStore.tabs
+    .filter((tab) => tab.position === position)
+    .map((tab) =>
+      tab.dropdown ? (
+        <NavDropdown title={tab.title} id="collasible-nav-dropdown">
+          {tab.actions.map((action) => (
+            <NavDropdown.Item onClick={action.action}>
+              {action.title}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+      ) : (
+        <Nav.Link
+          key={tab.title}
+          onClick={() => menuStore.changeCurrentTab(tab.title)}
+        >
+          {tab.title}
+        </Nav.Link>
+      )
+    );
 };
 
 export default observer(Header);

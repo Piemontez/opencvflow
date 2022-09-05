@@ -1,4 +1,5 @@
 import { CVFComponent } from 'renderer/types/component';
+import { NodeSizes } from 'renderer/config/sizes';
 
 const NodeDisplay = ({
   canvasRef,
@@ -12,7 +13,13 @@ const NodeDisplay = ({
     return <div className="node-error-msg">{data.errorMessage}</div>;
   }
 
-  return <canvas ref={canvasRef} width="320" height="240" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      width={NodeSizes.defaultWidth}
+      height={NodeSizes.defaultHeight}
+    />
+  );
 };
 
 export default NodeDisplay;

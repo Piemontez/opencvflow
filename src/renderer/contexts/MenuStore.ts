@@ -7,16 +7,18 @@ import { StringMap } from 'renderer/types/utils';
 interface MenuStoreI {
   tabs: Array<MenuTab>;
   currentTab?: MenuTab;
-  //Adiciona o menu ao navbar
+  // Adiciona o menu ao navbar
   addComponentMenuAction(component: typeof CVFComponent): void;
-  //Adiciona o menu ao navbar
+  // Adiciona o menu ao navbar
   addMenuAction(action: MenuActionProps): void;
-  //Modifica o menu que esta sendo exibido
+  // Modifica o menu que esta sendo exibido
   changeCurrentTab(tabOrTitle: MenuTab | string): void;
 }
 
 type MenuTab = {
   title: string;
+  position: 'left' | 'rigth';
+  dropdown: boolean;
   actions: MenuActionProps[];
 };
 
@@ -31,20 +33,21 @@ class MenuStore {
 
   tabsByName: StringMap<MenuTab> = {};
 
-  @action addMenuAction = (action: MenuActionProps) => {
-    if (action) {
-      const tab = this.findOrCreateTab(action.tabTitle);
-      tab.actions.push(action);
-      this.actions.push(action);
+  @action addMenuAction = (act: MenuActionProps) => {
+    if (act) {
+      const options = { position: act.position, dropdown: act.dropdown };
+      const tab = this.findOrCreateTab(act.tabTitle || null, options);
+      tab.actions.push(act);
+      this.actions.push(act);
     }
   };
 
   @action addComponentMenuAction = (component: typeof CVFComponent) => {
     if (component.menu) {
-      //Altera para o menu ser arrastável
+      // Altera para o menu ser arrastável
       component.menu.draggable = true;
 
-      const tab = this.findOrCreateTab(component.menu.tabTitle);
+      const tab = this.findOrCreateTab(component.menu.tabTitle || null, {});
       tab.actions.push(component.menu);
       this.actions.push(component.menu);
     }
@@ -52,23 +55,27 @@ class MenuStore {
 
   @action changeCurrentTab(tabOrTitle: MenuTab | string) {
     if (typeof tabOrTitle === 'string') {
-      tabOrTitle = this.findOrCreateTab(tabOrTitle);
+      this.currentTab = this.findOrCreateTab(tabOrTitle, {});
+    } else {
+      this.currentTab = tabOrTitle;
     }
-    this.currentTab = tabOrTitle;
   }
 
-  @action findOrCreateTab(tabTitle?: string): MenuTab {
+  @action findOrCreateTab(tabTitle: string | null, options: any): MenuTab {
     tabTitle = tabTitle ?? 'ThirdParty';
     if (this.tabsByName[tabTitle]) {
       return this.tabsByName[tabTitle];
     }
     const tab: MenuTab = {
       title: tabTitle,
+      position: options.position || 'left',
+      dropdown: options.dropdown || false,
       actions: [],
     };
     this.tabs.push(tab);
-    this.tabsByName[tabTitle] = tab;
-    return tab;
+
+    this.tabsByName[tabTitle] = this.tabs[this.tabs.length - 1];
+    return this.tabsByName[tabTitle];
   }
 }
 

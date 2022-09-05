@@ -1,5 +1,5 @@
 import { observable, action, computed, makeObservable } from 'mobx';
-import jsonToNodeStore from '../utils/jsonToNodeStore';
+import jsonToNodeStore from '../commons/jsonToNodeStore';
 import {
   removeElements,
   NodeTypesType,
@@ -18,8 +18,8 @@ import {
 } from 'renderer/types/menu';
 import { notify } from 'renderer/components/Notification';
 import GCStore from './GCStore';
-import Storage from 'renderer/utils/Storage';
-import nodeStoreToJson from 'renderer/utils/nodeStoreToJson';
+import Storage from 'renderer/commons/Storage';
+import nodeStoreToJson from 'renderer/commons/nodeStoreToJson';
 import { OCVElements, OCVFlowElement } from 'renderer/types/ocv-elements';
 
 interface NodeStoreI {
@@ -29,13 +29,14 @@ interface NodeStoreI {
   currentElement?: OCVFlowElement;
 
   init(): void;
+  fivView(): void;
 
   getNodeType(name: string): typeof CVFComponent | null;
   addNodeType(component: typeof CVFComponent): void;
   addNodeFromComponent(
     component: typeof CVFComponent,
     position: XYPosition
-  ): void;
+  ): CVFNode;
   removeNode(nodeOrId: CVFNode | string): void;
   addEdge(
     source: CVFNode | string,
@@ -116,7 +117,7 @@ class NodeStore {
   @action addNodeFromComponent = (
     component: typeof CVFComponent,
     position: XYPosition
-  ) => {
+  ): CVFNode => {
     const processor = new component.processor();
     const newNode: CVFNode = {
       id: uuidv4(),
@@ -127,6 +128,8 @@ class NodeStore {
 
     this.elements = this.elements.concat(newNode);
     this.storage();
+
+    return newNode;
   };
 
   @action removeNode = (nodeOrId: CVFNode | string) => {
@@ -301,6 +304,10 @@ class NodeStore {
     }
   };
 
+  fivView = () => {
+    this.reactFlowInstance.fitView();
+  };
+
   /**
    * Eventos disparados pelo ReactFlow
    * @param instance
@@ -370,7 +377,7 @@ class NodeStore {
     if (storeNode) {
       storeNode.position = node.position;
     }
-    this.storage()
+    this.storage();
   };
 
   onNodeContextMenu = (event: any, node: any) => {

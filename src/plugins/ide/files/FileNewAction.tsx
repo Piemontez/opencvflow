@@ -2,7 +2,7 @@ import NodeStore from 'renderer/contexts/NodeStore';
 import { MenuActionProps } from 'renderer/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const FileNewction: MenuActionProps = {
+const FileNewAction: MenuActionProps = {
   tabTitle: 'File',
   name: 'new',
   title: (
@@ -15,4 +15,4 @@ const FileNewction: MenuActionProps = {
   },
 };
 
-export default FileNewction;
+export default FileNewAction;

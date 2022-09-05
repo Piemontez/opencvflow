@@ -2,6 +2,8 @@ import React, { MouseEventHandler } from 'react';
 
 type MenuBaseProps = {
   tabTitle?: string;
+  position?: 'left' | 'rigth'; //Default left
+  dropdown?: true;
   order?: number;
   draggable?: boolean;
   action?: MouseEventHandler<HTMLButtonElement>;

@@ -29,7 +29,7 @@ interface NodeStoreI {
   currentElement?: OCVFlowElement;
 
   init(): void;
-  fivView(): void;
+  fitView(): void;
 
   getNodeType(name: string): typeof CVFComponent | null;
   addNodeType(component: typeof CVFComponent): void;
@@ -87,6 +87,8 @@ class NodeStore {
       try {
         const json = Storage.get('NodeStore', 'this');
         jsonToNodeStore(json);
+
+        setTimeout(this.fitView, 100);
       } catch (err: any) {
         console.error(err);
         notify.danger(err.message);
@@ -304,7 +306,7 @@ class NodeStore {
     }
   };
 
-  fivView = () => {
+  fitView = () => {
     this.reactFlowInstance.fitView();
   };
 
@@ -315,7 +317,6 @@ class NodeStore {
 
   onLoad = (instance: any) => {
     this.reactFlowInstance = instance;
-    this.reactFlowInstance.fitView();
   };
 
   @action onElementClick = (_: MouseEvent, element: OCVFlowElement) => {

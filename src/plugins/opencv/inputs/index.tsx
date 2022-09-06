@@ -3,10 +3,11 @@ import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Mat } from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
-import messages from '../messages';
 import { Position } from 'react-flow-renderer/nocss';
 import { SourceHandle } from 'renderer/types/handle';
 import { VideoSizes } from 'renderer/config/sizes';
+import { DataTypes } from 'opencv-ts/src/core/HalInterface';
+import messages from '../messages';
 
 const tabName = 'Inputs';
 class VideoCapture extends cv.VideoCapture {}
@@ -211,9 +212,29 @@ export class CVKernelComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'Kernel' };
 
   static processor = class KernelProcessor extends CVFNodeProcessor {
-    static properties = [{ name: 'kernel', type: PropertyType.DoubleMatrix }];
+    static properties = [
+      { name: 'dataType', type: PropertyType.DataType },
+      { name: 'kernel', type: PropertyType.OneZeroMatrix },
+    ];
 
-    kernel: Mat = new cv.Mat(3, 3, cv.CV_16S, new cv.Scalar(0));
+    dataType: DataTypes = cv.CV_8U;
+    kernel: Mat = new cv.Mat(3, 3, this.dataType, new cv.Scalar(0));
+
+    async propertyChange(name: string, value: any): Promise<void> {
+      if (name === 'dataType') {
+        const newKernel = new cv.Mat(3, 3, this.dataType, new cv.Scalar(0));
+        GCStore.add(newKernel, -100);
+
+        this.kernel.convertTo(newKernel, value);
+        this.kernel = newKernel;
+
+        if (value > cv.CV_8U) {
+          KernelProcessor.properties[1].type = PropertyType.DoubleMatrix;
+        } else {
+          KernelProcessor.properties[1].type = PropertyType.OneZeroMatrix;
+        }
+      }
+    }
 
     async proccess() {
       this.sources = [this.kernel];

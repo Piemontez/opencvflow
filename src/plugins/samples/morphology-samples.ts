@@ -38,7 +38,7 @@ const MorphologySamplesAction: MenuActionProps = {
   action: () => {
     const padding = NodeSizes.defaultWidth / 3;
     let comp: typeof CVFComponent | null;
-    let gridY = 0;
+    let gridY = -2;
 
     // Add Video
     comp = NodeStore.getNodeType(CVVideoCaptureComponent.name);
@@ -107,7 +107,7 @@ const MorphologySamplesAction: MenuActionProps = {
     NodeStore.addEdge(cvtColorId, morphId, 'out', 'src');
     NodeStore.addEdge(kernelId, morphId, 'out', 'kernel');
 
-    setTimeout(NodeStore.fivView, 100);
+    setTimeout(NodeStore.fitView, 100);
   },
 };
 

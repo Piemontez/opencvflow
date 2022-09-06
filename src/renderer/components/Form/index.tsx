@@ -87,6 +87,7 @@ export function CVFFormGroup(props: CVFFormProps) {
     case PropertyType.Decimal:
       Control = CVFDecimalFormControl(props);
       break;
+    case PropertyType.DataType:
     case PropertyType.Integer:
       Control = CVFIntegerFormControl(props);
       break;

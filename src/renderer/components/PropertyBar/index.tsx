@@ -27,6 +27,7 @@ const PropertyBar = () => {
           value={(processor as any)[name]}
           onChange={(value) => {
             (processor as any)[name] = value;
+            processor.propertyChange(name, value);
             noteStore.refreshCurrentElement();
           }}
         />

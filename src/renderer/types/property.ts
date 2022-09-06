@@ -16,6 +16,7 @@ export enum PropertyType {
   Point,
   Scalar,
   ColorConversionCodes,
+  DataType,
   BorderType,
   MorphTypes,
   ThresholdTypes,

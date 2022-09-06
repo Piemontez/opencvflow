@@ -52,6 +52,8 @@ export abstract class CVFNodeProcessor {
   async proccess(): Promise<void> {}
   // Função chamada antes de finalizar o processamento. Chamada uma única vez
   async stop(): Promise<void> {}
+  // Função chamada após anterar uma propriedade
+  async propertyChange(_name: string, _value: any): Promise<void> {}
 
   get propertiesMap(): Readonly<any> {
     const curElTypeof = this?.constructor as typeof CVFNodeProcessor;

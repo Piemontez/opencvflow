@@ -75,13 +75,13 @@ const Header = () => {
                     draggable
                   >
                     <Nav.Link eventKey="components" onClick={action.action}>
-                      {action.title}
+                      {action.title as string}
                     </Nav.Link>
                   </Nav.Item>
                 ) : (
                   <Nav.Item key={key}>
                     <Nav.Link eventKey="components" onClick={action.action}>
-                      {action.title}
+                      {action.title as string}
                     </Nav.Link>
                   </Nav.Item>
                 );
@@ -104,7 +104,7 @@ const makeNavsLinks = (position: 'left' | 'rigth') => {
         <NavDropdown title={tab.title} id="collasible-nav-dropdown">
           {tab.actions.map((action) => (
             <NavDropdown.Item onClick={action.action}>
-              {action.title}
+              {action.title as string}
             </NavDropdown.Item>
           ))}
         </NavDropdown>

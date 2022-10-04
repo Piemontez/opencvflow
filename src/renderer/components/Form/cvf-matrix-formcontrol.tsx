@@ -107,11 +107,11 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
             <Col key={col}>
               <Form.Check
                 type="checkbox"
-                checked={value.data?.at(row * rows + col)}
+                checked={value.data?.at(row * rows + col) !== 0}
                 onClick={(event) => {
-                  value.data[row * rows + col] = !value.data.at(
-                    row * rows + col
-                  );
+                  value.data[row * rows + col] = value.data.at(row * rows + col)
+                    ? 1
+                    : 0;
                   if (props.onChange) props.onChange(value, null, event);
                 }}
               />

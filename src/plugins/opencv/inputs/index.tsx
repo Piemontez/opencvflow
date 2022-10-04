@@ -59,8 +59,8 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
           if (this.video) {
             this.video.srcObject = mediaStream;
             this.video.onloadedmetadata = () => {
-              //this.video!.width = this.video!.videoWidth;
-              //this.video!.height = this.video!.videoHeight;
+              this.video!.width = this.video!.videoWidth;
+              this.video!.height = this.video!.videoHeight;
               this.video!.play();
             };
           }

@@ -1,16 +1,16 @@
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 import NodeStore from 'renderer/contexts/NodeStore';
 import { CVFComponent, CVFComponentOptions } from 'renderer/types/component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
-  const { options } = component.state;
+  const { zoom, options } = component.state;
   const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
   return (
     <div className="node-header">
       <Row>
         <Col>{component.title}</Col>
-        <Col xs={3}>
+        <Col xs={5}>
           <Button
             variant="outline-light"
             size="sm"
@@ -32,6 +32,23 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
               icon={notDisplay ? 'eye-slash' : 'eye'}
             />
           </Button>
+          <Form.Select
+            value={zoom.toFixed(2)}
+            size="sm"
+            aria-label="Zoom"
+            onChange={(e) =>
+              component.changeZoom(parseFloat(e.target.value || '1'))
+            }
+          >
+            <option>Zoom</option>
+            <option value="0.25">25%</option>
+            <option value="0.33">33%</option>
+            <option value="0.50">50%</option>
+            <option value="0.75">75%</option>
+            <option value="1.00">100%</option>
+            <option value="1.50">150%</option>
+            <option value="2.00">200%</option>
+          </Form.Select>
         </Col>
       </Row>
     </div>

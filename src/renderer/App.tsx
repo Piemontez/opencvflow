@@ -1,4 +1,5 @@
 import { Row } from 'react-bootstrap';
+import { MemoryRouter, Switch, Route } from 'react-router-dom';
 import { Component, lazy } from 'react';
 import PluginStore from './contexts/PluginStore';
 import NodeStore from 'renderer/contexts/NodeStore';
@@ -35,6 +36,10 @@ class AppContent extends Component {
 
 export default function App() {
   return (
-    <AppContent />
+    <MemoryRouter initialEntries={['/']} initialIndex={1}>
+      <Switch>
+        <Route path="/" component={AppContent} />
+      </Switch>
+    </MemoryRouter>
   );
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import { Handle, Position } from 'react-flow-renderer/nocss';
 import NodeDisplay from 'renderer/components/NodeDisplay';
 import NodeTab from 'renderer/components/NodeTab';
+import GCStore from 'renderer/contexts/GCStore';
 import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
 import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
@@ -38,6 +39,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   static menu?: ComponentMenuAction;
   // Opções
   state = {
+    zoom: 0.5,
     options: CVFComponentOptions.NONE,
   };
 
@@ -49,6 +51,10 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
       (menu?.title as string) ||
       this.constructor.name
     );
+  }
+
+  changeZoom(zoom: number) {
+    this.setState({ zoom });
   }
 
   addOption(opt: number) {
@@ -69,10 +75,17 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
     const { data: processor } = this.props;
     processor.output = (mat: Mat) => {
       if (this.output) {
-        const { options } = this.state;
+        const { zoom, options } = this.state;
         const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
         if (!notDisplay) {
-          cv.imshow(this.output, mat);
+          const rows = mat.rows * zoom;
+          const cols = mat.cols * zoom;
+          const newSize = new cv.Size(cols, rows);
+          const out: Mat = new cv.Mat(rows, cols, mat.type());
+          GCStore.add(out);
+          cv.resize(mat, out, newSize);
+
+          cv.imshow(this.output, out);
         }
       }
     };

@@ -35,7 +35,8 @@ interface NodeStoreI {
   addNodeType(component: typeof CVFComponent): void;
   addNodeFromComponent(
     component: typeof CVFComponent,
-    position: XYPosition
+    position: XYPosition,
+    props?: Record<string, any>
   ): CVFNode;
   removeNode(nodeOrId: CVFNode | string): void;
   addEdge(
@@ -118,7 +119,8 @@ class NodeStore {
 
   @action addNodeFromComponent = (
     component: typeof CVFComponent,
-    position: XYPosition
+    position: XYPosition,
+    props?: Record<string, any>
   ): CVFNode => {
     const processor = new component.processor();
     const newNode: CVFNode = {
@@ -127,6 +129,10 @@ class NodeStore {
       position,
       data: processor,
     };
+
+    if (props) {
+      Object.assign(processor, props);
+    }
 
     this.elements = this.elements.concat(newNode);
     this.storage();

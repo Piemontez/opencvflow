@@ -69,7 +69,7 @@ export class EditComponenteModal extends React.Component<any, any> {
           </Row>
           <Editor
             height="70vh"
-            defaultLanguage="typescript"
+            defaultLanguage="javascript"
             defaultValue={defaultValue}
             beforeMount={this.handleEditorWillMount}
             onMount={this.handleEditorDidMount}

@@ -44,7 +44,7 @@ const MorphologySamplesAction: MenuActionProps = {
     comp = NodeStore.getNodeType(CVVideoCaptureComponent.name);
     let videoId = '';
     if (comp) {
-      const pos = makeXYPosition(-2, 0, padding);
+      const pos = makeXYPosition(-3, 0, padding);
       videoId = NodeStore.addNodeFromComponent(comp, pos).id;
     }
     comp = NodeStore.getNodeType(CVKernelComponent.name);

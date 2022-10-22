@@ -1,4 +1,8 @@
-import { CVFComponent, CVFComponentOptions, CVFIOComponent } from 'renderer/types/component';
+import {
+  CVFComponent,
+  CVFComponentOptions,
+  CVFIOComponent,
+} from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from 'renderer/types/property';

@@ -2,7 +2,7 @@
  * Base webpack config used across other specific configs
  */
 
-import webpack from 'webpack';
+import webpack, { javascript } from 'webpack';
 import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
@@ -41,7 +41,7 @@ export default {
   },
 
   plugins: [
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin({ languages: ['javascript', 'typescript'] }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),

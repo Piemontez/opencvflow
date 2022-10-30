@@ -262,3 +262,57 @@ export class MorphologyExComponent extends CVFComponent {
     }
   };
 }
+
+/**
+ * Thinning component and node
+ */
+export class ThinningComponent extends CVFIOComponent {
+  static menu = { tabTitle: tabName, title: 'Thinning' };
+  static processor = class ThinningNode extends CVFNodeProcessor {
+    static properties = [
+      { name: 'kernel', type: PropertyType.OneZeroMatrix },
+      { name: 'borderValue', type: PropertyType.Scalar },
+    ];
+    kernel: Mat = cv.getStructuringElement(
+      cv.MORPH_RECT,
+      new cv.Size(3, 3),
+      new cv.Point(-1, -1)
+    );
+    anchor: Point = new cv.Point(-1, -1);
+    borderValue: Scalar = cv.morphologyDefaultBorderValue();
+
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length) {
+        this.sources = [];
+
+        for (const src of inputs) {
+          let src1 = src.clone();
+          const out = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(0));
+          const erode = new cv.Mat(src.rows, src.cols, src.type());
+          const opening = new cv.Mat(src.rows, src.cols, src.type());
+          const sub = new cv.Mat(src.rows, src.cols, src.type());
+          GCStore.add(src1);
+          GCStore.add(out);
+          GCStore.add(erode);
+          GCStore.add(opening);
+          GCStore.add(sub);
+
+          while (cv.countNonZero(src1) !== 0) {
+            cv.erode(src1, erode, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
+            cv.morphologyEx(erode, opening, cv.MORPH_OPEN, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
+
+            cv.subtract(erode, opening, sub);
+
+            cv.bitwise_or(out, sub, out);
+
+            src1 = erode;
+          }
+
+          this.sources.push(out);
+          this.output(out);
+      }
+      }
+    }
+  };
+}

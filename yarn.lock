@@ -4715,6 +4715,11 @@ expect@^27.3.1:
     jest-message-util "^27.3.1"
     jest-regex-util "^27.0.6"
 
+expose-loader@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/expose-loader/-/expose-loader-4.0.0.tgz#aa6f06f57cbc904175de4fe4eaff6211337e0231"
+  integrity sha512-kUEvHyf6MPR2ubZCL9aziP9Br5wxMvq1cghTpYhM6MW52NPq+7hXixw2EqQuI1SvGb1fDjc2ehJOg6645wR6ww==
+
 express@^4.17.1:
   version "4.17.1"
   resolved "https://registry.yarnpkg.com/express/-/express-4.17.1.tgz#4491fc38605cf51f8629d39c2b5d026f98a4c134"

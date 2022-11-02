@@ -89,6 +89,14 @@ export default merge(baseConfig, {
         test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
         use: 'url-loader',
       },
+      // Expose loader
+      {
+        test: require.resolve('opencv-ts'),
+        loader: 'expose-loader',
+        options: {
+          exposes: ['cv'],
+        },
+      },
     ],
   },
 

@@ -73,6 +73,10 @@ export class EditComponenteModal extends React.Component<any, any> {
             defaultValue={defaultValue}
             beforeMount={this.handleEditorWillMount}
             onMount={this.handleEditorDidMount}
+            options={{
+              trimAutoWhitespace: false,
+              renderWhitespace: 'all',
+            }}
           />
         </Modal.Body>
         <Modal.Footer>

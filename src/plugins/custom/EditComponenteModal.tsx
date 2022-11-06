@@ -32,7 +32,8 @@ export class EditComponenteModal extends React.Component<any, any> {
   handleSave = () => {
     const { code } = this.state;
     const codeWithoutImports = code.replaceAll(/[ ]*import[^;]*;\n/g, '');
-    //eval(codeWithoutImports);
+    eval(codeWithoutImports);
+    //console.log(codeWithoutImports);
   };
 
   handleEditorWillMount = (m: typeof monaco) => {

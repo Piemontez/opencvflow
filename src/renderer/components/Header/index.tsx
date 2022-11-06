@@ -20,6 +20,20 @@ const Header = () => {
   const aboutRef = useRef<About>(null);
   return (
     <>
+      {
+        /** Elementos adicionais do componente */
+        menuStore.currentTab &&
+          menuStore.currentTab.actions
+            .filter(
+              (action) =>
+                (action as MenuWithElementTitleProps).headerExtraElement
+            )
+            .map(
+              (action) =>
+                (action as MenuWithElementTitleProps).headerExtraElement
+            )
+      }
+
       <Donate ref={donateRef} />
       <About ref={aboutRef} />
       <Navbar id="header" bg="dark" variant="dark" expand="sm">
@@ -55,39 +69,42 @@ const Header = () => {
       </Navbar>
       <Navbar id="subheader" bg="dark" variant="dark" expand="sm">
         <Container fluid>
-          {menuStore.currentTab && (
-            <Nav>
-              {menuStore.currentTab.actions.map((action) => {
-                const key =
-                  (action as MenuWithElementTitleProps).name ||
-                  (action.title as string);
-                return action.draggable ? (
-                  <Nav.Item
-                    key={key}
-                    onClick={() => {
-                      notify.info(
-                        'Drag (with mouse) this menu and drop into the painel.'
-                      );
-                    }}
-                    onDragStart={(event: any) =>
-                      nodeStore.onDragStart(event, action)
-                    }
-                    draggable
-                  >
-                    <Nav.Link eventKey="components" onClick={action.action}>
-                      {action.title as string}
-                    </Nav.Link>
-                  </Nav.Item>
-                ) : (
-                  <Nav.Item key={key}>
-                    <Nav.Link eventKey="components" onClick={action.action}>
-                      {action.title as string}
-                    </Nav.Link>
-                  </Nav.Item>
-                );
-              })}
-            </Nav>
-          )}
+          {
+            /**Botões dos componentes */
+            menuStore.currentTab && (
+              <Nav>
+                {menuStore.currentTab.actions.map((action) => {
+                  const key =
+                    (action as MenuWithElementTitleProps).name ||
+                    (action.title as string);
+                  return action.draggable ? (
+                    <Nav.Item
+                      key={key}
+                      onClick={() => {
+                        notify.info(
+                          'Drag (with mouse) this menu and drop into the painel.'
+                        );
+                      }}
+                      onDragStart={(event: any) =>
+                        nodeStore.onDragStart(event, action)
+                      }
+                      draggable
+                    >
+                      <Nav.Link eventKey="components" onClick={action.action}>
+                        {action.title as string}
+                      </Nav.Link>
+                    </Nav.Item>
+                  ) : (
+                    <Nav.Item key={key}>
+                      <Nav.Link eventKey="components" onClick={action.action}>
+                        {action.title as string}
+                      </Nav.Link>
+                    </Nav.Item>
+                  );
+                })}
+              </Nav>
+            )
+          }
         </Container>
       </Navbar>
     </>

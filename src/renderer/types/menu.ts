@@ -16,6 +16,7 @@ export type MenuWithStringTitleProps = {
 export type MenuWithElementTitleProps = {
   name: string;
   title: React.ReactElement;
+  headerExtraElement?: React.ReactElement;
 };
 
 export type MenuActionProps =

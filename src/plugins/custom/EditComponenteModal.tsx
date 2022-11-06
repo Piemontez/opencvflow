@@ -106,28 +106,17 @@ export class EditComponenteModal extends React.Component<any, any> {
 }
 
 const defaultValue = `
-import cv, { Mat } from 'opencv-ts';
-import { SourceHandle, TargetHandle } from 'renderer/types/handle';
-import { PropertyType } from 'renderer/types/property';
-import GCStore from 'renderer/contexts/GCStore';
+//import cv, { Mat } from 'opencv-ts';
+//import { SourceHandle, TargetHandle } from 'renderer/types/handle';
+//import { PropertyType } from 'renderer/types/property';
+//import GCStore from 'renderer/contexts/GCStore';
 
 export class CustomComponent extends CVFComponent {
-  targets: TargetHandle[] = [
-    { title: 'src1', position: Position.Left },
-    { title: 'src2', position: Position.Left },
-  ];
-  sources: SourceHandle[] = [
-    { title: 'out', position: Position.Right }
-  ];
-
   static processor = class CustomProcessor extends CVFNodeProcessor {
     static properties = [
       { name: 'iterations', type: PropertyType.Integer },
     ];
     iterations: number = 1;
-
-    // Função chamada ao iniciar o processamento(clicar em run). Chamada uma única vez
-    async start() {}
 
     // Função chamada a cada novo ciclo de operação
     async proccess() {
@@ -149,8 +138,20 @@ export class CustomComponent extends CVFComponent {
       }
     }
 
+    // Função chamada ao iniciar o processamento(clicar em run). Chamada uma única vez
+    async start() {}
+
+
     // Função chamada antes de finalizar o processamento. Chamada uma única vez
     async stop() {}
   };
+
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [
+    { title: 'out', position: Position.Right }
+  ];
 }
 `;

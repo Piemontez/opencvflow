@@ -13,13 +13,11 @@ const NewComponentAction: MenuActionProps = {
   tabTitle: tabName,
   name: 'new',
   title: (
-    <>
-      <ECM6Fix />
-      <span onClick={() => editCompRef.current?.handleShow()}>
-        <FontAwesomeIcon className="text-info" icon={'plus'} /> new
-      </span>
-    </>
+    <span onClick={() => editCompRef.current?.handleShow()}>
+      <FontAwesomeIcon className="text-info" icon={'plus'} /> new
+    </span>
   ),
+  headerExtraElement: <ECM6Fix />,
 };
 
 const OpenCVPlugin: PluginType = {

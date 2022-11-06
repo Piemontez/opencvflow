@@ -5,7 +5,11 @@ import { PropertyType } from 'renderer/types/property';
 import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
-//const opencvtsType = require('!!expose-loader!/node_modules/opencv-ts/src/opencv.d.ts');
+
+const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
+const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
+const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
+const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
 
 loader.config({ monaco });
 
@@ -26,13 +30,16 @@ export class EditComponenteModal extends React.Component<any, any> {
 
   handleEditorWillMount = (m: typeof monaco) => {
     const types: any = [
-      /*{ name: 'opencvts', types: opencvtsType }*/
+      { name: 'opencv-ts', default: RAW_LOADER_opencvts.default },
+      { name: 'renderer/types/property', default: RAW_LOADER_property.default },
+      { name: 'renderer/contexts/GCStore', default: RAW_LOADER_gcstore.default },
+      { name: 'renderer/types/component', default: RAW_LOADER_component.default },
     ];
 
     types.forEach((module: any) => {
       m.languages.typescript.javascriptDefaults.addExtraLib(
-        `declare module "${module.name}" {
-         ${(module as any).default}
+        `declare module '${module.name}' {
+         ${module.default}
         }`
       );
     });
@@ -40,7 +47,12 @@ export class EditComponenteModal extends React.Component<any, any> {
     m.languages.typescript.javascriptDefaults.setCompilerOptions({
       allowNonTsExtensions: true,
       allowJs: true,
+      checkJs: true,
+      noLib: true,
       isolatedModules: true,
+      target: monaco.languages.typescript.ScriptTarget.ES2015,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
     });
     m.languages.typescript.javascriptDefaults.setEagerModelSync(true);
   };
@@ -86,10 +98,6 @@ export class EditComponenteModal extends React.Component<any, any> {
             defaultValue={defaultValue}
             beforeMount={this.handleEditorWillMount}
             onMount={this.handleEditorDidMount}
-            options={{
-              trimAutoWhitespace: false,
-              renderWhitespace: 'all',
-            }}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -106,17 +114,17 @@ export class EditComponenteModal extends React.Component<any, any> {
 }
 
 const defaultValue = `
-//import cv, { Mat } from 'opencv-ts';
-//import { SourceHandle, TargetHandle } from 'renderer/types/handle';
-//import { PropertyType } from 'renderer/types/property';
-//import GCStore from 'renderer/contexts/GCStore';
+import cv, from 'opencv-ts';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent} from 'renderer/types/component';
+import { PropertyType } from 'renderer/types/property';
+import GCStore from 'renderer/contexts/GCStore';
 
 export class CustomComponent extends CVFComponent {
   static processor = class CustomProcessor extends CVFNodeProcessor {
     static properties = [
       { name: 'iterations', type: PropertyType.Integer },
     ];
-    iterations: number = 1;
+    iterations = 1;
 
     // Função chamada a cada novo ciclo de operação
     async proccess() {
@@ -128,7 +136,7 @@ export class CustomComponent extends CVFComponent {
       const [src1, src2] = inputsAsMat;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0) );
+        const out/*: Mat*/ = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0) );
         GCStore.add(out);
 
         cv.subtract(src1, src2, out);
@@ -146,12 +154,12 @@ export class CustomComponent extends CVFComponent {
     async stop() {}
   };
 
-  targets: TargetHandle[] = [
-    { title: 'src1', position: Position.Left },
-    { title: 'src2', position: Position.Left },
+  targets = [
+    { title: 'src1', position: 'left' },
+    { title: 'src2', position: 'left' },
   ];
-  sources: SourceHandle[] = [
-    { title: 'out', position: Position.Right }
+  sources = [
+    { title: 'out', position: 'right' }
   ];
 }
 `;

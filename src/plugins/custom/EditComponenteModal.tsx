@@ -10,6 +10,7 @@ const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
 const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
 const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
+const RAW_LOADER_node = require('!raw-loader!../../renderer/types/node');
 
 loader.config({ monaco });
 
@@ -22,18 +23,31 @@ export class EditComponenteModal extends React.Component<any, any> {
     this.monacoRef = createRef<monaco.editor.IStandaloneCodeEditor>();
     this.state = {
       show: false,
+      code: '',
     };
   }
 
   handleClose = () => this.setState({ show: false });
   handleShow = () => this.setState({ show: true });
+  handleSave = () => {
+    const { code } = this.state;
+    const codeWithoutImports = code.replaceAll(/[ ]*import[^;]*;\n/g, '');
+    //eval(codeWithoutImports);
+  };
 
   handleEditorWillMount = (m: typeof monaco) => {
     const types: any = [
       { name: 'opencv-ts', default: RAW_LOADER_opencvts.default },
       { name: 'renderer/types/property', default: RAW_LOADER_property.default },
-      { name: 'renderer/contexts/GCStore', default: RAW_LOADER_gcstore.default },
-      { name: 'renderer/types/component', default: RAW_LOADER_component.default },
+      {
+        name: 'renderer/contexts/GCStore',
+        default: RAW_LOADER_gcstore.default,
+      },
+      {
+        name: 'renderer/types/component',
+        default: RAW_LOADER_component.default,
+      },
+      { name: 'renderer/types/node', default: RAW_LOADER_node.default },
     ];
 
     types.forEach((module: any) => {
@@ -48,11 +62,11 @@ export class EditComponenteModal extends React.Component<any, any> {
       allowNonTsExtensions: true,
       allowJs: true,
       checkJs: true,
-      noLib: true,
-      isolatedModules: true,
-      target: monaco.languages.typescript.ScriptTarget.ES2015,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.CommonJS,
+      //noLib: true,
+      //isolatedModules: true,
+      //target: monaco.languages.typescript.ScriptTarget.ES2015,
+      //moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      //module: monaco.languages.typescript.ModuleKind.CommonJS,
     });
     m.languages.typescript.javascriptDefaults.setEagerModelSync(true);
   };
@@ -95,7 +109,8 @@ export class EditComponenteModal extends React.Component<any, any> {
           <Editor
             height="70vh"
             defaultLanguage="javascript"
-            defaultValue={defaultValue}
+            defaultValue={defaultValue.trim()}
+            onChange={(value) => this.setState({ code: value })}
             beforeMount={this.handleEditorWillMount}
             onMount={this.handleEditorDidMount}
           />
@@ -104,7 +119,7 @@ export class EditComponenteModal extends React.Component<any, any> {
           <Button variant="secondary" onClick={this.handleClose}>
             Close without save
           </Button>
-          <Button variant="primary" onClick={this.handleClose}>
+          <Button variant="primary" onClick={this.handleSave}>
             Save
           </Button>
         </Modal.Footer>
@@ -114,7 +129,7 @@ export class EditComponenteModal extends React.Component<any, any> {
 }
 
 const defaultValue = `
-import cv, from 'opencv-ts';
+import cv from 'opencv-ts';
 import { CVFComponent, CVFComponentOptions, CVFIOComponent} from 'renderer/types/component';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';

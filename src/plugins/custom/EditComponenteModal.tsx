@@ -5,6 +5,7 @@ import { PropertyType } from 'renderer/types/property';
 import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
+//const opencvtsType = require('!!expose-loader!/node_modules/opencv-ts/src/opencv.d.ts');
 
 loader.config({ monaco });
 
@@ -24,6 +25,18 @@ export class EditComponenteModal extends React.Component<any, any> {
   handleShow = () => this.setState({ show: true });
 
   handleEditorWillMount = (m: typeof monaco) => {
+    const types: any = [
+      /*{ name: 'opencvts', types: opencvtsType }*/
+    ];
+
+    types.forEach((module: any) => {
+      m.languages.typescript.javascriptDefaults.addExtraLib(
+        `declare module "${module.name}" {
+         ${(module as any).default}
+        }`
+      );
+    });
+
     m.languages.typescript.javascriptDefaults.setCompilerOptions({
       allowNonTsExtensions: true,
       allowJs: true,

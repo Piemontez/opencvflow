@@ -5,10 +5,7 @@ import { PropertyType } from 'renderer/types/property';
 import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
-
-import { CVFComponent } from 'renderer/types/component';
-import { CVFNodeProcessor } from 'renderer/types/node';
-import GCStore from 'renderer/contexts/GCStore';
+import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
 
 const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
@@ -40,29 +37,11 @@ export class EditComponenteModal extends React.Component<any, any> {
   };
 
   handleSave = () => {
-    // @ts-ignore
-    class CVFComponentFork extends CVFComponent {}
-    // @ts-ignore
-    class CVFNodeProcessorFork extends CVFNodeProcessor {}
-    // @ts-ignore
-    const GCStoreFork = GCStore;
-    // @ts-ignore
-    const PropertyTypeFork = PropertyType;
-
-    const { code } = this.state;
-    const codeWithoutImports = code //
-      .replaceAll(/[ ]*import[^;]*;\n/g, '')
-      .replaceAll('CVFComponent', 'CVFComponentFork')
-      .replaceAll('CVFNodeProcessor', 'CVFNodeProcessorFork')
-      .replaceAll('PropertyType', 'PropertyTypeFork')
-      .replaceAll('GCStore', 'GCStoreFork');
-
-    const createComponentClass = `() => { ${codeWithoutImports}; return CustomComponent}`;
-    const createEvalRs = `({ func: ${createComponentClass} })`;
-    const rs = eval(createEvalRs);
-    const classInstance = rs.func();
-
-    console.log(classInstance);
+    const { name, code } = this.state;
+    CustomComponentStore.buildCustomComponent({
+      name,
+      code,
+    });
   };
 
   handleEditorWillMount = (m: typeof monaco) => {

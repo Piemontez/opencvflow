@@ -65,7 +65,7 @@ interface NodeStoreI {
   onNodeContextMenu(event: any, node: any): void;
 }
 
-class NodeStore {
+class NodeStore implements NodeStoreI {
   @observable running: boolean = false;
   @observable elements: OCVElements = [];
   @observable currentElement?: OCVFlowElement;

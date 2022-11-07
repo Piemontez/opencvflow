@@ -6,6 +6,10 @@ import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
 
+import { CVFComponent } from 'renderer/types/component';
+import { CVFNodeProcessor } from 'renderer/types/node';
+import GCStore from 'renderer/contexts/GCStore';
+
 const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
 const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
@@ -23,17 +27,42 @@ export class EditComponenteModal extends React.Component<any, any> {
     this.monacoRef = createRef<monaco.editor.IStandaloneCodeEditor>();
     this.state = {
       show: false,
-      code: '',
+      name: '',
+      code: defaultValue,
     };
   }
 
   handleClose = () => this.setState({ show: false });
   handleShow = () => this.setState({ show: true });
+
+  handleChangeName = (name: string) => {
+    this.setState({ name });
+  };
+
   handleSave = () => {
+    // @ts-ignore
+    class CVFComponentFork extends CVFComponent {}
+    // @ts-ignore
+    class CVFNodeProcessorFork extends CVFNodeProcessor {}
+    // @ts-ignore
+    const GCStoreFork = GCStore;
+    // @ts-ignore
+    const PropertyTypeFork = PropertyType;
+
     const { code } = this.state;
-    const codeWithoutImports = code.replaceAll(/[ ]*import[^;]*;\n/g, '');
-    eval(codeWithoutImports);
-    //console.log(codeWithoutImports);
+    const codeWithoutImports = code //
+      .replaceAll(/[ ]*import[^;]*;\n/g, '')
+      .replaceAll('CVFComponent', 'CVFComponentFork')
+      .replaceAll('CVFNodeProcessor', 'CVFNodeProcessorFork')
+      .replaceAll('PropertyType', 'PropertyTypeFork')
+      .replaceAll('GCStore', 'GCStoreFork');
+
+    const createComponentClass = `() => { ${codeWithoutImports}; return CustomComponent}`;
+    const createEvalRs = `({ func: ${createComponentClass} })`;
+    const rs = eval(createEvalRs);
+    const classInstance = rs.func();
+
+    console.log(classInstance);
   };
 
   handleEditorWillMount = (m: typeof monaco) => {
@@ -76,7 +105,7 @@ export class EditComponenteModal extends React.Component<any, any> {
   };
 
   render() {
-    const { name, show } = this.state;
+    const { name, show, code } = this.state;
     return (
       <Modal show={show} onHide={this.handleClose} size="xl">
         <Modal.Header closeButton>
@@ -89,10 +118,10 @@ export class EditComponenteModal extends React.Component<any, any> {
                 groupAs={Row}
                 column={true}
                 type={PropertyType.Text}
-                name="name"
+                name={name}
                 title="Component name"
                 value={name}
-                onChange={(name) => this.setState({ name })}
+                onChange={this.handleChangeName}
               />
             </Col>
             <Col>
@@ -110,7 +139,7 @@ export class EditComponenteModal extends React.Component<any, any> {
           <Editor
             height="70vh"
             defaultLanguage="javascript"
-            defaultValue={defaultValue.trim()}
+            defaultValue={code}
             onChange={(value) => this.setState({ code: value })}
             beforeMount={this.handleEditorWillMount}
             onMount={this.handleEditorDidMount}
@@ -131,11 +160,12 @@ export class EditComponenteModal extends React.Component<any, any> {
 
 const defaultValue = `
 import cv from 'opencv-ts';
-import { CVFComponent, CVFComponentOptions, CVFIOComponent} from 'renderer/types/component';
+import { CVFComponent } from 'renderer/types/component';
+import { CVFNodeProcessor } from 'renderer/types/node';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
 
-export class CustomComponent extends CVFComponent {
+class CustomComponent extends CVFComponent {
   static processor = class CustomProcessor extends CVFNodeProcessor {
     static properties = [
       { name: 'iterations', type: PropertyType.Integer },
@@ -177,5 +207,4 @@ export class CustomComponent extends CVFComponent {
   sources = [
     { title: 'out', position: 'right' }
   ];
-}
-`;
+}`;

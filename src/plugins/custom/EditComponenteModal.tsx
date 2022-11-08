@@ -6,6 +6,7 @@ import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
 import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
+import { notify } from 'renderer/components/Notification';
 
 const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
@@ -38,10 +39,13 @@ export class EditComponenteModal extends React.Component<any, any> {
 
   handleSave = () => {
     const { name, code } = this.state;
-    CustomComponentStore.buildCustomComponent({
-      name,
-      code,
-    });
+    try {
+      CustomComponentStore.validade({ name, code });
+      CustomComponentStore.add({ name, code });
+    } catch (ex) {
+      notify.danger((ex as any).message);
+      console.error((ex as any).message, ex);
+    }
   };
 
   handleEditorWillMount = (m: typeof monaco) => {

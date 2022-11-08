@@ -1,0 +1,93 @@
+import { observable, action, makeObservable } from 'mobx';
+import { createContext } from 'react';
+import { CustomComponent } from 'renderer/types/custom-component';
+import { CVFComponent } from 'renderer/types/component';
+import { PropertyType } from 'renderer/types/property';
+import { CVFNodeProcessor } from 'renderer/types/node';
+import GCStore from 'renderer/contexts/GCStore';
+
+interface CustomComponentStoreI {
+  customcomponents: Array<CustomComponent>;
+  add(custom: CustomComponent): void;
+  validade(custom: CustomComponent): void;
+  build(custom: CustomComponent): CVFComponent;
+}
+
+class CustomComponentStore implements CustomComponentStoreI {
+  @observable customcomponents: Array<CustomComponent> = [];
+
+  constructor() {
+    makeObservable(this);
+    /* reaction(
+      () => this.elements,
+      (_) => console.log(this.elements.length)
+    ); */
+  }
+
+  @action add = (custom: CustomComponent): void => {
+    const idx = this.customcomponents.findIndex(
+      (curr) => curr.name === custom.name
+    );
+    if (idx < 0) {
+      this.customcomponents = this.customcomponents.concat([custom]);
+    } else {
+      this.customcomponents[idx] = custom;
+    }
+  };
+
+  validade = ({ name, code }: CustomComponent): void => {
+    const hasName = !!(name || '').trim();
+    const hasClass = code.search(/class[ ]*CustomComponent/g);
+
+    if (!hasName) {
+      throw new Error('Name required');
+    }
+    if (!hasClass) {
+      throw new Error('CustomComponent class required');
+    }
+
+    this.test({ name, code });
+  };
+
+  test = (custom: CustomComponent): void => {
+    this.build(custom, true);
+  };
+
+  build = (custom: CustomComponent, test = false): CVFComponent => {
+    // @ts-ignore
+    class CVFComponentFork extends CVFComponent {}
+    // @ts-ignore
+    class CVFNodeProcessorFork extends CVFNodeProcessor {}
+    // @ts-ignore
+    const GCStoreFork = GCStore;
+    // @ts-ignore
+    const PropertyTypeFork = PropertyType;
+
+    const codeSanitized = custom.code //
+      .replaceAll(/[ ]*import[^;]*;\n/g, '')
+      .replaceAll('CVFComponent', 'CVFComponentFork')
+      .replaceAll('CVFNodeProcessor', 'CVFNodeProcessorFork')
+      .replaceAll('PropertyType', 'PropertyTypeFork')
+      .replaceAll('GCStore', 'GCStoreFork');
+
+    const createComponentClass = `() => { ${codeSanitized}; return CustomComponent}`;
+
+    if (test) {
+      const createEvalRs = `(${createComponentClass})()`;
+      const rs = eval(createEvalRs);
+
+      return rs;
+    } else {
+      const createEvalRs = `({ func: ${createComponentClass} })`;
+
+      const rs = eval(createEvalRs);
+      const classInstance = rs.func();
+
+      return classInstance;
+    }
+  };
+}
+
+const instance = new CustomComponentStore() as CustomComponentStoreI;
+export default instance;
+export const CustomComponentContext = createContext(instance);

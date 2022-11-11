@@ -42,6 +42,8 @@ export class EditComponenteModal extends React.Component<any, any> {
     try {
       CustomComponentStore.validade({ name, code });
       CustomComponentStore.add({ name, code });
+
+      this.handleClose();
     } catch (ex) {
       notify.danger((ex as any).message);
       console.error((ex as any).message, ex);

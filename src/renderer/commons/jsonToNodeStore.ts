@@ -2,13 +2,27 @@ import NodeStore from 'renderer/contexts/NodeStore';
 import { CVFNode } from 'renderer/types/node';
 import { OCVFEdge } from 'renderer/types/edge';
 import { SaveContent } from 'renderer/types/save-content';
+import { notify } from 'renderer/components/Notification';
 
 const jsonToNodeStore = (json: SaveContent) => {
   // Adiciona os componentes
   const { elements } = json || {};
   if (Array.isArray(elements)) {
     const components = (elements as Array<any>)
+      // Filtra apenas componentes
       .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target))
+      // Realiza alguma validações
+      .filter(({ type }) => {
+        if (type) {
+          const component = NodeStore.getNodeType(type);
+          if (!component) {
+            notify.warn(`Node type "${type} not found."`);
+
+            return false;
+          }
+        }
+        return true;
+      })
       .map(({ data, ...rest }) => {
         const element = rest as CVFNode | OCVFEdge;
         if (element.type) {
@@ -29,7 +43,9 @@ const jsonToNodeStore = (json: SaveContent) => {
           }
         }
         return element;
-      });
+      })
+      .filter((element) => element);
+
     NodeStore.elements = components;
 
     // Adiciona as conecções

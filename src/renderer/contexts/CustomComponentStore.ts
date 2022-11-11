@@ -5,16 +5,19 @@ import { CVFComponent } from 'renderer/types/component';
 import { PropertyType } from 'renderer/types/property';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import GCStore from 'renderer/contexts/GCStore';
+import { NodeTypesType } from 'react-flow-renderer';
+import NodeStore from './NodeStore';
 
 interface CustomComponentStoreI {
-  customcomponents: Array<CustomComponent>;
+  customComponents: Array<CustomComponent>;
   add(custom: CustomComponent): void;
   validade(custom: CustomComponent): void;
-  build(custom: CustomComponent): CVFComponent;
+  build(custom: CustomComponent): typeof CVFComponent;
 }
 
 class CustomComponentStore implements CustomComponentStoreI {
-  @observable customcomponents: Array<CustomComponent> = [];
+  @observable customComponents: Array<CustomComponent> = [];
+  customNodeTypes: NodeTypesType = {};
 
   constructor() {
     makeObservable(this);
@@ -25,14 +28,18 @@ class CustomComponentStore implements CustomComponentStoreI {
   }
 
   @action add = (custom: CustomComponent): void => {
-    const idx = this.customcomponents.findIndex(
+    const idx = this.customComponents.findIndex(
       (curr) => curr.name === custom.name
     );
+    const nodeType = this.build(custom);
+
     if (idx < 0) {
-      this.customcomponents = this.customcomponents.concat([custom]);
+      this.customComponents = this.customComponents.concat([custom]);
     } else {
-      this.customcomponents[idx] = custom;
+      this.customComponents[idx] = custom;
     }
+
+    NodeStore.addNodeType(nodeType);
   };
 
   validade = ({ name, code }: CustomComponent): void => {
@@ -53,7 +60,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     this.build(custom, true);
   };
 
-  build = (custom: CustomComponent, test = false): CVFComponent => {
+  build = (custom: CustomComponent, test = false): typeof CVFComponent => {
     // @ts-ignore
     class CVFComponentFork extends CVFComponent {}
     // @ts-ignore

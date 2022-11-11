@@ -5,18 +5,25 @@ import React, { useContext } from 'react';
 import { EditComponenteModal } from './EditComponenteModal';
 import { CustomComponentContext } from 'renderer/contexts/CustomComponentStore';
 import { observer } from 'mobx-react';
+import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 
 export const tabName = 'Custom Components';
 
 const ListComponents = observer(() => {
   const customComponentStore = useContext(CustomComponentContext);
+  const nodeStore = useContext(NodeStoreContext);
 
   return (
     <>
-      {customComponentStore.customcomponents.map((custom) => (
+      {customComponentStore.customComponents.map((custom) => (
         <>
           {' '}
-          <span onClick={() => alert(1)}>{custom.name}</span>
+          <span
+            onDragStart={(event: any) => nodeStore.onDragStartCustom(event, custom)}
+            draggable
+          >
+            {custom.name}
+          </span>
         </>
       ))}
     </>

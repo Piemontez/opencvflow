@@ -21,6 +21,7 @@ import GCStore from './GCStore';
 import Storage from 'renderer/commons/Storage';
 import nodeStoreToJson from 'renderer/commons/nodeStoreToJson';
 import { OCVElements, OCVFlowElement } from 'renderer/types/ocv-elements';
+import { CustomComponent } from 'renderer/types/custom-component';
 
 interface NodeStoreI {
   running: boolean;
@@ -61,6 +62,7 @@ interface NodeStoreI {
   onDrop(event: any): void;
   onDragOver(event: any): void;
   onDragStart(event: any, menuAction: ComponentMenuAction): void;
+  onDragStartCustom(event: any, customComp: CustomComponent): void;
   onNodeDragStop(event: any, node: any): void;
   onNodeContextMenu(event: any, node: any): void;
 }
@@ -355,10 +357,19 @@ class NodeStore implements NodeStoreI {
       return;
     }
 
-    const appAction = event.dataTransfer.getData('application/action');
+    let component = null;
+
+    const appAction = event.dataTransfer.getData('application/menuaction');
     if (appAction) {
+      component = this.nodeTypesByMenu[appAction] as typeof CVFComponent;
+    }
+    const customComponent = event.dataTransfer.getData('application/customcomponent');
+    if (customComponent) {
+      component = this.nodeTypes[customComponent] as typeof CVFComponent;
+    }
+
+    if (component) {
       const reactFlowBounds = this.reactFlowWrapper!.getBoundingClientRect();
-      const component = this.nodeTypesByMenu[appAction] as typeof CVFComponent;
       const position = this.reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
@@ -374,7 +385,13 @@ class NodeStore implements NodeStoreI {
 
   // Evento disparado ao arrastar o componente do menu
   onDragStart = (event: any, menuAction: ComponentMenuAction) => {
-    event.dataTransfer.setData('application/action', menuAction.title);
+    event.dataTransfer.setData('application/menuaction', menuAction.title);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
+  // Evento disparado ao arrastar um custom componente do menu
+  onDragStartCustom = (event: any, customComp: CustomComponent) => {
+    event.dataTransfer.setData('application/customcomponent', customComp.name);
     event.dataTransfer.effectAllowed = 'move';
   };
 

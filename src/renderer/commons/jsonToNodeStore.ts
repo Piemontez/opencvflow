@@ -1,12 +1,21 @@
 import NodeStore from 'renderer/contexts/NodeStore';
+import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
 import { CVFNode } from 'renderer/types/node';
 import { OCVFEdge } from 'renderer/types/edge';
 import { SaveContent } from 'renderer/types/save-content';
 import { notify } from 'renderer/components/Notification';
 
 const jsonToNodeStore = (json: SaveContent) => {
-  // Adiciona os componentes
-  const { elements } = json || {};
+  const { custom, elements } = json || {};
+
+  // Adiciona os tipo de nó customizados
+  if (custom?.components) {
+    for (const customComponent of custom.components) {
+      CustomComponentStore.add(customComponent);
+    }
+  }
+
+  // Adiciona os Nodes
   if (Array.isArray(elements)) {
     const components = (elements as Array<any>)
       // Filtra apenas componentes

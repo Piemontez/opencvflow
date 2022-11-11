@@ -25,6 +25,7 @@ import { CustomComponent } from 'renderer/types/custom-component';
 
 interface NodeStoreI {
   running: boolean;
+  forcer: number;
   elements: OCVElements;
   nodeTypes: NodeTypesType;
   currentElement?: OCVFlowElement;
@@ -69,6 +70,7 @@ interface NodeStoreI {
 
 class NodeStore implements NodeStoreI {
   @observable running: boolean = false;
+  @observable forcer: number = 0;
   @observable elements: OCVElements = [];
   @observable currentElement?: OCVFlowElement;
   nodeTypes: NodeTypesType = {};
@@ -117,6 +119,8 @@ class NodeStore implements NodeStoreI {
         (component.menu.title as string);
       this.nodeTypesByMenu[key] = component;
     }
+
+    this.forcer++;
   };
 
   @action addNodeFromComponent = (
@@ -363,7 +367,9 @@ class NodeStore implements NodeStoreI {
     if (appAction) {
       component = this.nodeTypesByMenu[appAction] as typeof CVFComponent;
     }
-    const customComponent = event.dataTransfer.getData('application/customcomponent');
+    const customComponent = event.dataTransfer.getData(
+      'application/customcomponent'
+    );
     if (customComponent) {
       component = this.nodeTypes[customComponent] as typeof CVFComponent;
     }

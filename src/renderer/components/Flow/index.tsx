@@ -14,6 +14,8 @@ const Flow = () => {
       className="reactflow-wrapper flex-fill"
       ref={(ref) => (noteStore.reactFlowWrapper = ref)}
     >
+      <span style={{ display: 'none' }}>{noteStore.forcer}</span>
+
       {!pluginStore.loaded ? (
         <p>Loading Plugin</p>
       ) : (

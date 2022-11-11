@@ -5,7 +5,6 @@ import { CVFComponent } from 'renderer/types/component';
 import { PropertyType } from 'renderer/types/property';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import GCStore from 'renderer/contexts/GCStore';
-import { NodeTypesType } from 'react-flow-renderer';
 import NodeStore from './NodeStore';
 
 interface CustomComponentStoreI {
@@ -17,7 +16,6 @@ interface CustomComponentStoreI {
 
 class CustomComponentStore implements CustomComponentStoreI {
   @observable customComponents: Array<CustomComponent> = [];
-  customNodeTypes: NodeTypesType = {};
 
   constructor() {
     makeObservable(this);

@@ -185,10 +185,21 @@ class NodeStore implements NodeStoreI {
 
   @action refreshNodesFromComponent = (component: typeof CVFComponent) => {
     let refresh = false;
-    for (const node of this.elements) {
+    for (const node of this.nodes) {
+      //Verifica o componente esta sendo utilizado em tela.
       if (node.type === component.name) {
         refresh = true;
+        // Copia as propriedades do antigo processador para o novo.
         const processor = new component.processor();
+        for (const key of Object.keys(node.data)) {
+          if (
+            node.data.hasOwnProperty(key) &&
+            'function' !== typeof (node.data as any)[key]
+          ) {
+            (processor as any)[key] = (node.data as any)[key];
+          }
+        }
+        //Troca o antigo processador pelo novo
         node.data = processor;
       }
     }

@@ -15,16 +15,18 @@ const ListComponents = observer(() => {
 
   return (
     <>
-      {customComponentStore.customComponents.map((custom) => (
-        <>
+      {customComponentStore.customComponents.map((custom, idx) => (
+        <span
+          key={idx}
+          onDragStart={(event: any) =>
+            nodeStore.onDragStartCustom(event, custom)
+          }
+          onClick={() => editCompRef.current?.handleEdit(custom)}
+          draggable
+        >
           {' '}
-          <span
-            onDragStart={(event: any) => nodeStore.onDragStartCustom(event, custom)}
-            draggable
-          >
-            {custom.name}
-          </span>
-        </>
+          {custom.name}
+        </span>
       ))}
     </>
   );
@@ -38,7 +40,7 @@ const NewComponentAction: MenuActionProps = {
   name: 'new',
   title: (
     <>
-      <span onClick={() => editCompRef.current?.handleShow()}>
+      <span onClick={() => editCompRef.current?.handleNew()}>
         <FontAwesomeIcon className="text-info" icon={'plus'} /> new
       </span>
 

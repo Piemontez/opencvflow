@@ -8,10 +8,15 @@ import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
 import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
 
-type OCVComponentData = {
+type OCVComponentProps = {
   id: string;
   data: CVFNodeProcessor;
   type: string;
+};
+
+type OCVComponentState = {
+  zoom: number;
+  options: number;
 };
 
 class ForkCVFNodeProcessor extends CVFNodeProcessor {}
@@ -27,7 +32,10 @@ export enum CVFComponentOptions {
 /**
  * Componente/NodeType
  */
-export abstract class CVFComponent extends React.Component<OCVComponentData> {
+export abstract class CVFComponent extends React.Component<
+  OCVComponentProps,
+  OCVComponentState
+> {
   output: HTMLCanvasElement | null = null;
   // Conexões que o componente pode receber
   targets: TargetHandle[] = [];
@@ -38,6 +46,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentData> {
   // Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
   // Opções
+  // eslint-disable-next-line react/state-in-constructor
   state = {
     zoom: 0.5,
     options: CVFComponentOptions.NONE,

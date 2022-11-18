@@ -37,7 +37,8 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents[idx] = custom;
     }
 
-    NodeStore.addNodeType(nodeType);
+    NodeStore.addNodeType(nodeType, { repaint: idx < 0 });
+    NodeStore.refreshNodesFromComponent(nodeType);
   };
 
   validade = ({ name, code }: CustomComponent): void => {
@@ -84,8 +85,9 @@ class CustomComponentStore implements CustomComponentStoreI {
       return rs;
     } else {
       const createEvalRs = `({ func: ${createComponentClass} })`;
+      const nameSanitized = custom.name.replaceAll(/[\n| |\\|"|'|<|>]/g, '');
 
-      const rs = eval(createEvalRs);
+      const rs = eval(createEvalRs.replaceAll('CustomComponent', nameSanitized));
       const classInstance = rs.func();
 
       return classInstance;

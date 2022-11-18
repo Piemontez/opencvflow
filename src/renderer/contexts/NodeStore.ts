@@ -31,16 +31,23 @@ interface NodeStoreI {
   currentElement?: OCVFlowElement;
 
   init(): void;
+  storage(): void;
   fitView(): void;
 
   getNodeType(name: string): typeof CVFComponent | null;
-  addNodeType(component: typeof CVFComponent): void;
+  addNodeType(
+    component: typeof CVFComponent,
+    options?: { repaint: boolean }
+  ): void;
+
   addNodeFromComponent(
     component: typeof CVFComponent,
     position: XYPosition,
     props?: Record<string, any>
   ): CVFNode;
   removeNode(nodeOrId: CVFNode | string): void;
+  refreshNodesFromComponent(component: typeof CVFComponent): void;
+
   addEdge(
     source: CVFNode | string,
     target: CVFNode | string,
@@ -104,7 +111,6 @@ class NodeStore implements NodeStoreI {
   storage() {
     const json = nodeStoreToJson();
     Storage.set('NodeStore', 'this', json);
-    //console.log(json);
   }
 
   @action refreshFlow(repaint: boolean = false) {
@@ -120,7 +126,10 @@ class NodeStore implements NodeStoreI {
     return this.nodeTypes[name] as typeof CVFComponent;
   };
 
-  @action addNodeType = (component: typeof CVFComponent) => {
+  @action addNodeType = (
+    component: typeof CVFComponent,
+    { repaint }: any = { repaint: true }
+  ) => {
     this.nodeTypes[component.name] = component;
     if (component.menu?.title) {
       const key =
@@ -129,7 +138,7 @@ class NodeStore implements NodeStoreI {
       this.nodeTypesByMenu[key] = component;
     }
 
-    this.refreshFlow(true);
+    this.refreshFlow(repaint);
   };
 
   @action addNodeFromComponent = (
@@ -171,6 +180,21 @@ class NodeStore implements NodeStoreI {
       }
       this.elements = [...this.elements];
       this.storage();
+    }
+  };
+
+  @action refreshNodesFromComponent = (component: typeof CVFComponent) => {
+    let refresh = false;
+    for (const node of this.elements) {
+      if (node.type === component.name) {
+        refresh = true;
+        const processor = new component.processor();
+        node.data = processor;
+      }
+    }
+
+    if (refresh) {
+      this.elements = [...this.elements];
     }
   };
 

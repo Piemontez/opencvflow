@@ -6,7 +6,9 @@ import { tabName } from './index';
 import * as monaco from 'monaco-editor';
 import Editor, { loader } from '@monaco-editor/react';
 import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
+import NodeStore from 'renderer/contexts/NodeStore';
 import { notify } from 'renderer/components/Notification';
+import { CustomComponent } from 'renderer/types/custom-component';
 
 const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
@@ -33,6 +35,22 @@ export class EditComponenteModal extends React.Component<any, any> {
   handleClose = () => this.setState({ show: false });
   handleShow = () => this.setState({ show: true });
 
+  handleNew = () => {
+    this.setState({
+      name: '',
+      code: defaultValue,
+    });
+    this.handleShow();
+  };
+
+  handleEdit = (custom: CustomComponent) => {
+    this.setState({
+      name: custom.name,
+      code: custom.code,
+    });
+    this.handleShow();
+  };
+
   handleChangeName = (name: string) => {
     this.setState({ name });
   };
@@ -42,6 +60,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     try {
       CustomComponentStore.validade({ name, code });
       CustomComponentStore.add({ name, code });
+      NodeStore.storage();
 
       this.handleClose();
     } catch (ex) {
@@ -121,14 +140,16 @@ export class EditComponenteModal extends React.Component<any, any> {
               />
             </Col>
           </Row>
-          <Editor
-            height="70vh"
-            defaultLanguage="javascript"
-            defaultValue={code}
-            onChange={(value) => this.setState({ code: value })}
-            beforeMount={this.handleEditorWillMount}
-            onMount={this.handleEditorDidMount}
-          />
+          {show && (
+            <Editor
+              height="70vh"
+              defaultLanguage="javascript"
+              defaultValue={code}
+              onChange={(value) => this.setState({ code: value })}
+              beforeMount={this.handleEditorWillMount}
+              onMount={this.handleEditorDidMount}
+            />
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.handleClose}>

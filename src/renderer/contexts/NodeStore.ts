@@ -107,6 +107,15 @@ class NodeStore implements NodeStoreI {
     //console.log(json);
   }
 
+  @action refreshFlow(repaint: boolean = false) {
+    if (repaint) {
+      this.forcer++;
+      setTimeout(() => this.forcer++, 100);
+    } else {
+      this.forcer += 2;
+    }
+  }
+
   getNodeType = (name: string): typeof CVFComponent | null => {
     return this.nodeTypes[name] as typeof CVFComponent;
   };
@@ -120,7 +129,7 @@ class NodeStore implements NodeStoreI {
       this.nodeTypesByMenu[key] = component;
     }
 
-    this.forcer++;
+    this.refreshFlow(true);
   };
 
   @action addNodeFromComponent = (

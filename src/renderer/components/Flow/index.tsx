@@ -4,10 +4,16 @@ import { useContext } from 'react';
 import ReactFlow, { MiniMap } from 'react-flow-renderer/nocss';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { PluginStoreContext } from 'renderer/contexts/PluginStore';
+import Controls from './controls';
 
 const Flow = () => {
   const noteStore = useContext(NodeStoreContext);
   const pluginStore = useContext(PluginStoreContext);
+
+  // Fix: Forçar atualização do ReactFlow porque o mesmo não faz reload dos nodeTypes
+  if (noteStore.forcer & 1) {
+    return null;
+  }
 
   return (
     <div
@@ -15,6 +21,8 @@ const Flow = () => {
       ref={(ref) => (noteStore.reactFlowWrapper = ref)}
     >
       <span style={{ display: 'none' }}>{noteStore.forcer}</span>
+
+      <Controls />
 
       {!pluginStore.loaded ? (
         <p>Loading Plugin</p>

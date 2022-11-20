@@ -272,17 +272,30 @@ class NodeStore implements NodeStoreI {
   };
 
   @action removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
+    let data = (edge as OCVFEdge).data;
+
     let idx = -1;
-    if ((edge as OCVFEdge).data) {
+    if (data) {
       // OCVFEdge
       idx = this.elements.indexOf(edge as OCVFEdge);
     } else {
       // CVFEdgeData
       idx = this.elements.findIndex((_) => _.data === edge);
+      data = edge as CVFEdgeData;
     }
     if (idx > -1) {
       this.elements.splice(idx, 1);
       this.storage();
+    }
+
+    // Remove o edge dos nós
+    if (data) {
+      if (data.sourceIdx > -1) {
+        data.sourceProcessor.outEdges.splice(data.sourceIdx, 1);
+      }
+      if (data.targetIdx > -1) {
+        data.targetProcessor.inEdges.splice(data.targetIdx, 1);
+      }
     }
   };
 

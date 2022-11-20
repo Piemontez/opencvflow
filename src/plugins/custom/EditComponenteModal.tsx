@@ -173,11 +173,6 @@ import GCStore from 'renderer/contexts/GCStore';
 
 class CustomComponent extends CVFComponent {
   static processor = class CustomProcessor extends CVFNodeProcessor {
-    static properties = [
-      { name: 'iterations', type: PropertyType.Integer },
-    ];
-    iterations = 1;
-
     // Função chamada a cada novo ciclo de operação
     async proccess() {
       const { inputsAsMat } = this;
@@ -185,13 +180,22 @@ class CustomComponent extends CVFComponent {
         this.sources = [];
         return;
       }
+
       const [src1, src2] = inputsAsMat;
 
       if (src1 && src2) {
-        const out/*: Mat*/ = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0) );
-        GCStore.add(out);
+        const out = new cv.Mat(src1.rows, src1.cols, cv.CV_8UC3, new cv.Scalar(0));
 
-        cv.subtract(src1, src2, out);
+        for (let j = src1.rows - 1; j > -1; j--) {
+          for (let k = src1.cols - 1; k > -1; k--) {
+            const value1 = src1.ptr(j, k);
+            const value2 = src2.ptr(j, k);
+
+            out.ucharPtr(j,k)[0] = (value1[0] + value2[0]) / 2;
+            out.ucharPtr(j,k)[1] = (value1[1] + value2[1]) / 2;
+            out.ucharPtr(j,k)[2] = (value1[2] + value2[2]) / 2;
+          }
+        }
 
         this.output(out);
         this.sources = [out];
@@ -204,6 +208,12 @@ class CustomComponent extends CVFComponent {
 
     // Função chamada antes de finalizar o processamento. Chamada uma única vez
     async stop() {}
+
+    // Propriedades a serem exibidas e manipuladas via menu.
+    /*static properties = [
+      { name: 'iterations', type: PropertyType.Integer },
+    ];
+    iterations = 1;*/
   };
 
   targets = [

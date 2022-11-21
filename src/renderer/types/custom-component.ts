@@ -1,4 +1,5 @@
 export type CustomComponent = {
-  name: string;
+  name?: string;
+  title: string;
   code: string;
 };

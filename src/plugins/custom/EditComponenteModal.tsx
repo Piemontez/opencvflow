@@ -28,6 +28,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     this.state = {
       show: false,
       name: '',
+      title: '',
       code: defaultValue,
     };
   }
@@ -37,7 +38,7 @@ export class EditComponenteModal extends React.Component<any, any> {
 
   handleNew = () => {
     this.setState({
-      name: '',
+      title: '',
       code: defaultValue,
     });
     this.handleShow();
@@ -46,26 +47,37 @@ export class EditComponenteModal extends React.Component<any, any> {
   handleEdit = (custom: CustomComponent) => {
     this.setState({
       name: custom.name,
+      title: custom.title,
       code: custom.code,
     });
     this.handleShow();
   };
 
-  handleChangeName = (name: string) => {
-    this.setState({ name });
+  handleChangeTitle = (title: string) => {
+    this.setState({ title });
   };
 
   handleSave = () => {
-    const { name, code } = this.state;
+    const { title, code } = this.state;
     try {
-      CustomComponentStore.validade({ name, code });
-      CustomComponentStore.add({ name, code });
+      CustomComponentStore.validade({ title: title, code });
+      CustomComponentStore.add({ title: title, code });
       NodeStore.storage();
 
       this.handleClose();
     } catch (ex) {
       notify.danger((ex as any).message);
       console.error((ex as any).message, ex);
+    }
+  };
+
+  handleRemove = () => {
+    const { name } = this.state;
+    if (confirm('Do you want to remove this component?')) {
+      CustomComponentStore.remove(name);
+      NodeStore.storage();
+
+      this.handleClose();
     }
   };
 
@@ -109,7 +121,7 @@ export class EditComponenteModal extends React.Component<any, any> {
   };
 
   render() {
-    const { name, show, code } = this.state;
+    const { title, show, code } = this.state;
     return (
       <Modal show={show} onHide={this.handleClose} size="xl">
         <Modal.Header closeButton>
@@ -122,10 +134,10 @@ export class EditComponenteModal extends React.Component<any, any> {
                 groupAs={Row}
                 column={true}
                 type={PropertyType.Text}
-                name={name}
+                name={'title'}
                 title="Component name"
-                value={name}
-                onChange={this.handleChangeName}
+                value={title}
+                onChange={this.handleChangeTitle}
               />
             </Col>
             <Col>
@@ -134,7 +146,7 @@ export class EditComponenteModal extends React.Component<any, any> {
                 column={true}
                 type={PropertyType.Text}
                 disabled
-                name="name"
+                name="tabName"
                 title="Tab Bar Menu"
                 value={tabName}
               />
@@ -152,6 +164,10 @@ export class EditComponenteModal extends React.Component<any, any> {
           )}
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="outline-danger" onClick={this.handleRemove}>
+            Remove
+          </Button>
+          <div style={{ flex: 1 }} />
           <Button variant="secondary" onClick={this.handleClose}>
             Close without save
           </Button>

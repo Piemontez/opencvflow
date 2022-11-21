@@ -454,7 +454,7 @@ class NodeStore implements NodeStoreI {
 
   // Evento disparado ao arrastar um custom componente do menu
   onDragStartCustom = (event: any, customComp: CustomComponent) => {
-    event.dataTransfer.setData('application/customcomponent', customComp.name);
+    event.dataTransfer.setData('application/customcomponent', customComp.title);
     event.dataTransfer.effectAllowed = 'move';
   };
 

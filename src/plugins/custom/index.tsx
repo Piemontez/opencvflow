@@ -25,7 +25,7 @@ const ListComponents = observer(() => {
           draggable
         >
           {' '}
-          {custom.name}
+          {custom.title}
         </span>
       ))}
     </>

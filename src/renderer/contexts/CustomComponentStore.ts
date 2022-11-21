@@ -10,6 +10,7 @@ import NodeStore from './NodeStore';
 interface CustomComponentStoreI {
   customComponents: Array<CustomComponent>;
   add(custom: CustomComponent): void;
+  remove(name: string): void;
   validade(custom: CustomComponent): void;
   build(custom: CustomComponent): typeof CVFComponent;
 }
@@ -27,7 +28,7 @@ class CustomComponentStore implements CustomComponentStoreI {
 
   @action add = (custom: CustomComponent): void => {
     const idx = this.customComponents.findIndex(
-      (curr) => curr.name === custom.name
+      (curr) => curr.title === custom.title
     );
     const nodeType = this.build(custom);
 
@@ -37,11 +38,26 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents[idx] = custom;
     }
 
+    custom.name = this.sanitizeName(custom.title);
+
     NodeStore.addNodeType(nodeType, { repaint: idx < 0 });
     NodeStore.refreshNodesFromComponent(nodeType);
   };
 
-  validade = ({ name, code }: CustomComponent): void => {
+  @action remove = (name: string): void => {
+    const idx = this.customComponents.findIndex(
+      (curr) => curr.name === name
+    );
+    if (idx > -1) {
+      this.customComponents.splice(idx, 1);
+    }
+  };
+
+  sanitizeName = (name: string): string => {
+    return (name || '').replaceAll(/[\n| |\\|"|'|<|>]/g, '');
+  };
+
+  validade = ({ title: name, code }: CustomComponent): void => {
     const hasName = !!(name || '').trim();
     const hasClass = code.search(/class[ ]*CustomComponent/g);
 
@@ -52,7 +68,7 @@ class CustomComponentStore implements CustomComponentStoreI {
       throw new Error('CustomComponent class required');
     }
 
-    this.test({ name, code });
+    this.test({ title: name, code });
   };
 
   test = (custom: CustomComponent): void => {
@@ -85,9 +101,11 @@ class CustomComponentStore implements CustomComponentStoreI {
       return rs;
     } else {
       const createEvalRs = `({ func: ${createComponentClass} })`;
-      const nameSanitized = custom.name.replaceAll(/[\n| |\\|"|'|<|>]/g, '');
+      const nameSanitized = this.sanitizeName(custom.title);
 
-      const rs = eval(createEvalRs.replaceAll('CustomComponent', nameSanitized));
+      const rs = eval(
+        createEvalRs.replaceAll('CustomComponent', nameSanitized)
+      );
       const classInstance = rs.func();
 
       return classInstance;

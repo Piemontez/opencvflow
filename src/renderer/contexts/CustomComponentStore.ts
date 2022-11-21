@@ -12,7 +12,6 @@ interface CustomComponentStoreI {
   add(custom: CustomComponent): void;
   remove(name: string): void;
   validade(custom: CustomComponent): void;
-  build(custom: CustomComponent): typeof CVFComponent;
 }
 
 class CustomComponentStore implements CustomComponentStoreI {
@@ -27,10 +26,12 @@ class CustomComponentStore implements CustomComponentStoreI {
   }
 
   @action add = (custom: CustomComponent): void => {
+    custom.name = this.sanitizeName(custom.title);
+    const nodeType = this.build(custom);
+
     const idx = this.customComponents.findIndex(
       (curr) => curr.title === custom.title
     );
-    const nodeType = this.build(custom);
 
     if (idx < 0) {
       this.customComponents = this.customComponents.concat([custom]);
@@ -38,19 +39,17 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents[idx] = custom;
     }
 
-    custom.name = this.sanitizeName(custom.title);
-
     NodeStore.addNodeType(nodeType, { repaint: idx < 0 });
     NodeStore.refreshNodesFromComponent(nodeType);
   };
 
   @action remove = (name: string): void => {
-    const idx = this.customComponents.findIndex(
-      (curr) => curr.name === name
-    );
+    const idx = this.customComponents.findIndex((curr) => curr.name === name);
     if (idx > -1) {
       this.customComponents.splice(idx, 1);
     }
+
+    NodeStore.removeNodeType(name);
   };
 
   sanitizeName = (name: string): string => {
@@ -101,10 +100,9 @@ class CustomComponentStore implements CustomComponentStoreI {
       return rs;
     } else {
       const createEvalRs = `({ func: ${createComponentClass} })`;
-      const nameSanitized = this.sanitizeName(custom.title);
 
       const rs = eval(
-        createEvalRs.replaceAll('CustomComponent', nameSanitized)
+        createEvalRs.replaceAll('CustomComponent', custom.name || '')
       );
       const classInstance = rs.func();
 

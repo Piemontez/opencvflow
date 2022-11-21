@@ -39,12 +39,13 @@ interface NodeStoreI {
     component: typeof CVFComponent,
     options?: { repaint: boolean }
   ): void;
-
   addNodeFromComponent(
     component: typeof CVFComponent,
     position: XYPosition,
     props?: Record<string, any>
   ): CVFNode;
+  removeNodeType(name: string): void;
+
   removeNode(nodeOrId: CVFNode | string): void;
   refreshNodesFromComponent(component: typeof CVFComponent): void;
 
@@ -139,6 +140,18 @@ class NodeStore implements NodeStoreI {
     }
 
     this.refreshFlow(repaint);
+  };
+
+  @action removeNodeType = (name: string) => {
+    delete this.nodeTypes[name];
+
+    const elementIds = this.elements
+      .filter((el) => el.type === name)
+      .map((el) => el.id);
+
+    for (const elementId of elementIds) {
+      this.removeNode(elementId);
+    }
   };
 
   @action addNodeFromComponent = (
@@ -454,7 +467,7 @@ class NodeStore implements NodeStoreI {
 
   // Evento disparado ao arrastar um custom componente do menu
   onDragStartCustom = (event: any, customComp: CustomComponent) => {
-    event.dataTransfer.setData('application/customcomponent', customComp.title);
+    event.dataTransfer.setData('application/customcomponent', customComp.name);
     event.dataTransfer.effectAllowed = 'move';
   };
 

@@ -3,6 +3,7 @@ import { CVFEdgeData } from './edge';
 import { Mat, MatVector, Point } from 'opencv-ts';
 import { NodeProperty } from './property';
 import { Moments } from 'opencv-ts/src/core/Moments';
+import { createRef, RefObject } from 'react';
 
 export type NodeSourceDef =
   | Mat
@@ -19,6 +20,9 @@ export type NodeSourceDef =
 export abstract class CVFNodeProcessor {
   // Definições das propriedades do nó.
   static properties: Array<NodeProperty> = [];
+  // Ponteiro para o componente de tela
+  componentPointer: RefObject<any> = createRef();
+
   // Arestas conectadas à entreda
   inEdges: Array<CVFEdgeData | null> = [];
   // Arestas conectadas à saída
@@ -46,6 +50,7 @@ export abstract class CVFNodeProcessor {
   }
 
   body(): JSX.Element | void {}
+
   // Função chamada ao iniciar o processamento(clicar em run). Chamada uma única vez
   async start(): Promise<void> {}
   // Função chamada a cada novo ciclo de operação

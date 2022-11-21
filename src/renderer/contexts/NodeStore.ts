@@ -7,7 +7,7 @@ import {
   Elements,
   Connection,
 } from 'react-flow-renderer/nocss';
-import { createContext, MouseEvent } from 'react';
+import React, { createContext, MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from 'renderer/types/edge';
 import { CVFNode } from 'renderer/types/node';
 import { CVFComponent } from 'renderer/types/component';
@@ -212,8 +212,15 @@ class NodeStore implements NodeStoreI {
             (processor as any)[key] = (node.data as any)[key];
           }
         }
+        if (this.running && node.data) {
+          //Roda a função de parada
+          node.data.stop();
+        }
         //Troca o antigo processador pelo novo
-        node.data = processor;
+        (node.data.componentPointer.current as React.Component).setState({
+          data: processor,
+        });
+        node.data.componentPointer.current.initOutputs();
       }
     }
 
@@ -328,6 +335,8 @@ class NodeStore implements NodeStoreI {
     this.runner = new Promise(async (resolve) => {
       for (const node of nodes) {
         try {
+          node.data.componentPointer.current.initOutputs();
+
           await node.data.start();
         } catch (err: any) {
           node.data.errorMessage =

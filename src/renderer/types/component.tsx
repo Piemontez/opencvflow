@@ -36,7 +36,7 @@ export abstract class CVFComponent extends React.Component<
   OCVComponentProps,
   OCVComponentState
 > {
-  output: HTMLCanvasElement | null = null;
+  private output: HTMLCanvasElement | null = null;
   // Conexões que o componente pode receber
   targets: TargetHandle[] = [];
   // Conexões que o componente irá disparar
@@ -81,7 +81,14 @@ export abstract class CVFComponent extends React.Component<
   }
 
   componentDidMount() {
+    this.initOutputs();
+  }
+
+  initOutputs() {
     const { data: processor } = this.props;
+
+    processor.componentPointer = { current: this };
+
     processor.output = (mat: Mat) => {
       if (this.output) {
         const { zoom, options } = this.state;
@@ -98,6 +105,7 @@ export abstract class CVFComponent extends React.Component<
         }
       }
     };
+
     processor.outputMsg = (msg: string) => {
       if (this.output) {
         const ctx = this.output.getContext('2d');

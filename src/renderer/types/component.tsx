@@ -6,11 +6,11 @@ import NodeTab from 'renderer/components/NodeTab';
 import GCStore from 'renderer/contexts/GCStore';
 import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
-import { CVFNodeProcessor, EmptyNodeProcessor } from './node';
+import { CVFNodeData, CVFNodeProcessor, EmptyNodeProcessor } from './node';
 
 type OCVComponentProps = {
   id: string;
-  data: CVFNodeProcessor;
+  data: CVFNodeData;
   type: string;
 };
 
@@ -85,7 +85,8 @@ export abstract class CVFComponent extends React.Component<
   }
 
   initOutputs() {
-    const { data: processor } = this.props;
+    const { data } = this.props;
+    const { processor } = data;
 
     processor.componentPointer = { current: this };
 
@@ -118,6 +119,7 @@ export abstract class CVFComponent extends React.Component<
 
   render() {
     const { data } = this.props;
+    const { processor } = data;
     return (
       <div className="node">
         {this.targets.map((target, idx) => (
@@ -139,7 +141,7 @@ export abstract class CVFComponent extends React.Component<
         <NodeTab component={this} />
 
         <div className="node-body">
-          {data.body() || (
+          {processor.body() || (
             <NodeDisplay
               component={this}
               canvasRef={(ref) => (this.output = ref)}

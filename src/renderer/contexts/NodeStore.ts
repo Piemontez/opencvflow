@@ -164,7 +164,7 @@ class NodeStore implements NodeStoreI {
       id: uuidv4(),
       type: component.name,
       position,
-      data: processor,
+      data: { processor },
     };
 
     if (props) {
@@ -184,8 +184,8 @@ class NodeStore implements NodeStoreI {
         : this.elements.indexOf(nodeOrId);
     if (idx > -1) {
       const node = this.elements.splice(idx, 1)[0] as CVFNode;
-      if (node.data?.edges) {
-        for (const edge of node.data.edges) {
+      if (node.data?.processor?.edges) {
+        for (const edge of node.data.processor.edges) {
           if (edge) {
             this.removeEdge(edge);
           }
@@ -199,28 +199,33 @@ class NodeStore implements NodeStoreI {
   @action refreshNodesFromComponent = (component: typeof CVFComponent) => {
     let refresh = false;
     for (const node of this.nodes) {
-      //Verifica o componente esta sendo utilizado em tela.
+      //Verifica se o componente esta sendo utilizado em tela.
       if (node.type === component.name) {
         refresh = true;
-        // Copia as propriedades do antigo processador para o novo.
-        const processor = new component.processor();
-        for (const key of Object.keys(node.data)) {
+        // Copia as propriedades do antigo nó processador para o novo.
+        const newProcessor = new component.processor();
+        for (const key of Object.keys(node.data.processor)) {
           if (
-            node.data.hasOwnProperty(key) &&
+            node.data.processor.hasOwnProperty(key) &&
             'function' !== typeof (node.data as any)[key]
           ) {
-            (processor as any)[key] = (node.data as any)[key];
+            (newProcessor as any)[key] = (node.data.processor as any)[key];
           }
         }
-        if (this.running && node.data) {
-          //Roda a função de parada
-          node.data.stop();
+
+        // Se rodando os processamento
+        if (this.running && node.data.processor) {
+          //Roda a função de parada do processador a ser subistituido
+          node.data.processor.stop();
         }
+
         //Troca o antigo processador pelo novo
-        (node.data.componentPointer.current as React.Component).setState({
-          data: processor,
+        const comp = node.data.processor.componentPointer
+          .current as React.Component as any;
+        comp.setState({
+          data: newProcessor,
         });
-        node.data.componentPointer.current.initOutputs();
+        comp.initOutputs();
       }
     }
 
@@ -269,8 +274,8 @@ class NodeStore implements NodeStoreI {
 
     // Aresta/Conexão
     const dataEdge = new CVFEdgeData(
-      source.data,
-      target.data,
+      source.data.processor,
+      target.data.processor,
       sourcesIdx,
       targetsIdx
     );
@@ -284,8 +289,8 @@ class NodeStore implements NodeStoreI {
     };
 
     // Adicionando a aresta aos nós
-    source.data.outEdges[sourcesIdx] = dataEdge;
-    target.data.inEdges[targetsIdx] = dataEdge;
+    source.data.processor.outEdges[sourcesIdx] = dataEdge;
+    target.data.processor.inEdges[targetsIdx] = dataEdge;
     // Adicionar a aresta nos elementos da tela
     this.elements = this.elements.concat(newEdge);
     this.storage();
@@ -335,16 +340,16 @@ class NodeStore implements NodeStoreI {
     this.runner = new Promise(async (resolve) => {
       for (const node of nodes) {
         try {
-          node.data.componentPointer.current.initOutputs();
+          node.data.processor.componentPointer.current.initOutputs();
 
-          await node.data.start();
+          await node.data.processor.start();
         } catch (err: any) {
-          node.data.errorMessage =
+          node.data.processor.errorMessage =
             typeof err === 'number'
               ? `Code error: ${err}`
               : err?.message || 'Not detected';
 
-          notify.danger(`Node ${node.id}: ${node.data.errorMessage}`);
+          notify.danger(`Node ${node.id}: ${node.data.processor.errorMessage}`);
         }
         if (!this.running) break;
       }
@@ -353,17 +358,17 @@ class NodeStore implements NodeStoreI {
       while (this.running) {
         for (const node of nodes) {
           try {
-            await node.data.proccess();
-            if (node.data.errorMessage) {
-              delete node.data.errorMessage;
+            await node.data.processor.proccess();
+            if (node.data.processor.errorMessage) {
+              delete node.data.processor.errorMessage;
             }
           } catch (err: any) {
-            node.data.errorMessage =
+            node.data.processor.errorMessage =
               typeof err === 'number'
                 ? `Code error: ${err}`
                 : err?.message || 'Not detected';
 
-            node.data.outputMsg(node.data.errorMessage!);
+            node.data.processor.outputMsg(node.data.processor.errorMessage!);
           }
           if (!this.running) break;
         }
@@ -387,8 +392,8 @@ class NodeStore implements NodeStoreI {
 
       for (const node of this.nodes) {
         try {
-          if (node.data.stop) {
-            await node.data.stop();
+          if (node.data.processor.stop) {
+            await node.data.processor.stop();
           }
         } catch (err: any) {
           console.error(err);

@@ -18,7 +18,7 @@ const jsonToNodeStore = (json: SaveContent) => {
   // Carrega os Nodes
   if (Array.isArray(elements)) {
     const components = (elements as Array<any>)
-      // Filtra apenas componentes
+      // Filtra apenas os componentes nó
       .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target))
       // Realiza alguma validações
       .filter(({ type }) => {
@@ -32,20 +32,23 @@ const jsonToNodeStore = (json: SaveContent) => {
         }
         return true;
       })
-      .map(({ data, ...rest }) => {
-        const element = rest as CVFNode | OCVFEdge;
+      .map((element: CVFNode) => {
+        const properties: any = element.data.processor;
+
         if (element.type) {
           const component = NodeStore.getNodeType(element.type);
           if (component) {
-            element.data = new component.processor();
+            const processor: any = new component.processor();
+            element.data.processor = processor;
 
-            Object.keys(element.data.propertiesMap).forEach((key) => {
-              if (data && data[key] !== undefined) {
-                const el = element.data as any;
-                if (typeof el[key] === 'object') {
-                  Object.assign(el[key], data[key]);
+            Object.keys(
+              (element as CVFNode).data.processor.propertiesMap
+            ).forEach((key) => {
+              if (properties && properties[key] !== undefined) {
+                if (typeof processor[key] === 'object') {
+                  Object.assign(processor[key], properties[key]);
                 } else {
-                  el[key] = data[key];
+                  processor[key] = properties[key];
                 }
               }
             });
@@ -59,6 +62,7 @@ const jsonToNodeStore = (json: SaveContent) => {
 
     // Adiciona as conecções
     (elements as Array<any>)
+      // Filtra apenas as arestas
       .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target)
       .forEach(({ data, ...rest }) => {
         NodeStore.onConnect(rest as OCVFEdge);

@@ -1,9 +1,9 @@
 import NodeStore from 'renderer/contexts/NodeStore';
 import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
 import { toJS } from 'mobx';
-import { CVFNodeProcessor } from 'renderer/types/node';
+import { CVFNodeData } from 'renderer/types/node';
 import { SaveContent } from 'renderer/types/save-content';
-import { OCVElements, OCVFlowElement } from 'renderer/types/ocv-elements';
+import { OCVElements } from 'renderer/types/ocv-elements';
 import { CustomComponent } from 'renderer/types/custom-component';
 
 const nodeStoreToJson = (): SaveContent => {
@@ -12,13 +12,22 @@ const nodeStoreToJson = (): SaveContent => {
   );
 
   const elements: OCVElements = toJS(NodeStore.elements);
-  const elementsUsefulData = elements.map(
-    ({ data, ...rest }) =>
-      ({
-        data: (data as CVFNodeProcessor)?.propertiesMap,
-        ...rest,
-      } as OCVFlowElement)
-  );
+  const elementsUsefulData = elements.map((element) => {
+    const replace: any = {};
+
+    if ((element.data as CVFNodeData).processor) {
+      replace.data = {
+        processor: (element.data as CVFNodeData).processor.propertiesMap,
+      };
+    } else {
+      replace.data = {};
+    }
+
+    return {
+      ...element,
+      ...replace,
+    };
+  });
 
   return {
     custom: { components: customComponents },

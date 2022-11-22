@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import { useContext } from 'react';
 import { Row } from 'react-bootstrap';
 import { NodeStoreContext } from 'renderer/contexts/NodeStore';
-import { CVFNodeProcessor } from 'renderer/types/node';
+import { CVFNode, CVFNodeProcessor } from 'renderer/types/node';
 import { CVFFormGroup } from '../Form';
 
 /**
@@ -10,7 +10,8 @@ import { CVFFormGroup } from '../Form';
  */
 const PropertyBar = () => {
   const noteStore = useContext(NodeStoreContext);
-  const processor = noteStore.currentElement?.data as CVFNodeProcessor;
+  const processor = (noteStore.currentElement as CVFNode)?.data
+    ?.processor as CVFNodeProcessor;
   const curElTypeof = processor?.constructor as typeof CVFNodeProcessor;
 
   return (

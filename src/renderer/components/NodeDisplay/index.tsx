@@ -9,8 +9,9 @@ const NodeDisplay = ({
   component: CVFComponent;
 }) => {
   const { data } = component.props;
-  if (data.errorMessage) {
-    return <div className="node-error-msg">{data.errorMessage}</div>;
+  const { processor } = data;
+  if (processor.errorMessage) {
+    return <div className="node-error-msg">{processor.errorMessage}</div>;
   }
 
   return (

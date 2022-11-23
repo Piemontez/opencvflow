@@ -204,6 +204,7 @@ class NodeStore implements NodeStoreI {
         refresh = true;
         // Copia as propriedades do antigo nó processador para o novo.
         const newProcessor = new component.processor();
+        newProcessor.id = 2;
         for (const key of Object.keys(node.data.processor)) {
           if (
             node.data.processor.hasOwnProperty(key) &&
@@ -220,11 +221,9 @@ class NodeStore implements NodeStoreI {
         }
 
         //Troca o antigo processador pelo novo
+        node.data.processor = newProcessor;
         const comp = node.data.processor.componentPointer
           .current as React.Component as any;
-        comp.setState({
-          data: newProcessor,
-        });
         comp.initOutputs();
       }
     }

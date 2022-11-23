@@ -50,6 +50,10 @@ class MenuStore {
       const tab = this.findOrCreateTab(component.menu.tabTitle || null, {});
       tab.actions.push(component.menu);
       this.actions.push(component.menu);
+
+      if (tab.title === 'Inputs') {
+        this.currentTab = tab;
+      }
     }
   };
 

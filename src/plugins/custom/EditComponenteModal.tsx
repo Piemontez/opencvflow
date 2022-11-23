@@ -201,6 +201,7 @@ class CustomComponent extends CVFComponent {
 
       if (src1 && src2) {
         const out = new cv.Mat(src1.rows, src1.cols, cv.CV_8UC3, new cv.Scalar(0));
+        GCStore.add(out);
 
         for (let j = src1.rows - 1; j > -1; j--) {
           for (let k = src1.cols - 1; k > -1; k--) {

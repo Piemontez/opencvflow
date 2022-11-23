@@ -204,7 +204,6 @@ class NodeStore implements NodeStoreI {
         refresh = true;
         // Copia as propriedades do antigo nó processador para o novo.
         const newProcessor = new component.processor();
-        newProcessor.id = 2;
         for (const key of Object.keys(node.data.processor)) {
           if (
             node.data.processor.hasOwnProperty(key) &&

@@ -23,8 +23,6 @@ export abstract class CVFNodeProcessor {
   // Ponteiro para o componente de tela
   componentPointer: RefObject<any> = createRef();
 
-  id: number = 1;
-
   // Arestas conectadas à entreda
   inEdges: Array<CVFEdgeData | null> = [];
   // Arestas conectadas à saída

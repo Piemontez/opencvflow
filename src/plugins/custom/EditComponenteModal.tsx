@@ -123,8 +123,8 @@ export class EditComponenteModal extends React.Component<any, any> {
   render() {
     const { title, show, code } = this.state;
     return (
-      <Modal show={show} onHide={this.handleClose} size="xl">
-        <Modal.Header closeButton>
+      <Modal show={show} size="xl">
+        <Modal.Header>
           <Modal.Title>New Component</Modal.Title>
         </Modal.Header>
         <Modal.Body>

@@ -1,6 +1,7 @@
 import { CVFOutputComponent } from 'renderer/types/component';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import cv, { Mat } from 'opencv-ts';
+import { MorphShapes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
 import { PropertyType } from 'renderer/types/property';
 import GCStore from 'renderer/contexts/GCStore';
 import { Position } from 'react-flow-renderer/nocss';
@@ -288,6 +289,68 @@ export class CVKernelComponent extends CVFOutputComponent {
   };
 }
 
+export class CVStructuringElementComponent extends CVFOutputComponent {
+  static menu = { tabTitle: tabName, title: 'StructuringElement' };
+
+  static processor = class StructuringElementProcessor extends CVFNodeProcessor {
+    properties = [
+      { name: 'type', type: PropertyType.Integer },
+      { name: 'rows', type: PropertyType.Integer },
+      { name: 'cols', type: PropertyType.Integer },
+    ];
+
+    type: MorphShapes = cv.MORPH_RECT;
+    rows: number = 15;
+    cols: number = 15;
+    kernel: Mat = new cv.Mat(this.rows, this.cols, cv.CV_32F);
+    out: Mat = new cv.Mat(this.rows, this.cols, cv.CV_32F);
+
+    async start() {
+      this.buildKernel(this.rows, this.cols, this.type);
+    }
+
+    async propertyChange(name: string, value: any): Promise<void> {
+      this.buildKernel(
+        name === 'rows' ? (value as number) : this.rows,
+        name === 'cols' ? (value as number) : this.cols,
+        name === 'type' ? (value as MorphShapes) : this.type
+      );
+    }
+
+    buildKernel(rows: number, cols: number, type: MorphShapes) {
+      GCStore.add(this.kernel, -100);
+      GCStore.add(this.out, -100);
+
+      this.kernel = cv.getStructuringElement(
+        type,
+        new cv.Size(this.cols, this.rows),
+        new cv.Point(this.cols / 2, this.rows / 2)
+      );
+
+      const min = Math.min(this.kernel.rows, this.kernel.cols);
+      const scale = NodeSizes.defaultHeight / min;
+      const outCols = cols * scale;
+      const outRows = rows * scale;
+
+      this.out = new cv.Mat(outRows, outCols, this.kernel.type());
+      const dsize = new cv.Size(outCols, outRows);
+      cv.resize(this.kernel, this.out, dsize, 0, 0, cv.INTER_LINEAR);
+
+      for (let j = 0; j < outCols; j++) {
+        for (let k = 0; k < outRows; k++) {
+          this.out.charPtr(k, j)[0] = this.out.charPtr(k, j)[0] ? 255 : 0;
+        }
+      }
+    }
+
+    async proccess() {
+      this.sources = [this.kernel];
+
+      this.output(this.out);
+    }
+  };
+}
+
 export class CVGaussianKernelComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'GausKernel' };
 
@@ -301,36 +364,45 @@ export class CVGaussianKernelComponent extends CVFOutputComponent {
     sigma: number = 1;
     rows: number = 5;
     cols: number = 5;
-    kernel?: Mat;
+    kernel: Mat = new cv.Mat(this.rows, this.cols, cv.CV_32F);
+    out: Mat = new cv.Mat(this.rows, this.cols, cv.CV_32F);
 
-    buildKernel() {
-      this.kernel = new cv.Mat(
-        this.rows,
-        this.cols,
-        cv.CV_32F,
-        new cv.Scalar(0)
-      );
+    async start() {
+      this.buildKernel(this.rows, this.cols, this.sigma);
+    }
 
-      cv.multiply(
-        cv.getGaussianKernel(this.rows, this.sigma, cv.CV_32F),
-        cv.getGaussianKernel(this.cols, this.sigma, cv.CV_32F).t(),
-        this.kernel,
-        1
+    async propertyChange(name: string, value: any): Promise<void> {
+      this.buildKernel(
+        name === 'rows' ? (value as number) : this.rows,
+        name === 'cols' ? (value as number) : this.cols,
+        name === 'sigma' ? (value as number) : this.sigma
       );
     }
 
+    buildKernel(rows: number, cols: number, sigma: number) {
+      GCStore.add(this.kernel, -100);
+      GCStore.add(this.out, -100);
+
+      this.kernel = new cv.Mat(rows, cols, cv.CV_32F);
+
+      const g1 = cv.getGaussianKernel(rows, sigma, cv.CV_32F);
+      const g2 = cv.getGaussianKernel(cols, sigma, cv.CV_32F);
+      cv.multiply(g1, g2.t(), this.kernel, 1);
+
+      const min = Math.min(this.kernel.rows, this.kernel.cols);
+      const scale = NodeSizes.defaultHeight / min;
+      const outCols = cols * scale;
+      const outRows = rows * scale;
+
+      this.out = new cv.Mat(outRows, outCols, this.kernel.type());
+      const dsize = new cv.Size(outCols, outRows);
+      cv.resize(this.kernel, this.out, dsize, 0, 0, cv.INTER_AREA);
+    }
+
     async proccess() {
-      if (
-        !this.kernel ||
-        this.kernel.rows !== this.rows ||
-        this.kernel.cols !== this.cols
-      ) {
-        this.buildKernel();
-      }
+      this.sources = [this.kernel];
 
-      this.output(this.kernel!);
-
-      this.sources = [this.kernel!];
+      this.output(this.out);
     }
   };
 }

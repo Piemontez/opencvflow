@@ -227,7 +227,7 @@ class CustomComponent extends CVFComponent {
     async stop() {}
 
     // Propriedades a serem exibidas e manipuladas via menu.
-    /*static properties = [
+    /*properties = [
       { name: 'iterations', type: PropertyType.Integer },
     ];
     iterations = 1;*/

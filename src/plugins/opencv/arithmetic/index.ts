@@ -200,7 +200,7 @@ export class CVNormalizeComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Normalize' };
 
   static processor = class NormalizeProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'alpha', type: PropertyType.Integer },
       { name: 'beta', type: PropertyType.Integer },
       { name: 'normType', type: PropertyType.Integer },
@@ -243,7 +243,7 @@ export class CVConvertScaleAbsComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Convert Scale Abs' };
 
   static processor = class ConvertScaleAbsProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'alpha', type: PropertyType.Integer },
       { name: 'beta', type: PropertyType.Integer },
     ];

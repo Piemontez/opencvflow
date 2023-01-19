@@ -17,7 +17,7 @@ export class ThresholdComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Threshold' };
 
   static processor = class ThresholdNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'thresh', type: PropertyType.Decimal },
       { name: 'maxval', type: PropertyType.Decimal },
       { name: 'type', type: PropertyType.ThresholdTypes },
@@ -61,7 +61,7 @@ export class ConnectedComponentsComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Connected Components' };
 
   static processor = class ConnectedComponentsNode extends CVFNodeProcessor {
-    static properties = [{ name: 'display', type: PropertyType.Decimal }];
+    properties = [{ name: 'display', type: PropertyType.Decimal }];
 
     display: number = 0;
 
@@ -95,7 +95,7 @@ export class RegionGrowing extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 
   static processor = class RegionGrowingNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'alert', type: PropertyType.Label },
       { name: 'thresh', type: PropertyType.Decimal },
     ];

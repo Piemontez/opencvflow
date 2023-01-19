@@ -5,7 +5,12 @@ import { CVFFormEvent } from './types/CVFFormEvent';
 import { CVFFormProps } from './types/CVFFormProps';
 import GCStore from 'renderer/contexts/GCStore';
 
-function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
+enum MatrixType {
+  OneZero,
+  Int,
+}
+
+function BaseMatrixFormControl(props: CVFFormProps, type: MatrixType) {
   props.groupAs = undefined;
   props.column = undefined;
 
@@ -80,7 +85,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
 
   let fields = null;
   switch (type) {
-    case 1:
+    case MatrixType.Int:
       fields = rowsSeries.map((row) => (
         <Row key={row}>
           {colsSeries.map((col) => (
@@ -99,7 +104,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
         </Row>
       ));
       break;
-    case 0:
+    case MatrixType.OneZero:
     default:
       fields = rowsSeries.map((row) => (
         <Row key={row}>
@@ -107,11 +112,9 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
             <Col key={col}>
               <Form.Check
                 type="checkbox"
-                checked={value.data?.at(row * rows + col) !== 0}
-                onClick={(event) => {
-                  value.data[row * rows + col] = value.data.at(row * rows + col)
-                    ? 1
-                    : 0;
+                checked={value.charAt(row, col) !== 0}
+                onChange={(event) => {
+                  value.charPtr(row, col)[0] = !value.charAt(row, col) ? 1 : 0;
                   if (props.onChange) props.onChange(value, null, event);
                 }}
               />
@@ -133,7 +136,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: 1 | 2 | 0) {
  * @param props
  */
 export function OCVIntMatrixFormControl(props: CVFFormProps) {
-  return BaseMatrixFormControl(props, 1);
+  return BaseMatrixFormControl(props, MatrixType.Int);
 }
 
 /**
@@ -141,7 +144,7 @@ export function OCVIntMatrixFormControl(props: CVFFormProps) {
  * @param props
  */
 export function OCVOneZeroMatrixFormControl(props: CVFFormProps) {
-  return BaseMatrixFormControl(props, 0);
+  return BaseMatrixFormControl(props, MatrixType.OneZero);
 }
 
 export function MatrixSizeComp({

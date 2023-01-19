@@ -114,7 +114,7 @@ export class CVCircleComponent extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'drawed', position: Position.Right }];
 
   static processor = class CircleProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'center', type: PropertyType.Point },
       { name: 'radius', type: PropertyType.Integer },
       { name: 'color', type: PropertyType.Scalar },

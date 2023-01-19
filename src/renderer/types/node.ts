@@ -61,9 +61,8 @@ export abstract class CVFNodeProcessor {
   async propertyChange(_name: string, _value: any): Promise<void> {}
 
   get propertiesMap(): Readonly<any> {
-    const curElTypeof = this?.constructor as typeof CVFNodeProcessor;
     const map: any = {};
-    curElTypeof?.properties?.forEach(({ name }) => {
+    this?.properties?.forEach(({ name }) => {
       map[name] = (this as any)[name];
     });
 

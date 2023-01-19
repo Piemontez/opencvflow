@@ -16,7 +16,7 @@ const tabName = 'Morphology';
 export class ErodeComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Erode' };
   static processor = class ErodeNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
@@ -65,7 +65,7 @@ export class ErodeComponent extends CVFIOComponent {
 export class DilateComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Dilate' };
   static processor = class DilateNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
@@ -114,7 +114,7 @@ export class DilateComponent extends CVFIOComponent {
 export class OpeningComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Opening' };
   static processor = class OpeningNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
@@ -164,7 +164,7 @@ export class OpeningComponent extends CVFIOComponent {
 export class ClosingComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Closing' };
   static processor = class ClosingNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
@@ -221,7 +221,7 @@ export class MorphologyExComponent extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 
   static processor = class MorphologyExNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'op', type: PropertyType.MorphTypes },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'iterations', type: PropertyType.Integer },
@@ -269,7 +269,7 @@ export class MorphologyExComponent extends CVFComponent {
 export class ThinningComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Thinning' };
   static processor = class ThinningNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
       { name: 'borderValue', type: PropertyType.Scalar },
     ];

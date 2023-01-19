@@ -95,7 +95,7 @@ export class HistogramCalcComponent extends CVFComponent {
   sources: SourceHandle[] = [{ title: 'hist', position: Position.Right }];
 
   static processor = class HistogramCalcProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'accumulate', type: PropertyType.Boolean },
       { name: 'channels', type: PropertyType.Integer },
       { name: 'histSize', type: PropertyType.Integer },

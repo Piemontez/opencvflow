@@ -13,7 +13,7 @@ const tabName = 'Smoothing';
 export class MedianBlurComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Median' };
   static processor = class MedianBlurNode extends CVFNodeProcessor {
-    static properties = [{ name: 'kSize', type: PropertyType.Integer }];
+    properties = [{ name: 'kSize', type: PropertyType.Integer }];
 
     kSize: number = 3;
 
@@ -40,7 +40,7 @@ export class MedianBlurComponent extends CVFIOComponent {
 export class GaussianBlurComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Gaussian' };
   static processor = class GaussianBlurNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'size', type: PropertyType.Size },
       { name: 'sigmaX', type: PropertyType.Decimal },
       { name: 'sigmaY', type: PropertyType.Decimal },
@@ -82,7 +82,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
 export class BlurComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Blur' };
   static processor = class BlurNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'ksize', type: PropertyType.Size },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'borderType', type: PropertyType.BorderType },
@@ -115,7 +115,7 @@ export class BlurComponent extends CVFIOComponent {
 export class BilateralFilterComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Bilateral' };
   static processor = class BilateralFilterNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'd', type: PropertyType.Integer },
       { name: 'sigmaColor', type: PropertyType.Decimal },
       { name: 'sigmaSpace', type: PropertyType.Decimal },
@@ -158,7 +158,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
  export class BoxFilterComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'BoxFilter' };
   static processor = class BoxFilterNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'ddepth', type: PropertyType.Integer },
       { name: 'ksize', type: PropertyType.Size },
       { name: 'anchor', type: PropertyType.Point },
@@ -203,7 +203,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
 export class SqrBoxFilterComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'SqrBox' };
   static processor = class SqrBoxFilterNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'ddepth', type: PropertyType.Integer },
       { name: 'ksize', type: PropertyType.Size },
       { name: 'anchor', type: PropertyType.Point },

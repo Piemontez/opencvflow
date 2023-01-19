@@ -14,7 +14,7 @@ const tabName = 'Conversors';
 export class CvtColorComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'CvtColor' };
   static processor = class CvtColorNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'code', type: PropertyType.ColorConversionCodes },
       { name: 'dstCn', type: PropertyType.Integer },
     ];
@@ -46,7 +46,7 @@ export class CvtColorComponent extends CVFIOComponent {
 export class ConverToComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'ConverTo' };
   static processor = class ConverToNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'rtype', type: PropertyType.Integer },
       { name: 'alpha', type: PropertyType.Decimal },
       { name: 'beta', type: PropertyType.Decimal },

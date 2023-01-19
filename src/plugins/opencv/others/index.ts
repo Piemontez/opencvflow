@@ -23,7 +23,7 @@ const tabName = 'Others';
 export class DistanceTransformComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Distance Transform' };
   static processor = class DistanceTransformNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'distanceType', type: PropertyType.DistanceTypes },
       { name: 'maskSize', type: PropertyType.DistanceTransformMasks },
     ];
@@ -84,7 +84,7 @@ export class Filter2DComponent extends CVFIOComponent {
   sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
 
   static processor = class Filter2DNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'ddepth', type: PropertyType.Integer },
       { name: 'anchor', type: PropertyType.Point },
       { name: 'delta', type: PropertyType.Decimal },
@@ -133,7 +133,7 @@ export class Filter2DComponent extends CVFIOComponent {
 export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'BGSubtractorMog2' };
   static processor = class BackgroundSubtractorMOG2Node extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'history', type: PropertyType.Integer },
       { name: 'varThreshold', type: PropertyType.Decimal },
       { name: 'detectShadows', type: PropertyType.Boolean },
@@ -183,7 +183,7 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
 export class GrabCutComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'GrabCut' };
   static processor = class GrabCutNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'iterCount', type: PropertyType.Integer },
       { name: 'mode', type: PropertyType.Decimal },
     ];
@@ -245,7 +245,7 @@ export class GrabCutComponent extends CVFIOComponent {
 export class PyrDownComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'PyrDown' };
   static processor = class PyrDownNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dstsize', type: PropertyType.Size },
       { name: 'borderType', type: PropertyType.DistanceTransformMasks },
     ];
@@ -277,7 +277,7 @@ export class PyrDownComponent extends CVFIOComponent {
 export class PyrUpComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'PyrUp' };
   static processor = class PyrUpNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dstsize', type: PropertyType.Size },
       { name: 'borderType', type: PropertyType.DistanceTransformMasks },
     ];

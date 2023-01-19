@@ -107,7 +107,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
   ];
 
   static processor = class FileLoaderProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'file', type: PropertyType.FileUrl },
       { name: 'loop', type: PropertyType.Boolean },
     ];
@@ -212,7 +212,7 @@ export class CVKernelComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'Kernel' };
 
   static processor = class KernelProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dataType', type: PropertyType.DataType },
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
     ];
@@ -229,9 +229,9 @@ export class CVKernelComponent extends CVFOutputComponent {
         this.kernel = newKernel;
 
         if (value > cv.CV_8U) {
-          KernelProcessor.properties[1].type = PropertyType.DoubleMatrix;
+          this.properties[1].type = PropertyType.DoubleMatrix;
         } else {
-          KernelProcessor.properties[1].type = PropertyType.OneZeroMatrix;
+          this.properties[1].type = PropertyType.OneZeroMatrix;
         }
       }
     }
@@ -257,7 +257,7 @@ export class CVGaussianKernelComponent extends CVFOutputComponent {
   static menu = { tabTitle: tabName, title: 'GausKernel' };
 
   static processor = class GaussianKernelProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'sigma', type: PropertyType.Decimal },
       { name: 'rows', type: PropertyType.Integer },
       { name: 'cols', type: PropertyType.Integer },

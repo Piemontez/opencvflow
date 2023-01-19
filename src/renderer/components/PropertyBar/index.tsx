@@ -25,7 +25,7 @@ const PropertyBar = () => {
               {'>>'}
             </Button>
           </h1>
-          {curElTypeof?.properties?.map(({ name, title, ...prop }) => (
+          {processor?.properties?.map(({ name, title, ...prop }) => (
             <CVFFormGroup
               groupAs={Row}
               column={true}

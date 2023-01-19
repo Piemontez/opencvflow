@@ -24,7 +24,7 @@ export class DFTComponent extends CVFIOComponent {
   ];
 
   static processor = class DFTNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dstsize', type: PropertyType.Size },
       { name: 'borderType', type: PropertyType.DistanceTransformMasks },
     ];
@@ -145,7 +145,7 @@ export class IDFTComponent extends CVFIOComponent {
   ];
 
   static processor = class IDFTNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dstsize', type: PropertyType.Size },
       { name: 'borderType', type: PropertyType.DistanceTransformMasks },
     ];

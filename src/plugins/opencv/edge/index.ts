@@ -24,7 +24,7 @@ export class CVSobelComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Sobel' };
 
   static processor = class SobelProcessor extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dDepth', type: PropertyType.Integer },
       { name: 'dX', type: PropertyType.Integer },
       { name: 'dY', type: PropertyType.Integer },
@@ -79,7 +79,7 @@ export class CVSobelComponent extends CVFIOComponent {
 export class CannyComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Canny' };
   static processor = class CannyNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'tthreshold1', type: PropertyType.Decimal },
       { name: 'threshold2', type: PropertyType.Decimal },
       { name: 'aperturesize', type: PropertyType.Integer },
@@ -123,7 +123,7 @@ export class CannyComponent extends CVFIOComponent {
 export class LaplacianComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Laplacian' };
   static processor = class LaplacianNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'dDepth', type: PropertyType.Integer },
       { name: 'kSize', type: PropertyType.Integer },
       { name: 'scale', type: PropertyType.Decimal },
@@ -170,7 +170,7 @@ export class LaplacianComponent extends CVFIOComponent {
 export class ScharrComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Scharr' };
   static processor = class ScharrNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'ddepth', type: PropertyType.Integer },
       { name: 'dx', type: PropertyType.Integer },
       { name: 'dy', type: PropertyType.Integer },
@@ -228,7 +228,7 @@ export class FindContoursComponent extends CVFComponent {
   }
 
   static processor = class FindContoursNode extends CVFNodeProcessor {
-    static properties = [
+    properties = [
       { name: 'mode', type: PropertyType.Integer },
       { name: 'method', type: PropertyType.Integer },
     ];

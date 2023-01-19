@@ -1,7 +1,7 @@
 import { observable, action, makeObservable } from 'mobx';
 import { createContext } from 'react';
 import { CustomComponent } from 'renderer/types/custom-component';
-import { CVFComponent } from 'renderer/types/component';
+import { CVFComponent, CVFIOComponent } from 'renderer/types/component';
 import { PropertyType } from 'renderer/types/property';
 import { CVFNodeProcessor } from 'renderer/types/node';
 import GCStore from 'renderer/contexts/GCStore';
@@ -78,6 +78,8 @@ class CustomComponentStore implements CustomComponentStoreI {
     // @ts-ignore
     class CVFComponentFork extends CVFComponent {}
     // @ts-ignore
+    class CVFIOComponentFork extends CVFIOComponent {}
+    // @ts-ignore
     class CVFNodeProcessorFork extends CVFNodeProcessor {}
     // @ts-ignore
     const GCStoreFork = GCStore;
@@ -87,6 +89,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     const codeSanitized = custom.code //
       .replaceAll(/[ ]*import[^;]*;\n/g, '')
       .replaceAll('CVFComponent', 'CVFComponentFork')
+      .replaceAll('CVFIOComponent', 'CVFIOComponentFork')
       .replaceAll('CVFNodeProcessor', 'CVFNodeProcessorFork')
       .replaceAll('PropertyType', 'PropertyTypeFork')
       .replaceAll('GCStore', 'GCStoreFork');

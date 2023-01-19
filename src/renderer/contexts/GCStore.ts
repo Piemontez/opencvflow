@@ -42,7 +42,11 @@ class GCStore implements GCStoreI {
           mc.cycle === undefined ||
           mc.cycle === cycle
         ) {
-          mc.ref.delete();
+          try {
+            mc.ref.delete();
+          } catch (ex) {
+            console.log(ex);
+          }
         }
         return mc;
       })

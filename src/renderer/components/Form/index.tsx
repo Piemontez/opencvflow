@@ -23,6 +23,7 @@ import { OCVThresholdTypesFormControl } from './ocv-thresholdtypes-formcontrol';
 import { CVFFormEvent } from './types/CVFFormEvent';
 import { OCVDistanceTypesFormControl } from './ocv-distancetypes-formcontrol';
 import { OCVMorphTypesFormControl } from './ocv-morphtypes-formcontrol';
+import { OCVDataTypeTypesFormControl } from './ocv-datatypes-formcontrol';
 
 /**
  * Definição da função chamada ao alterar um formulario
@@ -53,6 +54,9 @@ export function CVFFormGroup(props: CVFFormProps) {
       break;
     case PropertyType.DistanceTypes:
       Control = <OCVDistanceTypesFormControl {...props} />;
+      break;
+    case PropertyType.DataType:
+      Control = <OCVDataTypeTypesFormControl {...props} />;
       break;
     case PropertyType.Scalar:
       Control = OCVScalarFormControl(props);
@@ -87,7 +91,6 @@ export function CVFFormGroup(props: CVFFormProps) {
     case PropertyType.Decimal:
       Control = CVFDecimalFormControl(props);
       break;
-    case PropertyType.DataType:
     case PropertyType.Integer:
       Control = CVFIntegerFormControl(props);
       break;

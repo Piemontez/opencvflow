@@ -19,7 +19,7 @@ export type NodeSourceDef =
  */
 export abstract class CVFNodeProcessor {
   // Definições das propriedades do nó.
-  static properties: Array<NodeProperty> = [];
+  properties: Array<NodeProperty> = [];
   // Ponteiro para o componente de tela
   componentPointer: RefObject<any> = createRef();
 

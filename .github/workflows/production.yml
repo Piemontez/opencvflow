@@ -1,0 +1,36 @@
+name: Atualizar Documentação Servidor
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  app_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git pull
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Baixa KeyPair
+        run: |
+          echo "${{ secrets.KEYPAIR_PEM }}" > keypair.pem
+          sudo chmod 400 keypair.pem
+      - name: Adiciona ao known_hosts
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh/
+          ssh-keyscan -H ${{ secrets.INSTANCE_IP }} >> ~/.ssh/known_hosts
+          sudo chmod 600 ~/.ssh/known_hosts
+
+      - name: Altera versão node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.12
+      - name: Compila PWA
+        shell: bash
+        run: ./bin/local-build-webview.sh
+
+      - name: Atualiza PWA
+        run: rsync -e "ssh -i keypair.pem" -av release/app/dist/webview/* ${{ secrets.INSTANCE_USER }}@${{ secrets.INSTANCE_IP }}:/var/www/docker/opencvflowdocs/online/

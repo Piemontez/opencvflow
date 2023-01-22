@@ -203,7 +203,7 @@ export class CVNormalizeComponent extends CVFIOComponent {
     properties = [
       { name: 'alpha', type: PropertyType.Integer },
       { name: 'beta', type: PropertyType.Integer },
-      { name: 'normType', type: PropertyType.Integer },
+      { name: 'normType', type: PropertyType.NormTypes },
       { name: 'dtype', type: PropertyType.Integer },
     ];
 

@@ -55,6 +55,9 @@ export function CVFFormGroup(props: CVFFormProps) {
     case PropertyType.DistanceTypes:
       Control = <OCVDistanceTypesFormControl {...props} />;
       break;
+    case PropertyType.NormTypes:
+      Control = <OCVDistanceTypesFormControl {...props} />;
+      break;
     case PropertyType.DataType:
       Control = <OCVDataTypeTypesFormControl {...props} />;
       break;

@@ -21,6 +21,7 @@ export enum PropertyType {
   MorphTypes,
   ThresholdTypes,
   DistanceTypes,
+  NormTypes,
   DistanceTransformMasks = PropertyType.Integer,
 }
 

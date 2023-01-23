@@ -85,8 +85,8 @@ const jsonMatToMat = (json: any) => {
   const mat = new cv.Mat(json.rows, json.cols, json.type);
   for (let j = 0; j < json.rows; j++)
     for (let k = 0; k < json.cols; k++) {
-      const pos = json.rows * j + k;
-      mat.ptr(pos)[0] = json.data[pos];
+      const pos = json.cols * j + k;
+      mat.ptr(j, k)[0] = json.data[pos];
     }
   return mat;
 };

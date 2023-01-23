@@ -4,6 +4,8 @@ import { CVFNode } from 'renderer/types/node';
 import { OCVFEdge } from 'renderer/types/edge';
 import { SaveContent } from 'renderer/types/save-content';
 import { notify } from 'renderer/components/Notification';
+import cv from 'opencv-ts';
+import GCStore from 'renderer/contexts/GCStore';
 
 const jsonToNodeStore = (json: SaveContent) => {
   const { custom, elements } = json || {};
@@ -46,7 +48,16 @@ const jsonToNodeStore = (json: SaveContent) => {
             ).forEach((key) => {
               if (properties && properties[key] !== undefined) {
                 if (typeof processor[key] === 'object') {
-                  Object.assign(processor[key], properties[key]);
+                  const className = processor[key].constructor.name;
+                  if (
+                    className === 'Mat' &&
+                    processor[key].constructor === cv.Mat
+                  ) {
+                    GCStore.add(processor[key], -100);
+                    processor[key] = jsonMatToMat(properties[key]);
+                  } else {
+                    Object.assign(processor[key], properties[key]);
+                  }
                 } else {
                   processor[key] = properties[key];
                 }
@@ -68,6 +79,16 @@ const jsonToNodeStore = (json: SaveContent) => {
         NodeStore.onConnect(rest as OCVFEdge);
       });
   }
+};
+
+const jsonMatToMat = (json: any) => {
+  const mat = new cv.Mat(json.rows, json.cols, json.type);
+  for (let j = 0; j < json.rows; j++)
+    for (let k = 0; k < json.cols; k++) {
+      const pos = json.rows * j + k;
+      mat.ptr(pos)[0] = json.data[pos];
+    }
+  return mat;
 };
 
 export default jsonToNodeStore;

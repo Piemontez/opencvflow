@@ -15,6 +15,11 @@ const tabName = 'Morphology';
  */
 export class ErodeComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Erode' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'kernel', position: Position.Left },
+  ];
+
   static processor = class ErodeNode extends CVFNodeProcessor {
     properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
@@ -36,24 +41,25 @@ export class ErodeComponent extends CVFIOComponent {
     async proccess() {
       const { inputsAsMat: inputs } = this;
       if (inputs.length) {
+        const [src, kernel] = inputs;
+
+        const out = new cv.Mat(src.rows, src.cols, src.type());
+        GCStore.add(out);
+
+        cv.erode(
+          src,
+          out,
+          undefined !== kernel ? kernel : this.kernel,
+          this.anchor,
+          this.iterations,
+          this.borderType,
+          this.borderValue
+        );
+
+        this.sources.push(out);
+        this.output(out);
+      } else {
         this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
-
-          cv.erode(
-            src,
-            out,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
-
-          this.sources.push(out);
-          this.output(out);
-        }
       }
     }
   };
@@ -64,6 +70,11 @@ export class ErodeComponent extends CVFIOComponent {
  */
 export class DilateComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Dilate' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'kernel', position: Position.Left },
+  ];
+
   static processor = class DilateNode extends CVFNodeProcessor {
     properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
@@ -86,23 +97,24 @@ export class DilateComponent extends CVFIOComponent {
     async proccess() {
       const { inputsAsMat: inputs } = this;
       if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
+        const [src, kernel] = inputs;
 
-          cv.dilate(
-            src,
-            out,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
+        const out = new cv.Mat(src.rows, src.cols, src.type());
+        GCStore.add(out);
+
+        cv.dilate(
+          src,
+          out,
+          undefined !== kernel ? kernel : this.kernel,
+          this.anchor,
+          this.iterations,
+          this.borderType,
+          this.borderValue
+        );
+        this.sources.push(out);
+        this.output(out);
+      } else {
+        this.sources = [];
       }
     }
   };
@@ -288,7 +300,12 @@ export class ThinningComponent extends CVFIOComponent {
 
         for (const src of inputs) {
           let src1 = src.clone();
-          const out = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(0));
+          const out = new cv.Mat(
+            src.rows,
+            src.cols,
+            src.type(),
+            new cv.Scalar(0)
+          );
           const erode = new cv.Mat(src.rows, src.cols, src.type());
           const opening = new cv.Mat(src.rows, src.cols, src.type());
           const sub = new cv.Mat(src.rows, src.cols, src.type());
@@ -299,8 +316,25 @@ export class ThinningComponent extends CVFIOComponent {
           GCStore.add(sub);
 
           while (cv.countNonZero(src1) !== 0) {
-            cv.erode(src1, erode, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
-            cv.morphologyEx(erode, opening, cv.MORPH_OPEN, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
+            cv.erode(
+              src1,
+              erode,
+              this.kernel,
+              this.anchor,
+              1,
+              cv.BORDER_CONSTANT,
+              this.borderValue
+            );
+            cv.morphologyEx(
+              erode,
+              opening,
+              cv.MORPH_OPEN,
+              this.kernel,
+              this.anchor,
+              1,
+              cv.BORDER_CONSTANT,
+              this.borderValue
+            );
 
             cv.subtract(erode, opening, sub);
 
@@ -311,7 +345,7 @@ export class ThinningComponent extends CVFIOComponent {
 
           this.sources.push(out);
           this.output(out);
-      }
+        }
       }
     }
   };

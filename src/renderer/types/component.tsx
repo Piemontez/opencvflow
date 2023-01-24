@@ -3,6 +3,7 @@ import React from 'react';
 import { Handle, Position } from 'react-flow-renderer/nocss';
 import NodeDisplay from 'renderer/components/NodeDisplay';
 import NodeTab from 'renderer/components/NodeTab';
+import { NodeSizes } from 'renderer/config/sizes';
 import GCStore from 'renderer/contexts/GCStore';
 import { SourceHandle, TargetHandle } from './handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
@@ -15,7 +16,7 @@ type OCVComponentProps = {
 };
 
 type OCVComponentState = {
-  zoom: number;
+  zoom: number | 'AUTO_SCALE';
   options: number;
 };
 
@@ -48,7 +49,7 @@ export abstract class CVFComponent extends React.Component<
   // Opções
   // eslint-disable-next-line react/state-in-constructor
   state = {
-    zoom: 0.5,
+    zoom: 'AUTO_SCALE' as number | 'AUTO_SCALE',
     options: CVFComponentOptions.NONE,
   };
 
@@ -62,7 +63,7 @@ export abstract class CVFComponent extends React.Component<
     );
   }
 
-  changeZoom(zoom: number) {
+  changeZoom(zoom: number | 'AUTO_SCALE') {
     this.setState({ zoom });
   }
 
@@ -92,15 +93,25 @@ export abstract class CVFComponent extends React.Component<
 
     processor.output = (mat: Mat) => {
       if (this.output) {
-        const { zoom, options } = this.state;
+        const { zoom, options } = this.state as OCVComponentState;
         const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
         if (!notDisplay) {
-          const rows = mat.rows * zoom;
-          const cols = mat.cols * zoom;
+          let cols;
+          let rows;
+          if (zoom === 'AUTO_SCALE') {
+            const min = Math.min(mat.rows, mat.cols);
+            const scale = NodeSizes.defaultHeight / min;
+            cols = mat.cols * scale;
+            rows = mat.rows * scale;
+          } else {
+            rows = mat.rows * zoom;
+            cols = mat.cols * zoom;
+          }
+
           const newSize = new cv.Size(cols, rows);
           const out: Mat = new cv.Mat(rows, cols, mat.type());
           GCStore.add(out);
-          cv.resize(mat, out, newSize);
+          cv.resize(mat, out, newSize, 0, 0, cv.INTER_NEAREST);
 
           cv.imshow(this.output, out);
         }

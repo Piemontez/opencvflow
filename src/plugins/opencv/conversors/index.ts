@@ -47,7 +47,7 @@ export class ConverToComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'ConverTo' };
   static processor = class ConverToNode extends CVFNodeProcessor {
     properties = [
-      { name: 'rtype', type: PropertyType.Integer },
+      { name: 'rtype', type: PropertyType.DataTypes },
       { name: 'alpha', type: PropertyType.Decimal },
       { name: 'beta', type: PropertyType.Decimal },
     ];

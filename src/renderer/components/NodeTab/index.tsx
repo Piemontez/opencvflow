@@ -33,11 +33,17 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
             />
           </Button>
           <Form.Select
-            value={zoom.toFixed(2)}
+            value={
+              (zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom
+            }
             size="sm"
             aria-label="Zoom"
             onChange={(e) =>
-              component.changeZoom(parseFloat(e.target.value || '1'))
+              component.changeZoom(
+                e.target.value === 'AUTO_SCALE'
+                  ? 'AUTO_SCALE'
+                  : parseFloat(e.target.value || '1')
+              )
             }
           >
             <option>Zoom</option>
@@ -48,6 +54,7 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
             <option value="1.00">100%</option>
             <option value="1.50">150%</option>
             <option value="2.00">200%</option>
+            <option value="AUTO_SCALE">Auto scale</option>
           </Form.Select>
         </Col>
       </Row>

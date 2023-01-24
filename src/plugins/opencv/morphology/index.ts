@@ -49,14 +49,14 @@ export class ErodeComponent extends CVFIOComponent {
         cv.erode(
           src,
           out,
-          undefined !== kernel ? kernel : this.kernel,
+          kernel || this.kernel,
           this.anchor,
           this.iterations,
           this.borderType,
           this.borderValue
         );
 
-        this.sources.push(out);
+        this.sources = [out];
         this.output(out);
       } else {
         this.sources = [];
@@ -105,13 +105,13 @@ export class DilateComponent extends CVFIOComponent {
         cv.dilate(
           src,
           out,
-          undefined !== kernel ? kernel : this.kernel,
+          kernel || this.kernel,
           this.anchor,
           this.iterations,
           this.borderType,
           this.borderValue
         );
-        this.sources.push(out);
+        this.sources = [out];
         this.output(out);
       } else {
         this.sources = [];
@@ -125,6 +125,11 @@ export class DilateComponent extends CVFIOComponent {
  */
 export class OpeningComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Opening' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'kernel', position: Position.Left },
+  ];
+
   static processor = class OpeningNode extends CVFNodeProcessor {
     properties = [
       { name: 'kernel', type: PropertyType.OneZeroMatrix },
@@ -147,24 +152,25 @@ export class OpeningComponent extends CVFIOComponent {
     async proccess() {
       const { inputsAsMat: inputs } = this;
       if (inputs.length) {
-        this.sources = [];
-        for (const src of inputs) {
-          const out = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(out);
+        const [src, kernel] = inputs;
 
-          cv.morphologyEx(
-            src,
-            out,
-            cv.MORPH_OPEN,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
-          this.sources.push(out);
-          this.output(out);
-        }
+        const out = new cv.Mat(src.rows, src.cols, src.type());
+        GCStore.add(out);
+
+        cv.morphologyEx(
+          src,
+          out,
+          cv.MORPH_OPEN,
+          kernel || this.kernel,
+          this.anchor,
+          this.iterations,
+          this.borderType,
+          this.borderValue
+        );
+        this.sources = [out];
+        this.output(out);
+      } else {
+        this.sources = [];
       }
     }
   };

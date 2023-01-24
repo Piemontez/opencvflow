@@ -21,8 +21,6 @@ export declare type CVFFormProps = {
   column?: any;
   //propriedades do campo text
   multiline?: number;
-  //propriedades do campo boolean
-  checked?: boolean;
   //propriedades do campo selecionável
   multi?: boolean;
   header?: string[];

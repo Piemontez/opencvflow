@@ -342,10 +342,9 @@ export class ThinningComponent extends CVFIOComponent {
             );
 
             cv.subtract(src1, opening, sub);
-
             cv.bitwise_or(out, sub, out);
 
-            src1 = erode;
+            erode.copyTo(src1);
           }
 
           this.sources.push(out);

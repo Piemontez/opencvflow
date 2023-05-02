@@ -332,7 +332,7 @@ export class ThinningComponent extends CVFIOComponent {
               this.borderValue
             );
             cv.morphologyEx(
-              erode,
+              src1,
               opening,
               cv.MORPH_OPEN,
               this.kernel,
@@ -342,7 +342,7 @@ export class ThinningComponent extends CVFIOComponent {
               this.borderValue
             );
 
-            cv.subtract(erode, opening, sub);
+            cv.subtract(opening, erode, sub);
 
             cv.bitwise_or(out, sub, out);
 

@@ -331,10 +331,9 @@ export class ThinningComponent extends CVFIOComponent {
               cv.BORDER_CONSTANT,
               this.borderValue
             );
-            cv.morphologyEx(
-              src1,
+            cv.dilate(
+              erode,
               opening,
-              cv.MORPH_OPEN,
               this.kernel,
               this.anchor,
               1,

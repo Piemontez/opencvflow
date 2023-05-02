@@ -341,7 +341,7 @@ export class ThinningComponent extends CVFIOComponent {
               this.borderValue
             );
 
-            cv.subtract(opening, erode, sub);
+            cv.subtract(src1, opening, sub);
 
             cv.bitwise_or(out, sub, out);
 

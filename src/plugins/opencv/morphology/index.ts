@@ -287,12 +287,8 @@ export class MorphologyExComponent extends CVFComponent {
 export class ThinningComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Thinning' };
   static processor = class ThinningNode extends CVFNodeProcessor {
-    properties = [
-      { name: 'kernel', type: PropertyType.OneZeroMatrix },
-      { name: 'borderValue', type: PropertyType.Scalar },
-    ];
     kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
+      cv.MORPH_CROSS,
       new cv.Size(3, 3),
       new cv.Point(-1, -1)
     );
@@ -305,6 +301,8 @@ export class ThinningComponent extends CVFIOComponent {
         this.sources = [];
 
         for (const src of inputs) {
+          if (!src) continue;
+
           let src1 = src.clone();
           const out = new cv.Mat(
             src.rows,
@@ -312,29 +310,28 @@ export class ThinningComponent extends CVFIOComponent {
             src.type(),
             new cv.Scalar(0)
           );
-          const erode = new cv.Mat(src.rows, src.cols, src.type());
-          const opening = new cv.Mat(src.rows, src.cols, src.type());
+          const eroded = new cv.Mat(src.rows, src.cols, src.type());
+          const open = new cv.Mat(src.rows, src.cols, src.type());
           const sub = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(src1);
           GCStore.add(out);
-          GCStore.add(erode);
-          GCStore.add(opening);
+          GCStore.add(eroded);
+          GCStore.add(open);
           GCStore.add(sub);
 
           while (cv.countNonZero(src1) !== 0) {
             cv.erode(
               src1,
-              erode,
+              eroded,
               this.kernel,
               this.anchor,
               1,
               cv.BORDER_CONSTANT,
               this.borderValue
             );
-            cv.morphologyEx(
-              erode,
-              opening,
-              cv.MORPH_OPEN,
+            cv.dilate(
+              eroded,
+              open,
               this.kernel,
               this.anchor,
               1,
@@ -342,11 +339,11 @@ export class ThinningComponent extends CVFIOComponent {
               this.borderValue
             );
 
-            cv.subtract(erode, opening, sub);
+            cv.subtract(src1, open, sub);
 
             cv.bitwise_or(out, sub, out);
 
-            src1 = erode;
+            src1 = eroded;
           }
 
           this.sources.push(out);

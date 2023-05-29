@@ -134,6 +134,8 @@ export abstract class CVFComponent extends React.Component<
 
     return (
       <div className="node">
+        {processor.header()}
+
         {this.targets.map((target, idx) => (
           <Handle
             id={target.title}
@@ -149,7 +151,9 @@ export abstract class CVFComponent extends React.Component<
             <div className="handle-title">{target.title}</div>
           </Handle>
         ))}
+
         <NodeTab component={this} />
+
         <div className="node-body">
           {processor.body() || (
             <NodeDisplay
@@ -158,6 +162,7 @@ export abstract class CVFComponent extends React.Component<
             />
           )}
         </div>
+
         {this.sources.map((source, idx) => (
           <Handle
             id={source.title}

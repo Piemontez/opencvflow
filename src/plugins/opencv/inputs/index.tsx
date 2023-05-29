@@ -130,26 +130,22 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
       this.proccess = this.proccess.bind(this);
     }
 
-    body() {
+    header() {
       return (
-        <div style={{ padding: 0, margin: 0, minHeight: 240, minWidth: 320 }}>
+        <>
           <img
-            width="320"
-            height="240"
-            alt=""
-            style={this.isImg ? {} : { display: 'none' }}
+            style={{ display: 'none' }}
             ref={(ref) => (this.img = ref)}
+            alt=""
           />
           <video
             autoPlay
-            width="320"
-            height="240"
             muted
             playsInline
-            style={this.isVideo ? {} : { display: 'none' }}
+            style={{ display: 'none' }}
             ref={(ref) => (this.video = ref)}
           />
-        </div>
+        </>
       );
     }
 
@@ -184,6 +180,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
         const src = cv.imread(this.img!);
         GCStore.add(src);
 
+        this.output(src);
         this.sources = [src];
       }
       if (this.isVideo && this.cap && this.video!.width && this.video!.width) {

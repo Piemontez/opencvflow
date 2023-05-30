@@ -300,61 +300,60 @@ export class ThinningComponent extends CVFIOComponent {
 
     async proccess() {
       const { inputsAsMat: inputs } = this;
-      if (inputs.length) {
-        this.sources = [];
+      if (!inputs.length) return;
 
-        for (const src of inputs) {
-          if (!src) continue;
+      this.sources = [];
 
-          let src1 = src.clone();
-          const out = new cv.Mat(
-            src.rows,
-            src.cols,
-            src.type(),
-            new cv.Scalar(0)
+      for (const src of inputs) {
+        if (!src) continue;
+
+        let clone = src.clone();
+        const out = new cv.Mat(
+          src.rows,
+          src.cols,
+          src.type(),
+          new cv.Scalar(0)
+        );
+        const eroded = new cv.Mat(src.rows, src.cols, src.type());
+        const open = new cv.Mat(src.rows, src.cols, src.type());
+        const sub = new cv.Mat(src.rows, src.cols, src.type());
+        GCStore.add(clone);
+        GCStore.add(out);
+        GCStore.add(eroded);
+        GCStore.add(open);
+        GCStore.add(sub);
+
+        let idx = this.maxIterations;
+        while (cv.countNonZero(clone) !== 0 && idx-- > 0) {
+          cv.erode(
+            clone,
+            eroded,
+            this.kernel,
+            this.anchor,
+            1,
+            cv.BORDER_CONSTANT,
+            this.borderValue
           );
-          const eroded = new cv.Mat(src.rows, src.cols, src.type());
-          const open = new cv.Mat(src.rows, src.cols, src.type());
-          const sub = new cv.Mat(src.rows, src.cols, src.type());
-          GCStore.add(src1);
-          GCStore.add(out);
-          GCStore.add(eroded);
-          GCStore.add(open);
-          GCStore.add(sub);
+          cv.dilate(
+            eroded,
+            open,
+            this.kernel,
+            this.anchor,
+            1,
+            cv.BORDER_CONSTANT,
+            this.borderValue
+          );
 
-          let idx = this.maxIterations;
-          while (cv.countNonZero(src1) !== 0 && idx-- > 0) {
-            cv.erode(
-              src1,
-              eroded,
-              this.kernel,
-              this.anchor,
-              1,
-              cv.BORDER_CONSTANT,
-              this.borderValue
-            );
-            cv.dilate(
-              eroded,
-              open,
-              this.kernel,
-              this.anchor,
-              1,
-              cv.BORDER_CONSTANT,
-              this.borderValue
-            );
+          cv.subtract(clone, open, sub);
 
-            cv.subtract(src1, open, sub);
+          cv.bitwise_or(out, sub, out);
 
-            cv.bitwise_or(out, sub, out);
-
-            src1 = eroded;
-            console.log(1);
-          }
-          console.log(2);
-
-          this.sources.push(out);
-          this.output(out);
+          clone = eroded.clone();
+          GCStore.add(clone);
         }
+
+        this.sources.push(out);
+        this.output(out);
       }
     }
   };

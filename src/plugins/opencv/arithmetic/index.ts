@@ -270,3 +270,162 @@ export class CVConvertScaleAbsComponent extends CVFIOComponent {
     }
   };
 }
+
+export class CVBitwiseOrComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'BitwiseOr' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+    { title: 'masc', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
+  static processor = class BitwiseOrProcessor extends CVFNodeProcessor {
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, src2, masc] = inputs;
+
+      if (src1 && src2) {
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
+        GCStore.add(out);
+
+        if (masc) {
+          cv.bitwise_or(src1, src2, out, masc);
+        } else if (inputs.length === 2) {
+          cv.bitwise_or(src1, src2, out);
+        }
+
+        this.output(out);
+        this.sources = [out];
+      }
+    }
+  };
+}
+
+export class CVBitwiseAndComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'BitwiseAnd' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+    { title: 'masc', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
+  static processor = class BitwiseAndProcessor extends CVFNodeProcessor {
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, src2, masc] = inputs;
+
+      if (src1 && src2) {
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
+        GCStore.add(out);
+
+        if (masc) {
+          cv.bitwise_and(src1, src2, out, masc);
+        } else if (inputs.length === 2) {
+          cv.bitwise_and(src1, src2, out);
+        }
+
+        this.output(out);
+        this.sources = [out];
+      }
+    }
+  };
+}
+
+export class CVBitwiseNotComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'BitwiseNot' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'masc', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
+  static processor = class BitwiseNotProcessor extends CVFNodeProcessor {
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, masc] = inputs;
+
+      if (src1) {
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
+        GCStore.add(out);
+
+        if (masc) {
+          cv.bitwise_not(src1, out, masc);
+        } else if (inputs.length === 2) {
+          cv.bitwise_not(src1, out);
+        }
+
+        this.output(out);
+        this.sources = [out];
+      }
+    }
+  };
+}
+
+export class CVBitwiseXorComponent extends CVFComponent {
+  static menu = { tabTitle: tabName, title: 'BitwiseXor' };
+  targets: TargetHandle[] = [
+    { title: 'src1', position: Position.Left },
+    { title: 'src2', position: Position.Left },
+    { title: 'masc', position: Position.Left },
+  ];
+  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
+
+  static processor = class BitwiseXorProcessor extends CVFNodeProcessor {
+    async proccess() {
+      const { inputsAsMat: inputs } = this;
+      if (inputs.length < 2) {
+        this.sources = [];
+        return;
+      }
+      const [src1, src2, masc] = inputs;
+
+      if (src1 && src2) {
+        const out: Mat = new cv.Mat(
+          src1.rows,
+          src1.cols,
+          src1.type(),
+          new cv.Scalar(0)
+        );
+        GCStore.add(out);
+
+        if (masc) {
+          cv.bitwise_xor(src1, src2, out, masc);
+        } else if (inputs.length === 2) {
+          cv.bitwise_xor(src1, src2, out);
+        }
+
+        this.output(out);
+        this.sources = [out];
+      }
+    }
+  };
+}

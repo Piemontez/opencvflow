@@ -287,6 +287,8 @@ export class MorphologyExComponent extends CVFComponent {
 export class ThinningComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Thinning' };
   static processor = class ThinningNode extends CVFNodeProcessor {
+    properties = [{ name: 'maxIterations', type: PropertyType.Integer }];
+
     kernel: Mat = cv.getStructuringElement(
       cv.MORPH_CROSS,
       new cv.Size(3, 3),
@@ -294,6 +296,7 @@ export class ThinningComponent extends CVFIOComponent {
     );
     anchor: Point = new cv.Point(-1, -1);
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
+    maxIterations: number = 1000;
 
     async proccess() {
       const { inputsAsMat: inputs } = this;
@@ -319,7 +322,8 @@ export class ThinningComponent extends CVFIOComponent {
           GCStore.add(open);
           GCStore.add(sub);
 
-          while (cv.countNonZero(src1) !== 0) {
+          let idx = this.maxIterations;
+          while (cv.countNonZero(src1) !== 0 && idx-- > 0) {
             cv.erode(
               src1,
               eroded,
@@ -344,7 +348,9 @@ export class ThinningComponent extends CVFIOComponent {
             cv.bitwise_or(out, sub, out);
 
             src1 = eroded;
+            console.log(1);
           }
+          console.log(2);
 
           this.sources.push(out);
           this.output(out);

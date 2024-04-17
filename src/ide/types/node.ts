@@ -74,6 +74,4 @@ export class EmptyNodeProcessor extends CVFNodeProcessor {}
  * Definição dos nós vinculados ao React-Flow-Renderes
  * Classe utilizada internamente
  */
-export interface CVFNode extends Node<CVFNodeData> {
-  data: CVFNodeData;
-}
+export type CVFNode = Node<CVFNodeData>;

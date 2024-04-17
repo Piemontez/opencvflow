@@ -1,14 +1,15 @@
 import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNode } from '../types/node';
 import { OCVFEdge } from '../types/edge';
-import { SaveContent } from '../types/save-content';
+import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../types/save-content';
 import cv from 'opencv-ts';
 import GCStore from '../contexts/GCStore';
 import { useNotificationStore } from '../components/Notification/store';
 import { useNodeStore } from '../contexts/NodeStore';
 
 const jsonToNodeStore = (json: SaveContent) => {
-  const { custom, elements } = json || {};
+  const { custom, elements } = (json || {}) as SaveContentV0_9;
+  let { nodes, edges } = (json || {}) as SaveContentV0_10;
 
   // Carrega os tipo de nó customizados
   if (custom?.components) {
@@ -17,11 +18,20 @@ const jsonToNodeStore = (json: SaveContent) => {
     }
   }
 
-  // Carrega os Nodes
+  // Se versão antiga, converte elemntos
   if (Array.isArray(elements)) {
-    const components = (elements as Array<any>)
+    nodes = (elements as Array<any>)
       // Filtra apenas os componentes nó
-      .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target))
+      .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target));
+
+    edges = (elements as Array<any>)
+      // Filtra apenas as arestas
+      .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target);
+  }
+
+  // Carrega os Nodes
+  if (Array.isArray(nodes)) {
+    const components = nodes
       // Realiza alguma validações
       .filter(({ type }) => {
         if (type) {
@@ -64,15 +74,14 @@ const jsonToNodeStore = (json: SaveContent) => {
       })
       .filter((element) => element);
 
-    useNodeStore.getState().elements = components;
+    useNodeStore.getState().nodes = components;
 
-    // Adiciona as conecções
-    (elements as Array<any>)
-      // Filtra apenas as arestas
-      .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target)
-      .forEach(({ data, ...rest }) => {
+    if (Array.isArray(nodes)) {
+      // Adiciona as conecções
+      edges.forEach(({ data, ...rest }) => {
         useNodeStore.getState().onConnect(rest as OCVFEdge);
       });
+    }
   }
 };
 

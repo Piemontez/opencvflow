@@ -24,6 +24,4 @@ export class CVFEdgeData {
   }
 }
 
-export interface OCVFEdge /*extends Edge<CVFEdgeData>*/ {
-  data: CVFEdgeData;
-}
+export type OCVFEdge = Edge<CVFEdgeData>;

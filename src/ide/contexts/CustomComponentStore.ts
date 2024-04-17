@@ -20,9 +20,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     custom.name = this.sanitizeName(custom.title);
     const nodeType = this.build(custom);
 
-    const idx = this.customComponents.findIndex(
-      (curr) => curr.title === custom.title
-    );
+    const idx = this.customComponents.findIndex((curr) => curr.title === custom.title);
 
     if (idx < 0) {
       this.customComponents = this.customComponents.concat([custom]);
@@ -30,7 +28,7 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents[idx] = custom;
     }
 
-    useNodeStore.getState().addNodeType(nodeType, { repaint: idx < 0 });
+    useNodeStore.getState().addNodeType(nodeType);
     useNodeStore.getState().refreshNodesFromComponent(nodeType);
   };
 
@@ -95,9 +93,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     } else {
       const createEvalRs = `({ func: ${createComponentClass} })`;
 
-      const rs = eval(
-        createEvalRs.replaceAll('CustomComponent', custom.name || '')
-      );
+      const rs = eval(createEvalRs.replaceAll('CustomComponent', custom.name || ''));
       const classInstance = rs.func();
 
       return classInstance;

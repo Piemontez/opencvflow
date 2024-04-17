@@ -15,16 +15,54 @@ import { ComponentMenuAction, MenuWithElementTitleProps } from '../types/menu';
 import GCStore from './GCStore';
 import Storage from '../commons/Storage';
 import nodeStoreToJson from '../commons/nodeStoreToJson';
-import { OCVElements, OCVFlowElement } from '../types/ocv-elements';
 import { CustomComponent } from '../types/custom-component';
 import { useNotificationStore } from '../components/Notification/store';
 import { create } from 'zustand';
 
-export const useNodeStore = create((set: any, get: any) => ({
+type NodeState = {
+  running: boolean;
+  forcer: number;
+  nodes: Array<CVFNode>;
+  edges: Array<OCVFEdge>;
+  currentElement?: CVFNode;
+  nodeTypes: NodeTypes;
+  nodeTypesByMenu: NodeTypes;
+  reactFlowInstance: any;
+  reactFlowWrapper: HTMLDivElement | null;
+  runner: Promise<true> | null;
+
+  init: () => void;
+  clear: () => void;
+  storage: () => void;
+  refreshFlow: () => void;
+  getNodeType: (name: string) => typeof CVFComponent | null;
+  addNodeType: (component: typeof CVFComponent) => void;
+  removeNodeType: (name: string) => void;
+  addNodeFromComponent: (component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>) => CVFNode;
+  removeNode: (nodeOrId: CVFNode | string) => void;
+  refreshNodesFromComponent: (component: typeof CVFComponent) => void;
+  addEdge: (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null, targetHandle: string | null) => void;
+  removeEdge: (edge: OCVFEdge | CVFEdgeData) => void;
+  run: () => Promise<void>;
+  stop: () => Promise<void>;
+  fitView: () => void;
+  onInit: (instance: any) => void;
+  onNodeClick: (_: MouseEvent, node: CVFNode) => void;
+  refreshCurrentElement: () => void;
+  onConnect: ({ source, target, sourceHandle, targetHandle }: Connection) => void;
+  onDrop: (event: any) => void;
+  onDragOver: (event: any) => void;
+  onDragStart: (event: any, menuAction: ComponentMenuAction) => void;
+  onNodeDragStop: (event: any, node: any) => void;
+  onNodeContextMenu: (event: any, node: any) => void;
+};
+
+export const useNodeStore = create<NodeState>((set, get) => ({
   running: false,
   forcer: 0,
-  elements: [] as OCVElements,
-  currentElement: undefined as undefined | OCVFlowElement,
+  nodes: [] as Array<CVFNode>,
+  edges: [] as Array<OCVFEdge>,
+  currentElement: undefined as undefined | CVFNode,
   nodeTypes: {} as NodeTypes,
   nodeTypesByMenu: {} as NodeTypes,
   reactFlowInstance: null as any,
@@ -37,7 +75,8 @@ export const useNodeStore = create((set: any, get: any) => ({
         const json = Storage.get('NodeStore', 'this');
         jsonToNodeStore(json);
 
-        setTimeout(get().fitView, 100);
+        get().fitView();
+        get().refreshFlow();
       } catch (err: any) {
         console.error(err);
         useNotificationStore.getState().danger(err.message);
@@ -46,7 +85,7 @@ export const useNodeStore = create((set: any, get: any) => ({
   },
 
   clear: () => {
-    set({ elements: [] });
+    set({ nodes: [], edges: [] });
   },
 
   storage: () => {
@@ -54,38 +93,33 @@ export const useNodeStore = create((set: any, get: any) => ({
     Storage.set('NodeStore', 'this', json);
   },
 
-  refreshFlow: (repaint: boolean = false) => {
-    if (repaint) {
-      get().forcer++;
-      setTimeout(() => get().forcer++, 100);
-    } else {
-      get().forcer += 2;
-    }
+  refreshFlow: () => {
+    set({ forcer: get().forcer + 1 });
   },
 
   getNodeType: (name: string): typeof CVFComponent | null => {
     return get().nodeTypes[name] as typeof CVFComponent;
   },
 
-  addNodeType: (component: typeof CVFComponent, { repaint }: any = { repaint: true }) => {
+  addNodeType: (component: typeof CVFComponent) => {
     get().nodeTypes[component.name] = component;
     if (component.menu?.title) {
       const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
       get().nodeTypesByMenu[key] = component;
     }
 
-    get().refreshFlow(repaint);
+    get().refreshFlow();
   },
 
   removeNodeType: (name: string) => {
     delete get().nodeTypes[name];
 
-    const elementIds = get()
-      .elements.filter((el) => el.type === name)
+    const nodesIds = get()
+      .nodes.filter((el) => el.type === name)
       .map((el) => el.id);
 
-    for (const elementId of elementIds) {
-      get().removeNode(elementId);
+    for (const nodeId of nodesIds) {
+      get().removeNode(nodeId);
     }
   },
 
@@ -102,16 +136,23 @@ export const useNodeStore = create((set: any, get: any) => ({
       Object.assign(processor, props);
     }
 
-    get().elements = get().elements.concat(newNode);
+    set({
+      nodes: [
+        //
+        ...get().nodes,
+        newNode,
+      ],
+    });
     get().storage();
 
     return newNode;
   },
 
   removeNode: (nodeOrId: CVFNode | string) => {
-    const idx = typeof nodeOrId === 'string' ? get().elements.findIndex((_) => _.id === nodeOrId) : get().elements.indexOf(nodeOrId);
+    const nodes = get().nodes;
+    const idx = typeof nodeOrId === 'string' ? nodes.findIndex((_) => _.id === nodeOrId) : nodes.indexOf(nodeOrId);
     if (idx > -1) {
-      const node = get().elements.splice(idx, 1)[0] as CVFNode;
+      const node = nodes.splice(idx, 1)[0] as CVFNode;
       if (node.data?.processor?.edges) {
         for (const edge of node.data.processor.edges) {
           if (edge) {
@@ -119,7 +160,10 @@ export const useNodeStore = create((set: any, get: any) => ({
           }
         }
       }
-      get().elements = [...get().elements];
+
+      set({
+        nodes: [...nodes],
+      });
       get().storage();
     }
   },
@@ -152,15 +196,15 @@ export const useNodeStore = create((set: any, get: any) => ({
     }
 
     if (refresh) {
-      get().elements = [...get().elements];
+      set({ nodes: [...get().nodes] });
     }
   },
 
   addEdge: (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null = null, targetHandle: string | null = null) => {
     /* origem */
-    const source = typeof sourceOrId === 'string' ? (get().elements.find((_) => _.id === sourceOrId) as CVFNode) : sourceOrId;
+    const source = typeof sourceOrId === 'string' ? (get().nodes.find((_) => _.id === sourceOrId) as CVFNode) : sourceOrId;
     /* destino */
-    const target = typeof targetOrId === 'string' ? (get().elements.find((_) => _.id === targetOrId) as CVFNode) : targetOrId;
+    const target = typeof targetOrId === 'string' ? (get().nodes.find((_) => _.id === targetOrId) as CVFNode) : targetOrId;
 
     if (!source) {
       useNotificationStore.getState().warn(`Source ${sourceOrId} not found.`);
@@ -194,24 +238,29 @@ export const useNodeStore = create((set: any, get: any) => ({
     source.data.processor.outEdges[sourcesIdx] = dataEdge;
     target.data.processor.inEdges[targetsIdx] = dataEdge;
     // Adicionar a aresta nos elementos da tela
-    get().elements = get().elements.concat(newEdge);
+    set({
+      edges: [...get().edges, newEdge],
+    });
     get().storage();
   },
 
   removeEdge: (edge: OCVFEdge | CVFEdgeData) => {
+    const edges = get().edges;
     let data = (edge as OCVFEdge).data;
 
     let idx = -1;
     if (data) {
       // OCVFEdge
-      idx = get().elements.indexOf(edge as OCVFEdge);
+      idx = edges.indexOf(edge as OCVFEdge);
     } else {
       // CVFEdgeData
-      idx = get().elements.findIndex((_) => _.data === edge);
+      idx = edges.findIndex((_) => _.data === edge);
       data = edge as CVFEdgeData;
     }
     if (idx > -1) {
-      get().elements.splice(idx, 1);
+      edges.splice(idx, 1);
+      set({ edges });
+
       get().storage();
     }
 
@@ -231,7 +280,7 @@ export const useNodeStore = create((set: any, get: any) => ({
       useNotificationStore.getState().info('The flow is already running.');
       return;
     }
-    const { nodes } = this;
+    const { nodes } = get();
     if (!nodes.length) {
       useNotificationStore.getState().info('No flow defined.');
       return;
@@ -307,16 +356,16 @@ export const useNodeStore = create((set: any, get: any) => ({
    * @param instance
    */
 
-  onLoad: (instance: any) => {
+  onInit: (instance: any) => {
     get().reactFlowInstance = instance;
   },
 
-  onElementClick: (_: MouseEvent, element: OCVFlowElement) => {
-    get().currentElement = element;
+  onNodeClick: (_: MouseEvent, node: CVFNode) => {
+    get().currentElement = node;
   },
 
   refreshCurrentElement: () => {
-    get().currentElement = { ...get().currentElement } as OCVFlowElement;
+    get().currentElement = { ...get().currentElement } as CVFNode;
   },
 
   // Evento disparado pelo painel ao remover um elemento
@@ -328,6 +377,7 @@ export const useNodeStore = create((set: any, get: any) => ({
   },
 
   onDrop: (event: any) => {
+    console.log(event);
     event.preventDefault();
 
     if (get().running) {
@@ -357,12 +407,14 @@ export const useNodeStore = create((set: any, get: any) => ({
   },
 
   onDragOver: (event: any) => {
+    console.log(event);
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   },
 
   // Evento disparado ao arrastar o componente do menu
   onDragStart: (event: any, menuAction: ComponentMenuAction) => {
+    console.log(event);
     event.dataTransfer.setData('application/menuaction', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';
   },
@@ -375,7 +427,7 @@ export const useNodeStore = create((set: any, get: any) => ({
 
   onNodeDragStop: (event: any, node: any) => {
     event.preventDefault();
-    const storeNode = get().elements.find((_) => _.id === node.id) as CVFNode;
+    const storeNode = get().nodes.find((_) => _.id === node.id) as CVFNode;
     if (storeNode) {
       storeNode.position = node.position;
     }
@@ -385,13 +437,5 @@ export const useNodeStore = create((set: any, get: any) => ({
   onNodeContextMenu: (event: any, node: any) => {
     event.preventDefault();
     console.log('context menu:', node);
-  },
-
-  nodes: (): Array<CVFNode> => {
-    return get().elements.filter((el) => !(el as OCVFEdge).sourceHandle) as Array<CVFNode>;
-  },
-
-  edges: (): Array<OCVFEdge> => {
-    return get().elements.filter((el) => (el as OCVFEdge).sourceHandle) as Array<OCVFEdge>;
   },
 }));

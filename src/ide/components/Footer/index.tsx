@@ -9,7 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
  * ou jánelas/node que foram clicados
  */
 const Footer = () => {
-  const elements = useNodeStore(useShallow((state) => state.elements));
+  const elements = useNodeStore(useShallow((state) => state.nodes));
 
   return (
     <Nav justify id="footer">

@@ -1,7 +1,5 @@
 import ReactFlow, { MiniMap } from 'reactflow';
 import Controls from './controls';
-import { CVFNode } from '../../types/node';
-import { OCVFEdge } from '../../types/edge';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
 import { useNodeStore } from '../../contexts/NodeStore';
@@ -9,12 +7,6 @@ import { useNodeStore } from '../../contexts/NodeStore';
 const Flow = () => {
   const noteStore = useNodeStore(useShallow((state) => state));
   const loaded = usePluginStore(useShallow((state) => state.loaded));
-
-  console.log(noteStore.elements);
-  // Fix: Forçar atualização do ReactFlow porque o mesmo não faz reload dos nodeTypes
-  if (noteStore.forcer & 1) {
-    return null;
-  }
 
   return (
     <div className="reactflow-wrapper flex-fill" ref={(ref) => (noteStore.reactFlowWrapper = ref)}>
@@ -28,11 +20,11 @@ const Flow = () => {
         <ReactFlow
           minZoom={0.1}
           nodeTypes={noteStore.nodeTypes}
-          nodes={noteStore.elements as Array<CVFNode>}
-          // edges={noteStore.elements as Array<OCVFEdge>}
+          nodes={noteStore.nodes}
+          edges={noteStore.edges}
           selectNodesOnDrag={false}
-          onLoad={noteStore.onLoad}
-          onNodeClick={noteStore.onElementClick}
+          onInit={noteStore.onInit}
+          onNodeClick={noteStore.onNodeClick}
           onConnect={noteStore.onConnect}
           onDrop={noteStore.onDrop}
           onDragOver={noteStore.onDragOver}

@@ -1,20 +1,20 @@
 import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNodeData } from '../types/node';
 import { SaveContent } from '../types/save-content';
-import { OCVElements } from '../types/ocv-elements';
 import { CustomComponent } from '../types/custom-component';
 import cv, { Mat } from 'opencv-ts';
 import { useNodeStore } from '../contexts/NodeStore';
 
 const nodeStoreToJson = (): SaveContent => {
   const customComponents: Array<CustomComponent> = CustomComponentStore.customComponents;
-  const elements: OCVElements = useNodeStore.getState().elements;
-  const elementsUsefulData = elements.map((element) => {
+  const { nodes, edges } = useNodeStore.getState();
+
+  const nodesUsefulData = nodes.map((node) => {
     const replace: any = {};
 
-    if ((element.data as CVFNodeData).processor) {
+    if ((node.data as CVFNodeData).processor) {
       replace.data = {
-        processor: (element.data as CVFNodeData).processor.propertiesMap,
+        processor: (node.data as CVFNodeData).processor.propertiesMap,
       };
 
       for (const key in replace.data.processor) {
@@ -33,14 +33,23 @@ const nodeStoreToJson = (): SaveContent => {
     }
 
     return {
-      ...element,
+      ...node,
+      ...replace,
+    };
+  });
+
+  const edgesUsefulData = edges.map((edge) => {
+    const replace = { data: undefined };
+    return {
+      ...edge,
       ...replace,
     };
   });
 
   return {
     custom: { components: customComponents },
-    elements: elementsUsefulData,
+    nodes: nodesUsefulData,
+    edges: edgesUsefulData,
   };
 };
 

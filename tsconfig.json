@@ -1,38 +1,25 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "commonjs",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
-    "declaration": true,
-    "declarationMap": true,
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
     "jsx": "react-jsx",
+
+    /* Linting */
     "strict": true,
-    "pretty": true,
-    "sourceMap": true,
-    "baseUrl": "./src",
-    /* Additional Checks */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    /* Module Resolution Options */
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    /*mobx*/
-    "experimentalDecorators": true,
-    "useDefineForClassFields": true,
-    "outDir": "release/app/dist"
+    "noFallthroughCasesInSwitch": true
   },
-  "exclude": [
-    "test",
-    "release/build",
-    "release/app/dist",
-    ".erb/dll"
-  ]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

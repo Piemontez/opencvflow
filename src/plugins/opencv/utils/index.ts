@@ -1,15 +1,15 @@
 import cv, { Mat, MatVector, Point } from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
-import { Position } from 'react-flow-renderer/nocss';
-import GCStore from 'renderer/contexts/GCStore';
+import { Position } from 'reactflow';
+import GCStore from '../../../ide/contexts/GCStore';
 import {
   CVFComponent,
   CVFComponentOptions,
   CVFIOComponent,
-} from 'renderer/types/component';
-import { SourceHandle, TargetHandle } from 'renderer/types/handle';
-import { CVFNodeProcessor } from 'renderer/types/node';
-import { PropertyType } from 'renderer/types/property';
+} from '../../../ide/types/component';
+import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
+import { CVFNodeProcessor } from '../../../ide/types/node';
+import { PropertyType } from '../../../ide/types/property';
 
 const tabName = 'Utils';
 

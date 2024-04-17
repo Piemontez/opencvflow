@@ -1,4 +1,4 @@
-import { PluginType } from 'renderer/types/plugin';
+import { PluginType } from '../../ide/types/plugin';
 import * as morphologySamples from './morphology-samples';
 import * as thresholdSamples from './threshold-samples';
 

@@ -1,9 +1,0 @@
-{
-    "watch": [ 
-        "ide/main.ts", 
-        "ide/renderes.tsx", 
-        "plugins/*"
-    ],
-    "exec": "webpack --config ./webpack.electron.js && electron ./dist/main.js",
-    "ext": "ts"
-  }

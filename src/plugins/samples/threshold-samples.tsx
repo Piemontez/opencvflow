@@ -1,12 +1,12 @@
-import NodeStore from 'renderer/contexts/NodeStore';
-import { MenuActionProps } from 'renderer/types/menu';
+import NodeStore from '../../ide/contexts/NodeStore';
+import { MenuActionProps } from '../../ide/types/menu';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { XYPosition } from 'react-flow-renderer';
-import { CVVideoCaptureComponent } from 'plugins/opencv/inputs';
-import { NodeSizes } from 'renderer/config/sizes';
-import { CvtColorComponent } from 'plugins/opencv/conversors';
-import { CVFComponent } from 'renderer/types/component';
-import { ThresholdComponent } from 'plugins/opencv/segmentation';
+import { CVVideoCaptureComponent } from '../opencv/inputs';
+import { NodeSizes } from '../../ide/config/sizes';
+import { CvtColorComponent } from '../opencv/conversors';
+import { CVFComponent } from '../../ide/types/component';
+import { ThresholdComponent } from '../opencv/segmentation';
 import cv from 'opencv-ts';
 
 const tabName = 'Samples';

@@ -1,14 +1,14 @@
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import React, { createRef } from 'react';
-import { CVFFormGroup } from 'renderer/components/Form';
-import { PropertyType } from 'renderer/types/property';
+import { CVFFormGroup } from '../../ide/components/Form';
+import { PropertyType } from '../../ide/types/property';
 import { tabName } from './index';
 import * as monaco from 'monaco-editor';
-import Editor, { loader } from '@monaco-editor/react';
-import CustomComponentStore from 'renderer/contexts/CustomComponentStore';
-import NodeStore from 'renderer/contexts/NodeStore';
-import { notify } from 'renderer/components/Notification';
-import { CustomComponent } from 'renderer/types/custom-component';
+//import Editor, { loader } from '@monaco-editor/react';
+import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
+import NodeStore from '../../ide/contexts/NodeStore';
+//import { notify } from '../../ide/components/Notification';
+import { CustomComponent } from '../../ide/types/custom-component';
 
 const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
@@ -16,7 +16,7 @@ const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore'
 const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
 const RAW_LOADER_node = require('!raw-loader!../../renderer/types/node');
 
-loader.config({ monaco });
+//loader.config({ monaco });
 
 export class EditComponenteModal extends React.Component<any, any> {
   monacoRef: { current: monaco.editor.IStandaloneCodeEditor | null };
@@ -66,7 +66,7 @@ export class EditComponenteModal extends React.Component<any, any> {
 
       this.handleClose();
     } catch (ex) {
-      notify.danger((ex as any).message);
+      //notify.danger((ex as any).message);
       console.error((ex as any).message, ex);
     }
   };
@@ -152,7 +152,7 @@ export class EditComponenteModal extends React.Component<any, any> {
               />
             </Col>
           </Row>
-          {show && (
+          {/* {show && (
             <Editor
               height="70vh"
               defaultLanguage="javascript"
@@ -161,7 +161,7 @@ export class EditComponenteModal extends React.Component<any, any> {
               beforeMount={this.handleEditorWillMount}
               onMount={this.handleEditorDidMount}
             />
-          )}
+          )} */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-danger" onClick={this.handleRemove}>

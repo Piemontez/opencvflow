@@ -1,12 +1,12 @@
-import { CVFOutputComponent } from 'renderer/types/component';
-import { CVFNodeProcessor } from 'renderer/types/node';
+import { CVFOutputComponent } from '../../../ide/types/component';
+import { CVFNodeProcessor } from '../../../ide/types/node';
 import cv, { Mat } from 'opencv-ts';
 import { MorphShapes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
-import { PropertyType } from 'renderer/types/property';
-import GCStore from 'renderer/contexts/GCStore';
-import { Position } from 'react-flow-renderer/nocss';
-import { SourceHandle } from 'renderer/types/handle';
-import { NodeSizes, VideoSizes } from 'renderer/config/sizes';
+import { PropertyType } from '../../../ide/types/property';
+import GCStore from '../../../ide/contexts/GCStore';
+import { Position } from 'reactflow';
+import { SourceHandle } from '../../../ide/types/handle';
+import { NodeSizes, VideoSizes } from '../../../ide/config/sizes';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import messages from '../messages';
 

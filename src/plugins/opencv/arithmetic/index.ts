@@ -1,16 +1,16 @@
 import cv, { Mat } from 'opencv-ts';
 import { NormTypes } from 'opencv-ts/src/core/CoreArray';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
-import { Position } from 'react-flow-renderer/nocss';
-import GCStore from 'renderer/contexts/GCStore';
+import { Position } from 'reactflow';
+import GCStore from '../../../ide/contexts/GCStore';
 import {
   CVFIOEndlessComponent,
   CVFComponent,
   CVFIOComponent,
-} from 'renderer/types/component';
-import { SourceHandle, TargetHandle } from 'renderer/types/handle';
-import { CVFNodeProcessor } from 'renderer/types/node';
-import { PropertyType } from 'renderer/types/property';
+} from '../../../ide/types/component';
+import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
+import { CVFNodeProcessor } from '../../../ide/types/node';
+import { PropertyType } from '../../../ide/types/property';
 
 const tabName = 'Arithmetic';
 

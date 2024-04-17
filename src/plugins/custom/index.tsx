@@ -1,15 +1,14 @@
-import { PluginType } from 'renderer/types/plugin';
-import { MenuActionProps } from 'renderer/types/menu';
+import { PluginType } from '../../ide/types/plugin';
+import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext } from 'react';
 import { EditComponenteModal } from './EditComponenteModal';
-import { CustomComponentContext } from 'renderer/contexts/CustomComponentStore';
-import { observer } from 'mobx-react';
-import { NodeStoreContext } from 'renderer/contexts/NodeStore';
+import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
+import { NodeStoreContext } from '../../ide/contexts/NodeStore';
 
 export const tabName = 'Custom Components';
 
-const ListComponents = observer(() => {
+const ListComponents = () => {
   const customComponentStore = useContext(CustomComponentContext);
   const nodeStore = useContext(NodeStoreContext);
 
@@ -18,9 +17,7 @@ const ListComponents = observer(() => {
       {customComponentStore.customComponents.map((custom, idx) => (
         <span
           key={idx}
-          onDragStart={(event: any) =>
-            nodeStore.onDragStartCustom(event, custom)
-          }
+          onDragStart={(event: any) => nodeStore.onDragStartCustom(event, custom)}
           onClick={() => editCompRef.current?.handleEdit(custom)}
           draggable
         >
@@ -30,7 +27,7 @@ const ListComponents = observer(() => {
       ))}
     </>
   );
-});
+};
 
 const editCompRef = React.createRef<EditComponenteModal>();
 const EditComponenteModalEl = () => <EditComponenteModal ref={editCompRef} />;

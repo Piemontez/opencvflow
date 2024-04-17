@@ -18,34 +18,40 @@ const IDE = () => {
   const nodeStore = useNodeStore((state) => state);
 
   useEffect(() => {
-    pluginStore.init().then(() => {
-      setTimeout(() => {
-        try {
-          const json = Storage.get('NodeStore', 'this');
-          const jsonLoaded = jsonToNodeStore(json);
+    pluginStore
+      .init()
+      .then(() => {
+        // Aguarda renderizar a tela e carrega a última edição em cache
+        setTimeout(() => {
+          try {
+            const json = Storage.get('NodeStore', 'this');
+            const jsonLoaded = jsonToNodeStore(json);
 
-          // Carrega os tipo de nó customizados
-          if (jsonLoaded.custom?.components) {
-            for (const customComponent of jsonLoaded.custom.components) {
-              CustomComponentStore.add(customComponent);
+            // Carrega os tipo de nó customizados
+            if (jsonLoaded.custom?.components) {
+              for (const customComponent of jsonLoaded.custom.components) {
+                CustomComponentStore.add(customComponent);
+              }
             }
+
+            // Adiciona os nós
+            nodeStore.refreshNodes(jsonLoaded.nodesLoaded);
+
+            console.log(jsonLoaded);
+            // Adiciona as conecções
+            jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
+              useNodeStore.getState().onConnect(rest as OCVFEdge);
+            });
+
+            nodeStore.fitView();
+            nodeStore.refreshFlow();
+          } catch (err: any) {
+            console.error(err);
+            useNotificationStore.getState().danger(err.message);
           }
-
-          nodeStore.refreshNodes(jsonLoaded.nodesLoaded);
-
-          // Adiciona as conecções
-          jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
-            //useNodeStore.getState().onConnect(rest as OCVFEdge);
-          });
-
-          nodeStore.fitView();
-          nodeStore.refreshFlow();
-        } catch (err: any) {
-          console.error(err);
-          useNotificationStore.getState().danger(err.message);
-        }
-      }, 500);
-    });
+        }, 500);
+      })
+      .catch(() => {});
   }, []);
 
   return (

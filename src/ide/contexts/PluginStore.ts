@@ -22,7 +22,7 @@ export const usePluginStore = create<PluginState>((set: any, get: any) => ({
 
   init: async () => {
     if (get().loading) {
-      return;
+      throw new Error('Loading');
     }
     get().loading = true;
 
@@ -43,7 +43,6 @@ export const usePluginStore = create<PluginState>((set: any, get: any) => ({
       //
       loading: false,
       loaded: true,
-      plugins: get().plugins,
     });
   },
 

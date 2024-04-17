@@ -9,7 +9,7 @@ import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode } from '../types/node';
 import { CVFComponent } from '../../ide/types/component';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/menu';
 import GCStore from './GCStore';
 import Storage from '../../ide/commons/Storage';
@@ -17,6 +17,8 @@ import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
+
+const uuidv5Hash = 'c54ab9bc-e083-56f2-9d1e-3eec4bcc93ad';
 
 export type NodeState = {
   running: boolean;
@@ -114,8 +116,9 @@ export const useNodeStore = create<NodeState>((set, get) => ({
 
   addNodeFromComponent: (component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>): CVFNode => {
     const processor = new component.processor();
+    const uuid = uuidv5(component.name + position.x + position.y + Math.random().toString(36).substring(2), uuidv5Hash);
     const newNode: CVFNode = {
-      id: uuidv4(),
+      id: uuid,
       type: component.name,
       position,
       data: { processor },
@@ -216,10 +219,17 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     const sourcesIdx = sourceCompo.sources.findIndex((s) => s.title === sourceHandle);
     const targetsIdx = targetCompo.targets.findIndex((s) => s.title === targetHandle);
 
+    const uuid = uuidv5(source.id + target.id + sourceHandle + targetHandle, uuidv5Hash);
+    // Verifica se a conexão já existe
+    const hasOnde = get().edges.find((_) => _.id === uuid);
+    if (hasOnde) {
+      return;
+    }
+
     // Aresta/Conexão
     const dataEdge = new CVFEdgeData(source.data.processor, target.data.processor, sourcesIdx, targetsIdx);
     const newEdge: OCVFEdge = {
-      id: uuidv4(),
+      id: uuid,
       source: source.id,
       target: target.id,
       sourceHandle,
@@ -230,6 +240,8 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     // Adicionando a aresta aos nós
     source.data.processor.outEdges[sourcesIdx] = dataEdge;
     target.data.processor.inEdges[targetsIdx] = dataEdge;
+
+    console.log(newEdge);
     // Adicionar a aresta nos elementos da tela
     set({
       edges: [...get().edges, newEdge],

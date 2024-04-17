@@ -1,4 +1,4 @@
-import { CustomComponent } from './custom-component';
+import { CustomNodeType } from '../../core/types/custom-node-type';
 import { OCVFEdge } from '../../core/types/edge';
 import { CVFNode } from '../../core/types/node';
 
@@ -7,7 +7,7 @@ export type SaveContent = SaveContentV0_10 | SaveContentV0_9;
 export type SaveContentV0_10 = {
   // 0.10.* version or more
   custom: {
-    components: Array<CustomComponent>;
+    components: Array<CustomNodeType>;
   };
   nodes: Array<CVFNode>;
   edges: Array<OCVFEdge>;
@@ -16,7 +16,7 @@ export type SaveContentV0_10 = {
 export type SaveContentV0_9 = {
   // 0.9.* version or less
   custom: {
-    components: Array<CustomComponent>;
+    components: Array<CustomNodeType>;
   };
   elements: Array<CVFNode | OCVFEdge>;
 };

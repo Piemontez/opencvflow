@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { CustomComponent } from '../types/custom-component';
+import { CustomNodeType } from '../../core/types/custom-node-type';
 import { CVFComponent, CVFIOComponent } from '../types/component';
 import { PropertyType } from '../types/property';
 import { CVFNodeProcessor } from '../../core/types/node';
@@ -7,16 +7,16 @@ import GCStore from '../../core/contexts/GCStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
 interface CustomComponentStoreI {
-  customComponents: Array<CustomComponent>;
-  add(custom: CustomComponent): void;
+  customComponents: Array<CustomNodeType>;
+  add(custom: CustomNodeType): void;
   remove(name: string): void;
-  validade(custom: CustomComponent): void;
+  validade(custom: CustomNodeType): void;
 }
 
 class CustomComponentStore implements CustomComponentStoreI {
-  customComponents: Array<CustomComponent> = [];
+  customComponents: Array<CustomNodeType> = [];
 
-  add = (custom: CustomComponent): void => {
+  add = (custom: CustomNodeType): void => {
     custom.name = this.sanitizeName(custom.title);
     const nodeType = this.build(custom);
 
@@ -45,7 +45,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     return (name || '').replaceAll(/[\n| |\\|"|'|<|>]/g, '');
   };
 
-  validade = ({ title: name, code }: CustomComponent): void => {
+  validade = ({ title: name, code }: CustomNodeType): void => {
     const hasName = !!(name || '').trim();
     const hasClass = code.search(/class[ ]*CustomComponent/g);
 
@@ -59,11 +59,11 @@ class CustomComponentStore implements CustomComponentStoreI {
     this.test({ title: name, code });
   };
 
-  test = (custom: CustomComponent): void => {
+  test = (custom: CustomNodeType): void => {
     this.build(custom, true);
   };
 
-  build = (custom: CustomComponent, test = false): typeof CVFComponent => {
+  build = (custom: CustomNodeType, test = false): typeof CVFComponent => {
     // @ts-ignore
     class CVFComponentFork extends CVFComponent {}
     // @ts-ignore

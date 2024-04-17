@@ -10,7 +10,19 @@ type MenuTab = {
   actions: MenuActionProps[];
 };
 
-export const useMenuStore = create((set: any, get: any) => ({
+type MenuState = {
+  tabs: Array<MenuTab>;
+  currentTab?: MenuTab;
+  actions: Array<MenuActionProps>;
+  tabsByName: StringMap<MenuTab>;
+
+  addMenuAction: (act: MenuActionProps) => void;
+  addComponentMenuAction: (component: typeof CVFComponent) => void;
+  changeCurrentTab: (tabOrTitle: MenuTab | string) => void;
+  findOrCreateTab: (tabTitle: string | null, options: any)=> MenuTab ;
+};
+
+export const useMenuStore = create<MenuState>((set, get) => ({
   tabs: [] as Array<MenuTab>,
   currentTab: undefined as MenuTab | undefined,
   actions: [] as Array<MenuActionProps>,

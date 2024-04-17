@@ -1,13 +1,13 @@
 import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNodeData } from '../../core/types/node';
 import { SaveContent } from '../types/save-content';
-import { CustomComponent } from '../types/custom-component';
+import { CustomNodeType } from '../../core/types/custom-node-type';
 import cv, { Mat } from 'opencv-ts';
-import { useNodeStore } from '../../core/contexts/NodeStore';
+import { NodeState } from '../../core/contexts/NodeStore';
 
-const nodeStoreToJson = (): SaveContent => {
-  const customComponents: Array<CustomComponent> = CustomComponentStore.customComponents;
-  const { nodes, edges } = useNodeStore.getState();
+const nodeStoreToJson = (state: NodeState): SaveContent => {
+  const customComponents: Array<CustomNodeType> = CustomComponentStore.customComponents;
+  const { nodes, edges } = state;
 
   const nodesUsefulData = nodes.map((node) => {
     const replace: any = {};

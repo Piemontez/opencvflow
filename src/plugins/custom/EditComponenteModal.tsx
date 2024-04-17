@@ -6,7 +6,7 @@ import { tabName } from './index';
 //import * as monaco from 'monaco-editor';
 //import Editor, { loader } from '@monaco-editor/react';
 import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
-import { CustomComponent } from '../../ide/types/custom-component';
+import { CustomNodeType } from '../../core/types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
@@ -44,7 +44,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     this.handleShow();
   };
 
-  handleEdit = (custom: CustomComponent) => {
+  handleEdit = (custom: CustomNodeType) => {
     this.setState({
       name: custom.name,
       title: custom.title,

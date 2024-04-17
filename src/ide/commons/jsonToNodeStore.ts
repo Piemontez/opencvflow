@@ -1,4 +1,3 @@
-import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNode } from '../../core/types/node';
 import { OCVFEdge } from '../../core/types/edge';
 import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../types/save-content';
@@ -7,16 +6,16 @@ import GCStore from '../../core/contexts/GCStore';
 import { useNotificationStore } from '../components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-const jsonToNodeStore = (json: SaveContent) => {
-  const { custom, elements } = (json || {}) as SaveContentV0_9;
-  let { nodes, edges } = (json || {}) as SaveContentV0_10;
+type SaveContentLoaded = {
+  nodesLoaded: Array<CVFNode>;
+  edgesLoaded: Array<OCVFEdge>;
+} & SaveContent;
 
-  // Carrega os tipo de nó customizados
-  if (custom?.components) {
-    for (const customComponent of custom.components) {
-      CustomComponentStore.add(customComponent);
-    }
-  }
+const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
+  const { elements } = (save || {}) as SaveContentV0_9;
+  let { nodes, edges } = (save || {}) as SaveContentV0_10;
+
+  const saveLoaded: SaveContentLoaded = { ...save, nodesLoaded: [], edgesLoaded: [] };
 
   // Se versão antiga, converte elemntos
   if (Array.isArray(elements)) {
@@ -31,7 +30,7 @@ const jsonToNodeStore = (json: SaveContent) => {
 
   // Carrega os Nodes
   if (Array.isArray(nodes)) {
-    const components = nodes
+    saveLoaded.nodesLoaded = nodes
       // Realiza alguma validações
       .filter(({ type }) => {
         if (type) {
@@ -73,16 +72,13 @@ const jsonToNodeStore = (json: SaveContent) => {
         return element;
       })
       .filter((element) => element);
-
-    useNodeStore.getState().nodes = components;
-
-    if (Array.isArray(nodes)) {
-      // Adiciona as conecções
-      edges.forEach(({ data, ...rest }) => {
-        useNodeStore.getState().onConnect(rest as OCVFEdge);
-      });
-    }
   }
+
+  if (Array.isArray(edges)) {
+    saveLoaded.edgesLoaded = edges.map(({ data, ...rest }) => rest);
+  }
+
+  return saveLoaded;
 };
 
 const jsonMatToMat = (json: any) => {

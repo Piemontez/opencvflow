@@ -1,4 +1,3 @@
-import jsonToNodeStore from '../../ide/commons/jsonToNodeStore';
 import {
   //removeElements,
   NodeTypes,
@@ -15,11 +14,11 @@ import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/
 import GCStore from './GCStore';
 import Storage from '../../ide/commons/Storage';
 import nodeStoreToJson from '../../ide/commons/nodeStoreToJson';
-import { CustomComponent } from '../../ide/types/custom-component';
+import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
 
-type NodeState = {
+export type NodeState = {
   running: boolean;
   forcer: number;
   nodes: Array<CVFNode>;
@@ -31,21 +30,26 @@ type NodeState = {
   reactFlowWrapper: HTMLDivElement | null;
   runner: Promise<true> | null;
 
-  init: () => void;
   clear: () => void;
   storage: () => void;
   refreshFlow: () => void;
+  // Node Type
   getNodeType: (name: string) => typeof CVFComponent | null;
   addNodeType: (component: typeof CVFComponent) => void;
   removeNodeType: (name: string) => void;
+  // Node
   addNodeFromComponent: (component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>) => CVFNode;
   removeNode: (nodeOrId: CVFNode | string) => void;
+  refreshNodes: (nodes?: Array<CVFNode>) => void;
   refreshNodesFromComponent: (component: typeof CVFComponent) => void;
+  // Edge
   addEdge: (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null, targetHandle: string | null) => void;
   removeEdge: (edge: OCVFEdge | CVFEdgeData) => void;
+  // Runner
   run: () => Promise<void>;
   stop: () => Promise<void>;
   fitView: () => void;
+  // React Flow Events
   onInit: (instance: any) => void;
   onNodeClick: (_: MouseEvent, node: CVFNode) => void;
   refreshCurrentElement: () => void;
@@ -69,27 +73,12 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   reactFlowWrapper: null as HTMLDivElement | null,
   runner: null as Promise<true> | null,
 
-  init: () => {
-    setTimeout(() => {
-      try {
-        const json = Storage.get('NodeStore', 'this');
-        jsonToNodeStore(json);
-
-        get().fitView();
-        get().refreshFlow();
-      } catch (err: any) {
-        console.error(err);
-        useNotificationStore.getState().danger(err.message);
-      }
-    }, 500);
-  },
-
   clear: () => {
     set({ nodes: [], edges: [] });
   },
 
   storage: () => {
-    const json = nodeStoreToJson();
+    const json = nodeStoreToJson(get());
     Storage.set('NodeStore', 'this', json);
   },
 
@@ -168,6 +157,10 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     }
   },
 
+  refreshNodes: (nodes?: Array<CVFNode>) => {
+    set({ nodes: nodes ?? get().nodes });
+  },
+
   refreshNodesFromComponent: (component: typeof CVFComponent) => {
     let refresh = false;
     for (const node of get().nodes) {
@@ -241,6 +234,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     set({
       edges: [...get().edges, newEdge],
     });
+
     get().storage();
   },
 
@@ -377,7 +371,6 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   onDrop: (event: any) => {
-    console.log(event);
     event.preventDefault();
 
     if (get().running) {
@@ -407,20 +400,18 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   onDragOver: (event: any) => {
-    console.log(event);
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   },
 
   // Evento disparado ao arrastar o componente do menu
   onDragStart: (event: any, menuAction: ComponentMenuAction) => {
-    console.log(event);
     event.dataTransfer.setData('application/menuaction', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';
   },
 
   // Evento disparado ao arrastar um custom componente do menu
-  onDragStartCustom: (event: any, customComp: CustomComponent) => {
+  onDragStartCustom: (event: any, customComp: CustomNodeType) => {
     event.dataTransfer.setData('application/customcomponent', customComp.name);
     event.dataTransfer.effectAllowed = 'move';
   },
@@ -436,6 +427,5 @@ export const useNodeStore = create<NodeState>((set, get) => ({
 
   onNodeContextMenu: (event: any, node: any) => {
     event.preventDefault();
-    console.log('context menu:', node);
   },
 }));

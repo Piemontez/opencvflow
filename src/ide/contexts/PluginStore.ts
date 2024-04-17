@@ -6,7 +6,16 @@ import * as localPlugins from '../../plugins';
 import { create } from 'zustand';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-export const usePluginStore = create((set: any, get: any) => ({
+type PluginState = {
+  loading: boolean;
+  loaded: boolean;
+  plugins: PluginFile[];
+
+  init: () => Promise<void>;
+  addPlugin: (pluginFile: PluginFile) => Promise<void>;
+};
+
+export const usePluginStore = create<PluginState>((set: any, get: any) => ({
   loading: false,
   loaded: false,
   plugins: [] as PluginFile[],

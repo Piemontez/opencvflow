@@ -1,4 +1,4 @@
-import jsonToNodeStore from '../ide/commons/jsonToNodeStore';
+import jsonToNodeStore from '../core/utils/jsonToNodeStore';
 import CustomComponentStore from '../ide/contexts/CustomComponentStore';
 import { Row } from 'react-bootstrap';
 import { lazy, useEffect } from 'react';

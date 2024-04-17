@@ -1,6 +1,6 @@
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import { PropertyType } from '../../types/property';
+import { PropertyType } from '../../types/PropertyType';
 import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
 import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
 import { CVFFileUrlFormControl } from './cvf-fileurl-formcontrol';

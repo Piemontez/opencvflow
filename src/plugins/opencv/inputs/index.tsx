@@ -2,7 +2,7 @@ import { CVFOutputComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat } from 'opencv-ts';
 import { MorphShapes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 import GCStore from '../../../core/contexts/GCStore';
 import { Position } from 'reactflow';
 import { SourceHandle } from '../../../core/types/handle';

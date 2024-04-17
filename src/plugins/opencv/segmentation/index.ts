@@ -1,7 +1,7 @@
 import { CVFComponent, CVFIOComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Point } from 'opencv-ts';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'reactflow';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';

@@ -1,7 +1,7 @@
 import { Button, Col, Modal, Row } from 'react-bootstrap';
 import React, { createRef } from 'react';
 import { CVFFormGroup } from '../../ide/components/Form';
-import { PropertyType } from '../../ide/types/property';
+import { PropertyType } from '../../ide/types/PropertyType';
 import { tabName } from './index';
 //import * as monaco from 'monaco-editor';
 //import Editor, { loader } from '@monaco-editor/react';

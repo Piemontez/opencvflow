@@ -1,7 +1,7 @@
 import { CVFComponent, CVFIOComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Scalar, Point, Mat } from 'opencv-ts';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from '../../../core/contexts/GCStore';
 import { MorphTypes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';

@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/menu';
 import GCStore from './GCStore';
 import Storage from '../../ide/commons/Storage';
-import nodeStoreToJson from '../../ide/commons/nodeStoreToJson';
+import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';

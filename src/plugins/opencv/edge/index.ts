@@ -5,7 +5,7 @@ import {
 } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from '../../../core/contexts/GCStore';
 import { Position } from 'reactflow';

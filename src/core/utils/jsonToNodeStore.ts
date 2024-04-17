@@ -1,10 +1,10 @@
-import { CVFNode } from '../../core/types/node';
-import { OCVFEdge } from '../../core/types/edge';
-import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../types/save-content';
+import { CVFNode } from '../types/node';
+import { OCVFEdge } from '../types/edge';
+import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../../ide/types/SaveContent';
 import cv from 'opencv-ts';
-import GCStore from '../../core/contexts/GCStore';
-import { useNotificationStore } from '../components/Notification/store';
-import { useNodeStore } from '../../core/contexts/NodeStore';
+import GCStore from '../contexts/GCStore';
+import { useNotificationStore } from '../../ide/components/Notification/store';
+import { useNodeStore } from '../contexts/NodeStore';
 
 type SaveContentLoaded = {
   nodesLoaded: Array<CVFNode>;

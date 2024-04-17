@@ -10,7 +10,7 @@ import {
 } from '../../../ide/types/component';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 
 const tabName = 'Draw';
 

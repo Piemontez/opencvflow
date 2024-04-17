@@ -25,8 +25,3 @@ export enum PropertyType {
   DistanceTransformMasks = PropertyType.Integer,
 }
 
-export declare type NodeProperty = {
-  type: PropertyType;
-  name: string;
-  title?: string;
-};

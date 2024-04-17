@@ -1,7 +1,7 @@
 import { CVFIOComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
-import { PropertyType } from '../../../ide/types/property';
+import { PropertyType } from '../../../ide/types/PropertyType';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import GCStore from '../../../core/contexts/GCStore';

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { CVFComponent } from '../types/component';
 import { MenuActionProps } from '../types/menu';
-import { StringMap } from '../types/utils';
+import { StringMap } from "../types/StringMap";
 
 type MenuTab = {
   title: string;

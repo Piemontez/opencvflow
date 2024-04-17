@@ -1,11 +1,17 @@
 import { Node } from 'reactflow';
 import { CVFEdgeData } from './edge';
 import { Mat, MatVector, Point } from 'opencv-ts';
-import { NodeProperty } from '../../ide/types/property';
+import { PropertyType } from '../../ide/types/PropertyType';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { createRef, RefObject } from 'react';
 
 export type NodeSourceDef = Mat | MatVector | Point | Array<Point> | Moments | Array<Moments> | number;
+
+export type NodeProperty = {
+  type: PropertyType;
+  name: string;
+  title?: string;
+};
 
 /**
  * Classe com definições

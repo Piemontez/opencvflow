@@ -1,10 +1,10 @@
 import { MenuActionProps } from '../types/menu';
 import { PluginFile, PluginType } from '../types/plugin';
 import { CVFComponent } from '../types/component';
-import NodeStore from './NodeStore';
 import { useMenuStore } from './MenuStore';
 import * as localPlugins from '../../plugins';
 import { create } from 'zustand';
+import { useNodeStore } from './NodeStore';
 
 export const usePluginStore = create((set: any, get: any) => ({
   loading: false,
@@ -57,7 +57,7 @@ export const usePluginStore = create((set: any, get: any) => ({
           if (compAs.menu) {
             useMenuStore.getState().addComponentMenuAction(compAs);
           }
-          NodeStore.addNodeType(compAs);
+          useNodeStore.getState().addNodeType(compAs);
         }
       }
     }

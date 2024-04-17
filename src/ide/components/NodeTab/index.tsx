@@ -1,7 +1,7 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import NodeStore from '../../contexts/NodeStore';
 import { CVFComponent, CVFComponentOptions } from '../../types/component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNodeStore } from '../../contexts/NodeStore';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
   const { zoom, options } = component.state;
@@ -11,40 +11,23 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
       <Row>
         <Col>{component.title}</Col>
         <Col xs={5}>
-          <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => NodeStore.removeNode(component.props.id)}
-          >
+          <Button variant="outline-light" size="sm" onClick={() => useNodeStore.getState().removeNode(component.props.id)}>
             <FontAwesomeIcon icon={'window-close'} />
           </Button>
           <Button
             variant="outline-light"
             size="sm"
             onClick={() =>
-              notDisplay
-                ? component.removeOption(CVFComponentOptions.NOT_DISPLAY)
-                : component.addOption(CVFComponentOptions.NOT_DISPLAY)
+              notDisplay ? component.removeOption(CVFComponentOptions.NOT_DISPLAY) : component.addOption(CVFComponentOptions.NOT_DISPLAY)
             }
           >
-            <FontAwesomeIcon
-              className={notDisplay ? 'text-danger' : ''}
-              icon={notDisplay ? 'eye-slash' : 'eye'}
-            />
+            <FontAwesomeIcon className={notDisplay ? 'text-danger' : ''} icon={notDisplay ? 'eye-slash' : 'eye'} />
           </Button>
           <Form.Select
-            value={
-              (zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom
-            }
+            value={(zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom}
             size="sm"
             aria-label="Zoom"
-            onChange={(e) =>
-              component.changeZoom(
-                e.target.value === 'AUTO_SCALE'
-                  ? 'AUTO_SCALE'
-                  : parseFloat(e.target.value || '1')
-              )
-            }
+            onChange={(e) => component.changeZoom(e.target.value === 'AUTO_SCALE' ? 'AUTO_SCALE' : parseFloat(e.target.value || '1'))}
           >
             <option>Zoom</option>
             <option value="0.25">25%</option>

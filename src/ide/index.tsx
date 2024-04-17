@@ -1,7 +1,7 @@
 import { Row } from 'react-bootstrap';
 import { lazy, useEffect } from 'react';
 import { usePluginStore } from './contexts/PluginStore';
-import NodeStore from './contexts/NodeStore';
+import { useNodeStore } from './contexts/NodeStore';
 
 const NotificationProvider = lazy(() => import('./components/Notification'));
 const Header = lazy(() => import('./components/Header'));
@@ -11,9 +11,10 @@ const Footer = lazy(() => import('./components/Footer'));
 
 const IDE = () => {
   const pluginStore = usePluginStore((state) => state);
+  const nodeStore = useNodeStore((state) => state);
   useEffect(() => {
     pluginStore.init().then(() => {
-      NodeStore.init();
+      nodeStore.init();
     });
   }, []);
 

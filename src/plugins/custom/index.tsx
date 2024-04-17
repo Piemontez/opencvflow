@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext } from 'react';
 import { EditComponenteModal } from './EditComponenteModal';
 import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
-import { NodeStoreContext } from '../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../ide/contexts/NodeStore';
 
 export const tabName = 'Custom Components';
 
 const ListComponents = () => {
   const customComponentStore = useContext(CustomComponentContext);
-  const nodeStore = useContext(NodeStoreContext);
+  const nodeStore = useNodeStore();
 
   return (
     <>

@@ -1,12 +1,12 @@
 import { RefObject, memo, useRef } from 'react';
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
-//import { NodeStoreContext } from 'renderer/contexts/NodeStore';
 import { useMenuStore } from '../../contexts/MenuStore';
 import { MenuWithElementTitleProps } from '../../types/menu';
 import About, { AboutRef } from '../About';
 import Donate, { DonateRef } from '../Donate';
 import { useShallow } from 'zustand/react/shallow';
 import { useNotificationStore } from '../Notification/store';
+import { useNodeStore } from '../../contexts/NodeStore';
 
 /**
  * Menu principal
@@ -15,7 +15,6 @@ import { useNotificationStore } from '../Notification/store';
  */
 const Header = () => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
-  //const nodeStore = useContext(NodeStoreContext);
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
 
@@ -78,6 +77,7 @@ const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
 
 const SubHeader = () => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
+  const onDragStart = useNodeStore(useShallow((state) => state.onDragStart));
 
   return (
     menuCurrentTab && (
@@ -91,7 +91,7 @@ const SubHeader = () => {
               onClick={() => {
                 useNotificationStore.getState().info('Drag (with mouse) this menu and drop into the painel.');
               }}
-              // onDragStart={(event: any) => nodeStore.onDragStart(event, action)}
+              onDragStart={(event: any) => onDragStart(event, action)}
               draggable
             >
               <Nav.Link eventKey="components" onClick={action.action}>

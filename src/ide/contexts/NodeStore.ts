@@ -6,7 +6,7 @@ import {
   //Elements,
   Connection,
 } from 'reactflow';
-import React, { createContext, MouseEvent } from 'react';
+import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode } from '../types/node';
 import { CVFComponent } from '../types/component';
@@ -18,112 +18,78 @@ import nodeStoreToJson from '../commons/nodeStoreToJson';
 import { OCVElements, OCVFlowElement } from '../types/ocv-elements';
 import { CustomComponent } from '../types/custom-component';
 import { useNotificationStore } from '../components/Notification/store';
+import { create } from 'zustand';
 
-interface NodeStoreI {
-  running: boolean;
-  forcer: number;
-  elements: OCVElements;
-  nodeTypes: NodeTypes;
-  currentElement?: OCVFlowElement;
+export const useNodeStore = create((set: any, get: any) => ({
+  running: false,
+  forcer: 0,
+  elements: [] as OCVElements,
+  currentElement: undefined as undefined | OCVFlowElement,
+  nodeTypes: {} as NodeTypes,
+  nodeTypesByMenu: {} as NodeTypes,
+  reactFlowInstance: null as any,
+  reactFlowWrapper: null as HTMLDivElement | null,
+  runner: null as Promise<true> | null,
 
-  init(): void;
-  storage(): void;
-  fitView(): void;
-
-  getNodeType(name: string): typeof CVFComponent | null;
-  addNodeType(component: typeof CVFComponent, options?: { repaint: boolean }): void;
-  addNodeFromComponent(component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>): CVFNode;
-  removeNodeType(name: string): void;
-
-  removeNode(nodeOrId: CVFNode | string): void;
-  refreshNodesFromComponent(component: typeof CVFComponent): void;
-
-  addEdge(source: CVFNode | string, target: CVFNode | string, sourceHandle: string | null, targetHandle: string | null): void;
-  removeEdge(edge: OCVFEdge | CVFEdgeData): void;
-
-  run(): Promise<void>;
-  stop(): Promise<void>;
-
-  // Utilizado pelo componente React Flow
-  reactFlowWrapper: HTMLDivElement | null;
-
-  onLoad(instance: any): void;
-  onElementClick(event: MouseEvent, element: any): void;
-  refreshCurrentElement(): void;
-  //onElementsRemove(elements: Elements): void;
-  onConnect(connection: any): void;
-  onDrop(event: any): void;
-  onDragOver(event: any): void;
-  onDragStart(event: any, menuAction: ComponentMenuAction): void;
-  onDragStartCustom(event: any, customComp: CustomComponent): void;
-  onNodeDragStop(event: any, node: any): void;
-  onNodeContextMenu(event: any, node: any): void;
-}
-
-class NodeStore implements NodeStoreI {
-  running: boolean = false;
-  forcer: number = 0;
-  elements: OCVElements = [];
-  currentElement?: OCVFlowElement;
-  nodeTypes: NodeTypes = {};
-  nodeTypesByMenu: NodeTypes = {};
-  reactFlowInstance: any;
-  reactFlowWrapper: HTMLDivElement | null = null;
-  runner: Promise<true> | null = null;
-
-  init() {
+  init: () => {
     setTimeout(() => {
       try {
         const json = Storage.get('NodeStore', 'this');
         jsonToNodeStore(json);
 
-        setTimeout(this.fitView, 100);
+        setTimeout(get().fitView, 100);
       } catch (err: any) {
         console.error(err);
         useNotificationStore.getState().danger(err.message);
       }
     }, 500);
-  }
+  },
 
-  storage() {
+  clear: () => {
+    set({ elements: [] });
+  },
+
+  storage: () => {
     const json = nodeStoreToJson();
     Storage.set('NodeStore', 'this', json);
-  }
+  },
 
-  refreshFlow(repaint: boolean = false) {
+  refreshFlow: (repaint: boolean = false) => {
     if (repaint) {
-      this.forcer++;
-      setTimeout(() => this.forcer++, 100);
+      get().forcer++;
+      setTimeout(() => get().forcer++, 100);
     } else {
-      this.forcer += 2;
+      get().forcer += 2;
     }
-  }
+  },
 
-  getNodeType = (name: string): typeof CVFComponent | null => {
-    return this.nodeTypes[name] as typeof CVFComponent;
-  };
+  getNodeType: (name: string): typeof CVFComponent | null => {
+    return get().nodeTypes[name] as typeof CVFComponent;
+  },
 
-  addNodeType = (component: typeof CVFComponent, { repaint }: any = { repaint: true }) => {
-    this.nodeTypes[component.name] = component;
+  addNodeType: (component: typeof CVFComponent, { repaint }: any = { repaint: true }) => {
+    get().nodeTypes[component.name] = component;
     if (component.menu?.title) {
       const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
-      this.nodeTypesByMenu[key] = component;
+      get().nodeTypesByMenu[key] = component;
     }
 
-    this.refreshFlow(repaint);
-  };
+    get().refreshFlow(repaint);
+  },
 
-  removeNodeType = (name: string) => {
-    delete this.nodeTypes[name];
+  removeNodeType: (name: string) => {
+    delete get().nodeTypes[name];
 
-    const elementIds = this.elements.filter((el) => el.type === name).map((el) => el.id);
+    const elementIds = get()
+      .elements.filter((el) => el.type === name)
+      .map((el) => el.id);
 
     for (const elementId of elementIds) {
-      this.removeNode(elementId);
+      get().removeNode(elementId);
     }
-  };
+  },
 
-  addNodeFromComponent = (component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>): CVFNode => {
+  addNodeFromComponent: (component: typeof CVFComponent, position: XYPosition, props?: Record<string, any>): CVFNode => {
     const processor = new component.processor();
     const newNode: CVFNode = {
       id: uuidv4(),
@@ -136,31 +102,31 @@ class NodeStore implements NodeStoreI {
       Object.assign(processor, props);
     }
 
-    this.elements = this.elements.concat(newNode);
-    this.storage();
+    get().elements = get().elements.concat(newNode);
+    get().storage();
 
     return newNode;
-  };
+  },
 
-  removeNode = (nodeOrId: CVFNode | string) => {
-    const idx = typeof nodeOrId === 'string' ? this.elements.findIndex((_) => _.id === nodeOrId) : this.elements.indexOf(nodeOrId);
+  removeNode: (nodeOrId: CVFNode | string) => {
+    const idx = typeof nodeOrId === 'string' ? get().elements.findIndex((_) => _.id === nodeOrId) : get().elements.indexOf(nodeOrId);
     if (idx > -1) {
-      const node = this.elements.splice(idx, 1)[0] as CVFNode;
+      const node = get().elements.splice(idx, 1)[0] as CVFNode;
       if (node.data?.processor?.edges) {
         for (const edge of node.data.processor.edges) {
           if (edge) {
-            this.removeEdge(edge);
+            get().removeEdge(edge);
           }
         }
       }
-      this.elements = [...this.elements];
-      this.storage();
+      get().elements = [...get().elements];
+      get().storage();
     }
-  };
+  },
 
-  refreshNodesFromComponent = (component: typeof CVFComponent) => {
+  refreshNodesFromComponent: (component: typeof CVFComponent) => {
     let refresh = false;
-    for (const node of this.nodes) {
+    for (const node of get().nodes) {
       //Verifica se o componente esta sendo utilizado em tela.
       if (node.type === component.name) {
         refresh = true;
@@ -173,7 +139,7 @@ class NodeStore implements NodeStoreI {
         }
 
         // Se rodando os processamento
-        if (this.running && node.data.processor) {
+        if (get().running && node.data.processor) {
           //Roda a função de parada do processador a ser subistituido
           node.data.processor.stop();
         }
@@ -186,15 +152,15 @@ class NodeStore implements NodeStoreI {
     }
 
     if (refresh) {
-      this.elements = [...this.elements];
+      get().elements = [...get().elements];
     }
-  };
+  },
 
-  addEdge = (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null = null, targetHandle: string | null = null) => {
+  addEdge: (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null = null, targetHandle: string | null = null) => {
     /* origem */
-    const source = typeof sourceOrId === 'string' ? (this.elements.find((_) => _.id === sourceOrId) as CVFNode) : sourceOrId;
+    const source = typeof sourceOrId === 'string' ? (get().elements.find((_) => _.id === sourceOrId) as CVFNode) : sourceOrId;
     /* destino */
-    const target = typeof targetOrId === 'string' ? (this.elements.find((_) => _.id === targetOrId) as CVFNode) : targetOrId;
+    const target = typeof targetOrId === 'string' ? (get().elements.find((_) => _.id === targetOrId) as CVFNode) : targetOrId;
 
     if (!source) {
       useNotificationStore.getState().warn(`Source ${sourceOrId} not found.`);
@@ -206,8 +172,8 @@ class NodeStore implements NodeStoreI {
     }
 
     // Procura a posição da aresta a partir do nome da conexão/cabo
-    const sourceCompoType = this.getNodeType(source.type!);
-    const targetCompoType = this.getNodeType(target.type!);
+    const sourceCompoType = get().getNodeType(source.type!);
+    const targetCompoType = get().getNodeType(target.type!);
     const sourceCompo: CVFComponent = new (sourceCompoType as any)();
     const targetCompo: CVFComponent = new (targetCompoType as any)();
     const sourcesIdx = sourceCompo.sources.findIndex((s) => s.title === sourceHandle);
@@ -228,25 +194,25 @@ class NodeStore implements NodeStoreI {
     source.data.processor.outEdges[sourcesIdx] = dataEdge;
     target.data.processor.inEdges[targetsIdx] = dataEdge;
     // Adicionar a aresta nos elementos da tela
-    this.elements = this.elements.concat(newEdge);
-    this.storage();
-  };
+    get().elements = get().elements.concat(newEdge);
+    get().storage();
+  },
 
-  removeEdge = (edge: OCVFEdge | CVFEdgeData) => {
+  removeEdge: (edge: OCVFEdge | CVFEdgeData) => {
     let data = (edge as OCVFEdge).data;
 
     let idx = -1;
     if (data) {
       // OCVFEdge
-      idx = this.elements.indexOf(edge as OCVFEdge);
+      idx = get().elements.indexOf(edge as OCVFEdge);
     } else {
       // CVFEdgeData
-      idx = this.elements.findIndex((_) => _.data === edge);
+      idx = get().elements.findIndex((_) => _.data === edge);
       data = edge as CVFEdgeData;
     }
     if (idx > -1) {
-      this.elements.splice(idx, 1);
-      this.storage();
+      get().elements.splice(idx, 1);
+      get().storage();
     }
 
     // Remove o edge dos nós
@@ -258,10 +224,10 @@ class NodeStore implements NodeStoreI {
         data.targetProcessor.inEdges.splice(data.targetIdx, 1);
       }
     }
-  };
+  },
 
-  run = async () => {
-    if (this.running) {
+  run: async () => {
+    if (get().running) {
       useNotificationStore.getState().info('The flow is already running.');
       return;
     }
@@ -271,9 +237,9 @@ class NodeStore implements NodeStoreI {
       return;
     }
 
-    this.running = true;
+    get().running = true;
 
-    this.runner = new Promise(async (resolve) => {
+    get().runner = new Promise(async (resolve) => {
       for (const node of nodes) {
         try {
           node.data.processor.componentPointer.current.initOutputs();
@@ -284,11 +250,11 @@ class NodeStore implements NodeStoreI {
 
           useNotificationStore.getState().danger(`Node ${node.id}: ${node.data.processor.errorMessage}`);
         }
-        if (!this.running) break;
+        if (!get().running) break;
       }
 
       let cycle = 0;
-      while (this.running) {
+      while (get().running) {
         for (const node of nodes) {
           try {
             await node.data.processor.proccess();
@@ -300,7 +266,7 @@ class NodeStore implements NodeStoreI {
 
             node.data.processor.outputMsg(node.data.processor.errorMessage!);
           }
-          if (!this.running) break;
+          if (!get().running) break;
         }
         await new Promise((_res) => setTimeout(_res, 10));
 
@@ -312,15 +278,15 @@ class NodeStore implements NodeStoreI {
 
       resolve(true);
     });
-  };
+  },
 
-  stop = async () => {
-    this.running = false;
-    if (this.runner) {
-      await this.runner;
-      this.runner = null;
+  stop: async () => {
+    get().running = false;
+    if (get().runner) {
+      await get().runner;
+      get().runner = null;
 
-      for (const node of this.nodes) {
+      for (const node of get().nodes) {
         try {
           if (node.data.processor.stop) {
             await node.data.processor.stop();
@@ -330,41 +296,41 @@ class NodeStore implements NodeStoreI {
         }
       }
     }
-  };
+  },
 
-  fitView = () => {
-    this.reactFlowInstance.fitView();
-  };
+  fitView: () => {
+    get().reactFlowInstance.fitView();
+  },
 
   /**
    * Eventos disparados pelo ReactFlow
    * @param instance
    */
 
-  onLoad = (instance: any) => {
-    this.reactFlowInstance = instance;
-  };
+  onLoad: (instance: any) => {
+    get().reactFlowInstance = instance;
+  },
 
-  onElementClick = (_: MouseEvent, element: OCVFlowElement) => {
-    this.currentElement = element;
-  };
+  onElementClick: (_: MouseEvent, element: OCVFlowElement) => {
+    get().currentElement = element;
+  },
 
-  refreshCurrentElement = () => {
-    this.currentElement = { ...this.currentElement } as OCVFlowElement;
-  };
+  refreshCurrentElement: () => {
+    get().currentElement = { ...get().currentElement } as OCVFlowElement;
+  },
 
   // Evento disparado pelo painel ao remover um elemento
-  //onElementsRemove = (elements: Elements) => removeElements(elements, this.elements);
+  //onElementsRemove = (elements: Elements) => removeElements(elements, get().elements);
 
   // Evento disparado pelo painel ao conectar 2 nós
-  onConnect = ({ source, target, sourceHandle, targetHandle }: Connection) => {
-    this.addEdge(source!, target!, sourceHandle, targetHandle);
-  };
+  onConnect: ({ source, target, sourceHandle, targetHandle }: Connection) => {
+    get().addEdge(source!, target!, sourceHandle, targetHandle);
+  },
 
-  onDrop = (event: any) => {
+  onDrop: (event: any) => {
     event.preventDefault();
 
-    if (this.running) {
+    if (get().running) {
       useNotificationStore.getState().warn('Application is running. Stop application first.');
       return;
     }
@@ -373,64 +339,59 @@ class NodeStore implements NodeStoreI {
 
     const appAction = event.dataTransfer.getData('application/menuaction');
     if (appAction) {
-      component = this.nodeTypesByMenu[appAction] as typeof CVFComponent;
+      component = get().nodeTypesByMenu[appAction] as typeof CVFComponent;
     }
     const customComponent = event.dataTransfer.getData('application/customcomponent');
     if (customComponent) {
-      component = this.nodeTypes[customComponent] as typeof CVFComponent;
+      component = get().nodeTypes[customComponent] as typeof CVFComponent;
     }
 
     if (component) {
-      const reactFlowBounds = this.reactFlowWrapper!.getBoundingClientRect();
-      const position = this.reactFlowInstance.project({
+      const reactFlowBounds = get().reactFlowWrapper!.getBoundingClientRect();
+      const position = get().reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      this.addNodeFromComponent(component, position);
+      get().addNodeFromComponent(component, position);
     }
-  };
+  },
 
-  onDragOver = (event: any) => {
+  onDragOver: (event: any) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
-  };
+  },
 
   // Evento disparado ao arrastar o componente do menu
-  onDragStart = (event: any, menuAction: ComponentMenuAction) => {
+  onDragStart: (event: any, menuAction: ComponentMenuAction) => {
     event.dataTransfer.setData('application/menuaction', menuAction.title);
     event.dataTransfer.effectAllowed = 'move';
-  };
+  },
 
   // Evento disparado ao arrastar um custom componente do menu
-  onDragStartCustom = (event: any, customComp: CustomComponent) => {
+  onDragStartCustom: (event: any, customComp: CustomComponent) => {
     event.dataTransfer.setData('application/customcomponent', customComp.name);
     event.dataTransfer.effectAllowed = 'move';
-  };
+  },
 
-  onNodeDragStop = (event: any, node: any) => {
+  onNodeDragStop: (event: any, node: any) => {
     event.preventDefault();
-    const storeNode = this.elements.find((_) => _.id === node.id) as CVFNode;
+    const storeNode = get().elements.find((_) => _.id === node.id) as CVFNode;
     if (storeNode) {
       storeNode.position = node.position;
     }
-    this.storage();
-  };
+    get().storage();
+  },
 
-  onNodeContextMenu = (event: any, node: any) => {
+  onNodeContextMenu: (event: any, node: any) => {
     event.preventDefault();
     console.log('context menu:', node);
-  };
+  },
 
-  get nodes(): Array<CVFNode> {
-    return this.elements.filter((el) => !(el as OCVFEdge).sourceHandle) as Array<CVFNode>;
-  }
+  nodes: (): Array<CVFNode> => {
+    return get().elements.filter((el) => !(el as OCVFEdge).sourceHandle) as Array<CVFNode>;
+  },
 
-  get edges(): Array<OCVFEdge> {
-    return this.elements.filter((el) => (el as OCVFEdge).sourceHandle) as Array<OCVFEdge>;
-  }
-}
-
-const instance = new NodeStore() as NodeStoreI;
-
-export default instance;
-export const NodeStoreContext = createContext(instance);
+  edges: (): Array<OCVFEdge> => {
+    return get().elements.filter((el) => (el as OCVFEdge).sourceHandle) as Array<OCVFEdge>;
+  },
+}));

@@ -1,17 +1,17 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
-import { NodeStoreContext } from '../../contexts/NodeStore';
 import { CVFNode, CVFNodeProcessor } from '../../types/node';
 import { CVFFormGroup } from '../Form';
+import { useNodeStore } from '../../contexts/NodeStore';
+import { useShallow } from 'zustand/react/shallow';
 
 /**
  * Exibe as propriedades do componete/nó selecionado
  */
 const PropertyBar = () => {
   const [show, setShow] = useState(true);
-  const noteStore = useContext(NodeStoreContext);
-  const processor = (noteStore.currentElement as CVFNode)?.data
-    ?.processor as CVFNodeProcessor;
+  const noteStore = useNodeStore(useShallow((state) => state));
+  const processor = (noteStore.currentElement as CVFNode)?.data?.processor as CVFNodeProcessor;
   const curElTypeof = processor?.constructor as typeof CVFNodeProcessor;
 
   return (

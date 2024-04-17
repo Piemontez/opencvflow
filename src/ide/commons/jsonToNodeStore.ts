@@ -1,4 +1,3 @@
-import NodeStore from '../contexts/NodeStore';
 import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNode } from '../types/node';
 import { OCVFEdge } from '../types/edge';
@@ -6,6 +5,7 @@ import { SaveContent } from '../types/save-content';
 import cv from 'opencv-ts';
 import GCStore from '../contexts/GCStore';
 import { useNotificationStore } from '../components/Notification/store';
+import { useNodeStore } from '../contexts/NodeStore';
 
 const jsonToNodeStore = (json: SaveContent) => {
   const { custom, elements } = json || {};
@@ -25,7 +25,7 @@ const jsonToNodeStore = (json: SaveContent) => {
       // Realiza alguma validações
       .filter(({ type }) => {
         if (type) {
-          const component = NodeStore.getNodeType(type);
+          const component = useNodeStore.getState().getNodeType(type);
           if (!component) {
             useNotificationStore.getState().warn(`Node type "${type} not found."`);
 
@@ -38,7 +38,7 @@ const jsonToNodeStore = (json: SaveContent) => {
         const properties: any = element.data.processor;
 
         if (element.type) {
-          const component = NodeStore.getNodeType(element.type);
+          const component = useNodeStore.getState().getNodeType(element.type);
           if (component) {
             const processor: any = new component.processor();
             element.data.processor = processor;
@@ -64,14 +64,14 @@ const jsonToNodeStore = (json: SaveContent) => {
       })
       .filter((element) => element);
 
-    NodeStore.elements = components;
+    useNodeStore.getState().elements = components;
 
     // Adiciona as conecções
     (elements as Array<any>)
       // Filtra apenas as arestas
       .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target)
       .forEach(({ data, ...rest }) => {
-        NodeStore.onConnect(rest as OCVFEdge);
+        useNodeStore.getState().onConnect(rest as OCVFEdge);
       });
   }
 };

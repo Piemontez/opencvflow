@@ -1,15 +1,13 @@
-import { useContext } from 'react';
-
 import ReactFlow, { MiniMap } from 'reactflow';
-import { NodeStoreContext } from '../../contexts/NodeStore';
 import Controls from './controls';
 import { CVFNode } from '../../types/node';
 import { OCVFEdge } from '../../types/edge';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
+import { useNodeStore } from '../../contexts/NodeStore';
 
 const Flow = () => {
-  const noteStore = useContext(NodeStoreContext);
+  const noteStore = useNodeStore(useShallow((state) => state));
   const loaded = usePluginStore(useShallow((state) => state.loaded));
 
   // Fix: Forçar atualização do ReactFlow porque o mesmo não faz reload dos nodeTypes

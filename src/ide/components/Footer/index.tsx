@@ -1,7 +1,7 @@
 import { Nav } from 'react-bootstrap';
-import { NodeStoreContext } from '../../contexts/NodeStore';
 import { version } from '../../../../package.json';
-import { useContext } from 'react';
+import { useNodeStore } from '../../contexts/NodeStore';
+import { useShallow } from 'zustand/react/shallow';
 
 /**
  * Rodapé,
@@ -9,13 +9,13 @@ import { useContext } from 'react';
  * ou jánelas/node que foram clicados
  */
 const Footer = () => {
-  const noteStore = useContext(NodeStoreContext);
+  const elements = useNodeStore(useShallow((state) => state.elements));
 
   return (
     <Nav justify id="footer">
       <Nav.Item>
         <Nav.Link eventKey="components" disabled>
-          Elements: {noteStore.elements.length}
+          Elements: {elements.length}
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
@@ -24,10 +24,7 @@ const Footer = () => {
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link
-          href="https://github.com/piemontez/opencvflow"
-          target="_blank"
-        >
+        <Nav.Link href="https://github.com/piemontez/opencvflow" target="_blank">
           Version: {version}
         </Nav.Link>
       </Nav.Item>

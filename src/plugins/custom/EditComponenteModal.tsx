@@ -6,9 +6,9 @@ import { tabName } from './index';
 //import * as monaco from 'monaco-editor';
 //import Editor, { loader } from '@monaco-editor/react';
 import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
-import NodeStore from '../../ide/contexts/NodeStore';
 import { CustomComponent } from '../../ide/types/custom-component';
 import { useNotificationStore } from '../../ide/components/Notification/store';
+import { useNodeStore } from '../../ide/contexts/NodeStore';
 
 //const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 //const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
@@ -62,7 +62,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     try {
       CustomComponentStore.validade({ title: title, code });
       CustomComponentStore.add({ title: title, code });
-      NodeStore.storage();
+      useNodeStore.getState().storage();
 
       this.handleClose();
     } catch (ex) {
@@ -75,7 +75,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     const { name } = this.state;
     if (confirm('Do you want to remove this component?')) {
       CustomComponentStore.remove(name);
-      NodeStore.storage();
+      useNodeStore.getState().storage();
 
       this.handleClose();
     }

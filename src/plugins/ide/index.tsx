@@ -1,5 +1,5 @@
-import { PluginType } from 'renderer/types/plugin';
-import * as files from './files/index-factory';
+import { PluginType } from '../../ide/types/plugin';
+import * as files from './files';
 
 const OpenCVPlugin: PluginType = {
   name: 'IDE Plugin',

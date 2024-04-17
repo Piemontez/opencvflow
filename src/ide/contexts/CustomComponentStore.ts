@@ -4,7 +4,7 @@ import { CVFComponent, CVFIOComponent } from '../types/component';
 import { PropertyType } from '../types/property';
 import { CVFNodeProcessor } from '../types/node';
 import GCStore from '../contexts/GCStore';
-import NodeStore from './NodeStore';
+import { useNodeStore } from './NodeStore';
 
 interface CustomComponentStoreI {
   customComponents: Array<CustomComponent>;
@@ -30,8 +30,8 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents[idx] = custom;
     }
 
-    NodeStore.addNodeType(nodeType, { repaint: idx < 0 });
-    NodeStore.refreshNodesFromComponent(nodeType);
+    useNodeStore.getState().addNodeType(nodeType, { repaint: idx < 0 });
+    useNodeStore.getState().refreshNodesFromComponent(nodeType);
   };
 
   remove = (name: string): void => {
@@ -40,7 +40,7 @@ class CustomComponentStore implements CustomComponentStoreI {
       this.customComponents.splice(idx, 1);
     }
 
-    NodeStore.removeNodeType(name);
+    useNodeStore.getState().removeNodeType(name);
   };
 
   sanitizeName = (name: string): string => {

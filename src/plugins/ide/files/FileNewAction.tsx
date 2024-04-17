@@ -1,5 +1,5 @@
-import NodeStore from 'renderer/contexts/NodeStore';
-import { MenuActionProps } from 'renderer/types/menu';
+import { useNodeStore } from '../../../ide/contexts/NodeStore';
+import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const FileNewAction: MenuActionProps = {
@@ -11,7 +11,7 @@ const FileNewAction: MenuActionProps = {
     </>
   ),
   action: () => {
-    NodeStore.elements = [];
+    useNodeStore.getState().clear();
   },
 };
 

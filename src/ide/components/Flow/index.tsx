@@ -2,7 +2,7 @@ import ReactFlow, { MiniMap } from 'reactflow';
 import Controls from './controls';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
-import { useNodeStore } from '../../contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 
 const Flow = () => {
   const noteStore = useNodeStore(useShallow((state) => state));

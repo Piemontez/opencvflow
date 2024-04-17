@@ -2,12 +2,12 @@ import { MenuActionProps } from '../../ide/types/menu';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { XYPosition } from 'reactflow';
 import { CVVideoCaptureComponent } from '../opencv/inputs';
-import { NodeSizes } from '../../ide/config/sizes';
+import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';
 import { ThresholdComponent } from '../opencv/segmentation';
 import cv from 'opencv-ts';
-import { useNodeStore } from '../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 const tabName = 'Samples';
 

@@ -1,6 +1,6 @@
 import { CustomComponent } from './custom-component';
-import { OCVFEdge } from './edge';
-import { CVFNode } from './node';
+import { OCVFEdge } from '../../core/types/edge';
+import { CVFNode } from '../../core/types/node';
 
 export type SaveContent = SaveContentV0_10 | SaveContentV0_9;
 

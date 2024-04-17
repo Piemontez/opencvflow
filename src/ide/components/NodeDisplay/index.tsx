@@ -1,5 +1,5 @@
 import { CVFComponent } from '../../types/component';
-import { NodeSizes } from '../../config/sizes';
+import { NodeSizes } from '../../../core/config/sizes';
 
 const NodeDisplay = ({
   canvasRef,

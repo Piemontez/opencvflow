@@ -1,7 +1,7 @@
 import { Node } from 'reactflow';
 import { CVFEdgeData } from './edge';
 import { Mat, MatVector, Point } from 'opencv-ts';
-import { NodeProperty } from './property';
+import { NodeProperty } from '../../ide/types/property';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { createRef, RefObject } from 'react';
 

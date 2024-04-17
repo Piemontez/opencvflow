@@ -8,7 +8,7 @@ import { tabName } from './index';
 import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
 import { CustomComponent } from '../../ide/types/custom-component';
 import { useNotificationStore } from '../../ide/components/Notification/store';
-import { useNodeStore } from '../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 //const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
 //const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');

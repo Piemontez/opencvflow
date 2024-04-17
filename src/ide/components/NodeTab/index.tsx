@@ -1,7 +1,7 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { CVFComponent, CVFComponentOptions } from '../../types/component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNodeStore } from '../../contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
   const { zoom, options } = component.state;

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext } from 'react';
 import { EditComponenteModal } from './EditComponenteModal';
 import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
-import { useNodeStore } from '../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 export const tabName = 'Custom Components';
 

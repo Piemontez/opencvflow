@@ -1,6 +1,6 @@
 import { Nav } from 'react-bootstrap';
 import { version } from '../../../../package.json';
-import { useNodeStore } from '../../contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { useShallow } from 'zustand/react/shallow';
 
 /**

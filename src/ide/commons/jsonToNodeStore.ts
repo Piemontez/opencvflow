@@ -1,11 +1,11 @@
 import CustomComponentStore from '../contexts/CustomComponentStore';
-import { CVFNode } from '../types/node';
-import { OCVFEdge } from '../types/edge';
+import { CVFNode } from '../../core/types/node';
+import { OCVFEdge } from '../../core/types/edge';
 import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../types/save-content';
 import cv from 'opencv-ts';
-import GCStore from '../contexts/GCStore';
+import GCStore from '../../core/contexts/GCStore';
 import { useNotificationStore } from '../components/Notification/store';
-import { useNodeStore } from '../contexts/NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 const jsonToNodeStore = (json: SaveContent) => {
   const { custom, elements } = (json || {}) as SaveContentV0_9;

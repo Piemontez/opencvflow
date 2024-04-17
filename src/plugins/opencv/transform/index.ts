@@ -1,10 +1,10 @@
 import { CVFIOComponent } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import GCStore from '../../../ide/contexts/GCStore';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
+import GCStore from '../../../core/contexts/GCStore';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { Position } from 'reactflow';
 import messages from '../messages';
 

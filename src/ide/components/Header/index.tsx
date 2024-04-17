@@ -6,7 +6,7 @@ import About, { AboutRef } from '../About';
 import Donate, { DonateRef } from '../Donate';
 import { useShallow } from 'zustand/react/shallow';
 import { useNotificationStore } from '../Notification/store';
-import { useNodeStore } from '../../contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 
 /**
  * Menu principal

@@ -2,7 +2,7 @@ import {
   CVFIOComponent,
   CVFIOEndlessComponent,
 } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, BackgroundSubtractorMOG2, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
@@ -11,7 +11,7 @@ import {
   DistanceTypes,
   GrabCutModes,
 } from 'opencv-ts/src/ImageProcessing/Misc';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 
 const tabName = 'Others';
 

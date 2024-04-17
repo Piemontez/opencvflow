@@ -2,10 +2,10 @@ import { ClosingComponent, DilateComponent, ErodeComponent, MorphologyExComponen
 import { MenuActionProps } from '../../ide/types/menu';
 import { XYPosition } from 'reactflow';
 import { CVKernelComponent, CVVideoCaptureComponent } from '../opencv/inputs';
-import { NodeSizes } from '../../ide/config/sizes';
+import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';
-import { useNodeStore } from '../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 const tabName = 'Samples';
 

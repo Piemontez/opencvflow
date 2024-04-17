@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
-import { CVFNode, CVFNodeProcessor } from '../../types/node';
+import { CVFNode, CVFNodeProcessor } from '../../../core/types/node';
 import { CVFFormGroup } from '../Form';
-import { useNodeStore } from '../../contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { useShallow } from 'zustand/react/shallow';
 
 /**

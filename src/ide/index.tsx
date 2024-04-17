@@ -1,7 +1,7 @@
 import { Row } from 'react-bootstrap';
 import { lazy, useEffect } from 'react';
 import { usePluginStore } from './contexts/PluginStore';
-import { useNodeStore } from './contexts/NodeStore';
+import { useNodeStore } from '../core/contexts/NodeStore';
 
 const NotificationProvider = lazy(() => import('./components/Notification'));
 const Header = lazy(() => import('./components/Header'));

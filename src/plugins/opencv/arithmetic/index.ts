@@ -2,14 +2,14 @@ import cv, { Mat } from 'opencv-ts';
 import { NormTypes } from 'opencv-ts/src/core/CoreArray';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'reactflow';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 import {
   CVFIOEndlessComponent,
   CVFComponent,
   CVFIOComponent,
 } from '../../../ide/types/component';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/property';
 
 const tabName = 'Arithmetic';

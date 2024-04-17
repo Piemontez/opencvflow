@@ -1,4 +1,4 @@
-import { useNodeStore } from '../../../ide/contexts/NodeStore';
+import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

@@ -2,9 +2,9 @@ import { createContext } from 'react';
 import { CustomComponent } from '../types/custom-component';
 import { CVFComponent, CVFIOComponent } from '../types/component';
 import { PropertyType } from '../types/property';
-import { CVFNodeProcessor } from '../types/node';
-import GCStore from '../contexts/GCStore';
-import { useNodeStore } from './NodeStore';
+import { CVFNodeProcessor } from '../../core/types/node';
+import GCStore from '../../core/contexts/GCStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 interface CustomComponentStoreI {
   customComponents: Array<CustomComponent>;

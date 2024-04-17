@@ -3,7 +3,7 @@ import numeral from 'numeral';
 import { Col, Row, Form } from 'react-bootstrap';
 import { CVFFormEvent } from './types/CVFFormEvent';
 import { CVFFormProps } from './types/CVFFormProps';
-import GCStore from '../../contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 
 enum MatrixType {
   OneZero,

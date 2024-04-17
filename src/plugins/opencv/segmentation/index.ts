@@ -1,11 +1,11 @@
 import { CVFComponent, CVFIOComponent } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Point } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { Position } from 'reactflow';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
-import GCStore from '../../../ide/contexts/GCStore';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
+import GCStore from '../../../core/contexts/GCStore';
 import messages from '../messages';
 
 const tabName = 'Segmentation';

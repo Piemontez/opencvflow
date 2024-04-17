@@ -1,4 +1,4 @@
-import jsonToNodeStore from '../commons/jsonToNodeStore';
+import jsonToNodeStore from '../../ide/commons/jsonToNodeStore';
 import {
   //removeElements,
   NodeTypes,
@@ -9,14 +9,14 @@ import {
 import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode } from '../types/node';
-import { CVFComponent } from '../types/component';
+import { CVFComponent } from '../../ide/types/component';
 import { v4 as uuidv4 } from 'uuid';
-import { ComponentMenuAction, MenuWithElementTitleProps } from '../types/menu';
+import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/menu';
 import GCStore from './GCStore';
-import Storage from '../commons/Storage';
-import nodeStoreToJson from '../commons/nodeStoreToJson';
-import { CustomComponent } from '../types/custom-component';
-import { useNotificationStore } from '../components/Notification/store';
+import Storage from '../../ide/commons/Storage';
+import nodeStoreToJson from '../../ide/commons/nodeStoreToJson';
+import { CustomComponent } from '../../ide/types/custom-component';
+import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
 
 type NodeState = {

@@ -2,14 +2,14 @@ import cv, { Mat, MatVector, Point, Scalar } from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { LineTypes } from 'opencv-ts/src/ImageProcessing/DrawingFunctions';
 import { Position } from 'reactflow';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 import {
   CVFComponent,
   CVFComponentOptions,
   CVFIOComponent,
 } from '../../../ide/types/component';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/property';
 
 const tabName = 'Draw';

@@ -4,7 +4,7 @@ import { CVFComponent } from '../types/component';
 import { useMenuStore } from './MenuStore';
 import * as localPlugins from '../../plugins';
 import { create } from 'zustand';
-import { useNodeStore } from './NodeStore';
+import { useNodeStore } from '../../core/contexts/NodeStore';
 
 export const usePluginStore = create((set: any, get: any) => ({
   loading: false,

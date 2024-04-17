@@ -3,11 +3,11 @@ import React from 'react';
 import { Handle, Position } from 'reactflow';
 import NodeDisplay from '../components/NodeDisplay';
 import NodeTab from '../components/NodeTab';
-import { NodeSizes } from '../config/sizes';
-import GCStore from '../contexts/GCStore';
-import { SourceHandle, TargetHandle } from './handle';
+import { NodeSizes } from '../../core/config/sizes';
+import GCStore from '../../core/contexts/GCStore';
+import { SourceHandle, TargetHandle } from '../../core/types/handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
-import { CVFNodeData, CVFNodeProcessor, EmptyNodeProcessor } from './node';
+import { CVFNodeData, CVFNodeProcessor, EmptyNodeProcessor } from '../../core/types/node';
 
 type OCVComponentProps = {
   id: string;

@@ -1,10 +1,10 @@
 import { CVFIOComponent } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 
 const tabName = 'Conversors';
 

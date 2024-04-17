@@ -3,13 +3,13 @@ import {
   CVFComponentOptions,
   CVFIOComponent,
 } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 import { Position } from 'reactflow';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import {
   ContourApproximationModes,
   RetrievalModes,

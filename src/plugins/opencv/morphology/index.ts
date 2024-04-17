@@ -1,11 +1,11 @@
 import { CVFComponent, CVFIOComponent } from '../../../ide/types/component';
-import { CVFNodeProcessor } from '../../../ide/types/node';
+import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Scalar, Point, Mat } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/property';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import GCStore from '../../../ide/contexts/GCStore';
+import GCStore from '../../../core/contexts/GCStore';
 import { MorphTypes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
-import { SourceHandle, TargetHandle } from '../../../ide/types/handle';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { Position } from 'reactflow';
 
 const tabName = 'Morphology';

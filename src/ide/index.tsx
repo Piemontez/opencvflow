@@ -1,34 +1,35 @@
 import { Row } from 'react-bootstrap';
 import { lazy, useEffect } from 'react';
-import PluginStore from './contexts/PluginStore';
+import { usePluginStore } from './contexts/PluginStore';
 import NodeStore from './contexts/NodeStore';
 
 const NotificationProvider = lazy(() => import('./components/Notification'));
 const Header = lazy(() => import('./components/Header'));
-//const Flow = lazy(() => import('./components/Flow'));
-//const PropertyBar = lazy(() => import('./components/PropertyBar'));
+const Flow = lazy(() => import('./components/Flow'));
+const PropertyBar = lazy(() => import('./components/PropertyBar'));
 const Footer = lazy(() => import('./components/Footer'));
 
-const App = () => {
+const IDE = () => {
+  const pluginStore = usePluginStore((state) => state);
   useEffect(() => {
-    PluginStore.init().then(() => {
+    pluginStore.init().then(() => {
       NodeStore.init();
     });
-  });
+  }, []);
 
   return (
-    <Row className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
+    <Row id="ide" className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
       <NotificationProvider />
       <Header />
       <div className="flex-fill d-flex">
         <div className="flex-grow-1">
-          {/* <Flow /> */}
+          <Flow />
         </div>
-        {/* <PropertyBar /> */}
+        <PropertyBar />
       </div>
       <Footer />
     </Row>
   );
 };
 
-export default App;
+export default IDE;

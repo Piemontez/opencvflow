@@ -1,0 +1,45 @@
+@import "./form.css";
+@import "./node.css";
+@import "./sidebar.css";
+@import "./reactflow.css";
+
+.wrapper,
+html,
+body,
+#root,
+#ide {
+  height: 100%;
+  margin: 0;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/*HEADER*/
+#header,
+#subheader {
+  padding: 2px;
+}
+
+#header {
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--bs-gray-800);
+}
+
+#header a,
+#subheader a {
+  font-size: 0.85rem;
+  padding: 2px 4px 2px 4px;
+}
+
+/*FOOTER*/
+#footer {
+  border-top: 1px solid var(--bs-gray-400);
+  background-color: var(--bs-gray-200);
+  padding-top: 2px;
+}
+#footer a {
+  font-size: 0.6rem;
+  padding: 2px;
+}

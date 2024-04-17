@@ -1,4 +1,4 @@
-import { Edge } from 'react-flow-renderer/nocss';
+import { Edge } from 'reactflow';
 import { CVFNodeProcessor, NodeSourceDef } from './node';
 
 export class CVFEdgeData {
@@ -24,6 +24,6 @@ export class CVFEdgeData {
   }
 }
 
-export interface OCVFEdge extends Edge<CVFEdgeData> {
+export interface OCVFEdge /*extends Edge<CVFEdgeData>*/ {
   data: CVFEdgeData;
 }

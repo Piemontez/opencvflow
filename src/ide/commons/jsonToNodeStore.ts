@@ -3,9 +3,9 @@ import CustomComponentStore from '../contexts/CustomComponentStore';
 import { CVFNode } from '../types/node';
 import { OCVFEdge } from '../types/edge';
 import { SaveContent } from '../types/save-content';
-//import { notify } from '../components/Notification';
 import cv from 'opencv-ts';
 import GCStore from '../contexts/GCStore';
+import { useNotificationStore } from '../components/Notification/store';
 
 const jsonToNodeStore = (json: SaveContent) => {
   const { custom, elements } = json || {};
@@ -27,7 +27,7 @@ const jsonToNodeStore = (json: SaveContent) => {
         if (type) {
           const component = NodeStore.getNodeType(type);
           if (!component) {
-            //notify.warn(`Node type "${type} not found."`);
+            useNotificationStore.getState().warn(`Node type "${type} not found."`);
 
             return false;
           }
@@ -43,16 +43,11 @@ const jsonToNodeStore = (json: SaveContent) => {
             const processor: any = new component.processor();
             element.data.processor = processor;
 
-            Object.keys(
-              (element as CVFNode).data.processor.propertiesMap
-            ).forEach((key) => {
+            Object.keys((element as CVFNode).data.processor.propertiesMap).forEach((key) => {
               if (properties && properties[key] !== undefined) {
                 if (typeof processor[key] === 'object') {
                   const className = processor[key].constructor.name;
-                  if (
-                    className === 'Mat' &&
-                    processor[key].constructor === cv.Mat
-                  ) {
+                  if (className === 'Mat' && processor[key].constructor === cv.Mat) {
                     GCStore.add(processor[key], -100);
                     processor[key] = jsonMatToMat(properties[key]);
                   } else {

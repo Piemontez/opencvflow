@@ -2,14 +2,15 @@ import { useContext } from 'react';
 
 import ReactFlow, { MiniMap } from 'reactflow';
 import { NodeStoreContext } from '../../contexts/NodeStore';
-import { PluginStoreContext } from '../../contexts/PluginStore';
 import Controls from './controls';
 import { CVFNode } from '../../types/node';
 import { OCVFEdge } from '../../types/edge';
+import { useShallow } from 'zustand/react/shallow';
+import { usePluginStore } from '../../contexts/PluginStore';
 
 const Flow = () => {
   const noteStore = useContext(NodeStoreContext);
-  const pluginStore = useContext(PluginStoreContext);
+  const loaded = usePluginStore(useShallow((state) => state.loaded));
 
   // Fix: Forçar atualização do ReactFlow porque o mesmo não faz reload dos nodeTypes
   if (noteStore.forcer & 1) {
@@ -22,7 +23,7 @@ const Flow = () => {
 
       <Controls />
 
-      {!pluginStore.loaded ? (
+      {!loaded ? (
         <p>Loading Plugin</p>
       ) : (
         <ReactFlow

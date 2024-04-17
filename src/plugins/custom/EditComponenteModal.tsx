@@ -3,28 +3,28 @@ import React, { createRef } from 'react';
 import { CVFFormGroup } from '../../ide/components/Form';
 import { PropertyType } from '../../ide/types/property';
 import { tabName } from './index';
-import * as monaco from 'monaco-editor';
+//import * as monaco from 'monaco-editor';
 //import Editor, { loader } from '@monaco-editor/react';
 import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
 import NodeStore from '../../ide/contexts/NodeStore';
-//import { notify } from '../../ide/components/Notification';
 import { CustomComponent } from '../../ide/types/custom-component';
+import { useNotificationStore } from '../../ide/components/Notification/store';
 
-const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
-const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
-const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
-const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
-const RAW_LOADER_node = require('!raw-loader!../../renderer/types/node');
+//const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
+//const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
+//const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
+//const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
+//const RAW_LOADER_node = require('!raw-loader!../../renderer/types/node');
 
 //loader.config({ monaco });
 
 export class EditComponenteModal extends React.Component<any, any> {
-  monacoRef: { current: monaco.editor.IStandaloneCodeEditor | null };
+  //monacoRef: { current: monaco.editor.IStandaloneCodeEditor | null };
 
   constructor(props: any) {
     super(props);
 
-    this.monacoRef = createRef<monaco.editor.IStandaloneCodeEditor>();
+    //this.monacoRef = createRef<monaco.editor.IStandaloneCodeEditor>();
     this.state = {
       show: false,
       name: '',
@@ -66,7 +66,7 @@ export class EditComponenteModal extends React.Component<any, any> {
 
       this.handleClose();
     } catch (ex) {
-      //notify.danger((ex as any).message);
+      useNotificationStore.getState().danger((ex as any).message);
       console.error((ex as any).message, ex);
     }
   };
@@ -81,7 +81,7 @@ export class EditComponenteModal extends React.Component<any, any> {
     }
   };
 
-  handleEditorWillMount = (m: typeof monaco) => {
+  /*handleEditorWillMount = (m: typeof monaco) => {
     const types: any = [
       { name: 'opencv-ts', default: RAW_LOADER_opencvts.default },
       { name: 'renderer/types/property', default: RAW_LOADER_property.default },
@@ -118,7 +118,7 @@ export class EditComponenteModal extends React.Component<any, any> {
   };
   handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     this.monacoRef.current = editor;
-  };
+  };*/
 
   render() {
     const { title, show, code } = this.state;
@@ -141,15 +141,7 @@ export class EditComponenteModal extends React.Component<any, any> {
               />
             </Col>
             <Col>
-              <CVFFormGroup
-                groupAs={Row}
-                column={true}
-                type={PropertyType.Text}
-                disabled
-                name="tabName"
-                title="Tab Bar Menu"
-                value={tabName}
-              />
+              <CVFFormGroup groupAs={Row} column={true} type={PropertyType.Text} disabled name="tabName" title="Tab Bar Menu" value={tabName} />
             </Col>
           </Row>
           {/* {show && (

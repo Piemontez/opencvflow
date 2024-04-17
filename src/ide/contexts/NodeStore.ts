@@ -12,12 +12,12 @@ import { CVFNode } from '../types/node';
 import { CVFComponent } from '../types/component';
 import { v4 as uuidv4 } from 'uuid';
 import { ComponentMenuAction, MenuWithElementTitleProps } from '../types/menu';
-//import { notify } from '../components/Notification';
 import GCStore from './GCStore';
 import Storage from '../commons/Storage';
 import nodeStoreToJson from '../commons/nodeStoreToJson';
 import { OCVElements, OCVFlowElement } from '../types/ocv-elements';
 import { CustomComponent } from '../types/custom-component';
+import { useNotificationStore } from '../components/Notification/store';
 
 interface NodeStoreI {
   running: boolean;
@@ -80,7 +80,7 @@ class NodeStore implements NodeStoreI {
         setTimeout(this.fitView, 100);
       } catch (err: any) {
         console.error(err);
-        //notify.danger(err.message);
+        useNotificationStore.getState().danger(err.message);
       }
     }, 500);
   }
@@ -197,11 +197,11 @@ class NodeStore implements NodeStoreI {
     const target = typeof targetOrId === 'string' ? (this.elements.find((_) => _.id === targetOrId) as CVFNode) : targetOrId;
 
     if (!source) {
-      //notify.warn(`Source ${sourceOrId} not found.`);
+      useNotificationStore.getState().warn(`Source ${sourceOrId} not found.`);
       return;
     }
     if (!target) {
-      //notify.warn(`Target ${targetOrId} not found.`);
+      useNotificationStore.getState().warn(`Target ${targetOrId} not found.`);
       return;
     }
 
@@ -262,12 +262,12 @@ class NodeStore implements NodeStoreI {
 
   run = async () => {
     if (this.running) {
-      //notify.info('The flow is already running.');
+      useNotificationStore.getState().info('The flow is already running.');
       return;
     }
     const { nodes } = this;
     if (!nodes.length) {
-      //notify.info('No flow defined.');
+      useNotificationStore.getState().info('No flow defined.');
       return;
     }
 
@@ -282,7 +282,7 @@ class NodeStore implements NodeStoreI {
         } catch (err: any) {
           node.data.processor.errorMessage = typeof err === 'number' ? `Code error: ${err}` : err?.message || 'Not detected';
 
-          //notify.danger(`Node ${node.id}: ${node.data.processor.errorMessage}`);
+          useNotificationStore.getState().danger(`Node ${node.id}: ${node.data.processor.errorMessage}`);
         }
         if (!this.running) break;
       }
@@ -365,7 +365,7 @@ class NodeStore implements NodeStoreI {
     event.preventDefault();
 
     if (this.running) {
-      //notify.warn('Application is running. Stop application first.');
+      useNotificationStore.getState().warn('Application is running. Stop application first.');
       return;
     }
 

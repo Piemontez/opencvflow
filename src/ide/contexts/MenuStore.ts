@@ -1,18 +1,7 @@
-import { createContext } from 'react';
+import { create } from 'zustand';
 import { CVFComponent } from '../types/component';
 import { MenuActionProps } from '../types/menu';
 import { StringMap } from '../types/utils';
-
-interface MenuStoreI {
-  tabs: Array<MenuTab>;
-  currentTab?: MenuTab;
-  // Adiciona o menu ao navbar
-  addComponentMenuAction(component: typeof CVFComponent): void;
-  // Adiciona o menu ao navbar
-  addMenuAction(action: MenuActionProps): void;
-  // Modifica o menu que esta sendo exibido
-  changeCurrentTab(tabOrTitle: MenuTab | string): void;
-}
 
 type MenuTab = {
   title: string;
@@ -21,49 +10,51 @@ type MenuTab = {
   actions: MenuActionProps[];
 };
 
-class MenuStore {
-  tabs: Array<MenuTab> = [];
-  currentTab?: MenuTab;
-  actions: Array<MenuActionProps> = [];
+export const useMenuStore = create((set: any, get: any) => ({
+  tabs: [] as Array<MenuTab>,
+  currentTab: undefined as MenuTab | undefined,
+  actions: [] as Array<MenuActionProps>,
 
-  tabsByName: StringMap<MenuTab> = {};
+  tabsByName: {} as StringMap<MenuTab>,
 
-  addMenuAction = (act: MenuActionProps) => {
+  addMenuAction: (act: MenuActionProps) => {
     if (act) {
       const options = { position: act.position, dropdown: act.dropdown };
-      const tab = this.findOrCreateTab(act.tabTitle || null, options);
-      tab.actions.push(act);
-      this.actions.push(act);
-    }
-  };
 
-  addComponentMenuAction = (component: typeof CVFComponent) => {
+      const tab = get().findOrCreateTab(act.tabTitle || null, options);
+      tab.actions.push(act);
+
+      get().actions.push(act);
+    }
+  },
+
+  addComponentMenuAction: (component: typeof CVFComponent) => {
     if (component.menu) {
       // Altera para o menu ser arrastável
       component.menu.draggable = true;
 
-      const tab = this.findOrCreateTab(component.menu.tabTitle || null, {});
+      const tab = get().findOrCreateTab(component.menu.tabTitle || null, {});
       tab.actions.push(component.menu);
-      this.actions.push(component.menu);
+      get().actions.push(component.menu);
 
       if (tab.title === 'Inputs') {
-        this.currentTab = tab;
+        set({ currentTab: tab });
       }
     }
-  };
+  },
 
-  changeCurrentTab(tabOrTitle: MenuTab | string) {
+  changeCurrentTab: (tabOrTitle: MenuTab | string) => {
     if (typeof tabOrTitle === 'string') {
-      this.currentTab = this.findOrCreateTab(tabOrTitle, {});
+      set({ currentTab: get().findOrCreateTab(tabOrTitle, {}) });
     } else {
-      this.currentTab = tabOrTitle;
+      set({ currentTab: tabOrTitle });
     }
-  }
+  },
 
-  findOrCreateTab(tabTitle: string | null, options: any): MenuTab {
+  findOrCreateTab: (tabTitle: string | null, options: any): MenuTab => {
     tabTitle = tabTitle ?? 'ThirdParty';
-    if (this.tabsByName[tabTitle]) {
-      return this.tabsByName[tabTitle];
+    if (get().tabsByName[tabTitle]) {
+      return get().tabsByName[tabTitle];
     }
     const tab: MenuTab = {
       title: tabTitle,
@@ -71,14 +62,8 @@ class MenuStore {
       dropdown: options.dropdown || false,
       actions: [],
     };
-    this.tabs.push(tab);
+    get().tabs.push(tab);
 
-    this.tabsByName[tabTitle] = this.tabs[this.tabs.length - 1];
-    return this.tabsByName[tabTitle];
-  }
-}
-
-const instance = new MenuStore() as MenuStoreI;
-
-export default instance;
-export const MenuStoreContext = createContext(instance);
+    return (get().tabsByName[tabTitle] = get().tabs[get().tabs.length - 1]);
+  },
+}));

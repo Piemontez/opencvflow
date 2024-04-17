@@ -13,7 +13,7 @@ import { useNodeStore } from '../../contexts/NodeStore';
  * As opções do menu são adicionadas via plugin,
  * inclusive os plugins instalados junto com a aplicação.
  */
-const Header = () => {
+const Header = memo(() => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
@@ -53,18 +53,19 @@ const Header = () => {
       </Navbar>
     </>
   );
-};
+});
 
 const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
   const [tabs, changeCurrentTab] = useMenuStore(useShallow((state) => [state.tabs, state.changeCurrentTab]));
-
   return tabs
     .filter((tab) => tab.position === position)
     .map((tab) =>
       tab.dropdown ? (
-        <NavDropdown title={tab.title} id="collasible-nav-dropdown">
-          {tab.actions.map((action) => (
-            <NavDropdown.Item onClick={action.action}>{action.title as string}</NavDropdown.Item>
+        <NavDropdown key={tab.title} title={tab.title} id="collasible-nav-dropdown">
+          {tab.actions.map((action, idx) => (
+            <NavDropdown.Item key={idx} onClick={action.action}>
+              {action.title as string}
+            </NavDropdown.Item>
           ))}
         </NavDropdown>
       ) : (
@@ -75,7 +76,7 @@ const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
     );
 };
 
-const SubHeader = () => {
+const SubHeader = memo(() => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
   const onDragStart = useNodeStore(useShallow((state) => state.onDragStart));
 
@@ -109,7 +110,7 @@ const SubHeader = () => {
       </Nav>
     )
   );
-};
+});
 
 const HelpDropDown = memo(({ donateRef, aboutRef }: { donateRef: RefObject<DonateRef>; aboutRef: RefObject<AboutRef> }) => {
   return (

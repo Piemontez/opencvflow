@@ -1,4 +1,4 @@
-import ReactFlow, { MiniMap } from 'reactflow';
+import ReactFlow, { Background, BackgroundVariant, MiniMap } from 'reactflow';
 import Controls from './controls';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
@@ -19,11 +19,12 @@ const Flow = () => {
       ) : (
         <ReactFlow
           minZoom={0.1}
+          selectNodesOnDrag={false}
           nodeTypes={noteStore.nodeTypes}
           nodes={noteStore.nodes}
           edges={noteStore.edges}
-          selectNodesOnDrag={false}
           onInit={noteStore.onInit}
+          snapToGrid={true}
           onNodeClick={noteStore.onNodeClick}
           onConnect={noteStore.onConnect}
           onDrop={noteStore.onDrop}
@@ -31,6 +32,7 @@ const Flow = () => {
           onNodeContextMenu={noteStore.onDragOver}
           onNodeDragStop={noteStore.onNodeDragStop}
         >
+          <Background variant={BackgroundVariant.Dots} />
           <MiniMap className="minimap" nodeStrokeColor={(_n) => '#333'} nodeColor={(_n) => '#DDD'} />
         </ReactFlow>
       )}

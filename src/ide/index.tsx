@@ -15,42 +15,11 @@ const Footer = lazy(() => import('./components/Footer'));
 
 const IDE = () => {
   const pluginStore = usePluginStore((state) => state);
-  const nodeStore = useNodeStore((state) => state);
 
   useEffect(() => {
     pluginStore
       .init()
-      .then(() => {
-        // Aguarda renderizar a tela e carrega a última edição em cache
-        setTimeout(() => {
-          try {
-            const json = Storage.get('NodeStore', 'this');
-            const jsonLoaded = jsonToNodeStore(json);
-
-            // Carrega os tipo de nó customizados
-            if (jsonLoaded.custom?.components) {
-              for (const customComponent of jsonLoaded.custom.components) {
-                CustomComponentStore.add(customComponent);
-              }
-            }
-
-            // Adiciona os nós
-            nodeStore.refreshNodes(jsonLoaded.nodesLoaded);
-
-            console.log(jsonLoaded);
-            // Adiciona as conecções
-            jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
-              useNodeStore.getState().onConnect(rest as OCVFEdge);
-            });
-
-            nodeStore.fitView();
-            nodeStore.refreshFlow();
-          } catch (err: any) {
-            console.error(err);
-            useNotificationStore.getState().danger(err.message);
-          }
-        }, 500);
-      })
+      .then(loadFromCache)
       .catch(() => {});
   }, []);
 
@@ -67,6 +36,37 @@ const IDE = () => {
       <Footer />
     </Row>
   );
+};
+
+const loadFromCache = () => {
+  // Aguarda renderizar a tela e carrega a última edição em cache
+  setTimeout(() => {
+    try {
+      const json = Storage.get('NodeStore', 'this');
+      const jsonLoaded = jsonToNodeStore(json);
+
+      // Carrega os tipo de nó customizados
+      if (jsonLoaded.custom?.components) {
+        for (const customComponent of jsonLoaded.custom.components) {
+          CustomComponentStore.add(customComponent);
+        }
+      }
+
+      // Adiciona os nós
+      useNodeStore.getState().refreshNodes(jsonLoaded.nodesLoaded);
+
+      // Adiciona as conecções
+      jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
+        useNodeStore.getState().onConnect(rest as OCVFEdge);
+      });
+
+      useNodeStore.getState().fitView();
+      useNodeStore.getState().refreshFlow();
+    } catch (err: any) {
+      console.error(err);
+      useNotificationStore.getState().danger(err.message);
+    }
+  }, 500);
 };
 
 export default IDE;

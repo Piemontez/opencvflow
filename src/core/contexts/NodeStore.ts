@@ -34,7 +34,7 @@ export type NodeState = {
 
   clear: () => void;
   storage: () => void;
-  refreshFlow: () => void;
+  refreshFlow: (refreshNodes?: boolean) => void;
   // Node Type
   getNodeType: (name: string) => typeof CVFComponent | null;
   addNodeType: (component: typeof CVFComponent) => void;
@@ -84,8 +84,12 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     Storage.set('NodeStore', 'this', json);
   },
 
-  refreshFlow: () => {
-    set({ forcer: get().forcer + 1 });
+  refreshFlow: (refreshNodes: boolean = false) => {
+    if (refreshNodes) {
+      set({ nodes: [...get().nodes] });
+    } else {
+      set({ forcer: get().forcer + 1 });
+    }
   },
 
   getNodeType: (name: string): typeof CVFComponent | null => {
@@ -241,7 +245,6 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     source.data.processor.outEdges[sourcesIdx] = dataEdge;
     target.data.processor.inEdges[targetsIdx] = dataEdge;
 
-    console.log(newEdge);
     // Adicionar a aresta nos elementos da tela
     set({
       edges: [...get().edges, newEdge],
@@ -367,11 +370,11 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   onNodeClick: (_: MouseEvent, node: CVFNode) => {
-    get().currentElement = node;
+    set({ currentElement: node });
   },
 
   refreshCurrentElement: () => {
-    get().currentElement = { ...get().currentElement } as CVFNode;
+    set({ currentElement: { ...get().currentElement } as CVFNode });
   },
 
   // Evento disparado pelo painel ao remover um elemento
@@ -434,6 +437,8 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     if (storeNode) {
       storeNode.position = node.position;
     }
+
+    get().refreshFlow(true);
     get().storage();
   },
 

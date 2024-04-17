@@ -24,59 +24,67 @@ export const useNotificationStore = create((set: any, get: any) => ({
   },
 
   success: (message: string, title?: string) => {
-    get().alerts.unshift({
-      id: Math.random().toString(32),
-      className: 'bg-success text-white',
-      title: title || 'Success',
-      message,
-      createdAt: new Date(),
-    });
     set({
       amount: get().amount++,
-      alerts: get().alerts,
+      alerts: [
+        ...get().alerts,
+        {
+          id: Math.random().toString(32),
+          className: 'bg-success text-white',
+          title: title || 'Success',
+          message,
+          createdAt: new Date(),
+        },
+      ],
     });
   },
 
   warn: (message: string, title?: string, detail?: string) => {
-    get().alerts.unshift({
-      id: Math.random().toString(32),
-      className: 'bg-warning',
-      title: title || 'Warning',
-      message,
-      detail,
-      createdAt: new Date(),
-    });
     set({
       amount: get().amount++,
-      alerts: get().alerts,
+      alerts: [
+        ...get().alerts,
+        {
+          id: Math.random().toString(32),
+          className: 'bg-warning',
+          title: title || 'Warning',
+          message,
+          detail,
+          createdAt: new Date(),
+        },
+      ],
     });
   },
 
   danger: (message: string, title?: string) => {
-    get().alerts.unshift({
-      id: Math.random().toString(32),
-      className: 'bg-danger text-white',
-      title: title || 'Error',
-      message,
-      createdAt: new Date(),
-    });
     set({
       amount: get().amount++,
-      alerts: get().alerts,
+      alerts: [
+        ...get().alerts,
+        {
+          id: Math.random().toString(32),
+          className: 'bg-danger text-white',
+          title: title || 'Error',
+          message,
+          createdAt: new Date(),
+        },
+      ],
     });
   },
 
   info: (message: string, title?: string) => {
-    get().alerts.unshift({
-      id: Math.random().toString(32),
-      className: 'bg-info text-white',
-      title: title || 'Info',
-      message,
-      createdAt: new Date(),
-    });
     set({
       amount: get().amount++,
-      alerts: get().alerts,
+      alerts: [
+        ...get().alerts,
+        {
+          id: Math.random().toString(32),
+          className: 'bg-info text-white',
+          title: title || 'Info',
+          message,
+          createdAt: new Date(),
+        },
+      ],
     });
   },
 }));

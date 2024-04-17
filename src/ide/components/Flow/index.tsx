@@ -10,6 +10,7 @@ const Flow = () => {
   const noteStore = useNodeStore(useShallow((state) => state));
   const loaded = usePluginStore(useShallow((state) => state.loaded));
 
+  console.log(noteStore.elements);
   // Fix: Forçar atualização do ReactFlow porque o mesmo não faz reload dos nodeTypes
   if (noteStore.forcer & 1) {
     return null;

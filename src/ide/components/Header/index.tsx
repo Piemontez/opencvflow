@@ -78,7 +78,8 @@ const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
 
 const SubHeader = memo(() => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
-  const onDragStart = useNodeStore(useShallow((state) => state.onDragStart));
+  const nodeStore = useNodeStore(useShallow((state) => state));
+  const notificationStore = useNotificationStore(useShallow((state) => state));
 
   return (
     menuCurrentTab && (
@@ -90,9 +91,9 @@ const SubHeader = memo(() => {
             <Nav.Item
               key={key}
               onClick={() => {
-                useNotificationStore.getState().info('Drag (with mouse) this menu and drop into the painel.');
+                notificationStore.info('Drag (with mouse) this menu and drop into the painel.');
               }}
-              onDragStart={(event: any) => onDragStart(event, action)}
+              onDragStart={(event: any) => nodeStore.onDragStart(event, action)}
               draggable
             >
               <Nav.Link eventKey="components" onClick={action.action}>

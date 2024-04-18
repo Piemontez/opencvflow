@@ -42,7 +42,7 @@ class CustomComponentStore implements CustomComponentStoreI {
   };
 
   sanitizeName = (name: string): string => {
-    return (name || '').replaceAll(/[\n| |\\|"|'|<|>]/g, '');
+    return (name || '').replace(/[\n| |\\|"|'|<|>]/g, '');
   };
 
   validade = ({ title: name, code }: CustomNodeType): void => {
@@ -76,12 +76,12 @@ class CustomComponentStore implements CustomComponentStoreI {
     const PropertyTypeFork = PropertyType;
 
     const codeSanitized = custom.code //
-      .replaceAll(/[ ]*import[^;]*;\n/g, '')
-      .replaceAll('CVFComponent', 'CVFComponentFork')
-      .replaceAll('CVFIOComponent', 'CVFIOComponentFork')
-      .replaceAll('CVFNodeProcessor', 'CVFNodeProcessorFork')
-      .replaceAll('PropertyType', 'PropertyTypeFork')
-      .replaceAll('GCStore', 'GCStoreFork');
+      .replace(/[ ]*import[^;]*;\n/g, '')
+      .replace(/CVFComponent/g, 'CVFComponentFork')
+      .replace(/CVFIOComponent/g, 'CVFIOComponentFork')
+      .replace(/CVFNodeProcessor/g, 'CVFNodeProcessorFork')
+      .replace(/PropertyType/g, 'PropertyTypeFork')
+      .replace(/GCStore/g, 'GCStoreFork');
 
     const createComponentClass = `() => { ${codeSanitized}; return CustomComponent}`;
 
@@ -93,7 +93,7 @@ class CustomComponentStore implements CustomComponentStoreI {
     } else {
       const createEvalRs = `({ func: ${createComponentClass} })`;
 
-      const rs = eval(createEvalRs.replaceAll('CustomComponent', custom.name || ''));
+      const rs = eval(createEvalRs.replace(/CustomComponent/g, custom.name || ''));
       const classInstance = rs.func();
 
       return classInstance;

@@ -1,8 +1,7 @@
 import cv, { Point } from 'opencv-ts';
-import numeral from 'numeral';
 import { Col, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from "./types/CVFFormProps";
+import { CVFFormProps } from './types/CVFFormProps';
 
 export function OCVPointFormControl(props: CVFFormProps) {
   const value = props.value as Point;
@@ -18,12 +17,8 @@ export function OCVPointFormControl(props: CVFFormProps) {
           value={value?.x}
           onChange={(event) => {
             if (props.onChange) {
-              const parser = numeral(event.target.value);
-              props.onChange(
-                new cv.Point(parser.value() || 0, value.y || 0),
-                null,
-                event
-              );
+              const parse = parseFloat(event.target.value);
+              props.onChange(new cv.Point(parse || 0, value.y || 0), null, event);
             }
           }}
         />
@@ -38,12 +33,8 @@ export function OCVPointFormControl(props: CVFFormProps) {
           value={value?.y}
           onChange={(event) => {
             if (props.onChange) {
-              const parser = numeral(event.target.value);
-              props.onChange(
-                new cv.Point(value.x || 0, parser.value() || 0),
-                null,
-                event
-              );
+              const parse = parseFloat(event.target.value);
+              props.onChange(new cv.Point(value.x || 0, parse || 0), null, event);
             }
           }}
         />

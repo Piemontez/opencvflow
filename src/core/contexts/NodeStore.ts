@@ -59,6 +59,7 @@ export type NodeState = {
   onDrop: (event: any) => void;
   onDragOver: (event: any) => void;
   onDragStart: (event: any, menuAction: ComponentMenuAction) => void;
+  onDragStartCustom: (event: any, customComp: CustomNodeType) => void;
   onNodeDragStop: (event: any, node: any) => void;
   onNodeContextMenu: (event: any, node: any) => void;
 };

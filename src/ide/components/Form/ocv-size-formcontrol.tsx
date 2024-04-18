@@ -1,8 +1,7 @@
 import cv, { Size } from 'opencv-ts';
-import numeral from 'numeral';
 import { Col, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
-import { CVFFormProps } from "./types/CVFFormProps";
+import { CVFFormProps } from './types/CVFFormProps';
 
 export function OCVSizeFormControl(props: CVFFormProps) {
   const value = props.value as Size;
@@ -18,12 +17,8 @@ export function OCVSizeFormControl(props: CVFFormProps) {
           value={value?.width}
           onChange={(event) => {
             if (props.onChange) {
-              const parser = numeral(event.target.value);
-              props.onChange(
-                new cv.Size(parser.value() || 0, value.height || 0),
-                null,
-                event
-              );
+              const parse = parseFloat(event.target.value);
+              props.onChange(new cv.Size(parse || 0, value.height || 0), null, event);
             }
           }}
         />
@@ -38,12 +33,8 @@ export function OCVSizeFormControl(props: CVFFormProps) {
           value={value?.height}
           onChange={(event) => {
             if (props.onChange) {
-              const parser = numeral(event.target.value);
-              props.onChange(
-                new cv.Size(value?.width || 0, parser.value() || 0),
-                null,
-                event
-              );
+              const parse = parseFloat(event.target.value);
+              props.onChange(new cv.Size(value?.width || 0, parse || 0), null, event);
             }
           }}
         />

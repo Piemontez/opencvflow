@@ -1,4 +1,3 @@
-import numeral from 'numeral';
 import { Col, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { CVFFormProps } from "./types/CVFFormProps";
@@ -19,8 +18,7 @@ export function OCVScalarFormControl(props: CVFFormProps) {
             value={props.value[pos]}
             onChange={(event) => {
               if (props.onChange) {
-                const parser = numeral(event.target.value);
-                props.value[pos] = parser.value();
+                props.value[pos] = parseFloat(event.target.value) || null;
                 props.onChange(props.value, null, event);
               }
             }}

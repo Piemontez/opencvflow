@@ -31,6 +31,7 @@ export class DFTComponent extends CVFIOComponent {
 
     dstsize: Size = new cv.Size(0, 0);
     borderType: BorderTypes = cv.BORDER_DEFAULT;
+    flags: number = 0;
 
     async proccess() {
       const { inputsAsMat: inputs } = this;
@@ -39,12 +40,7 @@ export class DFTComponent extends CVFIOComponent {
         for (const src of inputs) {
           if (!src) continue;
           if (src.channels() > 1) {
-            throw new Error(
-              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
-                '{1}',
-                src.channels().toString()
-              )
-            );
+            throw new Error(messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace('{1}', src.channels().toString()));
           }
 
           // get optimal size of DFT
@@ -53,31 +49,20 @@ export class DFTComponent extends CVFIOComponent {
           const s0 = cv.Scalar.all(0);
           const padded = GCStore.add(new cv.Mat());
 
-          cv.copyMakeBorder(
-            src,
-            padded,
-            0,
-            optimalRows - src.rows,
-            0,
-            optimalCols - src.cols,
-            cv.BORDER_CONSTANT,
-            s0
-          );
+          cv.copyMakeBorder(src, padded, 0, optimalRows - src.rows, 0, optimalCols - src.cols, cv.BORDER_CONSTANT, s0);
 
           // use cv.MatVector to distribute space for real part and imaginary part
           const planes = GCStore.add(new cv.MatVector());
           const complexI = GCStore.add(new cv.Mat());
           const plane0 = GCStore.add(new cv.Mat());
-          const plane1 = GCStore.add(
-            new cv.Mat.zeros(padded.rows, padded.cols, cv.CV_32F)
-          ) as Mat;
+          const plane1 = GCStore.add(new cv.Mat.zeros(padded.rows, padded.cols, cv.CV_32F)) as Mat;
 
           padded.convertTo(plane0, cv.CV_32F);
           planes.push_back(plane0);
           planes.push_back(plane1);
           cv.merge(planes, complexI);
 
-          cv.dft(complexI, complexI, 0, 0);
+          cv.dft(complexI, complexI, this.flags, 0);
 
           // compute log(1 + sqrt(Re(DFT(img))**2 + Im(DFT(img))**2))
           const angle = GCStore.add(new cv.Mat());
@@ -86,9 +71,7 @@ export class DFTComponent extends CVFIOComponent {
           cv.split(complexI, planes);
           cv.cartToPolar(planes.get(0), planes.get(1), mag, angle);
 
-          const m1 = GCStore.add(
-            new cv.Mat.ones(mag.rows, mag.cols, mag.type())
-          ) as Mat;
+          const m1 = GCStore.add(new cv.Mat.ones(mag.rows, mag.cols, mag.type())) as Mat;
 
           cv.add(mag, m1, mag);
           cv.log(mag, mag);
@@ -159,11 +142,7 @@ export class IDFTComponent extends CVFIOComponent {
 
       const [compOrMag, angle] = inputsAsMat;
       if (compOrMag) {
-        const out = new cv.Mat(
-          compOrMag.rows,
-          compOrMag.cols,
-          compOrMag.type()
-        );
+        const out = new cv.Mat(compOrMag.rows, compOrMag.cols, compOrMag.type());
         GCStore.add(out);
 
         if (angle) {

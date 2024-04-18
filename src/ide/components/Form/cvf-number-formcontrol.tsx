@@ -1,4 +1,3 @@
-import numeral from 'numeral';
 import Form from 'react-bootstrap/Form';
 import { CVFFormProps } from './types/CVFFormProps';
 
@@ -12,8 +11,8 @@ export function CVFIntegerFormControl(props: CVFFormProps) {
       value={(props.description || props.value) + ''}
       onChange={(event) => {
         if (props.onChange) {
-          const parser = numeral(event.target.value);
-          props.onChange(parser.value(), parser.format(), event);
+          const value = parseFloat(event.target.value);
+          props.onChange(value, '' + value, event);
         }
       }}
     />
@@ -30,8 +29,8 @@ export function CVFDecimalFormControl(props: CVFFormProps) {
       value={(props.description || props.value) + ''}
       onChange={(event) => {
         if (props.onChange) {
-          const parser = numeral(event.target.value);
-          props.onChange(parser.value(), parser.format(), event);
+          const value = parseFloat(event.target.value);
+          props.onChange(value, '' + value, event);
         }
       }}
     />

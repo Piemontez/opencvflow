@@ -57,7 +57,7 @@ const loadFromCache = () => {
 
       // Adiciona as conecções
       jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
-        useNodeStore.getState().onConnect(rest as OCVFEdge);
+        useNodeStore.getState().onConnect(rest as any);
       });
 
       useNodeStore.getState().fitView();

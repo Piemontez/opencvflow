@@ -1,4 +1,4 @@
-import { MenuActionProps } from 'renderer/types/menu';
+import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotificationStore } from '../../../ide/components/Notification/store';
 

@@ -2,7 +2,6 @@ import moment from 'moment';
 import { useState } from 'react';
 import { Toast } from 'react-bootstrap';
 import { NotificationProps, useNotificationStore } from './store';
-import { useShallow } from 'zustand/react/shallow';
 
 function Notification({ title, message, createdAt, className, detail }: NotificationProps) {
   const [show, setShow] = useState(true);

@@ -443,7 +443,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     get().storage();
   },
 
-  onNodeContextMenu: (event: any, node: any) => {
+  onNodeContextMenu: (event: any, _: any) => {
     event.preventDefault();
   },
 }));

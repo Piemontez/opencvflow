@@ -33,10 +33,7 @@ export enum CVFComponentOptions {
 /**
  * Componente/NodeType
  */
-export abstract class CVFComponent extends React.Component<
-  OCVComponentProps,
-  OCVComponentState
-> {
+export abstract class CVFComponent extends React.Component<OCVComponentProps, OCVComponentState> {
   private output: HTMLCanvasElement | null = null;
   // Conexões que o componente pode receber
   targets: TargetHandle[] = [];
@@ -56,11 +53,7 @@ export abstract class CVFComponent extends React.Component<
   // Titulo exibido em tela. Por padrão exibe o título definido no menu ou o nome do componente.
   get title(): string {
     const { menu } = this.constructor as typeof CVFComponent;
-    return (
-      (menu as MenuWithElementTitleProps)?.name ||
-      (menu?.title as string) ||
-      this.constructor.name
-    );
+    return (menu as MenuWithElementTitleProps)?.name || (menu?.title as string) || this.constructor.name;
   }
 
   changeZoom(zoom: number | 'AUTO_SCALE') {
@@ -154,23 +147,10 @@ export abstract class CVFComponent extends React.Component<
 
         <NodeTab component={this} />
 
-        <div className="node-body">
-          {processor.body() || (
-            <NodeDisplay
-              component={this}
-              canvasRef={(ref) => (this.output = ref)}
-            />
-          )}
-        </div>
+        <div className="node-body">{processor.body() || <NodeDisplay component={this} canvasRef={(ref) => (this.output = ref)} />}</div>
 
         {this.sources.map((source, idx) => (
-          <Handle
-            id={source.title}
-            key={source.title}
-            type="source"
-            position={source.position}
-            style={{ top: 40 + 40 * idx, borderRadius: 0 }}
-          >
+          <Handle id={source.title} key={source.title} type="source" position={source.position} style={{ top: 40 + 40 * idx, borderRadius: 0 }}>
             <div className="handle-title">{source.title}</div>
           </Handle>
         ))}

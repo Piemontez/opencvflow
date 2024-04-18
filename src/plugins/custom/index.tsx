@@ -1,12 +1,15 @@
 import { PluginType } from '../../ide/types/plugin';
 import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react';
-import { EditComponenteModal } from './EditComponenteModal';
+import { createRef, useContext } from 'react';
+import EditComponenteModal from './EditComponenteModal';
 import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
 export const tabName = 'Custom Components';
+
+const editCompRef = createRef<EditComponenteModal>();
+const EditComponenteModalEl = () => <EditComponenteModal ref={editCompRef} />;
 
 const ListComponents = () => {
   const customComponentStore = useContext(CustomComponentContext);
@@ -28,9 +31,6 @@ const ListComponents = () => {
     </>
   );
 };
-
-const editCompRef = React.createRef<EditComponenteModal>();
-const EditComponenteModalEl = () => <EditComponenteModal ref={editCompRef} />;
 
 const NewComponentAction: MenuActionProps = {
   tabTitle: tabName,

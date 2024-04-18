@@ -1,108 +1,98 @@
 import { Button, Col, Modal, Row } from 'react-bootstrap';
-import React, { createRef } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { CVFFormGroup } from '../../ide/components/Form';
 import { PropertyType } from '../../ide/types/PropertyType';
 import { tabName } from './index';
-//import * as monaco from 'monaco-editor';
-//import Editor, { loader } from '@monaco-editor/react';
+import Editor, { Monaco, loader } from '@monaco-editor/react';
 import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
 import { CustomNodeType } from '../../core/types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-//const RAW_LOADER_opencvts = require('!raw-loader!../../../node_modules/opencv-ts/src/opencv.d.ts');
-//const RAW_LOADER_property = require('!raw-loader!../../renderer/types/property');
-//const RAW_LOADER_gcstore = require('!raw-loader!../../renderer/contexts/GCStore');
-//const RAW_LOADER_component = require('!raw-loader!../../renderer/types/component');
-//const RAW_LOADER_node = require('!raw-loader!../../renderer/types/node');
+//import type RAW_LOADER_opencvts from '../../../node_modules/opencv-ts/src/opencv.d.ts';
+//import * as RAW_LOADER_property from '../../ide/types/PropertyType';
+//import * as RAW_LOADER_component from '../../ide/types/component';
+//import * as RAW_LOADER_node from '../../core/types/node';
+//import * as RAW_LOADER_gcstore from '../../core/contexts/GCStore';
 
 //loader.config({ monaco });
+loader.config({});
 
-export class EditComponenteModal extends React.Component<any, any> {
-  //monacoRef: { current: monaco.editor.IStandaloneCodeEditor | null };
+type EditComponenteModal = {
+  handleNew: () => void;
+  handleEdit: (custom: CustomNodeType) => void;
+};
 
-  constructor(props: any) {
-    super(props);
+const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
+  const monacoRef = useRef(null);
+  const [show, setShow] = useState(false);
+  const [content, setContent] = useState({ name: '', title: '', code: defaultValue } as CustomNodeType);
 
-    //this.monacoRef = createRef<monaco.editor.IStandaloneCodeEditor>();
-    this.state = {
-      show: false,
-      name: '',
-      title: '',
-      code: defaultValue,
-    };
-  }
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-  handleClose = () => this.setState({ show: false });
-  handleShow = () => this.setState({ show: true });
-
-  handleNew = () => {
-    this.setState({
+  const handleNew = () => {
+    setContent({
+      name: content.name,
       title: '',
       code: defaultValue,
     });
-    this.handleShow();
+    handleShow();
   };
 
-  handleEdit = (custom: CustomNodeType) => {
-    this.setState({
+  const handleEdit = (custom: CustomNodeType) => {
+    setContent({
       name: custom.name,
       title: custom.title,
       code: custom.code,
     });
-    this.handleShow();
+    handleShow();
   };
 
-  handleChangeTitle = (title: string) => {
-    this.setState({ title });
+  const handleChangeTitle = (title: string) => {
+    setContent({ ...content, title });
   };
 
-  handleSave = () => {
-    const { title, code } = this.state;
+  const handleSave = () => {
+    const { title, code } = content;
     try {
       CustomComponentStore.validade({ title: title, code });
       CustomComponentStore.add({ title: title, code });
       useNodeStore.getState().storage();
 
-      this.handleClose();
+      handleClose();
     } catch (ex) {
       useNotificationStore.getState().danger((ex as any).message);
       console.error((ex as any).message, ex);
     }
   };
 
-  handleRemove = () => {
-    const { name } = this.state;
+  const handleRemove = () => {
+    const { name } = content;
     if (confirm('Do you want to remove this component?')) {
-      CustomComponentStore.remove(name);
+      CustomComponentStore.remove(name!);
       useNodeStore.getState().storage();
 
-      this.handleClose();
+      handleClose();
     }
   };
 
-  /*handleEditorWillMount = (m: typeof monaco) => {
-    const types: any = [
-      { name: 'opencv-ts', default: RAW_LOADER_opencvts.default },
-      { name: 'renderer/types/property', default: RAW_LOADER_property.default },
-      {
-        name: 'renderer/contexts/GCStore',
-        default: RAW_LOADER_gcstore.default,
-      },
-      {
-        name: 'renderer/types/component',
-        default: RAW_LOADER_component.default,
-      },
-      { name: 'renderer/types/node', default: RAW_LOADER_node.default },
-    ];
+  const handleEditorBeforeMount = (m: Monaco) => {
+    /*const types: any = [
+      //{ name: 'opencv-ts', default: RAW_LOADER_opencvts },
+      { name: 'renderer/types/property', default: RAW_LOADER_property },
+      { name: 'renderer/contexts/GCStore', default: RAW_LOADER_gcstore },
+      { name: 'renderer/types/component', default: RAW_LOADER_component },
+      { name: 'renderer/types/node', default: RAW_LOADER_node },
+    ];*/
 
-    types.forEach((module: any) => {
+    /*types.forEach((module: any) => {
       m.languages.typescript.javascriptDefaults.addExtraLib(
         `declare module '${module.name}' {
          ${module.default}
-        }`
+        }`,
       );
-    });
+    });*/
 
     m.languages.typescript.javascriptDefaults.setCompilerOptions({
       allowNonTsExtensions: true,
@@ -116,61 +106,64 @@ export class EditComponenteModal extends React.Component<any, any> {
     });
     m.languages.typescript.javascriptDefaults.setEagerModelSync(true);
   };
-  handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    this.monacoRef.current = editor;
-  };*/
 
-  render() {
-    const { title, show, code } = this.state;
-    return (
-      <Modal show={show} size="xl">
-        <Modal.Header>
-          <Modal.Title>New Component</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Col>
-              <CVFFormGroup
-                groupAs={Row}
-                column={true}
-                type={PropertyType.Text}
-                name={'title'}
-                title="Component name"
-                value={title}
-                onChange={this.handleChangeTitle}
-              />
-            </Col>
-            <Col>
-              <CVFFormGroup groupAs={Row} column={true} type={PropertyType.Text} disabled name="tabName" title="Tab Bar Menu" value={tabName} />
-            </Col>
-          </Row>
-          {/* {show && (
-            <Editor
-              height="70vh"
-              defaultLanguage="javascript"
-              defaultValue={code}
-              onChange={(value) => this.setState({ code: value })}
-              beforeMount={this.handleEditorWillMount}
-              onMount={this.handleEditorDidMount}
+  const handleEditorDidMount = (editor: any, _: Monaco) => {
+    monacoRef.current = editor;
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleNew,
+    handleEdit,
+  }));
+
+  return (
+    <Modal show={show} size="xl">
+      <Modal.Header>
+        <Modal.Title>New Component</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Row>
+          <Col>
+            <CVFFormGroup
+              groupAs={Row}
+              column={true}
+              type={PropertyType.Text}
+              name={'title'}
+              title="Component name"
+              value={content.title}
+              onChange={handleChangeTitle}
             />
-          )} */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-danger" onClick={this.handleRemove}>
-            Remove
-          </Button>
-          <div style={{ flex: 1 }} />
-          <Button variant="secondary" onClick={this.handleClose}>
-            Close without save
-          </Button>
-          <Button variant="primary" onClick={this.handleSave}>
-            Save
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-}
+          </Col>
+          <Col>
+            <CVFFormGroup groupAs={Row} column={true} type={PropertyType.Text} disabled name="tabName" title="Tab Bar Menu" value={tabName} />
+          </Col>
+        </Row>
+        {show && (
+          <Editor
+            height="70vh"
+            defaultLanguage="javascript"
+            defaultValue={content.code}
+            onChange={(value) => setContent({ ...content, code: value || '' })}
+            beforeMount={handleEditorBeforeMount}
+            onMount={handleEditorDidMount}
+          />
+        )}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="outline-danger" onClick={handleRemove}>
+          Remove
+        </Button>
+        <div style={{ flex: 1 }} />
+        <Button variant="secondary" onClick={handleClose}>
+          Close without save
+        </Button>
+        <Button variant="primary" onClick={handleSave}>
+          Save
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+});
 
 const defaultValue = `
 import cv from 'opencv-ts';
@@ -233,3 +226,5 @@ class CustomComponent extends CVFComponent {
     { title: 'out', position: 'right' }
   ];
 }`;
+
+export default EditComponenteModal;

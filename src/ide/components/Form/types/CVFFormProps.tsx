@@ -1,4 +1,4 @@
-import { PropertyType } from '../../types/PropertyType';
+import { PropertyType } from '../../../types/PropertyType';
 import { CVFFormEventHandler } from '../index';
 import { CVFOptionValue } from "./CVFOptionValue";
 

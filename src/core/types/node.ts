@@ -48,8 +48,12 @@ export abstract class CVFNodeProcessor {
     return this.inEdges.map((edge) => edge!.source as Mat);
   }
 
-  header(): JSX.Element | void {}
-  body(): JSX.Element | void {}
+  header(): JSX.Element | null {
+    return null;
+  }
+  body(): JSX.Element | null {
+    return null;
+  }
 
   // Função chamada ao iniciar o processamento(clicar em run). Chamada uma única vez
   async start(): Promise<void> {}

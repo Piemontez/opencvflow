@@ -51,33 +51,32 @@ const IDE = () => {
  */
 const loadFromCache = () => {
   // Aguarda renderizar a tela e carrega a última edição em cache
-  setTimeout(() => {
-    try {
-      const json = Storage.get(STORAGE_NODESTORE_ID, 'this');
-      const jsonLoaded = jsonToNodeStore(json);
+  try {
+    const json = Storage.get(STORAGE_NODESTORE_ID, 'this');
+    const jsonLoaded = jsonToNodeStore(json);
 
-      // Carrega os tipo de nó customizados
-      if (jsonLoaded.custom?.components) {
-        for (const customComponent of jsonLoaded.custom.components) {
-          CustomComponentStore.add(customComponent);
-        }
+    // Carrega os tipo de nó customizados
+    if (jsonLoaded.custom?.components) {
+      for (const customComponent of jsonLoaded.custom.components) {
+        CustomComponentStore.add(customComponent);
       }
-
-      // Adiciona os nós
-      useNodeStore.getState().refreshNodes(jsonLoaded.nodesLoaded);
-
-      // Adiciona as conecções
-      jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
-        useNodeStore.getState().onConnect(rest as any);
-      });
-
-      useNodeStore.getState().fitView();
-      useNodeStore.getState().refreshFlow();
-    } catch (err: any) {
-      console.error(err);
-      useNotificationStore.getState().danger(err.message);
     }
-  }, 500);
+
+    // Adiciona os nós
+    useNodeStore.getState().refreshNodes(jsonLoaded.nodesLoaded);
+
+    // Adiciona as conecções
+    jsonLoaded.edgesLoaded.forEach(({ data, ...rest }) => {
+      useNodeStore.getState().onConnect(rest as any);
+    });
+
+    useNodeStore.getState().refreshFlow();
+
+    setTimeout(useNodeStore.getState().fitView, 500);
+  } catch (err: any) {
+    console.error(err);
+    useNotificationStore.getState().danger(err.message);
+  }
 };
 
 export default IDE;

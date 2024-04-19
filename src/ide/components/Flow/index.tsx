@@ -38,7 +38,7 @@ const Flow = () => {
         >
           <OCFControls />
           <Background color={dotBG} variant={BackgroundVariant.Dots} />
-          <MiniMap className="minimap" nodeStrokeColor={(_n) => '#333'} nodeColor={(_n) => '#DDD'} />
+          <MiniMap className="minimap" />
         </ReactFlow>
       )}
     </div>

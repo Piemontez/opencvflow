@@ -1,39 +1,44 @@
+.react-flow button {
+  background-color: var(--bs-body-bg) !important;
+  border-color: var(--bs-gray-dark) !important;
+  color: var(--bs-body-color) !important;
+}
+
+.node-body {
+ background-color: var(--bs-secondary-bg); 
+}
+
 .react-flow__handle {
-    width: 17px;
-    height: 17px;
-  }
-  
-  .react-flow__handle-left {
-    background-color: #ec6a96;
-    border-color: #f48fb1;
-    left: -7px;
-  }
-  
-  .react-flow__handle-right {
-    background-color: #009c82;
-    border-color: #0ceac5;
-    right: -7px;
-  }
-  
-  .react-flow__handle-left .handle-title {
-    position: relative;
-    direction: rtl;
-    right: 17px;
-    bottom: 6px;
-  }
-  
-  .react-flow__handle-right .handle-title {
-    position: relative;
-    left: 17px;
-    bottom: 6px;
-  }
-  
-  .reactflow-wrapper {
-    height: 100%;
-  }
-  
-  .minimap {
-    width: 150px;
-    height: 100px;
-    border: 1px solid var(--bs-gray-300);
-  }
+  width: 17px;
+  height: 17px;
+}
+
+.react-flow__handle-left {
+  background-color: #ec6a96;
+  border-color: #f48fb1;
+  left: -7px;
+}
+
+.react-flow__handle-right {
+  background-color: #009c82;
+  border-color: #0ceac5;
+  right: -7px;
+}
+
+.react-flow__handle-left .handle-title {
+  position: relative;
+  direction: rtl;
+  right: 17px;
+  bottom: 6px;
+}
+
+.react-flow__handle-right .handle-title {
+  position: relative;
+  left: 17px;
+  bottom: 6px;
+}
+
+.reactflow-wrapper {
+  height: 100%;
+}
+

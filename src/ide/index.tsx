@@ -1,22 +1,29 @@
 import jsonToNodeStore from '../core/utils/jsonToNodeStore';
 import CustomComponentStore from '../ide/contexts/CustomComponentStore';
 import { Row } from 'react-bootstrap';
-import { lazy, useEffect } from 'react';
+import { useEffect } from 'react';
 import { usePluginStore } from './contexts/PluginStore';
 import { useNodeStore } from '../core/contexts/NodeStore';
 import Storage from './commons/Storage';
 import { useNotificationStore } from './components/Notification/store';
-
-const NotificationProvider = lazy(() => import('./components/Notification'));
-const MenuBar = lazy(() => import('./components/MenuBar'));
-const Flow = lazy(() => import('./components/Flow'));
-const PropertyBar = lazy(() => import('./components/PropertyBar'));
-const StatusBar = lazy(() => import('./components/StatusBar'));
+import { STORAGE_NODESTORE_ID } from './commons/consts';
+import { useDarkModeStore } from './contexts/DarkModeStore';
+import MenuBar from './components/MenuBar';
+import PropertyBar from './components/PropertyBar';
+import StatusBar from './components/StatusBar';
+import Flow from './components/Flow';
+import NotificationList from './components/Notification';
+import ActionsBar from './components/ActionsBar';
 
 const IDE = () => {
+  const darkStore = useDarkModeStore((state) => state);
   const pluginStore = usePluginStore((state) => state);
 
   useEffect(() => {
+    // Carrega o modo de cores
+    darkStore.loadFromCache();
+
+    // Carrega os plugins
     pluginStore
       .init()
       .then(loadFromCache)
@@ -25,9 +32,10 @@ const IDE = () => {
 
   return (
     <Row id="ide" className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
-      <NotificationProvider />
+      <NotificationList />
       <MenuBar />
       <div id="dockwidgets" className="flex-fill d-flex">
+        <ActionsBar />
         <div className="flex-grow-1">
           <Flow />
         </div>
@@ -38,11 +46,14 @@ const IDE = () => {
   );
 };
 
+/**
+ * Carrega o último save
+ */
 const loadFromCache = () => {
   // Aguarda renderizar a tela e carrega a última edição em cache
   setTimeout(() => {
     try {
-      const json = Storage.get('NodeStore', 'this');
+      const json = Storage.get(STORAGE_NODESTORE_ID, 'this');
       const jsonLoaded = jsonToNodeStore(json);
 
       // Carrega os tipo de nó customizados

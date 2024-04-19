@@ -6,8 +6,6 @@ import { MenuWithElementTitleProps } from '../../types/menu';
 import About, { AboutRef } from '../About';
 import Donate, { DonateRef } from '../Donate';
 import { useShallow } from 'zustand/react/shallow';
-import { useNotificationStore } from '../Notification/store';
-import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDarkModeStore } from '../../contexts/DarkModeStore';
 
@@ -34,7 +32,7 @@ const MenuBar = memo(() => {
 
       <Donate ref={donateRef} />
       <About ref={aboutRef} />
-      <Navbar id="menubar" bg={mode} variant={mode} expand="sm">
+      <Navbar id="menubar" expand="sm">
         <Container fluid>
           <img src={logoIcon} style={{ margin: 8 }} height="32" alt="brazil" />
           <Navbar.Brand href="#home">OpenCV-FLOW</Navbar.Brand>
@@ -51,12 +49,6 @@ const MenuBar = memo(() => {
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <Navbar id="subheader" bg={mode} variant={mode} expand="sm">
-        <Container fluid>
-          {/**Botões dos componentes */}
-          <SubHeader />
         </Container>
       </Navbar>
     </>
@@ -83,43 +75,6 @@ const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
       ),
     );
 };
-
-const SubHeader = memo(() => {
-  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
-  const nodeStore = useNodeStore(useShallow((state) => state));
-  const notificationStore = useNotificationStore(useShallow((state) => state));
-
-  return (
-    menuCurrentTab && (
-      <Nav>
-        {menuCurrentTab.actions.map((action) => {
-          const key = (action as MenuWithElementTitleProps).name || (action.title as string);
-
-          return action.draggable ? (
-            <Nav.Item
-              key={key}
-              onClick={() => {
-                notificationStore.info('Drag (with mouse) this menu and drop into the painel.');
-              }}
-              onDragStart={(event: any) => nodeStore.onDragStart(event, action)}
-              draggable
-            >
-              <Nav.Link eventKey="components" onClick={action.action}>
-                {action.title as string}
-              </Nav.Link>
-            </Nav.Item>
-          ) : (
-            <Nav.Item key={key}>
-              <Nav.Link eventKey="components" onClick={action.action}>
-                {action.title as string}
-              </Nav.Link>
-            </Nav.Item>
-          );
-        })}
-      </Nav>
-    )
-  );
-});
 
 const HelpDropDown = memo(({ donateRef, aboutRef }: { donateRef: RefObject<DonateRef>; aboutRef: RefObject<AboutRef> }) => {
   return (

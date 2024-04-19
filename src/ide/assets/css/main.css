@@ -1,6 +1,7 @@
 @import "./form.css";
 @import "./node.css";
-@import "./sidebar.css";
+@import "./dockpropertybar.css";
+@import "./dockactionsbar.css";
 @import "./reactflow.css";
 
 .wrapper,
@@ -17,8 +18,7 @@ body,
 }
 
 /*MenuBar*/
-#menubar,
-#subheader {
+#menubar {
   padding: 2px;
 }
 

@@ -17,6 +17,7 @@ import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
+import { STORAGE_NODESTORE_ID } from '../../ide/commons/consts';
 
 const uuidv5Hash = 'c54ab9bc-e083-56f2-9d1e-3eec4bcc93ad';
 
@@ -82,7 +83,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
 
   storage: () => {
     const json = nodeStoreToJson(get());
-    Storage.set('NodeStore', 'this', json);
+    Storage.set(STORAGE_NODESTORE_ID, 'this', json);
   },
 
   refreshFlow: (refreshNodes: boolean = false) => {

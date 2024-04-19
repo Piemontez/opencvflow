@@ -1,0 +1,6 @@
+.dockactionsbar {
+  padding: 8px;
+  border-right: 1px solid var(--bs-dark);
+  min-width: 11% !important;
+  max-width: 11% !important;
+}

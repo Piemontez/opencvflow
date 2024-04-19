@@ -1,23 +1,21 @@
 import ReactFlow, { Background, BackgroundVariant, MiniMap } from 'reactflow';
-import Controls from './controls';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { useDarkModeStore } from '../../contexts/DarkModeStore';
+import OCFControls from './controls';
 
 const Flow = () => {
   const noteStore = useNodeStore(useShallow((state) => state));
   const loaded = usePluginStore(useShallow((state) => state.loaded));
   const mode = useDarkModeStore(useShallow((state) => state.mode));
 
-  const flowBG = mode === 'dark' ? { background: 'gray' } : undefined;
+  const flowBG = mode === 'dark' ? { background: 'var(--bs-gray-600)' } : undefined;
   const dotBG = mode === 'dark' ? 'white' : 'gray';
 
   return (
     <div className="reactflow-wrapper flex-fill" ref={(ref) => (noteStore.reactFlowWrapper = ref)}>
       <span style={{ display: 'none' }}>{noteStore.forcer}</span>
-
-      <Controls />
 
       {!loaded ? (
         <p>Loading Plugin</p>
@@ -38,6 +36,7 @@ const Flow = () => {
           onNodeDragStop={noteStore.onNodeDragStop}
           style={flowBG}
         >
+          <OCFControls />
           <Background color={dotBG} variant={BackgroundVariant.Dots} />
           <MiniMap className="minimap" nodeStrokeColor={(_n) => '#333'} nodeColor={(_n) => '#DDD'} />
         </ReactFlow>

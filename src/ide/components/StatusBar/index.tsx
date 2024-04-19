@@ -2,7 +2,6 @@ import { Nav, Navbar } from 'react-bootstrap';
 import { version } from '../../../../package.json';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { useShallow } from 'zustand/react/shallow';
-import { useDarkModeStore } from '../../contexts/DarkModeStore';
 
 /**
  * Rodapé,
@@ -11,13 +10,12 @@ import { useDarkModeStore } from '../../contexts/DarkModeStore';
  */
 const StatusBar = () => {
   const [nodes, edges] = useNodeStore(useShallow((state) => [state.nodes, state.edges]));
-  const mode = useDarkModeStore(useShallow((state) => state.mode));
 
   return (
-    <Navbar id="statusbar" bg={mode} variant={mode}>
+    <Navbar id="statusbar">
       <Nav fill>
         <Nav.Item>
-          <Nav.Link eventKey="components" disabled>
+          <Nav.Link disabled>
             Nodes: {nodes.length} Edges: {edges.length}
           </Nav.Link>
         </Nav.Item>

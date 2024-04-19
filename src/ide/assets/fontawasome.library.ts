@@ -27,6 +27,7 @@ import {
   faLayerGroup,
   faMap,
   faMapMarked,
+  faMoon,
   faObjectGroup,
   faPlay,
   faPlayCircle,
@@ -42,6 +43,7 @@ import {
   faSortAmountUp,
   faStop,
   faStopCircle,
+  faSun,
   faSync,
   faTasks,
   faTh,
@@ -114,5 +116,7 @@ library.add(
   faSave,
   faFolderOpen,
   faDoorOpen,
-  faWindowClose
+  faWindowClose,
+  faMoon,
+  faSun
 );

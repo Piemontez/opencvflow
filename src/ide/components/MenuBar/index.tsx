@@ -1,3 +1,4 @@
+import logoIcon from '../../assets/imgs/logo.png';
 import { RefObject, memo, useRef } from 'react';
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
 import { useMenuStore } from '../../contexts/MenuStore';
@@ -7,16 +8,19 @@ import Donate, { DonateRef } from '../Donate';
 import { useShallow } from 'zustand/react/shallow';
 import { useNotificationStore } from '../Notification/store';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDarkModeStore } from '../../contexts/DarkModeStore';
 
 /**
  * Menu principal
  * As opções do menu são adicionadas via plugin,
  * inclusive os plugins instalados junto com a aplicação.
  */
-const Header = memo(() => {
+const MenuBar = memo(() => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
+  const [mode, toggle] = useDarkModeStore(useShallow((state) => [state.mode, state.toggle]));
 
   return (
     <>
@@ -30,8 +34,9 @@ const Header = memo(() => {
 
       <Donate ref={donateRef} />
       <About ref={aboutRef} />
-      <Navbar id="header" bg="dark" variant="dark" expand="sm">
+      <Navbar id="menubar" bg={mode} variant={mode} expand="sm">
         <Container fluid>
+          <img src={logoIcon} style={{ margin: 8 }} height="32" alt="brazil" />
           <Navbar.Brand href="#home">OpenCV-FLOW</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -41,11 +46,14 @@ const Header = memo(() => {
             <Nav>
               <NavsLinks position="rigth" />
               <HelpDropDown donateRef={donateRef} aboutRef={aboutRef} />
+              <Nav.Link onClick={toggle}>
+                <FontAwesomeIcon icon={mode === 'dark' ? 'moon' : 'sun'} />
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Navbar id="subheader" bg="dark" variant="dark" expand="sm">
+      <Navbar id="subheader" bg={mode} variant={mode} expand="sm">
         <Container fluid>
           {/**Botões dos componentes */}
           <SubHeader />
@@ -126,4 +134,4 @@ const HelpDropDown = memo(({ donateRef, aboutRef }: { donateRef: RefObject<Donat
   );
 });
 
-export default Header;
+export default MenuBar;

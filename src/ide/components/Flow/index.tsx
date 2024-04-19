@@ -3,10 +3,15 @@ import Controls from './controls';
 import { useShallow } from 'zustand/react/shallow';
 import { usePluginStore } from '../../contexts/PluginStore';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
+import { useDarkModeStore } from '../../contexts/DarkModeStore';
 
 const Flow = () => {
   const noteStore = useNodeStore(useShallow((state) => state));
   const loaded = usePluginStore(useShallow((state) => state.loaded));
+  const mode = useDarkModeStore(useShallow((state) => state.mode));
+
+  const flowBG = mode === 'dark' ? { background: 'gray' } : undefined;
+  const dotBG = mode === 'dark' ? 'white' : 'gray';
 
   return (
     <div className="reactflow-wrapper flex-fill" ref={(ref) => (noteStore.reactFlowWrapper = ref)}>
@@ -31,8 +36,9 @@ const Flow = () => {
           onDragOver={noteStore.onDragOver}
           onNodeContextMenu={noteStore.onDragOver}
           onNodeDragStop={noteStore.onNodeDragStop}
+          style={flowBG}
         >
-          <Background variant={BackgroundVariant.Dots} />
+          <Background color={dotBG} variant={BackgroundVariant.Dots} />
           <MiniMap className="minimap" nodeStrokeColor={(_n) => '#333'} nodeColor={(_n) => '#DDD'} />
         </ReactFlow>
       )}

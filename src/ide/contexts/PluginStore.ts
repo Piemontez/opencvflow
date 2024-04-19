@@ -15,7 +15,7 @@ type PluginState = {
   addPlugin: (pluginFile: PluginFile) => Promise<void>;
 };
 
-export const usePluginStore = create<PluginState>((set: any, get: any) => ({
+export const usePluginStore = create<PluginState>((set, get) => ({
   loading: false,
   loaded: false,
   plugins: [] as PluginFile[],
@@ -31,7 +31,7 @@ export const usePluginStore = create<PluginState>((set: any, get: any) => ({
 
     // Limpa a lista carregada anteriormente
     if (get().loaded) {
-      get().plugins.clear();
+      get().plugins = [];
     }
 
     //Carrega os plugins instalados no sistema

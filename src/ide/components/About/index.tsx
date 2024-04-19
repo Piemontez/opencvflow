@@ -1,3 +1,4 @@
+import logoIcon from '../../assets/imgs/logo.png';
 import { Button, Modal } from 'react-bootstrap';
 import brasilIcon from '../../assets/imgs/brasil-48.png';
 import anarchismIcon from '../../assets/imgs/anarchism.png';
@@ -20,24 +21,24 @@ const About = forwardRef<AboutRef, {}>((_, ref) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>OpenCV-Flow</Modal.Title>
+        <Modal.Title>OpenCV-FLOW</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Open Computer Vision - Flow is an IDE for computer vision studies and
-        testing.
+        Open Computer Vision - Flow is an IDE for computer vision studies and testing.
         <br />
         <br />
         Version: {version}
         <br />
         OpenCV: 4.5 +
         <br />
-        {/* Monaco Editor: {dependencies['monaco-editor']} */}
+        Monaco Editor/React: {dependencies['@monaco-editor/react']}
         <br />
         React: {dependencies.react}
       </Modal.Body>
       <Modal.Footer>
-        <img src={brasilIcon} height="16" alt="brazil" />{' '}
+        <img src={logoIcon} height="16" alt="brazil" />
         <img src={anarchismIcon} height="16" alt="anarchism" />
+        <img src={brasilIcon} height="16" alt="brazil" />
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>

@@ -8,10 +8,10 @@ import Storage from './commons/Storage';
 import { useNotificationStore } from './components/Notification/store';
 
 const NotificationProvider = lazy(() => import('./components/Notification'));
-const Header = lazy(() => import('./components/Header'));
+const MenuBar = lazy(() => import('./components/MenuBar'));
 const Flow = lazy(() => import('./components/Flow'));
 const PropertyBar = lazy(() => import('./components/PropertyBar'));
-const Footer = lazy(() => import('./components/Footer'));
+const StatusBar = lazy(() => import('./components/StatusBar'));
 
 const IDE = () => {
   const pluginStore = usePluginStore((state) => state);
@@ -26,14 +26,14 @@ const IDE = () => {
   return (
     <Row id="ide" className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
       <NotificationProvider />
-      <Header />
-      <div className="flex-fill d-flex">
+      <MenuBar />
+      <div id="dockwidgets" className="flex-fill d-flex">
         <div className="flex-grow-1">
           <Flow />
         </div>
         <PropertyBar />
       </div>
-      <Footer />
+      <StatusBar />
     </Row>
   );
 };

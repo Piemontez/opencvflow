@@ -95,14 +95,14 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   getNodeType: (name: string): typeof CVFComponent | null => {
-    return get().nodeTypes[name] as typeof CVFComponent;
+    return get().nodeTypes[name] as any as typeof CVFComponent;
   },
 
   addNodeType: (component: typeof CVFComponent) => {
-    get().nodeTypes[component.name] = component;
+    get().nodeTypes[component.name] = component as any;
     if (component.menu?.title) {
       const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
-      get().nodeTypesByMenu[key] = component;
+      get().nodeTypesByMenu[key] = component as any;
     }
 
     get().refreshFlow();
@@ -399,11 +399,11 @@ export const useNodeStore = create<NodeState>((set, get) => ({
 
     const appAction = event.dataTransfer.getData('application/menuaction');
     if (appAction) {
-      component = get().nodeTypesByMenu[appAction] as typeof CVFComponent;
+      component = get().nodeTypesByMenu[appAction] as any as typeof CVFComponent;
     }
     const customComponent = event.dataTransfer.getData('application/customcomponent');
     if (customComponent) {
-      component = get().nodeTypes[customComponent] as typeof CVFComponent;
+      component = get().nodeTypes[customComponent] as any as typeof CVFComponent;
     }
 
     if (component) {

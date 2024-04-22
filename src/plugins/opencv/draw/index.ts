@@ -3,16 +3,12 @@ import { Moments } from 'opencv-ts/src/core/Moments';
 import { LineTypes } from 'opencv-ts/src/ImageProcessing/DrawingFunctions';
 import { Position } from 'reactflow';
 import GCStore from '../../../core/contexts/GCStore';
-import {
-  CVFComponent,
-  CVFComponentOptions,
-  CVFIOComponent,
-} from '../../../ide/types/component';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent } from '../../../ide/types/component';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/PropertyType';
 
-const tabName = 'Draw';
+const tabName = ['OpenCV', 'Draw'];
 
 export class CVRectangleComponent extends CVFComponent {
   static menu = { tabTitle: tabName, title: 'Rectangle' };
@@ -39,15 +35,7 @@ export class CVRectangleComponent extends CVFComponent {
           const out = (src as Mat).clone();
           GCStore.add(out);
 
-          cv.rectangle(
-            out,
-            point1 as Point,
-            point2 as Point,
-            this.color,
-            this.thickness,
-            this.lineType,
-            this.shift
-          );
+          cv.rectangle(out, point1 as Point, point2 as Point, this.color, this.thickness, this.lineType, this.shift);
 
           this.sources = [out];
           this.output(out);
@@ -82,15 +70,7 @@ export class CVLineComponent extends CVFComponent {
           const out = (src as Mat).clone();
           GCStore.add(out);
 
-          cv.line(
-            out,
-            point1 as Point,
-            point2 as Point,
-            this.color,
-            this.thickness,
-            this.lineType,
-            this.shift
-          );
+          cv.line(out, point1 as Point, point2 as Point, this.color, this.thickness, this.lineType, this.shift);
 
           this.sources = [out];
           this.output(out);
@@ -135,9 +115,7 @@ export class CVCircleComponent extends CVFComponent {
 
       let out: Mat | undefined;
       if (!src && rows && cols) {
-        out = GCStore.add(
-          new cv.Mat(rows as number, cols as number, type as number, this.color)
-        );
+        out = GCStore.add(new cv.Mat(rows as number, cols as number, type as number, this.color));
       } else if (src) {
         out = GCStore.add((src as Mat).clone());
       }
@@ -154,15 +132,7 @@ export class CVCircleComponent extends CVFComponent {
       }
 
       if (out && center && radius) {
-        cv.circle(
-          out,
-          center as Point,
-          radius as number,
-          this.color,
-          this.thickness,
-          this.lineType,
-          this.shift
-        );
+        cv.circle(out, center as Point, radius as number, this.color, this.thickness, this.lineType, this.shift);
 
         this.sources = [out];
         this.output(out);
@@ -190,13 +160,7 @@ export class DrawContourComponent extends CVFComponent {
           const out = GCStore.add((src as Mat).clone());
 
           for (let i = 0; i < (contours as MatVector).size(); ++i) {
-            cv.drawContours(
-              out,
-              contours as MatVector,
-              i,
-              new cv.Scalar(250, 100, 50),
-              5
-            );
+            cv.drawContours(out, contours as MatVector, i, new cv.Scalar(250, 100, 50), 5);
           }
           this.sources = [out];
           this.output(out);

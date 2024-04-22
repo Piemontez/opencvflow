@@ -1,19 +1,12 @@
-import {
-  CVFIOComponent,
-  CVFIOEndlessComponent,
-} from '../../../ide/types/component';
+import { CVFIOComponent, CVFIOEndlessComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, BackgroundSubtractorMOG2, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
-import {
-  DistanceTransformMasks,
-  DistanceTypes,
-  GrabCutModes,
-} from 'opencv-ts/src/ImageProcessing/Misc';
+import { DistanceTransformMasks, DistanceTypes, GrabCutModes } from 'opencv-ts/src/ImageProcessing/Misc';
 import GCStore from '../../../core/contexts/GCStore';
 
-const tabName = 'Others';
+const tabName = ['OpenCV', 'Others'];
 
 /**
  * Distance Transform component and node
@@ -90,11 +83,7 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
     fgmask?: Mat;
 
     async start() {
-      this.subtractor = new cv.BackgroundSubtractorMOG2(
-        this.history,
-        this.varThreshold,
-        this.detectShadows
-      );
+      this.subtractor = new cv.BackgroundSubtractorMOG2(this.history, this.varThreshold, this.detectShadows);
     }
 
     async proccess() {
@@ -102,8 +91,7 @@ export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
       if (inputs.length) {
         this.sources = [];
         inputs.forEach((src) => {
-          if (!this.fgmask)
-            this.fgmask = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
+          if (!this.fgmask) this.fgmask = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
 
           this.subtractor!.apply(src, this.fgmask);
 
@@ -154,15 +142,7 @@ export class GrabCutComponent extends CVFIOComponent {
           const out = src.clone();
           GCStore.add(out);
 
-          cv.grabCut(
-            out,
-            this.mask!,
-            new cv.Rect(0, 0, src.cols, src.rows),
-            this.bgdModel!,
-            this.fgdModel!,
-            this.iterCount,
-            this.mode
-          );
+          cv.grabCut(out, this.mask!, new cv.Rect(0, 0, src.cols, src.rows), this.bgdModel!, this.fgdModel!, this.iterCount, this.mode);
 
           this.sources.push(out);
           this.output(out);

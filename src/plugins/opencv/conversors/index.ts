@@ -6,7 +6,7 @@ import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import GCStore from '../../../core/contexts/GCStore';
 
-const tabName = 'Conversors';
+const tabName = ['OpenCV', 'Conversors'];
 
 /**
  * CvtColor component and node

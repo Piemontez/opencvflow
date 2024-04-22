@@ -2,16 +2,12 @@ import cv, { Mat, MatVector, Point } from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { Position } from 'reactflow';
 import GCStore from '../../../core/contexts/GCStore';
-import {
-  CVFComponent,
-  CVFComponentOptions,
-  CVFIOComponent,
-} from '../../../ide/types/component';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent } from '../../../ide/types/component';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/PropertyType';
 
-const tabName = 'Utils';
+const tabName = ['OpenCV', 'Utils'];
 
 export class MomentsComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'Moments' };
@@ -124,27 +120,14 @@ export class HistogramCalcComponent extends CVFComponent {
         const hist = new cv.Mat();
         GCStore.add(hist);
 
-        cv.calcHist(
-          srcVect,
-          [this.channels],
-          mask,
-          hist,
-          [this.histSize],
-          this.ranges,
-          this.accumulate
-        );
+        cv.calcHist(srcVect, [this.channels], mask, hist, [this.histSize], this.ranges, this.accumulate);
 
         // draw histogram
         const color = new cv.Scalar(0);
         const minmaxloc = cv.minMaxLoc(hist, mask);
 
         const max = minmaxloc.maxVal;
-        const out = new cv.Mat(
-          image.rows,
-          this.histSize,
-          cv.CV_8U,
-          new cv.Scalar(255)
-        );
+        const out = new cv.Mat(image.rows, this.histSize, cv.CV_8U, new cv.Scalar(255));
         GCStore.add(out);
         for (let i = 0; i < this.histSize; i++) {
           const binVal = (hist.data32F[i] * image.rows) / max;

@@ -251,7 +251,7 @@ export class CVConvertScaleAbsComponent extends CVFIOComponent {
 }
 
 export class CVBitwiseOrComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: 'BitwiseOr' };
+  static menu = { tabTitle: tabName, title: 'Bitwise Or' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'src2', position: Position.Left },
@@ -286,7 +286,7 @@ export class CVBitwiseOrComponent extends CVFComponent {
 }
 
 export class CVBitwiseAndComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: 'BitwiseAnd' };
+  static menu = { tabTitle: tabName, title: 'Bitwise And' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'src2', position: Position.Left },
@@ -321,7 +321,7 @@ export class CVBitwiseAndComponent extends CVFComponent {
 }
 
 export class CVBitwiseNotComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: 'BitwiseNot' };
+  static menu = { tabTitle: tabName, title: 'Bitwise Not' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'masc', position: Position.Left },
@@ -355,7 +355,7 @@ export class CVBitwiseNotComponent extends CVFComponent {
 }
 
 export class CVBitwiseXorComponent extends CVFComponent {
-  static menu = { tabTitle: tabName, title: 'BitwiseXor' };
+  static menu = { tabTitle: tabName, title: 'Bitwise Xor' };
   targets: TargetHandle[] = [
     { title: 'src1', position: Position.Left },
     { title: 'src2', position: Position.Left },

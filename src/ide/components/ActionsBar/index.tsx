@@ -3,7 +3,7 @@ import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { MenuTab, useMenuStore } from '../../contexts/MenuStore';
 import { useNotificationStore } from '../Notification/store';
 import { MenuActionProps, MenuWithElementTitleProps } from '../../types/menu';
-import { Button } from 'react-bootstrap';
+import { Accordion, Button } from 'react-bootstrap';
 
 const DockActionsBar = () => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
@@ -25,12 +25,18 @@ const DockActionsBar = () => {
 
 type SubmenuBarProps = { menus: MenuTab[] };
 const SubmenuBar = ({ menus }: SubmenuBarProps) => {
-  return menus.map((menu) => (
-    <>
-      {menu.title}
-      <ActionsBar actions={menu.actions} />
-    </>
-  ));
+  return (
+    <Accordion>
+      {menus.map((menu, idx) => (
+        <Accordion.Item eventKey={'' + idx}>
+          <Accordion.Header>{menu.title}</Accordion.Header>
+          <Accordion.Body>
+            <ActionsBar actions={menu.actions} />
+          </Accordion.Body>
+        </Accordion.Item>
+      ))}
+    </Accordion>
+  );
 };
 
 type ActionsBarProps = { actions: MenuActionProps[] };

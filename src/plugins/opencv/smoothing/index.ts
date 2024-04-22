@@ -7,7 +7,7 @@ import GCStore from '../../../core/contexts/GCStore';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { Position } from 'reactflow';
 
-const tabName = 'Smoothing';
+const tabName = ['OpenCV', 'Smoothing'];
 
 /**
  * MedianBlur component and node
@@ -62,14 +62,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.GaussianBlur(
-            src,
-            out,
-            this.size,
-            this.sigmaX,
-            this.sigmaY,
-            this.borderType
-          );
+          cv.GaussianBlur(src, out, this.size, this.sigmaX, this.sigmaY, this.borderType);
           this.sources.push(out);
           this.output(out);
         }
@@ -137,14 +130,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.bilateralFilter(
-            src,
-            out,
-            this.d,
-            this.sigmaColor,
-            this.sigmaSpace,
-            this.borderType
-          );
+          cv.bilateralFilter(src, out, this.d, this.sigmaColor, this.sigmaSpace, this.borderType);
           this.sources.push(out);
           this.output(out);
         }
@@ -153,11 +139,10 @@ export class BilateralFilterComponent extends CVFIOComponent {
   };
 }
 
-
 /**
  * BoxFilter component and node
  */
- export class BoxFilterComponent extends CVFIOComponent {
+export class BoxFilterComponent extends CVFIOComponent {
   static menu = { tabTitle: tabName, title: 'BoxFilter' };
   static processor = class BoxFilterNode extends CVFNodeProcessor {
     properties = [
@@ -182,15 +167,7 @@ export class BilateralFilterComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.boxFilter(
-            src,
-            out,
-            this.ddepth,
-            this.ksize,
-            this.anchor,
-            this.normalize,
-            this.borderType
-          );
+          cv.boxFilter(src, out, this.ddepth, this.ksize, this.anchor, this.normalize, this.borderType);
           this.sources.push(out);
           this.output(out);
         }
@@ -227,15 +204,7 @@ export class SqrBoxFilterComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.sqrBoxFilter(
-            src,
-            out,
-            this.ddepth,
-            this.ksize,
-            this.anchor,
-            this.normalize,
-            this.borderType
-          );
+          cv.sqrBoxFilter(src, out, this.ddepth, this.ksize, this.anchor, this.normalize, this.borderType);
           this.sources.push(out);
           this.output(out);
         }
@@ -243,8 +212,6 @@ export class SqrBoxFilterComponent extends CVFIOComponent {
     }
   };
 }
-
-
 
 /**
  * Filter2D component and node
@@ -285,15 +252,7 @@ export class Filter2DComponent extends CVFIOComponent {
           kernel.convertTo(kernel, src.type() & (1 | 2 | 4));
         }
 
-        cv.filter2D(
-          src,
-          out,
-          this.ddepth,
-          kernel,
-          this.anchor,
-          this.delta,
-          this.borderType
-        );
+        cv.filter2D(src, out, this.ddepth, kernel, this.anchor, this.delta, this.borderType);
         this.sources.push(out);
         this.output(out);
       }

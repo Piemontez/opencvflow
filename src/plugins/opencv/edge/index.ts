@@ -1,8 +1,4 @@
-import {
-  CVFComponent,
-  CVFComponentOptions,
-  CVFIOComponent,
-} from '../../../ide/types/component';
+import { CVFComponent, CVFComponentOptions, CVFIOComponent } from '../../../ide/types/component';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -10,12 +6,9 @@ import { BorderTypes } from 'opencv-ts/src/core/CoreArray';
 import GCStore from '../../../core/contexts/GCStore';
 import { Position } from 'reactflow';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
-import {
-  ContourApproximationModes,
-  RetrievalModes,
-} from 'opencv-ts/src/ImageProcessing/Shape';
+import { ContourApproximationModes, RetrievalModes } from 'opencv-ts/src/ImageProcessing/Shape';
 
-const tabName = 'Edge';
+const tabName = ['OpenCV', 'Edge'];
 
 /**
  * Sobel component and node
@@ -52,17 +45,7 @@ export class CVSobelComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8UC1);
           GCStore.add(out);
 
-          cv.Sobel(
-            src,
-            out,
-            this.dDepth,
-            this.dX,
-            this.dY,
-            this.kSize,
-            this.scale,
-            this.delta,
-            this.borderType
-          );
+          cv.Sobel(src, out, this.dDepth, this.dX, this.dY, this.kSize, this.scale, this.delta, this.borderType);
 
           this.sources.push(out);
 
@@ -105,7 +88,7 @@ export class CannyComponent extends CVFIOComponent {
             src,
             out,
             this.tthreshold1,
-            this.tthreshold1
+            this.tthreshold1,
             // this.aperturesize, TODO: opencv-ts ainda não recebe este
             // this.L2gradiente, TODO: opencv-ts ainda não recebe este
           );
@@ -147,15 +130,7 @@ export class LaplacianComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.Laplacian(
-            src,
-            out,
-            this.dDepth,
-            this.kSize,
-            this.scale,
-            this.delta,
-            this.borderType
-          );
+          cv.Laplacian(src, out, this.dDepth, this.kSize, this.scale, this.delta, this.borderType);
           this.sources.push(out);
           this.output(out);
         }
@@ -194,16 +169,7 @@ export class ScharrComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.Scharr(
-            src,
-            out,
-            this.ddepth,
-            this.dx,
-            this.dy,
-            this.scale,
-            this.delta,
-            this.borderType
-          );
+          cv.Scharr(src, out, this.ddepth, this.dx, this.dy, this.scale, this.delta, this.borderType);
           this.sources.push(out);
           this.output(out);
         }

@@ -8,7 +8,7 @@ import { MorphTypes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { Position } from 'reactflow';
 
-const tabName = 'Morphology';
+const tabName = ['OpenCV', 'Morphology'];
 
 /**
  * Erode component and node
@@ -28,11 +28,7 @@ export class ErodeComponent extends CVFIOComponent {
       { name: 'borderType', type: PropertyType.BorderType },
       { name: 'borderValue', type: PropertyType.Scalar },
     ];
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
+    kernel: Mat = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3), new cv.Point(-1, -1));
     anchor: Point = new cv.Point(-1, -1);
     iterations: number = 1;
     borderType: BorderTypes = cv.BORDER_CONSTANT;
@@ -46,15 +42,7 @@ export class ErodeComponent extends CVFIOComponent {
         const out = new cv.Mat(src.rows, src.cols, src.type());
         GCStore.add(out);
 
-        cv.erode(
-          src,
-          out,
-          kernel || this.kernel,
-          this.anchor,
-          this.iterations,
-          this.borderType,
-          this.borderValue
-        );
+        cv.erode(src, out, kernel || this.kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
 
         this.sources = [out];
         this.output(out);
@@ -84,11 +72,7 @@ export class DilateComponent extends CVFIOComponent {
       { name: 'borderValue', type: PropertyType.Scalar },
     ];
 
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
+    kernel: Mat = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3), new cv.Point(-1, -1));
     anchor: Point = new cv.Point(-1, -1);
     iterations: number = 1;
     borderType: BorderTypes = cv.BORDER_CONSTANT;
@@ -102,15 +86,7 @@ export class DilateComponent extends CVFIOComponent {
         const out = new cv.Mat(src.rows, src.cols, src.type());
         GCStore.add(out);
 
-        cv.dilate(
-          src,
-          out,
-          kernel || this.kernel,
-          this.anchor,
-          this.iterations,
-          this.borderType,
-          this.borderValue
-        );
+        cv.dilate(src, out, kernel || this.kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
         this.sources = [out];
         this.output(out);
       } else {
@@ -139,11 +115,7 @@ export class OpeningComponent extends CVFIOComponent {
       { name: 'borderValue', type: PropertyType.Scalar },
     ];
 
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
+    kernel: Mat = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3), new cv.Point(-1, -1));
     anchor: Point = new cv.Point(-1, -1);
     iterations: number = 1;
     borderType: BorderTypes = cv.BORDER_CONSTANT;
@@ -157,16 +129,7 @@ export class OpeningComponent extends CVFIOComponent {
         const out = new cv.Mat(src.rows, src.cols, src.type());
         GCStore.add(out);
 
-        cv.morphologyEx(
-          src,
-          out,
-          cv.MORPH_OPEN,
-          kernel || this.kernel,
-          this.anchor,
-          this.iterations,
-          this.borderType,
-          this.borderValue
-        );
+        cv.morphologyEx(src, out, cv.MORPH_OPEN, kernel || this.kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
         this.sources = [out];
         this.output(out);
       } else {
@@ -190,11 +153,7 @@ export class ClosingComponent extends CVFIOComponent {
       { name: 'borderValue', type: PropertyType.Scalar },
     ];
 
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_RECT,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
+    kernel: Mat = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3), new cv.Point(-1, -1));
     anchor: Point = new cv.Point(-1, -1);
     iterations: number = 1;
     borderType: BorderTypes = cv.BORDER_CONSTANT;
@@ -208,16 +167,7 @@ export class ClosingComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.morphologyEx(
-            src,
-            out,
-            cv.MORPH_CLOSE,
-            this.kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
+          cv.morphologyEx(src, out, cv.MORPH_CLOSE, this.kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
           this.sources.push(out);
           this.output(out);
         }
@@ -263,16 +213,7 @@ export class MorphologyExComponent extends CVFComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.morphologyEx(
-            src,
-            out,
-            this.op,
-            kernel,
-            this.anchor,
-            this.iterations,
-            this.borderType,
-            this.borderValue
-          );
+          cv.morphologyEx(src, out, this.op, kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
           this.sources.push(out);
           this.output(out);
         }
@@ -289,11 +230,7 @@ export class ThinningComponent extends CVFIOComponent {
   static processor = class ThinningNode extends CVFNodeProcessor {
     properties = [{ name: 'maxIterations', type: PropertyType.Integer }];
 
-    kernel: Mat = cv.getStructuringElement(
-      cv.MORPH_CROSS,
-      new cv.Size(3, 3),
-      new cv.Point(-1, -1)
-    );
+    kernel: Mat = cv.getStructuringElement(cv.MORPH_CROSS, new cv.Size(3, 3), new cv.Point(-1, -1));
     anchor: Point = new cv.Point(-1, -1);
     borderValue: Scalar = cv.morphologyDefaultBorderValue();
     maxIterations: number = 1000;
@@ -308,12 +245,7 @@ export class ThinningComponent extends CVFIOComponent {
         if (!src) continue;
 
         let clone = src.clone();
-        const out = new cv.Mat(
-          src.rows,
-          src.cols,
-          src.type(),
-          new cv.Scalar(0)
-        );
+        const out = new cv.Mat(src.rows, src.cols, src.type(), new cv.Scalar(0));
         const eroded = new cv.Mat(src.rows, src.cols, src.type());
         const open = new cv.Mat(src.rows, src.cols, src.type());
         const sub = new cv.Mat(src.rows, src.cols, src.type());
@@ -325,24 +257,8 @@ export class ThinningComponent extends CVFIOComponent {
 
         let idx = this.maxIterations;
         while (cv.countNonZero(clone) !== 0 && idx-- > 0) {
-          cv.erode(
-            clone,
-            eroded,
-            this.kernel,
-            this.anchor,
-            1,
-            cv.BORDER_CONSTANT,
-            this.borderValue
-          );
-          cv.dilate(
-            eroded,
-            open,
-            this.kernel,
-            this.anchor,
-            1,
-            cv.BORDER_CONSTANT,
-            this.borderValue
-          );
+          cv.erode(clone, eroded, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
+          cv.dilate(eroded, open, this.kernel, this.anchor, 1, cv.BORDER_CONSTANT, this.borderValue);
 
           cv.subtract(clone, open, sub);
 

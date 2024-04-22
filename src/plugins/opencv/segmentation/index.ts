@@ -8,7 +8,7 @@ import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import GCStore from '../../../core/contexts/GCStore';
 import messages from '../messages';
 
-const tabName = 'Segmentation';
+const tabName = ['OpenCV', 'Segmentation'];
 
 /**
  * Threshold component and node
@@ -34,12 +34,7 @@ export class ThresholdComponent extends CVFIOComponent {
         this.sources = [];
         for (const src of inputs) {
           if (src.channels() > 1) {
-            throw new Error(
-              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
-                '{1}',
-                src.channels().toString()
-              )
-            );
+            throw new Error(messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace('{1}', src.channels().toString()));
           }
           const out = new cv.Mat(src.rows, src.cols, cv.CV_8U);
           GCStore.add(out);
@@ -112,12 +107,7 @@ export class RegionGrowing extends CVFComponent {
           return;
         }
 
-        const out = new cv.Mat(
-          (src as Mat).rows,
-          (src as Mat).cols,
-          cv.CV_16U,
-          new cv.Scalar(0)
-        );
+        const out = new cv.Mat((src as Mat).rows, (src as Mat).cols, cv.CV_16U, new cv.Scalar(0));
         GCStore.add(out);
 
         const neighborhood: Array<Array<Point>> = [];
@@ -136,19 +126,11 @@ export class RegionGrowing extends CVFComponent {
         }
         // Seed é do tipo Mat
         else if ((seed as Mat).cols && (seed as Mat).rows) {
-          if (
-            (src as Mat).rows !== (seed as Mat).rows &&
-            (src as Mat).cols !== (seed as Mat).cols
-          ) {
+          if ((src as Mat).rows !== (seed as Mat).rows && (src as Mat).cols !== (seed as Mat).cols) {
             throw new Error(messages.INPUTS_SAME_SIZES);
           }
           if ((seed as Mat).channels() > 1) {
-            throw new Error(
-              messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace(
-                '{1}',
-                (seed as Mat).channels().toString()
-              )
-            );
+            throw new Error(messages.CHANNELS_REQUIRED_ONLY.replace('{0}', '1').replace('{1}', (seed as Mat).channels().toString()));
           }
 
           let label = 1;
@@ -181,7 +163,7 @@ export class RegionGrowing extends CVFComponent {
               nextNb!.x ? nextNb!.x - 1 : 0,
               nextNb!.y ? nextNb!.y - 1 : 0,
               out.cols - nextNb!.x > 3 ? 3 : out.cols - nextNb!.x,
-              out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y
+              out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y,
             );
 
             for (let row = roi.y + roi.height - 1; row >= roi.y; row--) {

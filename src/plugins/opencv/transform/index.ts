@@ -8,7 +8,7 @@ import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { Position } from 'reactflow';
 import messages from '../messages';
 
-const tabName = 'Transform';
+const tabName = ['OpenCV', 'Transform'];
 
 /**
  * DFT Transform component and node

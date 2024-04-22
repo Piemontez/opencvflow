@@ -15,7 +15,7 @@ import { useDarkModeStore } from '../../contexts/DarkModeStore';
  * inclusive os plugins instalados junto com a aplicação.
  */
 const MenuBar = memo(() => {
-  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
+  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
   const [mode, toggle] = useDarkModeStore(useShallow((state) => [state.mode, state.toggle]));
@@ -56,24 +56,26 @@ const MenuBar = memo(() => {
 });
 
 const NavsLinks = ({ position }: { position: 'left' | 'rigth' }) => {
-  const [tabs, changeCurrentTab] = useMenuStore(useShallow((state) => [state.tabs, state.changeCurrentTab]));
-  return tabs
-    .filter((tab) => tab.position === position)
-    .map((tab) =>
-      tab.dropdown ? (
-        <NavDropdown key={tab.title} title={tab.title} id="collasible-nav-dropdown">
-          {tab.actions.map((action, idx) => (
+  const [menus, changeCurrentTab] = useMenuStore(useShallow((state) => [state.menus, state.changeCurrentTab]));
+  return menus
+    .filter((menu) => menu.position === position)
+    .map((menu) => {
+      const title = Array.isArray(menu.title) ? menu.title[0] : menu.title;
+
+      return menu.dropdown ? (
+        <NavDropdown key={title} title={title} id="collasible-nav-dropdown">
+          {menu.actions.map((action, idx) => (
             <NavDropdown.Item key={idx} onClick={action.action}>
               {action.title as string}
             </NavDropdown.Item>
           ))}
         </NavDropdown>
       ) : (
-        <Nav.Link key={tab.title} onClick={() => changeCurrentTab(tab.title)}>
-          {tab.title}
+        <Nav.Link key={title} onClick={() => changeCurrentTab(title)}>
+          {title}
         </Nav.Link>
-      ),
-    );
+      );
+    });
 };
 
 const HelpDropDown = memo(({ donateRef, aboutRef }: { donateRef: RefObject<DonateRef>; aboutRef: RefObject<AboutRef> }) => {

@@ -3,16 +3,12 @@ import { NormTypes } from 'opencv-ts/src/core/CoreArray';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import { Position } from 'reactflow';
 import GCStore from '../../../core/contexts/GCStore';
-import {
-  CVFIOEndlessComponent,
-  CVFComponent,
-  CVFIOComponent,
-} from '../../../ide/types/component';
+import { CVFIOEndlessComponent, CVFComponent, CVFIOComponent } from '../../../ide/types/component';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/PropertyType';
 
-const tabName = 'Arithmetic';
+const tabName = ['OpenCV', 'Arithmetic'];
 
 export class CVPlusComponent extends CVFComponent {
   static menu = { tabTitle: tabName, title: 'Add' };
@@ -33,12 +29,7 @@ export class CVPlusComponent extends CVFComponent {
       const [src1, src2, masc] = inputs;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {
@@ -73,12 +64,7 @@ export class CVSubComponent extends CVFComponent {
       const [src1, src2, masc] = inputs;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {
@@ -222,14 +208,7 @@ export class CVNormalizeComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.normalize(
-            src,
-            out,
-            this.alpha,
-            this.beta,
-            this.normType,
-            this.dtype === undefined ? src.type() : this.dtype
-          );
+          cv.normalize(src, out, this.alpha, this.beta, this.normType, this.dtype === undefined ? src.type() : this.dtype);
 
           this.sources.push(out);
           this.output(out);
@@ -290,12 +269,7 @@ export class CVBitwiseOrComponent extends CVFComponent {
       const [src1, src2, masc] = inputs;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {
@@ -330,12 +304,7 @@ export class CVBitwiseAndComponent extends CVFComponent {
       const [src1, src2, masc] = inputs;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {
@@ -369,12 +338,7 @@ export class CVBitwiseNotComponent extends CVFComponent {
       const [src1, masc] = inputs;
 
       if (src1) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {
@@ -409,12 +373,7 @@ export class CVBitwiseXorComponent extends CVFComponent {
       const [src1, src2, masc] = inputs;
 
       if (src1 && src2) {
-        const out: Mat = new cv.Mat(
-          src1.rows,
-          src1.cols,
-          src1.type(),
-          new cv.Scalar(0)
-        );
+        const out: Mat = new cv.Mat(src1.rows, src1.cols, src1.type(), new cv.Scalar(0));
         GCStore.add(out);
 
         if (masc) {

@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 
 type MenuBaseProps = {
-  tabTitle?: string;
+  tabTitle?: string | Array<string>;
   position?: 'left' | 'rigth'; //Default left
   dropdown?: true;
   order?: number;
@@ -19,9 +19,7 @@ export type MenuWithElementTitleProps = {
   headerExtraElement?: React.ReactElement;
 };
 
-export type MenuActionProps =
-  | (MenuBaseProps & MenuWithStringTitleProps)
-  | (MenuBaseProps & MenuWithElementTitleProps);
+export type MenuActionProps = (MenuBaseProps & MenuWithStringTitleProps) | (MenuBaseProps & MenuWithElementTitleProps);
 
 export type ComponentMenuAction =
   | Omit<MenuBaseProps & MenuWithStringTitleProps, 'action'>

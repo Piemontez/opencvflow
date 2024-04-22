@@ -13,7 +13,7 @@ import PropertyBar from './components/PropertyBar';
 import StatusBar from './components/StatusBar';
 import Flow from './components/Flow';
 import NotificationList from './components/Notification';
-import ActionsBar from './components/ActionsBar';
+import DockActionsBar from './components/ActionsBar';
 
 const IDE = () => {
   const darkStore = useDarkModeStore((state) => state);
@@ -35,7 +35,7 @@ const IDE = () => {
       <NotificationList />
       <MenuBar />
       <div id="dockwidgets" className="flex-fill d-flex">
-        <ActionsBar />
+        <DockActionsBar />
         <div className="flex-grow-1">
           <Flow />
         </div>

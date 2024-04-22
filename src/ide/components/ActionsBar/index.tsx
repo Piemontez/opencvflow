@@ -1,28 +1,49 @@
 import { useShallow } from 'zustand/react/shallow';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
-import { useMenuStore } from '../../contexts/MenuStore';
+import { MenuTab, useMenuStore } from '../../contexts/MenuStore';
 import { useNotificationStore } from '../Notification/store';
 import { MenuActionProps, MenuWithElementTitleProps } from '../../types/menu';
 import { Button } from 'react-bootstrap';
 
-const ActionsBar = () => {
-  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentTab));
+const DockActionsBar = () => {
+  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
+  console.log(menuCurrentTab);
 
   return (
     <div className="dockactionsbar">
       <div className="d-grid gap-2">
-        {menuCurrentTab?.actions.map((action) => {
-          const key = '' + ((action as MenuWithElementTitleProps).name || (action.title as string));
-
-          return action.draggable ? ( //
-            <DraggableButton action={action} key={key} />
-          ) : (
-            <ActionButton action={action} key={key} />
-          );
-        })}
+        {menuCurrentTab && (
+          <>
+            <SubmenuBar menus={menuCurrentTab.menus} />
+            <ActionsBar actions={menuCurrentTab.actions} />
+          </>
+        )}
       </div>
     </div>
   );
+};
+
+type SubmenuBarProps = { menus: MenuTab[] };
+const SubmenuBar = ({ menus }: SubmenuBarProps) => {
+  return menus.map((menu) => (
+    <>
+      {menu.title}
+      <ActionsBar actions={menu.actions} />
+    </>
+  ));
+};
+
+type ActionsBarProps = { actions: MenuActionProps[] };
+const ActionsBar = ({ actions }: ActionsBarProps) => {
+  return actions.map((action) => {
+    const key = '' + ((action as MenuWithElementTitleProps).name || (action.title as string));
+
+    return action.draggable ? ( //
+      <DraggableButton action={action} key={key} />
+    ) : (
+      <ActionButton action={action} key={key} />
+    );
+  });
 };
 
 type ButtonProps = { action: MenuActionProps };
@@ -51,4 +72,4 @@ const ActionButton = ({ action }: ButtonProps) => {
   );
 };
 
-export default ActionsBar;
+export default DockActionsBar;

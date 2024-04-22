@@ -1,33 +1,33 @@
 import { create } from 'zustand';
 import { CVFComponent } from '../types/component';
 import { MenuActionProps } from '../types/menu';
-import { StringMap } from "../types/StringMap";
+import { StringMap } from '../types/StringMap';
 
-type MenuTab = {
+export type MenuTab = {
   title: string;
   position: 'left' | 'rigth';
   dropdown: boolean;
   actions: MenuActionProps[];
+  menus: MenuTab[];
+  menusByName: StringMap<MenuTab>;
 };
 
 type MenuState = {
-  tabs: Array<MenuTab>;
-  currentTab?: MenuTab;
-  actions: Array<MenuActionProps>;
-  tabsByName: StringMap<MenuTab>;
+  menus: Array<MenuTab>;
+  menusByName: StringMap<MenuTab>;
+  currentMenu?: MenuTab;
 
   addMenuAction: (act: MenuActionProps) => void;
   addComponentMenuAction: (component: typeof CVFComponent) => void;
   changeCurrentTab: (tabOrTitle: MenuTab | string) => void;
-  findOrCreateTab: (tabTitle: string | null, options: any)=> MenuTab ;
+  findOrCreateTab: (tabTitle: string[] | string | null, options: any) => MenuTab;
 };
 
 export const useMenuStore = create<MenuState>((set, get) => ({
-  tabs: [] as Array<MenuTab>,
-  currentTab: undefined as MenuTab | undefined,
-  actions: [] as Array<MenuActionProps>,
+  menus: [] as Array<MenuTab>,
+  currentMenu: undefined as MenuTab | undefined,
 
-  tabsByName: {} as StringMap<MenuTab>,
+  menusByName: {} as StringMap<MenuTab>,
 
   addMenuAction: (act: MenuActionProps) => {
     if (act) {
@@ -35,8 +35,6 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
       const tab = get().findOrCreateTab(act.tabTitle || null, options);
       tab.actions.push(act);
-
-      get().actions.push(act);
     }
   },
 
@@ -47,35 +45,72 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
       const tab = get().findOrCreateTab(component.menu.tabTitle || null, {});
       tab.actions.push(component.menu);
-      get().actions.push(component.menu);
 
       if (tab.title === 'Inputs') {
-        set({ currentTab: tab });
+        set({ currentMenu: tab });
       }
     }
   },
 
   changeCurrentTab: (tabOrTitle: MenuTab | string) => {
     if (typeof tabOrTitle === 'string') {
-      set({ currentTab: get().findOrCreateTab(tabOrTitle, {}) });
+      set({ currentMenu: get().findOrCreateTab(tabOrTitle, {}) });
     } else {
-      set({ currentTab: tabOrTitle });
+      set({ currentMenu: tabOrTitle });
     }
   },
 
-  findOrCreateTab: (tabTitle: string | null, options: any): MenuTab => {
-    tabTitle = tabTitle ?? 'ThirdParty';
-    if (get().tabsByName[tabTitle]) {
-      return get().tabsByName[tabTitle];
-    }
-    const tab: MenuTab = {
-      title: tabTitle,
-      position: options.position || 'left',
-      dropdown: options.dropdown || false,
-      actions: [],
-    };
-    get().tabs.push(tab);
+  findOrCreateTab: (tabTitle: string[] | string | null, options: any): MenuTab => {
+    const isArray = Array.isArray(tabTitle);
 
-    return (get().tabsByName[tabTitle] = get().tabs[get().tabs.length - 1]);
+    let titles = isArray ? [...tabTitle] : [tabTitle ?? 'ThirdParty'];
+    let tab: null | MenuTab = null;
+    let subtab: null | MenuTab = null;
+    let hasNext = false;
+
+    do {
+      const title = titles.splice(0, 1)[0];
+      hasNext = titles.length > 0;
+
+      // Procura pra ver se já foi iniciado o menu
+      if (!tab) {
+        tab = get().menusByName[title];
+
+        // Se não foi iniciado inicia o menu
+        if (!tab) {
+          tab = {
+            title: title,
+            position: options.position || 'left',
+            dropdown: options.dropdown || false,
+            actions: [],
+            menus: [],
+            menusByName: {},
+          };
+
+          get().menus.push(tab);
+          get().menusByName[title] = tab;
+        }
+      } else {
+        subtab = tab.menusByName[title];
+
+        if (!subtab) {
+          subtab = {
+            title: title,
+            position: options.position || 'left',
+            dropdown: options.dropdown || false,
+            actions: [],
+            menus: [],
+            menusByName: {},
+          };
+
+          tab.menus.push(subtab);
+          tab.menusByName[title] = subtab;
+        }
+
+        tab = subtab;
+      }
+    } while (hasNext);
+
+    return tab;
   },
 }));

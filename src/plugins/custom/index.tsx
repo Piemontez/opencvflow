@@ -5,6 +5,7 @@ import { createRef, useContext } from 'react';
 import EditComponenteModal from './EditComponenteModal';
 import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
+import { Button } from 'react-bootstrap';
 
 export const tabName = ['Custom Components'];
 
@@ -18,15 +19,16 @@ const ListComponents = () => {
   return (
     <>
       {customComponentStore.customComponents.map((custom, idx) => (
-        <span
+        <Button
           key={idx}
+          size="sm"
+          variant="transparent"
           onDragStart={(event: any) => nodeStore.onDragStartCustom(event, custom)}
           onClick={() => editCompRef.current?.handleEdit(custom)}
           draggable
         >
-          {' '}
           {custom.title}
-        </span>
+        </Button>
       ))}
     </>
   );
@@ -38,7 +40,7 @@ const NewComponentAction: MenuActionProps = {
   title: (
     <>
       <span onClick={() => editCompRef.current?.handleNew()}>
-        <FontAwesomeIcon className="text-info" icon={'plus'} /> new
+        <FontAwesomeIcon icon={'plus'} /> Create Custom
       </span>
 
       <ListComponents />

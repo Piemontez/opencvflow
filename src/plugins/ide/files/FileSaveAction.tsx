@@ -7,7 +7,7 @@ const FileSaveAction: MenuActionProps = {
   name: 'save',
   title: (
     <>
-      <FontAwesomeIcon className="text-success" icon={'save'} /> Save
+      <FontAwesomeIcon icon={'save'} /> Save
     </>
   ),
   action: () => {

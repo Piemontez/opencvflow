@@ -33,6 +33,7 @@ body,
 /*DockWidgets*/
 #dockwidgets {
   padding: 0;
+  max-height: calc(100% - 78px);
 }
 
 /*StatusBar*/

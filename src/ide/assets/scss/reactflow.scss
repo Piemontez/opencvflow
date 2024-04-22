@@ -1,7 +1,7 @@
 .react-flow button {
   background-color: var(--bs-body-bg) !important;
   border-color: var(--bs-gray-dark) !important;
-  color: var(--bs-body-color) !important;
+  color: var(--bs-navbar-color) !important;
 }
 
 .node-body {
@@ -11,6 +11,10 @@
 .react-flow__handle {
   width: 17px;
   height: 17px;
+}
+
+.react-flow__minimap {
+  background-color: transparent !important;
 }
 
 .react-flow__handle-left {

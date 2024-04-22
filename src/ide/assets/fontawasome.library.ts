@@ -4,13 +4,29 @@ import {
   faAnglesRight,
   faEye,
   faEyeSlash,
+  faFile,
   faFolderOpen,
   faMoon,
   faPlayCircle,
+  faPlus,
   faSave,
   faStopCircle,
   faSun,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faPlayCircle, faStopCircle, faSave, faFolderOpen, faWindowClose, faMoon, faSun, faAnglesRight, faAnglesLeft, faEye, faEyeSlash);
+library.add(
+  faPlayCircle,
+  faStopCircle,
+  faFile,
+  faSave,
+  faFolderOpen,
+  faWindowClose,
+  faMoon,
+  faSun,
+  faAnglesRight,
+  faAnglesLeft,
+  faEye,
+  faEyeSlash,
+  faPlus,
+);

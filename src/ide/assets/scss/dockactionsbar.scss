@@ -3,9 +3,10 @@
   border-right: 1px solid var(--bs-dark);
   min-width: 11% !important;
   max-width: 11% !important;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .actionsbar {
-    overflow-y: auto;
     width: 100%;
   }
 

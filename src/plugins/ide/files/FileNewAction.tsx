@@ -7,7 +7,7 @@ const FileNewAction: MenuActionProps = {
   name: 'new',
   title: (
     <>
-      <FontAwesomeIcon className="text-info" icon={'file'} /> new
+      <FontAwesomeIcon icon={'file'} /> New
     </>
   ),
   action: () => {

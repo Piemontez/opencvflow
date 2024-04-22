@@ -9,8 +9,8 @@ const DockActionsBar = () => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
 
   return (
-    <div className="dockactionsbar d-flex">
-      <div className="actionsbar gap-2">
+    <div className="dockactionsbar">
+      <div className="actionsbar">
         {menuCurrentTab && (
           <>
             <SubmenuBar menus={menuCurrentTab.menus} />

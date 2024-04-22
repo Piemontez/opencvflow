@@ -35,6 +35,8 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
       const tab = get().findOrCreateTab(act.tabTitle || null, options);
       tab.actions.push(act);
+
+      set({ menus: [...get().menus] });
     }
   },
 
@@ -49,6 +51,8 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       if (tab.title === 'Inputs') {
         set({ currentMenu: tab });
       }
+
+      set({ menus: [...get().menus] });
     }
   },
 

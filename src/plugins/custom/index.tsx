@@ -1,11 +1,12 @@
 import { PluginType } from '../../ide/types/plugin';
 import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createRef, useContext } from 'react';
+import { createRef } from 'react';
 import EditComponenteModal from './EditComponenteModal';
-import { CustomComponentContext } from '../../ide/contexts/CustomComponentStore';
+import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import { Button } from 'react-bootstrap';
+import { useShallow } from 'zustand/react/shallow';
 
 export const tabName = ['Custom Components'];
 
@@ -13,7 +14,7 @@ const editCompRef = createRef<EditComponenteModal>();
 const EditComponenteModalEl = () => <EditComponenteModal ref={editCompRef} />;
 
 const ListComponents = () => {
-  const customComponentStore = useContext(CustomComponentContext);
+  const customComponentStore = useCustomComponentStore(useShallow((state) => state));
   const nodeStore = useNodeStore();
 
   return (

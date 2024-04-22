@@ -1,5 +1,5 @@
 import jsonToNodeStore from '../core/utils/jsonToNodeStore';
-import CustomComponentStore from '../ide/contexts/CustomComponentStore';
+import { useCustomComponentStore } from '../ide/contexts/CustomComponentStore';
 import { Row } from 'react-bootstrap';
 import { useEffect } from 'react';
 import { usePluginStore } from './contexts/PluginStore';
@@ -58,7 +58,7 @@ const loadFromCache = () => {
     // Carrega os tipo de nó customizados
     if (jsonLoaded.custom?.components) {
       for (const customComponent of jsonLoaded.custom.components) {
-        CustomComponentStore.add(customComponent);
+        useCustomComponentStore.getState().add(customComponent);
       }
     }
 

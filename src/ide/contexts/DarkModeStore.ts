@@ -3,7 +3,7 @@ import { STORAGE_DARK_MODE } from '../commons/consts';
 import Storage from '../commons/Storage';
 
 type Mods = 'dark' | 'light';
-type DarkMode = {
+type DarkModeState = {
   mode: Mods;
 
   loadFromCache: () => void;
@@ -11,7 +11,7 @@ type DarkMode = {
   change: (newMode: Mods) => void;
 };
 
-export const useDarkModeStore = create<DarkMode>((set, get) => ({
+export const useDarkModeStore = create<DarkModeState>((set, get) => ({
   mode: 'dark',
 
   loadFromCache: () => {

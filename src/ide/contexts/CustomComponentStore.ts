@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { create } from 'zustand';
 import { CustomNodeType } from '../../core/types/custom-node-type';
 import { CVFComponent, CVFIOComponent } from '../types/component';
 import { PropertyType } from '../types/PropertyType';
@@ -6,46 +6,62 @@ import { CVFNodeProcessor } from '../../core/types/node';
 import GCStore from '../../core/contexts/GCStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-interface CustomComponentStoreI {
+type CustomComponentState = {
   customComponents: Array<CustomNodeType>;
-  add(custom: CustomNodeType): void;
-  remove(name: string): void;
-  validade(custom: CustomNodeType): void;
-}
 
-class CustomComponentStore implements CustomComponentStoreI {
-  customComponents: Array<CustomNodeType> = [];
+  clear: () => void;
+  add: (custom: CustomNodeType) => void;
+  remove: (name: string) => void;
+  validade: (custom: CustomNodeType) => void;
 
-  add = (custom: CustomNodeType): void => {
-    custom.name = this.sanitizeName(custom.title);
-    const nodeType = this.build(custom);
+  sanitizeName: (name: string) => string;
+  test: (custom: CustomNodeType) => void;
+  build: (custom: CustomNodeType, test?: boolean) => typeof CVFComponent;
+};
 
-    const idx = this.customComponents.findIndex((curr) => curr.title === custom.title);
+export const useCustomComponentStore = create<CustomComponentState>((set, get) => ({
+  customComponents: [] as Array<CustomNodeType>,
+
+  clear: () => {
+    set({ customComponents: [] });
+  },
+
+  add: (custom: CustomNodeType): void => {
+    custom.name = get().sanitizeName(custom.title);
+    const nodeType = get().build(custom);
+    const customComponents = get().customComponents;
+
+    const idx = customComponents.findIndex((curr) => curr.title === custom.title);
 
     if (idx < 0) {
-      this.customComponents = this.customComponents.concat([custom]);
+      customComponents.push(custom);
     } else {
-      this.customComponents[idx] = custom;
+      customComponents[idx] = custom;
     }
+
+    set({ customComponents });
 
     useNodeStore.getState().addNodeType(nodeType);
     useNodeStore.getState().refreshNodesFromComponent(nodeType);
-  };
+  },
 
-  remove = (name: string): void => {
-    const idx = this.customComponents.findIndex((curr) => curr.name === name);
+  remove: (name: string): void => {
+    const customComponents = get().customComponents;
+    const idx = customComponents.findIndex((curr) => curr.name === name);
     if (idx > -1) {
-      this.customComponents.splice(idx, 1);
+      customComponents.splice(idx, 1);
     }
 
+    set({ customComponents });
+
     useNodeStore.getState().removeNodeType(name);
-  };
+  },
 
-  sanitizeName = (name: string): string => {
+  sanitizeName: (name: string): string => {
     return (name || '').replace(/[\n| |\\|"|'|<|>]/g, '');
-  };
+  },
 
-  validade = ({ title: name, code }: CustomNodeType): void => {
+  validade: ({ title: name, code }: CustomNodeType): void => {
     const hasName = !!(name || '').trim();
     const hasClass = code.search(/class[ ]*CustomComponent/g);
 
@@ -56,14 +72,14 @@ class CustomComponentStore implements CustomComponentStoreI {
       throw new Error('CustomComponent class required');
     }
 
-    this.test({ title: name, code });
-  };
+    get().test({ title: name, code });
+  },
 
-  test = (custom: CustomNodeType): void => {
-    this.build(custom, true);
-  };
+  test: (custom: CustomNodeType): void => {
+    get().build(custom, true);
+  },
 
-  build = (custom: CustomNodeType, test = false): typeof CVFComponent => {
+  build: (custom: CustomNodeType, test = false): typeof CVFComponent => {
     // @ts-ignore
     class CVFComponentFork extends CVFComponent {}
     // @ts-ignore
@@ -98,9 +114,5 @@ class CustomComponentStore implements CustomComponentStoreI {
 
       return classInstance;
     }
-  };
-}
-
-const instance = new CustomComponentStore() as CustomComponentStoreI;
-export default instance;
-export const CustomComponentContext = createContext(instance);
+  },
+}));

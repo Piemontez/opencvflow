@@ -4,7 +4,7 @@ import { CVFFormGroup } from '../../ide/components/Form';
 import { PropertyType } from '../../ide/types/PropertyType';
 import { tabName } from './index';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
-import CustomComponentStore from '../../ide/contexts/CustomComponentStore';
+import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { CustomNodeType } from '../../core/types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
@@ -56,8 +56,8 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
   const handleSave = () => {
     const { title, code } = content;
     try {
-      CustomComponentStore.validade({ title: title, code });
-      CustomComponentStore.add({ title: title, code });
+      useCustomComponentStore.getState().validade({ title: title, code });
+      useCustomComponentStore.getState().add({ title: title, code });
       useNodeStore.getState().storage();
 
       handleClose();
@@ -70,7 +70,7 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
   const handleRemove = () => {
     const { name } = content;
     if (confirm('Do you want to remove this component?')) {
-      CustomComponentStore.remove(name!);
+      useCustomComponentStore.getState().remove(name!);
       useNodeStore.getState().storage();
 
       handleClose();

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNotificationStore } from '../../../ide/components/Notification/store';
 
 const FileOpenAction: MenuActionProps = {
-  tabTitle: 'File',
+  tabTitle: ['File'],
   name: 'open',
   title: (
     <>

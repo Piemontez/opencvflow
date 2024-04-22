@@ -3,4 +3,14 @@
   border-right: 1px solid var(--bs-dark);
   min-width: 11% !important;
   max-width: 11% !important;
+
+  .actionsbar {
+    overflow-y: auto;
+    width: 100%;
+  }
+
+  .btn {
+      width: 100% !important;
+      text-align: left;
+  }  
 }

@@ -10,7 +10,7 @@ import { NodeSizes, VideoSizes } from '../../../core/config/sizes';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import messages from '../messages';
 
-const tabName = 'Inputs';
+const tabName = ['Inputs'];
 class VideoCapture extends cv.VideoCapture {}
 
 /**
@@ -39,43 +39,28 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
     }
 
     body() {
-      return (
-        <video
-          autoPlay
-          width={VideoSizes.minWidth}
-          height={VideoSizes.minHeight}
-          muted
-          playsInline
-          ref={(ref) => (this.video = ref)}
-        />
-      );
+      return <video autoPlay width={VideoSizes.minWidth} height={VideoSizes.minHeight} muted playsInline ref={(ref) => (this.video = ref)} />;
     }
 
     async start() {
       this.cap = new cv.VideoCapture(this.video!);
 
-      await navigator.mediaDevices
-        .getUserMedia({ audio: true, video: true })
-        .then((mediaStream) => {
-          if (this.video) {
-            this.video.srcObject = mediaStream;
-            this.video.onloadedmetadata = () => {
-              this.video!.width = this.video!.videoWidth;
-              this.video!.height = this.video!.videoHeight;
-              this.video!.play();
-            };
-          }
-          return null;
-        });
+      await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaStream) => {
+        if (this.video) {
+          this.video.srcObject = mediaStream;
+          this.video.onloadedmetadata = () => {
+            this.video!.width = this.video!.videoWidth;
+            this.video!.height = this.video!.videoHeight;
+            this.video!.play();
+          };
+        }
+        return null;
+      });
     }
 
     async proccess() {
       if (this.video!.width && this.video!.width) {
-        const src = new cv.Mat(
-          this.video!.height!,
-          this.video!.width!,
-          cv.CV_8UC4
-        );
+        const src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
         GCStore.add(src);
 
         this.cap!.read(src);
@@ -133,18 +118,8 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
     header() {
       return (
         <>
-          <img
-            style={{ display: 'none' }}
-            ref={(ref) => (this.img = ref)}
-            alt=""
-          />
-          <video
-            autoPlay
-            muted
-            playsInline
-            style={{ display: 'none' }}
-            ref={(ref) => (this.video = ref)}
-          />
+          <img style={{ display: 'none' }} ref={(ref) => (this.img = ref)} alt="" />
+          <video autoPlay muted playsInline style={{ display: 'none' }} ref={(ref) => (this.video = ref)} />
         </>
       );
     }
@@ -184,11 +159,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
         this.sources = [src];
       }
       if (this.isVideo && this.cap && this.video!.width && this.video!.width) {
-        const src = new cv.Mat(
-          this.video!.height!,
-          this.video!.width!,
-          cv.CV_8UC4
-        );
+        const src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
         GCStore.add(src);
 
         this.cap.read(src);
@@ -239,9 +210,7 @@ export class CVMatComponent extends CVFOutputComponent {
       this.kernel.convertTo(newKernel, value);
       this.kernel = newKernel;
 
-      const isUType = [cv.CV_8UC1, cv.CV_8UC2, cv.CV_8UC3, cv.CV_8UC4].includes(
-        value
-      );
+      const isUType = [cv.CV_8UC1, cv.CV_8UC2, cv.CV_8UC3, cv.CV_8UC4].includes(value);
 
       if (isUType) {
         this.properties[1].type = PropertyType.IntMatrix;
@@ -262,9 +231,7 @@ export class CVMatComponent extends CVFOutputComponent {
       const dsize = new cv.Size(cols, rows);
       cv.resize(this.kernel, this.out, dsize, 0, 0, cv.INTER_AREA);
 
-      const isUType = [cv.CV_8UC1, cv.CV_8UC2, cv.CV_8UC3, cv.CV_8UC4].includes(
-        this.kernel.type() as number
-      );
+      const isUType = [cv.CV_8UC1, cv.CV_8UC2, cv.CV_8UC3, cv.CV_8UC4].includes(this.kernel.type() as number);
 
       if (isUType) {
         const channels = this.out.channels();
@@ -359,7 +326,7 @@ export class CVStructuringElementComponent extends CVFOutputComponent {
       this.buildKernel(
         name === 'rows' ? (value as number) : this.rows,
         name === 'cols' ? (value as number) : this.cols,
-        name === 'type' ? (value as MorphShapes) : this.type
+        name === 'type' ? (value as MorphShapes) : this.type,
       );
     }
 
@@ -367,11 +334,7 @@ export class CVStructuringElementComponent extends CVFOutputComponent {
       GCStore.add(this.kernel, -100);
       GCStore.add(this.out, -100);
 
-      this.kernel = cv.getStructuringElement(
-        type,
-        new cv.Size(this.cols, this.rows),
-        new cv.Point(this.cols / 2, this.rows / 2)
-      );
+      this.kernel = cv.getStructuringElement(type, new cv.Size(this.cols, this.rows), new cv.Point(this.cols / 2, this.rows / 2));
 
       const min = Math.min(this.kernel.rows, this.kernel.cols);
       const scale = NodeSizes.defaultHeight / min;
@@ -421,7 +384,7 @@ export class CVGaussianKernelComponent extends CVFOutputComponent {
       this.buildKernel(
         name === 'rows' ? (value as number) : this.rows,
         name === 'cols' ? (value as number) : this.cols,
-        name === 'sigma' ? (value as number) : this.sigma
+        name === 'sigma' ? (value as number) : this.sigma,
       );
     }
 

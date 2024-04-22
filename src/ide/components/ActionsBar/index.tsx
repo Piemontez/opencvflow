@@ -7,11 +7,10 @@ import { Accordion, Button } from 'react-bootstrap';
 
 const DockActionsBar = () => {
   const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
-  console.log(menuCurrentTab);
 
   return (
-    <div className="dockactionsbar">
-      <div className="d-grid gap-2">
+    <div className="dockactionsbar d-flex">
+      <div className="actionsbar gap-2">
         {menuCurrentTab && (
           <>
             <SubmenuBar menus={menuCurrentTab.menus} />
@@ -25,11 +24,15 @@ const DockActionsBar = () => {
 
 type SubmenuBarProps = { menus: MenuTab[] };
 const SubmenuBar = ({ menus }: SubmenuBarProps) => {
+  if (!menus.length) {
+    return null;
+  }
+  const ids = menus.map((_, idx) => '' + idx);
   return (
-    <Accordion>
-      {menus.map((menu, idx) => (
-        <Accordion.Item eventKey={'' + idx}>
-          <Accordion.Header>{menu.title}</Accordion.Header>
+    <Accordion alwaysOpen defaultActiveKey={ids}>
+      {menus.map((menu, key) => (
+        <Accordion.Item eventKey={'' + key} key={key} >
+          <Accordion.Header color='red'>{menu.title}</Accordion.Header>
           <Accordion.Body>
             <ActionsBar actions={menu.actions} />
           </Accordion.Body>

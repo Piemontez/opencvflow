@@ -1,12 +1,9 @@
 import { StrictMode, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 
-// React Flow
-import 'reactflow/dist/style.css';
-// Bootstrap
-import 'bootstrap/dist/css/bootstrap.min.css';
-// OpenCV-Flow
-import './ide/assets/css/main.css';
+// OpenCV-Flow Style, Bootstrap and React Flow
+import './ide/assets/scss/main.scss';
+// Font Awasome
 import './ide/assets/fontawasome.library';
 
 const IDE = lazy(() => import('./ide'));

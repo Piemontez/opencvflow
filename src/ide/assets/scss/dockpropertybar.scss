@@ -1,0 +1,27 @@
+.dockpropertybar {
+  padding: 5px 8px;
+  border-left: 1px solid var(--bs-dark);
+  min-width: 12%;
+  width: 12%;
+  max-width: 14%;
+
+  .properties {
+    overflow: auto;
+  }
+  
+  .header {
+    font-size: 1em;
+    border-bottom: 1px solid var(--bs-dark);
+    width: 100%;
+  }
+
+  &.contracted {
+    padding: 5px 3px;
+    min-width: 28px;
+    width: 28px;
+  }
+  
+  &.contracted .btn {
+    padding: 2px;
+  }
+}

@@ -7,7 +7,7 @@ import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-const tabName = 'Samples';
+const tabName = ['Samples'];
 
 const makeXYPosition = (gridX: number, gridY: number, padding: number): XYPosition => {
   return {

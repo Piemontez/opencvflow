@@ -3,7 +3,7 @@ import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const FileSaveAction: MenuActionProps = {
-  tabTitle: 'File',
+  tabTitle: ['File'],
   name: 'save',
   title: (
     <>

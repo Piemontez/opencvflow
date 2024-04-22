@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react';
 
 type MenuBaseProps = {
-  tabTitle?: string | Array<string>;
+  tabTitle?: Array<string>;
   position?: 'left' | 'rigth'; //Default left
   dropdown?: true;
   order?: number;

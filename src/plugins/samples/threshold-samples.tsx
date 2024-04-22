@@ -9,7 +9,7 @@ import { ThresholdComponent } from '../opencv/segmentation';
 import cv from 'opencv-ts';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-const tabName = 'Samples';
+const tabName = ['Samples'];
 
 const makeXYPosition = (gridX: number, gridY: number, padding: number): XYPosition => {
   return {

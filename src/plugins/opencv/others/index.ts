@@ -67,7 +67,7 @@ export class EqualizeHistComponent extends CVFIOEndlessComponent {
  * BackgroundSubtractorMOG2 component and node
  */
 export class BackgroundSubtractorMOG2Component extends CVFIOComponent {
-  static menu = { tabTitle: tabName, title: 'BGSubtractorMog2' };
+  static menu = { tabTitle: tabName, title: 'Background Subtractor MOG2' };
   static processor = class BackgroundSubtractorMOG2Node extends CVFNodeProcessor {
     properties = [
       { name: 'history', type: PropertyType.Integer },

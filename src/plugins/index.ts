@@ -4,10 +4,13 @@ import TensorFlowPlugin from './tensorflow';
 import CustomPlugin from './custom';
 import SamplesPlugin from './samples';
 
-export {
+const plugins = [
+  //
   IDEPlugin,
   OpencvCVPlugin,
   TensorFlowPlugin,
   CustomPlugin,
   SamplesPlugin,
-};
+];
+
+export { plugins };

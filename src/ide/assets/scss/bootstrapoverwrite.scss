@@ -1,0 +1,8 @@
+.accordion {
+    --#{$prefix}accordion-active-color: #{$accordion-button-color};
+    --#{$prefix}accordion-active-bg: #{$accordion-button-bg};
+}
+
+.accordion-header {
+    border-bottom: 1px solid var(--#{$prefix}accordion-border-color);
+}

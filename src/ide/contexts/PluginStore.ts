@@ -2,7 +2,7 @@ import { MenuActionProps } from '../types/menu';
 import { PluginFile, PluginType } from '../types/plugin';
 import { CVFComponent } from '../types/component';
 import { useMenuStore } from './MenuStore';
-import * as localPlugins from '../../plugins';
+import { plugins } from '../../plugins';
 import { create } from 'zustand';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
@@ -26,7 +26,7 @@ export const usePluginStore = create<PluginState>((set, get) => ({
     }
     get().loading = true;
 
-    const localPluginsValues = Object.values(localPlugins);
+    const localPluginsValues = Object.values(plugins);
     console.log(`IDE plugins found: ${localPluginsValues.length}`);
 
     // Limpa a lista carregada anteriormente

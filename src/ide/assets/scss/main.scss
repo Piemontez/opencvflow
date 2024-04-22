@@ -1,0 +1,51 @@
+@import './variables';
+// Reac-Flow
+@import '../../../../node_modules/reactflow/dist/style.css';
+// Bootstrap
+@import '../../../../node_modules/bootstrap/scss/bootstrap.scss';
+@import "./bootstrapoverwrite.scss";
+// OpenCV-Flow IDE
+@import "./form";
+@import "./node";
+@import "./dockpropertybar";
+@import "./dockactionsbar";
+@import "./reactflow";
+
+.wrapper,
+html,
+body,
+#root,
+#ide {
+  height: 100%;
+  margin: 0;
+}
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/*MenuBar*/
+#menubar {
+  padding: 2px;
+  border-bottom: 1px solid var(--bs-gray-800);
+}
+
+/*DockWidgets*/
+#dockwidgets {
+  padding: 0;
+}
+
+/*StatusBar*/
+#statusbar {
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+ .navbar-nav {
+    width: 100%;
+  } 
+
+  a {
+    font-size: 0.7rem;
+    padding: 2px;
+  }
+}

@@ -1,0 +1,23 @@
+#samples {
+    .filters {
+        max-height: 45vb;
+        overflow-y: auto;
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+    .list {
+        max-height: 45vb;
+        overflow-y: auto;
+
+        .card {
+            width: 23%;
+            height: 8rem;
+            float: left;
+            margin-right: 2%;
+            margin-bottom: 10px;
+        }
+    }
+}

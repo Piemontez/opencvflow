@@ -9,19 +9,20 @@ const NewModal = memo(() => {
   const newModalState = useNewModalStore(useShallow((state) => state));
 
   return (
-    <Modal show={newModalState.isShow} onHide={newModalState.close} size="lg">
+    <Modal id="newmodal" size="lg" show={newModalState.isShow} onHide={newModalState.close} backdrop="static">
       <Modal.Header closeButton>
-        <Modal.Title>New Project</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
+        <Modal.Title>
         <Form>
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column>Name</Form.Label>
-            <Col sm="11">
+          <Form.Group as={Row}>
+            <Form.Label column>Project name:</Form.Label>
+            <Col md="8">
               <Form.Control type="name" autoFocus />
             </Col>
           </Form.Group>
         </Form>
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
         <Row id="samples">
           <SideGroups />
           <SampleProjects />
@@ -32,7 +33,7 @@ const NewModal = memo(() => {
           Close
         </Button>
         <Button variant="primary" onClick={newModalState.create}>
-          Criar
+          Create
         </Button>
       </Modal.Footer>
     </Modal>

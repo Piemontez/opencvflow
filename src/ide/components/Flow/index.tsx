@@ -1,6 +1,6 @@
 import ReactFlow, { Background, BackgroundVariant, MiniMap } from 'reactflow';
 import { useShallow } from 'zustand/react/shallow';
-import { usePluginStore } from '../../contexts/PluginStore';
+import { usePluginStore } from '../../../core/contexts/PluginStore';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { useDarkModeStore } from '../../contexts/DarkModeStore';
 import OCFControls from './controls';

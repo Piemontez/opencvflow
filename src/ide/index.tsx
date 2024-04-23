@@ -2,7 +2,7 @@ import jsonToNodeStore from '../core/utils/jsonToNodeStore';
 import { useCustomComponentStore } from '../ide/contexts/CustomComponentStore';
 import { Row } from 'react-bootstrap';
 import { useEffect } from 'react';
-import { usePluginStore } from './contexts/PluginStore';
+import { usePluginStore } from '../core/contexts/PluginStore';
 import { useNodeStore } from '../core/contexts/NodeStore';
 import Storage from './commons/Storage';
 import { useNotificationStore } from './components/Notification/store';

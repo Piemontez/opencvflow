@@ -1,4 +1,4 @@
-import { PluginType } from '../../ide/types/plugin';
+import { PluginType } from '../../core/types/plugin';
 import * as arithmetic from './arithmetic';
 import * as others from './others';
 import * as conversors from './conversors';

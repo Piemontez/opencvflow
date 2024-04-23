@@ -78,7 +78,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   runner: null as Promise<true> | null,
 
   clear: () => {
-    set({ nodes: [], edges: [] });
+    set({ nodeTypes: {}, nodes: [], edges: [] });
   },
 
   storage: () => {

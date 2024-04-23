@@ -1,4 +1,4 @@
-import { PluginType } from '../../ide/types/plugin';
+import { PluginType } from '../../core/types/plugin';
 import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { createRef } from 'react';
@@ -11,7 +11,6 @@ import { useShallow } from 'zustand/react/shallow';
 export const tabName = ['Custom Components'];
 
 const editCompRef = createRef<EditComponenteModal>();
-const EditComponenteModalEl = () => <EditComponenteModal ref={editCompRef} />;
 
 const ListComponents = () => {
   const customComponentStore = useCustomComponentStore(useShallow((state) => state));
@@ -47,7 +46,7 @@ const NewComponentAction: MenuActionProps = {
       <ListComponents />
     </>
   ),
-  headerExtraElement: <EditComponenteModalEl />,
+  headerExtraElement: <EditComponenteModal key="custom" ref={editCompRef} />,
 };
 
 const OpenCVPlugin: PluginType = {

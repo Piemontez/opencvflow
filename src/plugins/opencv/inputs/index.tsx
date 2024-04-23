@@ -9,15 +9,24 @@ import { SourceHandle } from '../../../core/types/handle';
 import { NodeSizes, VideoSizes } from '../../../core/config/sizes';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import messages from '../messages';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const tabName = ['Inputs'];
+const cvTabName = ['OpenCV', 'Inputs'];
 class VideoCapture extends cv.VideoCapture {}
 
 /**
  * Video Capture component and node
  */
 export class CVVideoCaptureComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Video Capture' };
+  static menu = {
+    tabTitle: tabName,
+    title: (
+      <>
+        <FontAwesomeIcon icon={'video'} /> Video Capture
+      </>
+    ),
+  };
 
   sources: SourceHandle[] = [
     { title: 'out', position: Position.Right },
@@ -82,7 +91,14 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
  * File Loader component and node
  */
 export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'File Loader' };
+  static menu = {
+    tabTitle: tabName,
+    title: (
+      <>
+        <FontAwesomeIcon icon={'upload'} /> File Loader
+      </>
+    ),
+  };
 
   sources: SourceHandle[] = [
     { title: 'out', position: Position.Right },
@@ -177,8 +193,64 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
   };
 }
 
+export class CVKernelComponent extends CVFOutputComponent {
+  static menu = {
+    tabTitle: tabName,
+    title: (
+      <>
+        <FontAwesomeIcon icon={'table-cells'} /> Kernel
+      </>
+    ),
+  };
+
+  static processor = class KernelProcessor extends CVFNodeProcessor {
+    properties = [{ name: 'kernel', type: PropertyType.OneZeroMatrix }];
+
+    kernel: Mat = new cv.Mat(3, 3, cv.CV_8U, new cv.Scalar(0));
+    out: Mat = new cv.Mat(3, 3, cv.CV_8U, new cv.Scalar(0));
+
+    async start() {
+      this.makeOutput();
+    }
+
+    async propertyChange(name: string, _value: any): Promise<void> {
+      if (name === 'kernel') {
+        this.makeOutput();
+      }
+    }
+
+    makeOutput() {
+      GCStore.add(this.out, -100);
+
+      const min = Math.min(this.kernel.rows, this.kernel.cols);
+      const scale = NodeSizes.defaultHeight / min;
+      const cols = this.kernel.cols * scale;
+      const rows = this.kernel.rows * scale;
+
+      this.out = new cv.Mat(rows, cols, this.kernel.type());
+      const dsize = new cv.Size(cols, rows);
+      cv.resize(this.kernel, this.out, dsize, 0, 0, cv.INTER_AREA);
+
+      const channels = this.out.channels();
+      for (let j = 0; j < cols; j++) {
+        for (let k = 0; k < rows; k++) {
+          for (let i = 0; i < channels; i++) {
+            this.out.charPtr(k, j)[i] = this.out.charPtr(k, j)[i] ? 255 : 0;
+          }
+        }
+      }
+    }
+
+    async proccess() {
+      this.sources = [this.kernel];
+
+      this.output(this.out);
+    }
+  };
+}
+
 export class CVMatComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Mat' };
+  static menu = { tabTitle: cvTabName, title: 'Mat' };
 
   static processor = class MatProcessor extends CVFNodeProcessor {
     properties = [
@@ -253,57 +325,8 @@ export class CVMatComponent extends CVFOutputComponent {
   };
 }
 
-export class CVKernelComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'Kernel' };
-
-  static processor = class KernelProcessor extends CVFNodeProcessor {
-    properties = [{ name: 'kernel', type: PropertyType.OneZeroMatrix }];
-
-    kernel: Mat = new cv.Mat(3, 3, cv.CV_8U, new cv.Scalar(0));
-    out: Mat = new cv.Mat(3, 3, cv.CV_8U, new cv.Scalar(0));
-
-    async start() {
-      this.makeOutput();
-    }
-
-    async propertyChange(name: string, _value: any): Promise<void> {
-      if (name === 'kernel') {
-        this.makeOutput();
-      }
-    }
-
-    makeOutput() {
-      GCStore.add(this.out, -100);
-
-      const min = Math.min(this.kernel.rows, this.kernel.cols);
-      const scale = NodeSizes.defaultHeight / min;
-      const cols = this.kernel.cols * scale;
-      const rows = this.kernel.rows * scale;
-
-      this.out = new cv.Mat(rows, cols, this.kernel.type());
-      const dsize = new cv.Size(cols, rows);
-      cv.resize(this.kernel, this.out, dsize, 0, 0, cv.INTER_AREA);
-
-      const channels = this.out.channels();
-      for (let j = 0; j < cols; j++) {
-        for (let k = 0; k < rows; k++) {
-          for (let i = 0; i < channels; i++) {
-            this.out.charPtr(k, j)[i] = this.out.charPtr(k, j)[i] ? 255 : 0;
-          }
-        }
-      }
-    }
-
-    async proccess() {
-      this.sources = [this.kernel];
-
-      this.output(this.out);
-    }
-  };
-}
-
 export class CVStructuringElementComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'StructuringElement' };
+  static menu = { tabTitle: cvTabName, title: 'StructuringElement' };
 
   static processor = class StructuringElementProcessor extends CVFNodeProcessor {
     properties = [
@@ -361,7 +384,7 @@ export class CVStructuringElementComponent extends CVFOutputComponent {
 }
 
 export class CVGaussianKernelComponent extends CVFOutputComponent {
-  static menu = { tabTitle: tabName, title: 'GausKernel' };
+  static menu = { tabTitle: cvTabName, title: 'GausKernel' };
 
   static processor = class GaussianKernelProcessor extends CVFNodeProcessor {
     properties = [

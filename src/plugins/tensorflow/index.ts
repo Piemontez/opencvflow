@@ -1,4 +1,4 @@
-import { PluginType } from '../../ide/types/plugin';
+import { PluginType } from '../../core/types/plugin';
 
 const TensorFlowPlugin: PluginType = {
   name: 'TensorFlow Plugin',

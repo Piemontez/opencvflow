@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { memo } from 'react';
 
-const OCFControls = memo((props: any) => {
-  console.log(props);
-  console.log(props.theme);
+const OCFControls = memo(() => {
   return (
     <Controls position="top-right">
       <ControlButton onClick={() => useNodeStore.getState().run()}>

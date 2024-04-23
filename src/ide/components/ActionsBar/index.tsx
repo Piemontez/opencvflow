@@ -31,8 +31,8 @@ const SubmenuBar = ({ menus }: SubmenuBarProps) => {
   return (
     <Accordion alwaysOpen defaultActiveKey={ids}>
       {menus.map((menu, key) => (
-        <Accordion.Item eventKey={'' + key} key={key} >
-          <Accordion.Header color='red'>{menu.title}</Accordion.Header>
+        <Accordion.Item eventKey={'' + key} key={key}>
+          <Accordion.Header color="red">{menu.title}</Accordion.Header>
           <Accordion.Body>
             <ActionsBar actions={menu.actions} />
           </Accordion.Body>
@@ -44,8 +44,8 @@ const SubmenuBar = ({ menus }: SubmenuBarProps) => {
 
 type ActionsBarProps = { actions: MenuActionProps[] };
 const ActionsBar = ({ actions }: ActionsBarProps) => {
-  return actions.map((action) => {
-    const key = '' + ((action as MenuWithElementTitleProps).name || (action.title as string));
+  return actions.map((action, idx) => {
+    const key = '' + ((action as MenuWithElementTitleProps).name || (action.title as string) + idx);
 
     return action.draggable ? ( //
       <DraggableButton action={action} key={key} />

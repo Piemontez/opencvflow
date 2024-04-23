@@ -12,6 +12,9 @@ import {
   faSave,
   faStopCircle,
   faSun,
+  faTableCells,
+  faUpload,
+  faVideo,
   faWindowClose,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -29,4 +32,7 @@ library.add(
   faEye,
   faEyeSlash,
   faPlus,
+  faVideo,
+  faUpload,
+  faTableCells
 );

@@ -26,7 +26,7 @@ export const useRunnerStore = create<RunnerState>((set, get) => ({
       return;
     }
 
-    get().running = true;
+    set({ running: true });
 
     get().runner = new Promise(async (resolve) => {
       for (const node of nodes) {

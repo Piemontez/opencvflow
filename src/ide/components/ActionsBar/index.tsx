@@ -30,10 +30,10 @@ const DockActionsBar = () => {
 };
 
 const SearchBar = memo(() => {
-  const [onTypeSeach, onSearch] = useMenuStore((state) => [state.onTypeSearch, state.onSearch]);
+  const [search, onTypeSeach, onSearch] = useMenuStore((state) => [state.search, state.onTypeSearch, state.onSearch]);
   return (
     <InputGroup className="mb-3">
-      <Form.Control placeholder="Search for component" onChange={(e) => onTypeSeach(e.target.value)} />
+      <Form.Control value={search} placeholder="Search for component" onChange={(e) => onTypeSeach(e.target.value)} />
       <InputGroup.Text onClick={onSearch} style={{ cursor: 'pointer' }}>
         <FontAwesomeIcon icon="search" />
       </InputGroup.Text>

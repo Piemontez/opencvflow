@@ -5,6 +5,7 @@ import { useMenuStore } from '../../ide/contexts/MenuStore';
 import { plugins } from '../../plugins';
 import { create } from 'zustand';
 import { useNodeStore } from './NodeStore';
+import { useNewModalStore } from '../../ide/contexts/NewModalStore';
 
 type PluginState = {
   loading: boolean;
@@ -52,8 +53,9 @@ export const usePluginStore = create<PluginState>((set, get) => ({
 
     if (pluginFile.plugin) {
       const plugin: PluginType = pluginFile.plugin;
-      console.log(`Add components from: ${plugin.name}`);
+      console.log(`Load from: ${plugin.name}`);
 
+      // Adiciona os componentes e ações da tela
       for (const comp of plugin.components) {
         if ((comp as MenuActionProps).tabTitle) {
           const compAs = comp as MenuActionProps;
@@ -68,6 +70,13 @@ export const usePluginStore = create<PluginState>((set, get) => ({
           useNodeStore.getState().addNodeType(compAs);
         }
       }
+
+      // Adiciona os templates de exemplo
+      if (plugin.sampleTemplates)
+        for (const sampleTemplate of plugin.sampleTemplates) {
+          console.log(`Add template: ${sampleTemplate.title}`);
+          useNewModalStore.getState().addTemplate(sampleTemplate);
+        }
     }
   },
 }));

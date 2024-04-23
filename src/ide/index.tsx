@@ -14,6 +14,8 @@ import StatusBar from './components/StatusBar';
 import Flow from './components/Flow';
 import NotificationList from './components/Notification';
 import DockActionsBar from './components/ActionsBar';
+import NewModal from './components/NewModal';
+import { useNewModalStore } from './contexts/NewModalStore';
 
 const IDE = () => {
   const darkStore = useDarkModeStore((state) => state);
@@ -26,12 +28,20 @@ const IDE = () => {
     // Carrega os plugins
     pluginStore
       .init()
-      .then(loadFromCache)
+      .then(() => {
+        const hasProject = loadFromCache();
+
+        // Se não existe em cache abre modal de novo projeto.
+        if (!hasProject) {
+          useNewModalStore.getState().show();
+        }
+      })
       .catch(() => {});
   }, []);
 
   return (
     <Row id="ide" className="d-flex flex-fill flex-column flex-nowrap align-items-stretch">
+      <NewModal />
       <NotificationList />
       <MenuBar />
       <div id="dockwidgets" className="flex-fill d-flex">
@@ -49,11 +59,15 @@ const IDE = () => {
 /**
  * Carrega o último save
  */
-const loadFromCache = () => {
+const loadFromCache = (): boolean => {
   // Aguarda renderizar a tela e carrega a última edição em cache
   try {
     const json = Storage.get(STORAGE_NODESTORE_ID, 'this');
     const jsonLoaded = jsonToNodeStore(json);
+
+    if (!jsonLoaded.custom?.components.length && !jsonLoaded.nodesLoaded.length) {
+      return false;
+    }
 
     // Carrega os tipo de nó customizados
     if (jsonLoaded.custom?.components) {
@@ -73,10 +87,13 @@ const loadFromCache = () => {
     useNodeStore.getState().refreshFlow();
 
     setTimeout(useNodeStore.getState().fitView, 500);
+
+    return true;
   } catch (err: any) {
     console.error(err);
     useNotificationStore.getState().danger(err.message);
   }
+  return false;
 };
 
 export default IDE;

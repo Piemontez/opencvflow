@@ -73,7 +73,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       }
     }
 
-    if (submenus || actions) {
+    if (submenus.length || actions.length) {
       return {
         title: menu.title,
         position: menu.position,

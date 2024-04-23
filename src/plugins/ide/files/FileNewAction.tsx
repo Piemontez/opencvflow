@@ -1,5 +1,4 @@
-import { useNodeStore } from '../../../core/contexts/NodeStore';
-import { useCustomComponentStore } from '../../../ide/contexts/CustomComponentStore';
+import { useNewModalStore } from '../../../ide/contexts/NewModalStore';
 import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -12,9 +11,7 @@ const FileNewAction: MenuActionProps = {
     </>
   ),
   action: () => {
-    useCustomComponentStore.getState().clear();
-    useNodeStore.getState().clear();
-    useNodeStore.getState().storage();
+    useNewModalStore.getState().show();
   },
 };
 

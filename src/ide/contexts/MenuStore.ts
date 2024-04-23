@@ -16,6 +16,13 @@ type MenuState = {
   menus: Array<MenuTab>;
   menusByName: StringMap<MenuTab>;
   currentMenu?: MenuTab;
+  currentMenuWithSearch?: MenuTab; // Referência utilizada na busca
+
+  search: string;
+
+  onTypeSearch(search: string): void;
+  onSearch(): void;
+  cloneIfFound(menu: MenuTab): MenuTab | undefined;
 
   addMenuAction: (act: MenuActionProps) => void;
   addComponentMenuAction: (component: typeof CVFComponent) => void;
@@ -26,15 +33,66 @@ type MenuState = {
 export const useMenuStore = create<MenuState>((set, get) => ({
   menus: [] as Array<MenuTab>,
   currentMenu: undefined as MenuTab | undefined,
-
   menusByName: {} as StringMap<MenuTab>,
+
+  search: '',
+
+  onTypeSearch(search: string) {
+    get().search = search;
+    get().onSearch();
+  },
+
+  onSearch() {
+    set({
+      currentMenuWithSearch: get().search //
+        ? get().cloneIfFound(get().currentMenu!)
+        : get().currentMenu,
+    });
+  },
+
+  cloneIfFound(menu: MenuTab): MenuTab | undefined {
+    const search = get().search;
+
+    const submenus = [];
+    for (const submenu of menu?.menus) {
+      const foundMenu = get().cloneIfFound(submenu);
+      if (foundMenu) {
+        submenus.push(foundMenu);
+      }
+    }
+
+    const actions = [];
+    for (const action of menu.actions) {
+      if (
+        search
+          .toLocaleLowerCase()
+          .split(' ')
+          .every((words) => ('' + action.title).toLocaleLowerCase().includes(words))
+      ) {
+        actions.push(action);
+      }
+    }
+
+    if (submenus || actions) {
+      return {
+        title: menu.title,
+        position: menu.position,
+        dropdown: menu.dropdown,
+        actions: actions,
+        menus: submenus,
+        menusByName: {},
+      };
+    }
+
+    return undefined;
+  },
 
   addMenuAction: (act: MenuActionProps) => {
     if (act) {
       const options = { position: act.position, dropdown: act.dropdown };
 
-      const tab = get().findOrCreateTab(act.tabTitle || null, options);
-      tab.actions.push(act);
+      const menu = get().findOrCreateTab(act.tabTitle || null, options);
+      menu.actions.push(act);
 
       set({ menus: [...get().menus] });
     }
@@ -45,11 +103,11 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       // Altera para o menu ser arrastável
       component.menu.draggable = true;
 
-      const tab = get().findOrCreateTab(component.menu.tabTitle || null, {});
-      tab.actions.push(component.menu);
+      const menu = get().findOrCreateTab(component.menu.tabTitle || null, {});
+      menu.actions.push(component.menu);
 
-      if (tab.title === 'Inputs') {
-        set({ currentMenu: tab });
+      if (menu.title === 'Inputs') {
+        set({ currentMenu: menu, currentMenuWithSearch: menu });
       }
 
       set({ menus: [...get().menus] });
@@ -57,18 +115,20 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   },
 
   changeCurrentTab: (tabOrTitle: MenuTab | string) => {
-    if (typeof tabOrTitle === 'string') {
-      set({ currentMenu: get().findOrCreateTab(tabOrTitle, {}) });
-    } else {
-      set({ currentMenu: tabOrTitle });
-    }
+    const menu = typeof tabOrTitle === 'string' ? get().findOrCreateTab(tabOrTitle, {}) : tabOrTitle;
+    set({
+      //
+      search: '',
+      currentMenu: menu,
+      currentMenuWithSearch: menu,
+    });
   },
 
   findOrCreateTab: (tabTitle: string[] | string | null, options: any): MenuTab => {
     const isArray = Array.isArray(tabTitle);
 
     let titles = isArray ? [...tabTitle] : [tabTitle ?? 'ThirdParty'];
-    let tab: null | MenuTab = null;
+    let menu: null | MenuTab = null;
     let subtab: null | MenuTab = null;
     let hasNext = false;
 
@@ -77,12 +137,12 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       hasNext = titles.length > 0;
 
       // Procura pra ver se já foi iniciado o menu
-      if (!tab) {
-        tab = get().menusByName[title];
+      if (!menu) {
+        menu = get().menusByName[title];
 
         // Se não foi iniciado inicia o menu
-        if (!tab) {
-          tab = {
+        if (!menu) {
+          menu = {
             title: title,
             position: options.position || 'left',
             dropdown: options.dropdown || false,
@@ -91,11 +151,11 @@ export const useMenuStore = create<MenuState>((set, get) => ({
             menusByName: {},
           };
 
-          get().menus.push(tab);
-          get().menusByName[title] = tab;
+          get().menus.push(menu);
+          get().menusByName[title] = menu;
         }
       } else {
-        subtab = tab.menusByName[title];
+        subtab = menu.menusByName[title];
 
         if (!subtab) {
           subtab = {
@@ -107,14 +167,14 @@ export const useMenuStore = create<MenuState>((set, get) => ({
             menusByName: {},
           };
 
-          tab.menus.push(subtab);
-          tab.menusByName[title] = subtab;
+          menu.menus.push(subtab);
+          menu.menusByName[title] = subtab;
         }
 
-        tab = subtab;
+        menu = subtab;
       }
     } while (hasNext);
 
-    return tab;
+    return menu;
   },
 }));

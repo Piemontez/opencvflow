@@ -15,7 +15,7 @@ import { useDarkModeStore } from '../../contexts/DarkModeStore';
  * inclusive os plugins instalados junto com a aplicação.
  */
 const MenuBar = memo(() => {
-  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
+  const currentMenu = useMenuStore(useShallow((state) => state.currentMenuWithSearch));
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
   const [mode, toggle] = useDarkModeStore(useShallow((state) => [state.mode, state.toggle]));
@@ -24,8 +24,8 @@ const MenuBar = memo(() => {
     <>
       {
         /** Elementos adicionais do componente */
-        menuCurrentTab &&
-          menuCurrentTab.actions
+        currentMenu &&
+          currentMenu.actions
             .filter((action) => (action as MenuWithElementTitleProps).headerExtraElement)
             .map((action) => (action as MenuWithElementTitleProps).headerExtraElement)
       }

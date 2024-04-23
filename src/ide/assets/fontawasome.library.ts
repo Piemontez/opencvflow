@@ -10,6 +10,7 @@ import {
   faPlayCircle,
   faPlus,
   faSave,
+  faSearch,
   faStopCircle,
   faSun,
   faTableCells,
@@ -36,5 +37,6 @@ library.add(
   faUpload,
   faTableCells,
   faEye,
-  faEyeSlash
+  faEyeSlash,
+  faSearch,
 );

@@ -3,24 +3,43 @@ import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { MenuTab, useMenuStore } from '../../contexts/MenuStore';
 import { useNotificationStore } from '../Notification/store';
 import { MenuActionProps, MenuWithElementTitleProps } from '../../types/menu';
-import { Accordion, Button } from 'react-bootstrap';
+import { Accordion, Button, Form, InputGroup } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { memo } from 'react';
 
 const DockActionsBar = () => {
-  const menuCurrentTab = useMenuStore(useShallow((state) => state.currentMenu));
+  const [currentMenuWithSearch, currTitle] = useMenuStore(
+    useShallow((state) => [state.currentMenuWithSearch, state.currentMenuWithSearch?.title || '']),
+  );
+  const showSearch = !['File', 'Inputs', 'Custom Components'].includes(currTitle);
 
   return (
     <div className="dockactionsbar">
       <div className="actionsbar">
-        {menuCurrentTab && (
+        {showSearch && <SearchBar />}
+
+        {currentMenuWithSearch && (
           <>
-            <SubmenuBar menus={menuCurrentTab.menus} />
-            <ActionsBar actions={menuCurrentTab.actions} />
+            <SubmenuBar menus={currentMenuWithSearch.menus} />
+            <ActionsBar actions={currentMenuWithSearch.actions} />
           </>
         )}
       </div>
     </div>
   );
 };
+
+const SearchBar = memo(() => {
+  const [onTypeSeach, onSearch] = useMenuStore((state) => [state.onTypeSearch, state.onSearch]);
+  return (
+    <InputGroup className="mb-3">
+      <Form.Control placeholder="Search for component" onChange={(e) => onTypeSeach(e.target.value)} />
+      <InputGroup.Text onClick={onSearch} style={{ cursor: 'pointer' }}>
+        <FontAwesomeIcon icon="search" />
+      </InputGroup.Text>
+    </InputGroup>
+  );
+});
 
 type SubmenuBarProps = { menus: MenuTab[] };
 const SubmenuBar = ({ menus }: SubmenuBarProps) => {

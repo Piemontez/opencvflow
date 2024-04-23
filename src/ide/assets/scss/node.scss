@@ -1,14 +1,14 @@
 .node {
   min-width: 100px;
   border: 1px solid;
-  border-color: rgb(var(--bs-dark-rgb));
+  border-color: var(--bs-gray-800);
   border-radius: 3px;
 }
 
 .node-header {
   padding: 3px;
-  background: rgb(var(--bs-dark-rgb));
-  color: #0ceac5;
+  background: var(--bs-body-bg);
+  color: var(--bs-nav-link-color);
   font-size: 0.75rem;
   font-weight: 600;
   width: 100%;
@@ -23,9 +23,10 @@
   }
   
   .form-select {
-    background: rgb(var(--bs-dark-rgb));
-    color: rgb(var(--bs-white-rgb));
+    background: var(--bs-dark-rgb);
+    color: var(--bs-white-rgb);
     width: 35px;
+    height: 18px;
   }
 }
 

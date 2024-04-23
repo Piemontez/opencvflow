@@ -1,28 +1,21 @@
-import {
-  //removeElements,
-  NodeTypes,
-  XYPosition,
-  //Elements,
-  Connection,
-} from 'reactflow';
+import { NodeTypes, XYPosition, Connection } from 'reactflow';
 import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode } from '../types/node';
 import { CVFComponent } from '../../ide/types/component';
 import { v5 as uuidv5 } from 'uuid';
 import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/menu';
-import GCStore from './GCStore';
 import Storage from '../../ide/commons/Storage';
 import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
 import { STORAGE_NODESTORE_ID } from '../../ide/commons/consts';
+import { useRunnerStore } from './RunnerStore';
 
 const uuidv5Hash = 'c54ab9bc-e083-56f2-9d1e-3eec4bcc93ad';
 
 export type NodeState = {
-  running: boolean;
   forcer: number;
   nodes: Array<CVFNode>;
   edges: Array<OCVFEdge>;
@@ -31,7 +24,6 @@ export type NodeState = {
   nodeTypesByMenu: NodeTypes;
   reactFlowInstance: any;
   reactFlowWrapper: HTMLDivElement | null;
-  runner: Promise<true> | null;
 
   clear: () => void;
   storage: () => void;
@@ -48,11 +40,8 @@ export type NodeState = {
   // Edge
   addEdge: (sourceOrId: CVFNode | string, targetOrId: CVFNode | string, sourceHandle: string | null, targetHandle: string | null) => void;
   removeEdge: (edge: OCVFEdge | CVFEdgeData) => void;
-  // Runner
-  run: () => Promise<void>;
-  stop: () => Promise<void>;
-  fitView: () => void;
   // React Flow Events
+  fitView: () => void;
   onInit: (instance: any) => void;
   onNodeClick: (_: MouseEvent, node: CVFNode) => void;
   refreshCurrentElement: () => void;
@@ -66,7 +55,6 @@ export type NodeState = {
 };
 
 export const useNodeStore = create<NodeState>((set, get) => ({
-  running: false,
   forcer: 0,
   nodes: [] as Array<CVFNode>,
   edges: [] as Array<OCVFEdge>,
@@ -75,10 +63,9 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   nodeTypesByMenu: {} as NodeTypes,
   reactFlowInstance: null as any,
   reactFlowWrapper: null as HTMLDivElement | null,
-  runner: null as Promise<true> | null,
 
   clear: () => {
-    set({ nodeTypes: {}, nodes: [], edges: [] });
+    set({ nodes: [], edges: [] });
   },
 
   storage: () => {
@@ -185,7 +172,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
         }
 
         // Se rodando os processamento
-        if (get().running && node.data.processor) {
+        if (useRunnerStore.getState().running && node.data.processor) {
           //Roda a função de parada do processador a ser subistituido
           node.data.processor.stop();
         }
@@ -286,78 +273,6 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     }
   },
 
-  run: async () => {
-    if (get().running) {
-      useNotificationStore.getState().info('The flow is already running.');
-      return;
-    }
-    const { nodes } = get();
-    if (!nodes.length) {
-      useNotificationStore.getState().info('No flow defined.');
-      return;
-    }
-
-    get().running = true;
-
-    get().runner = new Promise(async (resolve) => {
-      for (const node of nodes) {
-        try {
-          node.data.processor.componentPointer.current.initOutputs();
-
-          await node.data.processor.start();
-        } catch (err: any) {
-          node.data.processor.errorMessage = typeof err === 'number' ? `Code error: ${err}` : err?.message || 'Not detected';
-
-          useNotificationStore.getState().danger(`Node ${node.id}: ${node.data.processor.errorMessage}`);
-        }
-        if (!get().running) break;
-      }
-
-      let cycle = 0;
-      while (get().running) {
-        for (const node of nodes) {
-          try {
-            await node.data.processor.proccess();
-            if (node.data.processor.errorMessage) {
-              delete node.data.processor.errorMessage;
-            }
-          } catch (err: any) {
-            node.data.processor.errorMessage = typeof err === 'number' ? `Code error: ${err}` : err?.message || 'Not detected';
-
-            node.data.processor.outputMsg(node.data.processor.errorMessage!);
-          }
-          if (!get().running) break;
-        }
-        await new Promise((_res) => setTimeout(_res, 10));
-
-        GCStore.replaceCycle(cycle++);
-        GCStore.clear(cycle - 2);
-      }
-
-      GCStore.clear();
-
-      resolve(true);
-    });
-  },
-
-  stop: async () => {
-    get().running = false;
-    if (get().runner) {
-      await get().runner;
-      get().runner = null;
-
-      for (const node of get().nodes) {
-        try {
-          if (node.data.processor.stop) {
-            await node.data.processor.stop();
-          }
-        } catch (err: any) {
-          console.error(err);
-        }
-      }
-    }
-  },
-
   fitView: () => {
     get().reactFlowInstance.fitView();
   },
@@ -390,7 +305,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   onDrop: (event: any) => {
     event.preventDefault();
 
-    if (get().running) {
+    if (useRunnerStore.getState().running) {
       useNotificationStore.getState().warn('Application is running. Stop application first.');
       return;
     }

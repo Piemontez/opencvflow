@@ -34,5 +34,7 @@ library.add(
   faPlus,
   faVideo,
   faUpload,
-  faTableCells
+  faTableCells,
+  faEye,
+  faEyeSlash
 );

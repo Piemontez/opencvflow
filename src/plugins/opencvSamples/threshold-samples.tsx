@@ -20,7 +20,7 @@ const makeXYPosition = (gridX: number, gridY: number, padding: number): XYPositi
 
 const ThresholdSamplesAction: SampleTemplate = {
   group,
-  title: 'Thresholds',
+  title: 'Threshold Samples',
   action: () => {
     const padding = NodeSizes.defaultWidth / 3;
     let comp: typeof CVFComponent | null;

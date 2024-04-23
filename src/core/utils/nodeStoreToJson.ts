@@ -1,11 +1,11 @@
 import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { CVFNodeData } from '../types/node';
-import { SaveContent } from '../../ide/types/SaveContent';
+import { SaveContentV0_10 } from '../../ide/types/SaveContent';
 import { CustomNodeType } from '../types/custom-node-type';
 import cv, { Mat } from 'opencv-ts';
 import { NodeState } from '../contexts/NodeStore';
 
-const nodeStoreToJson = (state: NodeState): SaveContent => {
+const nodeStoreToJson = (state: NodeState): SaveContentV0_10 => {
   const customComponents: Array<CustomNodeType> = useCustomComponentStore.getState().customComponents;
   const { nodes, edges } = state;
 
@@ -47,6 +47,7 @@ const nodeStoreToJson = (state: NodeState): SaveContent => {
   });
 
   return {
+    projectName: '',
     custom: { components: customComponents },
     nodes: nodesUsefulData,
     edges: edgesUsefulData,

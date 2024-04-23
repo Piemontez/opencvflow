@@ -1,6 +1,7 @@
+import jsonToNodeStore from '../../../core/utils/jsonToNodeStore';
+import { loadFromJson } from '../../../core/utils/loadFromJson';
 import { MenuActionProps } from '../../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNotificationStore } from '../../../ide/components/Notification/store';
 
 const FileOpenAction: MenuActionProps = {
   tabTitle: ['File'],
@@ -11,9 +12,30 @@ const FileOpenAction: MenuActionProps = {
     </>
   ),
   action: () => {
-    useNotificationStore
-      .getState()
-      .warn('Only implemented in desktop version. If you want to open an image/video file, access the Inputs -> File Loader menu.');
+    const onLoadFile = (evt: ProgressEvent<FileReader>) => {
+      const content: any = evt.target?.result || '{}';
+      const json = JSON.parse(content);
+      const jsonLoaded = jsonToNodeStore(json);
+
+      loadFromJson(jsonLoaded);
+    };
+
+    const onChoseFile = () => {
+      if (f.files) {
+        var fileReader = new FileReader();
+        fileReader.onload = onLoadFile;
+        fileReader.readAsText(f.files[0]);
+      }
+    };
+
+    const f = document.createElement('input');
+    f.style.display = 'none';
+    f.type = 'file';
+    f.name = 'file';
+    f.addEventListener('change', onChoseFile);
+
+    document.getElementById('root')!.appendChild(f);
+    f.click();
   },
 };
 

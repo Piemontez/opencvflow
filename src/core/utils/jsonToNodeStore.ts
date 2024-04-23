@@ -1,15 +1,10 @@
 import { CVFNode } from '../types/node';
 import { OCVFEdge } from '../types/edge';
-import { SaveContent, SaveContentV0_10, SaveContentV0_9 } from '../../ide/types/SaveContent';
+import { SaveContent, SaveContentLoaded, SaveContentV0_10, SaveContentV0_9 } from '../../ide/types/SaveContent';
 import cv from 'opencv-ts';
 import GCStore from '../contexts/GCStore';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../contexts/NodeStore';
-
-type SaveContentLoaded = {
-  nodesLoaded: Array<CVFNode>;
-  edgesLoaded: Array<OCVFEdge>;
-} & SaveContent;
 
 const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
   const { elements } = (save || {}) as SaveContentV0_9;
@@ -78,7 +73,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
     saveLoaded.edgesLoaded = edges.map(({ data, ...rest }) => rest);
   }
 
-  return saveLoaded;
+  return { ...saveLoaded, nodes: [], edges: [] };
 };
 
 const jsonMatToMat = (json: any) => {

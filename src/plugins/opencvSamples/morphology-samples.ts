@@ -18,7 +18,7 @@ const makeXYPosition = (gridX: number, gridY: number, padding: number): XYPositi
 
 const MorphologySamplesAction: SampleTemplate = {
   group,
-  title: 'Morphologies',
+  title: 'Morphology Samples',
   action: () => {
     const padding = NodeSizes.defaultWidth / 3;
     let comp: typeof CVFComponent | null;

@@ -1,7 +1,7 @@
 import { PluginType } from '../../core/types/plugin';
 import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createRef, memo } from 'react';
+import { createRef } from 'react';
 import EditComponenteModal from './EditComponenteModal';
 import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';

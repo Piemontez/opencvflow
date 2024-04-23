@@ -9,4 +9,14 @@ export default defineConfig({
     react(),
     dts(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          monacoeditor: ['@monaco-editor/react'],
+          opencvts: ['opencv-ts'],
+        },
+      },
+    },
+  },
 });

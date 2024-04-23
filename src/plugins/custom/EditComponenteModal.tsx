@@ -9,6 +9,7 @@ import { CustomNodeType } from '../../core/types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
+//import type RAW_LOADER_property from '../../ide/types/PropertyType';
 //import type RAW_LOADER_opencvts from '../../../node_modules/opencv-ts/src/opencv.d.ts';
 //import * as RAW_LOADER_property from '../../ide/types/PropertyType';
 //import * as RAW_LOADER_component from '../../ide/types/component';

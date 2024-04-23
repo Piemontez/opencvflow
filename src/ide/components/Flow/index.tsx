@@ -6,7 +6,7 @@ import { useDarkModeStore } from '../../contexts/DarkModeStore';
 import OCFControls from './controls';
 
 const Flow = () => {
-  const noteStore = useNodeStore(useShallow((state) => state));
+  const noteStore = useNodeStore((state) => state);
   const loaded = usePluginStore(useShallow((state) => state.loaded));
   const mode = useDarkModeStore(useShallow((state) => state.mode));
 

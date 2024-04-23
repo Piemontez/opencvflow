@@ -6,20 +6,22 @@ import { Card, Col, Form, Row } from 'react-bootstrap';
 import { memo } from 'react';
 
 const NewModal = memo(() => {
-  const newModalState = useNewModalStore(useShallow((state) => state));
+  const [isShow, create, close, changeProjectName] = useNewModalStore(
+    useShallow(({ isShow, create, close, changeProjectName }) => [isShow, create, close, changeProjectName]),
+  );
 
   return (
-    <Modal id="newmodal" size="lg" show={newModalState.isShow} onHide={newModalState.close} backdrop="static">
+    <Modal id="newmodal" size="lg" show={isShow} onHide={close} backdrop="static">
       <Modal.Header closeButton>
         <Modal.Title>
-        <Form>
-          <Form.Group as={Row}>
-            <Form.Label column>Project name:</Form.Label>
-            <Col md="8">
-              <Form.Control type="name" autoFocus />
-            </Col>
-          </Form.Group>
-        </Form>
+          <Form>
+            <Form.Group as={Row}>
+              <Form.Label column>Project name:</Form.Label>
+              <Col md="8">
+                <Form.Control type="name" onChange={(e) => changeProjectName(e.target.value)} autoFocus />
+              </Col>
+            </Form.Group>
+          </Form>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -29,10 +31,10 @@ const NewModal = memo(() => {
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={newModalState.close}>
+        <Button variant="secondary" onClick={close}>
           Close
         </Button>
-        <Button variant="primary" onClick={newModalState.create}>
+        <Button variant="primary" onClick={create}>
           Create
         </Button>
       </Modal.Footer>

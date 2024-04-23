@@ -8,9 +8,9 @@ const plugins = [
   //
   IDEPlugin,
   TensorFlowPlugin,
-  CustomPlugin,
   OpencvSamplesPlugin,
   OpencvCVPlugin,
+  CustomPlugin,
 ];
 
 export { plugins };

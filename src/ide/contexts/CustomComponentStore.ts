@@ -39,7 +39,7 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
       customComponents[idx] = custom;
     }
 
-    set({ customComponents });
+    set({ customComponents: [...customComponents] });
 
     useNodeStore.getState().addNodeType(nodeType);
     useNodeStore.getState().refreshNodesFromComponent(nodeType);
@@ -52,7 +52,7 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
       customComponents.splice(idx, 1);
     }
 
-    set({ customComponents });
+    set({ customComponents: [...customComponents] });
 
     useNodeStore.getState().removeNodeType(name);
   },

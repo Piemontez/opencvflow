@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
 import { CVFNode, CVFNodeProcessor } from '../../../core/types/node';
 import { CVFFormGroup } from '../Form';
@@ -9,13 +9,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 /**
  * Exibe as propriedades do componete/nó selecionado
  */
-const PropertyBar = () => {
+const PropertyBar = memo(() => {
   const [show, setShow] = useState<boolean | undefined>(true);
   const handleShow = () => setShow(true);
   const handleHidden = () => setShow(false);
 
-  const noteStore = useNodeStore(useShallow((state) => state));
-  const processor = (noteStore.currentElement as CVFNode)?.data?.processor as CVFNodeProcessor;
+  const [currentElement, refreshCurrentElement] = useNodeStore(useShallow((state) => [state.currentElement, state.refreshCurrentElement]));
+  const processor = (currentElement as CVFNode)?.data?.processor as CVFNodeProcessor;
 
   if (!processor) {
     return null;
@@ -24,13 +24,13 @@ const PropertyBar = () => {
   return (
     <div className={'dockpropertybar ' + (show ? '' : 'contracted')}>
       {show ? (
-        <Bar processor={processor} handleHidden={handleHidden} refreshCurrentElement={noteStore.refreshCurrentElement} />
+        <Bar processor={processor} handleHidden={handleHidden} refreshCurrentElement={refreshCurrentElement} />
       ) : (
         <HiddenBar handleShow={handleShow} />
       )}
     </div>
   );
-};
+});
 
 const Bar = ({
   processor,

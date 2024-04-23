@@ -1,7 +1,7 @@
 import { PluginType } from '../../core/types/plugin';
 import { MenuActionProps } from '../../ide/types/menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { createRef } from 'react';
+import { createRef, memo } from 'react';
 import EditComponenteModal from './EditComponenteModal';
 import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
@@ -13,17 +13,16 @@ export const tabName = ['Custom Components'];
 const editCompRef = createRef<EditComponenteModal>();
 
 const ListComponents = () => {
-  const customComponentStore = useCustomComponentStore(useShallow((state) => state));
-  const nodeStore = useNodeStore();
+  const customComponents = useCustomComponentStore(useShallow((state) => state.customComponents));
 
   return (
     <>
-      {customComponentStore.customComponents.map((custom, idx) => (
+      {customComponents.map((custom, idx) => (
         <Button
           key={idx}
           size="sm"
           variant="transparent"
-          onDragStart={(event: any) => nodeStore.onDragStartCustom(event, custom)}
+          onDragStart={(event: any) => useNodeStore.getState().onDragStartCustom(event, custom)}
           onClick={() => editCompRef.current?.handleEdit(custom)}
           draggable
         >

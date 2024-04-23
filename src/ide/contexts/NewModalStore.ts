@@ -5,6 +5,7 @@ import { SampleTemplate } from '../../core/types/sample-template';
 import { useNotificationStore } from '../components/Notification/store';
 
 type NewModalState = {
+  projectName: string;
   isShow: boolean;
   groups: Array<string>;
   groupSelected: string;
@@ -13,6 +14,7 @@ type NewModalState = {
 
   show: () => void;
   close: () => void;
+  changeProjectName: (name: string) => void;
 
   addTemplate: (template: SampleTemplate) => void;
   changeTemplate: (template: SampleTemplate) => void;
@@ -27,6 +29,7 @@ const emptyTemplate: SampleTemplate = {
 };
 
 export const useNewModalStore = create<NewModalState>((set, get) => ({
+  projectName: '',
   isShow: false,
   groups: [emptyTemplate.group],
   groupSelected: emptyTemplate.group,
@@ -34,7 +37,7 @@ export const useNewModalStore = create<NewModalState>((set, get) => ({
   templateSelected: emptyTemplate,
 
   show: () => {
-    set({ isShow: true });
+    set({ projectName: '', isShow: true });
   },
 
   close: () => {
@@ -46,6 +49,10 @@ export const useNewModalStore = create<NewModalState>((set, get) => ({
       groups: [...new Set([...get().groups, template.group])],
       templates: [...get().templates, template],
     });
+  },
+
+  changeProjectName: (name: string) => {
+    set({ projectName: name });
   },
 
   changeTemplate: (template: SampleTemplate) => {

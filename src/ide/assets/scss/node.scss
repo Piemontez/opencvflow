@@ -6,14 +6,15 @@
 }
 
 .node-header {
+  width: 100%;
   padding: 3px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+
   background: var(--bs-body-bg);
   color: var(--bs-nav-link-color);
   font-size: 0.75rem;
   font-weight: 600;
-  width: 100%;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
 
   button, .node-header .form-select {
     font-size: 0.5rem;
@@ -23,10 +24,17 @@
   }
   
   .form-select {
-    background: var(--bs-dark-rgb);
-    color: var(--bs-white-rgb);
-    width: 35px;
+    width: 40px;
     height: 18px;
+    padding: 0px 4px;
+    border-color: var(--bs-navbar-color);
+    border: var(--bs-border-width) solid;
+
+    background: var(--bs-dark-rgb);
+    color: var(--bs-navbar-color);
+    font-size: 0.75rem;
+    text-align: center;
+    float: right;
   }
 }
 

@@ -39,7 +39,7 @@ export const loadFromJson = (jsonLoaded: SaveContentLoaded): boolean => {
 
     useNodeStore.getState().refreshFlow();
 
-    setTimeout(useNodeStore.getState().fitView, 500);
+    setTimeout(useNodeStore.getState().fitView, 100);
 
     return true;
   } catch (err: any) {

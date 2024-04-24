@@ -4,7 +4,7 @@ import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode } from '../types/node';
 import { CVFComponent } from '../../ide/types/component';
 import { v5 as uuidv5 } from 'uuid';
-import { ComponentMenuAction, MenuWithElementTitleProps } from '../../ide/types/menu';
+import { ComponentMenuAction } from '../../ide/types/menu';
 import Storage from '../../ide/commons/Storage';
 import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';

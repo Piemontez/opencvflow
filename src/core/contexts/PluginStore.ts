@@ -13,7 +13,7 @@ type PluginState = {
   plugins: PluginFile[];
 
   init: () => Promise<void>;
-  addPlugin: (pluginFile: PluginFile) => Promise<void>;
+  addPlugin: (pluginFile: PluginFile) => void;
 };
 
 export const usePluginStore = create<PluginState>((set, get) => ({
@@ -22,6 +22,10 @@ export const usePluginStore = create<PluginState>((set, get) => ({
   plugins: [] as PluginFile[],
 
   init: async () => {
+    if (get().loaded) {
+      throw new Error('Loaded');
+    }
+
     if (get().loading) {
       throw new Error('Loading');
     }
@@ -30,14 +34,9 @@ export const usePluginStore = create<PluginState>((set, get) => ({
     const localPluginsValues = Object.values(plugins);
     console.log(`IDE plugins found: ${localPluginsValues.length}`);
 
-    // Limpa a lista carregada anteriormente
-    if (get().loaded) {
-      get().plugins = [];
-    }
-
     //Carrega os plugins instalados no sistema
     for (const plugin of localPluginsValues) {
-      await get().addPlugin({ fileName: plugin.name, plugin: plugin });
+      get().addPlugin({ fileName: plugin.name, plugin: plugin });
     }
 
     set({
@@ -47,7 +46,7 @@ export const usePluginStore = create<PluginState>((set, get) => ({
     });
   },
 
-  addPlugin: async (pluginFile: PluginFile) => {
+  addPlugin: (pluginFile: PluginFile) => {
     //Adiciona a lista de plugins carregados
     get().plugins.push(pluginFile);
 
@@ -59,7 +58,7 @@ export const usePluginStore = create<PluginState>((set, get) => ({
       for (const comp of plugin.components) {
         if ((comp as MenuActionProps).tabTitle) {
           const compAs = comp as MenuActionProps;
-          console.log(`Add action: ${compAs.title}`);
+          console.log(`Add action: ${compAs.name || compAs.title}`);
           useMenuStore.getState().addMenuAction(compAs);
         } else {
           const compAs = comp as typeof CVFComponent;

@@ -1,6 +1,6 @@
 import jsonToNodeStore from '../core/utils/jsonToNodeStore';
 import { Row } from 'react-bootstrap';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { usePluginStore } from '../core/contexts/PluginStore';
 import Storage from './commons/Storage';
 import { STORAGE_NODESTORE_ID } from './commons/consts';
@@ -15,7 +15,7 @@ import NewModal from './components/NewModal';
 import { useNewModalStore } from './contexts/NewModalStore';
 import { loadFromJson } from '../core/utils/loadFromJson';
 
-const IDE = () => {
+const IDE = memo(() => {
   const darkStore = useDarkModeStore((state) => state);
   const pluginStore = usePluginStore((state) => state);
 
@@ -26,6 +26,7 @@ const IDE = () => {
     // Carrega os plugins
     pluginStore
       .init()
+      .then(() => new Promise((resolve) => setTimeout(resolve, 150))) // Espera carregar o cv.MAT
       .then(() => {
         const json = Storage.get(STORAGE_NODESTORE_ID, 'this');
         const jsonLoaded = jsonToNodeStore(json);
@@ -54,6 +55,6 @@ const IDE = () => {
       <StatusBar />
     </Row>
   );
-};
+});
 
 export default IDE;

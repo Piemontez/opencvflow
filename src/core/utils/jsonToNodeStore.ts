@@ -37,8 +37,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
       // Realiza alguma validações
       .filter(({ type }) => {
         if (type) {
-          const component = useNodeStore.getState().getNodeType(type);
-          if (!component) {
+          if (!useNodeStore.getState().hasNodeType(type)) {
             useNotificationStore.getState().warn(`Node type "${type} not found."`);
 
             return false;

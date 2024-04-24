@@ -29,6 +29,8 @@ export type NodeState = {
   storage: () => void;
   refreshFlow: (refreshNodes?: boolean) => void;
   // Node Type
+  getMenuActionId: (menuAction: ComponentMenuAction) => string;
+  hasNodeType: (name: string) => boolean;
   getNodeType: (name: string) => typeof CVFComponent | null;
   addNodeType: (component: typeof CVFComponent) => void;
   removeNodeType: (name: string) => void;
@@ -81,6 +83,14 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     }
   },
 
+  getMenuActionId: (menuAction: ComponentMenuAction) => {
+    return menuAction.name || '' + menuAction.title;
+  },
+
+  hasNodeType: (name: string): boolean => {
+    return get().nodeTypes.hasOwnProperty(name);
+  },
+
   getNodeType: (name: string): typeof CVFComponent | null => {
     return get().nodeTypes[name] as any as typeof CVFComponent;
   },
@@ -89,9 +99,9 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     const { nodeTypes, nodeTypesByMenu } = get();
     nodeTypes[component.name] = component as any;
 
-    if (component.menu?.title) {
-      const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
-      nodeTypesByMenu[key] = component as any;
+    if (component.menu) {
+      const actionId = get().getMenuActionId(component.menu!);
+      nodeTypesByMenu[actionId] = component as any;
     }
 
     set({ nodeTypes: { ...nodeTypes }, nodeTypesByMenu });
@@ -131,7 +141,6 @@ export const useNodeStore = create<NodeState>((set, get) => ({
       ],
     });
     get().storage();
-
     return newNode;
   },
 
@@ -342,7 +351,8 @@ export const useNodeStore = create<NodeState>((set, get) => ({
 
   // Evento disparado ao arrastar o componente do menu
   onDragStart: (event: any, menuAction: ComponentMenuAction) => {
-    event.dataTransfer.setData('application/menuaction', menuAction.title);
+    const actionId = get().getMenuActionId(menuAction);
+    event.dataTransfer.setData('application/menuaction', actionId);
     event.dataTransfer.effectAllowed = 'move';
   },
 

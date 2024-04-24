@@ -10,6 +10,7 @@ type MenuBaseProps = {
 };
 
 export type MenuWithStringTitleProps = {
+  name?: string;
   title: string | React.ReactElement;
 };
 

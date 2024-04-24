@@ -12,7 +12,7 @@ import * as draw from './draw';
 import * as utils from './utils';
 
 const OpenCVPlugin: PluginType = {
-  name: "OpenCV Plugin",
+  name: 'OpenCV Plugin',
   components: [
     // video
     ...Object.values(inputs),

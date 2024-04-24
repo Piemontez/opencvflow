@@ -36,7 +36,7 @@ const IDE = () => {
           useNewModalStore.getState().show();
         }
       })
-      .catch(() => {});
+      .catch(console.error);
   }, []);
 
   return (

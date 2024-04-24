@@ -1,6 +1,7 @@
 import { ClosingComponent, DilateComponent, ErodeComponent, MorphologyExComponent, OpeningComponent } from '../opencv/morphology';
 import { XYPosition } from 'reactflow';
-import { CVKernelComponent, CVVideoCaptureComponent } from '../opencv/inputs';
+import { CVKernelComponent } from '../opencv/inputs/CVKernelComponent';
+import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';

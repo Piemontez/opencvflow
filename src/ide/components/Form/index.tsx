@@ -4,14 +4,8 @@ import { PropertyType } from '../../types/PropertyType';
 import { CVFBooleanFormControl } from './cvf-boolean-formcontrol';
 import { CVFChoiceFormControl } from './cvf-choice-formcontrol';
 import { CVFFileUrlFormControl } from './cvf-fileurl-formcontrol';
-import {
-  OCVIntMatrixFormControl,
-  OCVOneZeroMatrixFormControl,
-} from './cvf-matrix-formcontrol';
-import {
-  CVFDecimalFormControl,
-  CVFIntegerFormControl,
-} from './cvf-number-formcontrol';
+import { OCVIntMatrixFormControl, OCVOneZeroMatrixFormControl } from './cvf-matrix-formcontrol';
+import { CVFDecimalFormControl, CVFIntegerFormControl } from './cvf-number-formcontrol';
 import { CVFTextFormControl } from './cvf-text-formcontrol';
 import { CVFFormProps } from './types/CVFFormProps';
 import { OCVBorderTypeFormControl } from './ocv-bordertype-formcontrol';
@@ -29,11 +23,7 @@ import { OCVDataTypeTypesFormControl } from './ocv-datatypes-formcontrol';
  * Definição da função chamada ao alterar um formulario
  *
  */
-export declare type CVFFormEventHandler = (
-  value: any | null,
-  description: string[] | string | null,
-  event: CVFFormEvent
-) => void;
+export declare type CVFFormEventHandler = (value: any | null, description: string[] | string | null, event: CVFFormEvent) => void;
 
 export function CVFFormGroup(props: CVFFormProps) {
   let Control, Column;

@@ -10,9 +10,6 @@ enum MatrixType {
 }
 
 function BaseMatrixFormControl(props: CVFFormProps, type: MatrixType) {
-  props.groupAs = undefined;
-  props.column = undefined;
-
   const value = props.value as Mat;
   const cols = value.cols;
   const rows = value.rows;

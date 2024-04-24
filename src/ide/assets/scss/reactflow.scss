@@ -18,14 +18,16 @@
 }
 
 .react-flow__handle-left {
-  background-color: #ec6a96;
+  background-color: #ec6a9699;
   border-color: #f48fb1;
+  border-radius: 5px !important;
   left: -7px;
 }
 
 .react-flow__handle-right {
-  background-color: #009c82;
+  background-color: #009c8299;
   border-color: #0ceac5;
+  border-radius: 5px !important;
   right: -7px;
 }
 

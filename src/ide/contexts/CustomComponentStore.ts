@@ -5,6 +5,7 @@ import { PropertyType } from '../types/PropertyType';
 import { CVFNodeProcessor } from '../../core/types/node';
 import GCStore from '../../core/contexts/GCStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
+import cv from 'opencv-ts';
 
 type CustomComponentState = {
   customComponents: Array<CustomNodeType>;
@@ -82,29 +83,21 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
   build: (custom: CustomNodeType, test = false): typeof CVFComponent => {
     // TODO: verificar forma de resolver imports conforme gerado pelo git.
     // @ts-ignore
-    class CVFComponentFork extends CVFComponent {}
-    // @ts-ignore
-    class CVFIOComponentFork extends CVFIOComponent {}
-    // @ts-ignore
-    class CVFNodeProcessorFork extends CVFNodeProcessor {}
-    // @ts-ignore
-    const GCStoreFork = GCStore;
-    // @ts-ignore
     const PropertyTypeFork = PropertyType;
     // previne que o vite deixe de declare essas classes não utilizadas
 
     const codeSanitized = custom.code //
       .replace(/[ ]*import[^;]*;\n/g, '')
-      .replace(/CVFComponent/g, 'CVFComponentFork')
-      .replace(/CVFIOComponent/g, 'CVFIOComponentFork')
-      .replace(/CVFNodeProcessor/g, 'CVFNodeProcessorFork')
+      .replace(/CVFComponent/g, CVFComponent.name)
+      .replace(/CVFIOComponent/g, CVFIOComponent.name)
+      .replace(/CVFNodeProcessor/g, CVFNodeProcessor.name)
       .replace(/PropertyType/g, 'PropertyTypeFork')
-      .replace(/GCStore/g, 'GCStoreFork');
+      .replace(/GCStore/g, GCStore.constructor.name);
 
-    const createComponentClass = `() => { ${codeSanitized}; return CustomComponent}`;
+    const createComponentClass = `(cv) => { ${codeSanitized}; return CustomComponent}`;
 
     if (test) {
-      const createEvalRs = `(${createComponentClass})()`;
+      const createEvalRs = `({ func: (cv) => (${createComponentClass})() })`;
       const rs = eval(createEvalRs);
 
       return rs;
@@ -112,7 +105,7 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
       const createEvalRs = `({ func: ${createComponentClass} })`;
 
       const rs = eval(createEvalRs.replace(/CustomComponent/g, custom.name || ''));
-      const classInstance = rs.func();
+      const classInstance = rs.func(cv);
 
       return classInstance;
     }

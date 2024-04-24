@@ -1,3 +1,4 @@
+import callOpenFileModal from '../../../core/utils/callOpenFileModal';
 import jsonToNodeStore from '../../../core/utils/jsonToNodeStore';
 import { loadFromJson } from '../../../core/utils/loadFromJson';
 import { MenuActionProps } from '../../../ide/types/menu';
@@ -20,22 +21,15 @@ const FileOpenAction: MenuActionProps = {
       loadFromJson(jsonLoaded);
     };
 
-    const onChoseFile = () => {
-      if (f.files) {
-        var fileReader = new FileReader();
-        fileReader.onload = onLoadFile;
-        fileReader.readAsText(f.files[0]);
-      }
-    };
-
-    const f = document.createElement('input');
-    f.style.display = 'none';
-    f.type = 'file';
-    f.name = 'file';
-    f.addEventListener('change', onChoseFile);
-
-    document.getElementById('root')!.appendChild(f);
-    f.click();
+    callOpenFileModal({
+      changeEvent: function () {
+        if (this.files) {
+          var fileReader = new FileReader();
+          fileReader.onload = onLoadFile;
+          fileReader.readAsText(this.files[0]);
+        }
+      },
+    });
   },
 };
 

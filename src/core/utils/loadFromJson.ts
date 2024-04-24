@@ -2,6 +2,7 @@ import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { SaveContentLoaded } from '../../ide/types/SaveContent';
 import { useNodeStore } from '../contexts/NodeStore';
+import { useProjectStore } from '../../ide/contexts/ProjectStore';
 
 /**
  * Carrega os dados
@@ -17,6 +18,9 @@ export const loadFromJson = (jsonLoaded: SaveContentLoaded): boolean => {
     useCustomComponentStore.getState().clear();
     // Limpa os nós e arestas
     useNodeStore.getState().clear();
+
+    // Carrega o nome do projeto
+    useProjectStore.getState().changeName(jsonLoaded.projectName);
 
     // Carrega os tipo de nó customizados
     if (jsonLoaded.custom?.components) {

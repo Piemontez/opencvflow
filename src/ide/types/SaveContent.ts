@@ -5,18 +5,19 @@ import { CVFNode } from '../../core/types/node';
 export type SaveContentLoaded = {
   nodesLoaded: Array<CVFNode>;
   edgesLoaded: Array<OCVFEdge>;
-} & SaveContent;
+} & SaveContentLastVersion;
 
 export type SaveContent = SaveContentV0_10 | SaveContentV0_9;
+export type SaveContentLastVersion = SaveContentV0_10;
 
 export type SaveContentV0_10 = {
   projectName: string;
   // 0.10.* version or more
   custom: {
-    components: Array<CustomNodeType>;
+    components: Array<CustomNodeType>; // From CustomComponentStore
   };
-  nodes: Array<CVFNode>;
-  edges: Array<OCVFEdge>;
+  nodes: Array<CVFNode>; // From NodeStore
+  edges: Array<OCVFEdge>; // From NodeStore
 };
 
 export type SaveContentV0_9 = {

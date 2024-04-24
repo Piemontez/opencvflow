@@ -1,40 +1,35 @@
 import { create } from 'zustand';
 import { useCustomComponentStore } from './CustomComponentStore';
 import { useNodeStore } from '../../core/contexts/NodeStore';
-import { SampleTemplate } from '../../core/types/sample-template';
+import { ProjectTemplate } from '../../core/types/project-template';
 import { useNotificationStore } from '../components/Notification/store';
+import { useProjectStore } from './ProjectStore';
 
 type NewModalState = {
   projectName: string;
   isShow: boolean;
   groups: Array<string>;
   groupSelected: string;
-  templates: Array<SampleTemplate>;
-  templateSelected: SampleTemplate | null;
+  templates: Array<ProjectTemplate>;
+  templateSelected: ProjectTemplate | null;
 
   show: () => void;
   close: () => void;
   changeProjectName: (name: string) => void;
 
-  addTemplate: (template: SampleTemplate) => void;
-  changeTemplate: (template: SampleTemplate) => void;
+  addTemplate: (template: ProjectTemplate) => void;
+  changeTemplate: (template: ProjectTemplate | null) => void;
   changeGroup: (group: string) => void;
   create: () => void;
-};
-
-const emptyTemplate: SampleTemplate = {
-  group: 'Basic',
-  title: 'Empty Project',
-  action: () => {},
 };
 
 export const useNewModalStore = create<NewModalState>((set, get) => ({
   projectName: '',
   isShow: false,
-  groups: [emptyTemplate.group],
-  groupSelected: emptyTemplate.group,
-  templates: [emptyTemplate],
-  templateSelected: emptyTemplate,
+  groups: [],
+  groupSelected: 'Basic',
+  templates: [],
+  templateSelected: null,
 
   show: () => {
     set({ projectName: '', isShow: true });
@@ -44,7 +39,7 @@ export const useNewModalStore = create<NewModalState>((set, get) => ({
     set({ isShow: false });
   },
 
-  addTemplate: (template: SampleTemplate) => {
+  addTemplate: (template: ProjectTemplate) => {
     set({
       groups: [...new Set([...get().groups, template.group])],
       templates: [...get().templates, template],
@@ -55,7 +50,11 @@ export const useNewModalStore = create<NewModalState>((set, get) => ({
     set({ projectName: name });
   },
 
-  changeTemplate: (template: SampleTemplate) => {
+  changeTemplate: (template: ProjectTemplate | null) => {
+    if (template?.onClick) {
+      template.onClick();
+    }
+
     set({ templateSelected: template });
   },
 
@@ -64,11 +63,17 @@ export const useNewModalStore = create<NewModalState>((set, get) => ({
   },
 
   create: () => {
-    if (!get().templateSelected) {
+    const { projectName, templateSelected } = get();
+    if (!projectName) {
+      useNotificationStore.getState().info('Type a project name.');
+      return;
+    }
+    if (!templateSelected) {
       useNotificationStore.getState().info('Select same template.');
       return;
     }
 
+    useProjectStore.getState().changeName(projectName);
     useCustomComponentStore.getState().clear();
     useNodeStore.getState().clear();
     useNodeStore.getState().storage();

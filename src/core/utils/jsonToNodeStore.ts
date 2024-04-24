@@ -10,7 +10,15 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
   const { elements } = (save || {}) as SaveContentV0_9;
   let { nodes, edges } = (save || {}) as SaveContentV0_10;
 
-  const saveLoaded: SaveContentLoaded = { ...save, nodesLoaded: [], edgesLoaded: [] };
+  const saveLoaded: SaveContentLoaded = {
+    // Dados carregados do arquivo
+    ...(save as SaveContentV0_10),
+    // Limpa os dados, desnecessários para processamento
+    nodes: [],
+    edges: [],
+    nodesLoaded: [],
+    edgesLoaded: [],
+  };
 
   // Se versão antiga, converte elemntos
   if (Array.isArray(elements)) {
@@ -73,7 +81,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
     saveLoaded.edgesLoaded = edges.map(({ data, ...rest }) => rest);
   }
 
-  return { ...saveLoaded, nodes: [], edges: [] };
+  return saveLoaded;
 };
 
 const jsonMatToMat = (json: any) => {

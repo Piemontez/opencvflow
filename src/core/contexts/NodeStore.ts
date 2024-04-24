@@ -86,13 +86,14 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   addNodeType: (component: typeof CVFComponent) => {
-    get().nodeTypes[component.name] = component as any;
+    const nodeTypes = get().nodeTypes;
+    nodeTypes[component.name] = component as any;
     if (component.menu?.title) {
       const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
-      get().nodeTypesByMenu[key] = component as any;
+      nodeTypes[key] = component as any;
     }
 
-    get().refreshFlow();
+    set({ nodeTypes: { ...nodeTypes } });
   },
 
   removeNodeType: (name: string) => {

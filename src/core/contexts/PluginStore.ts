@@ -72,8 +72,8 @@ export const usePluginStore = create<PluginState>((set, get) => ({
       }
 
       // Adiciona os templates de exemplo
-      if (plugin.sampleTemplates)
-        for (const sampleTemplate of plugin.sampleTemplates) {
+      if (plugin.templates)
+        for (const sampleTemplate of plugin.templates) {
           console.log(`Add template: ${sampleTemplate.title}`);
           useNewModalStore.getState().addTemplate(sampleTemplate);
         }

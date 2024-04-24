@@ -9,12 +9,11 @@ import { CustomNodeType } from '../../core/types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 
-//import type RAW_LOADER_property from '../../ide/types/PropertyType';
-//import type RAW_LOADER_opencvts from '../../../node_modules/opencv-ts/src/opencv.d.ts';
-//import * as RAW_LOADER_property from '../../ide/types/PropertyType';
-//import * as RAW_LOADER_component from '../../ide/types/component';
-//import * as RAW_LOADER_node from '../../core/types/node';
-//import * as RAW_LOADER_gcstore from '../../core/contexts/GCStore';
+import RAW_LOADER_opencvts from '../../../node_modules/opencv-ts/src/opencv.d.ts?raw';
+import RAW_LOADER_property from '../../ide/types/PropertyType?raw';
+import RAW_LOADER_component from '../../ide/types/component?raw';
+import RAW_LOADER_node from '../../core/types/node?raw';
+import RAW_LOADER_gcstore from '../../core/contexts/GCStore?raw';
 
 //loader.config({ monaco });
 loader.config({});
@@ -57,8 +56,9 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
   const handleSave = () => {
     const { title, code } = content;
     try {
-      useCustomComponentStore.getState().validade({ title: title, code });
-      useCustomComponentStore.getState().add({ title: title, code });
+      const customNode = { title: title, code };
+      useCustomComponentStore.getState().validade(customNode);
+      useCustomComponentStore.getState().add(customNode);
       useNodeStore.getState().storage();
 
       handleClose();
@@ -79,21 +79,21 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
   };
 
   const handleEditorBeforeMount = (m: Monaco) => {
-    /*const types: any = [
-      //{ name: 'opencv-ts', default: RAW_LOADER_opencvts },
-      { name: 'renderer/types/property', default: RAW_LOADER_property },
-      { name: 'renderer/contexts/GCStore', default: RAW_LOADER_gcstore },
-      { name: 'renderer/types/component', default: RAW_LOADER_component },
-      { name: 'renderer/types/node', default: RAW_LOADER_node },
-    ];*/
+    const types: any = [
+      { name: 'opencv-ts', default: RAW_LOADER_opencvts },
+      { name: 'core/types/node', default: RAW_LOADER_node },
+      { name: 'core/contexts/GCStore', default: RAW_LOADER_gcstore },
+      { name: 'ide/types/PropertyType', default: RAW_LOADER_property },
+      { name: 'ide/types/component', default: RAW_LOADER_component },
+    ];
 
-    /*types.forEach((module: any) => {
+    types.forEach((module: any) => {
       m.languages.typescript.javascriptDefaults.addExtraLib(
         `declare module '${module.name}' {
          ${module.default}
         }`,
       );
-    });*/
+    });
 
     m.languages.typescript.javascriptDefaults.setCompilerOptions({
       allowNonTsExtensions: true,
@@ -168,10 +168,10 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
 
 const defaultValue = `
 import cv from 'opencv-ts';
-import { CVFComponent } from 'renderer/types/component';
-import { CVFNodeProcessor } from 'renderer/types/node';
-import { PropertyType } from 'renderer/types/property';
-import GCStore from 'renderer/contexts/GCStore';
+import { CVFNodeProcessor } from 'core/types/node';
+import GCStore from 'core/contexts/GCStore';
+import { PropertyType } from 'ide/types/PropertyType';
+import { CVFComponent } from 'ide/types/component';
 
 class CustomComponent extends CVFComponent {
   static processor = class CustomProcessor extends CVFNodeProcessor {

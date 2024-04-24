@@ -6,8 +6,15 @@ import { Card, Col, Form, Row } from 'react-bootstrap';
 import { memo } from 'react';
 
 const NewModal = memo(() => {
-  const [isShow, create, close, changeProjectName] = useNewModalStore(
-    useShallow(({ isShow, create, close, changeProjectName }) => [isShow, create, close, changeProjectName]),
+  const [isShow, create, close, projectName, changeProjectName] = useNewModalStore(
+    useShallow((state) => [
+      //
+      state.isShow,
+      state.create,
+      state.close,
+      state.projectName,
+      state.changeProjectName,
+    ]),
   );
 
   return (
@@ -18,7 +25,7 @@ const NewModal = memo(() => {
             <Form.Group as={Row}>
               <Form.Label column>Project name:</Form.Label>
               <Col md="8">
-                <Form.Control type="name" onChange={(e) => changeProjectName(e.target.value)} autoFocus />
+                <Form.Control type="name" value={projectName} onChange={(e) => changeProjectName(e.target.value)} autoFocus />
               </Col>
             </Form.Group>
           </Form>

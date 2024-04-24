@@ -5,7 +5,7 @@ import { useRunnerStore } from '../../../core/contexts/RunnerStore';
 
 const OCFControls = memo(() => {
   return (
-    <Controls position="top-right">
+    <Controls position="top-left">
       <ControlButton onClick={() => useRunnerStore.getState().run()}>
         <FontAwesomeIcon className="text-success" icon={'play-circle'} />
       </ControlButton>

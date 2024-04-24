@@ -1,14 +1,16 @@
 import IDEPlugin from './ide';
-import TensorFlowPlugin from './tensorflow';
-import CustomPlugin from './custom';
+import IDETemplatesPlugin from './ideTemplates';
 import OpencvCVPlugin from './opencv';
-import OpencvSamplesPlugin from './opencvSamples';
+import OpenCVTemplatesPlugin from './opencvTemplates';
+import CustomPlugin from './custom';
+import TensorFlowPlugin from './tensorflow';
 
 const plugins = [
   //
   IDEPlugin,
+  IDETemplatesPlugin,
   TensorFlowPlugin,
-  OpencvSamplesPlugin,
+  OpenCVTemplatesPlugin,
   OpencvCVPlugin,
   CustomPlugin,
 ];

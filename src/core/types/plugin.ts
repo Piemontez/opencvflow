@@ -1,6 +1,6 @@
 import { CVFComponent } from '../../ide/types/component';
 import { MenuActionProps } from '../../ide/types/menu';
-import { SampleTemplate } from './sample-template';
+import { ProjectTemplate } from './project-template';
 
 /**
  * Plugin Type
@@ -9,7 +9,7 @@ import { SampleTemplate } from './sample-template';
 export type PluginType = {
   name: string;
   components: Array<typeof CVFComponent | MenuActionProps>;
-  sampleTemplates?: Array<SampleTemplate>;
+  templates?: Array<ProjectTemplate>;
 };
 
 /**

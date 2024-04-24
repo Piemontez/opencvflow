@@ -39,10 +39,10 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
       customComponents[idx] = custom;
     }
 
-    set({ customComponents: [...customComponents] });
-
     useNodeStore.getState().addNodeType(nodeType);
     useNodeStore.getState().refreshNodesFromComponent(nodeType);
+
+    set({ customComponents: [...customComponents] });
   },
 
   remove: (name: string): void => {
@@ -80,16 +80,22 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
   },
 
   build: (custom: CustomNodeType, test = false): typeof CVFComponent => {
-    // @ts-ignore
-    class CVFComponentFork extends CVFComponent {}
-    // @ts-ignore
-    class CVFIOComponentFork extends CVFIOComponent {}
-    // @ts-ignore
-    class CVFNodeProcessorFork extends CVFNodeProcessor {}
-    // @ts-ignore
-    const GCStoreFork = GCStore;
-    // @ts-ignore
-    const PropertyTypeFork = PropertyType;
+    {
+      // TODO: verificar forma de resolver imports conforme gerado pelo git.
+      // @ts-ignore
+      class CVFComponentFork extends CVFComponent {}
+      // @ts-ignore
+      class CVFIOComponentFork extends CVFIOComponent {}
+      // @ts-ignore
+      class CVFNodeProcessorFork extends CVFNodeProcessor {}
+      // @ts-ignore
+      const GCStoreFork = GCStore;
+      // @ts-ignore
+      const PropertyTypeFork = PropertyType;
+      // previne que o vite deixe de declare essas classes não utilizadas
+      const prevent = () => ({ CVFComponentFork, CVFIOComponentFork, CVFNodeProcessorFork, GCStoreFork, PropertyTypeFork });
+      console.log(prevent());
+    }
 
     const codeSanitized = custom.code //
       .replace(/[ ]*import[^;]*;\n/g, '')

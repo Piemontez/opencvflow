@@ -97,7 +97,7 @@ export const useCustomComponentStore = create<CustomComponentState>((set, get) =
     const createComponentClass = `(cv) => { ${codeSanitized}; return CustomComponent}`;
 
     if (test) {
-      const createEvalRs = `({ func: (cv) => (${createComponentClass})() })`;
+      const createEvalRs = `(${createComponentClass})()`;
       const rs = eval(createEvalRs);
 
       return rs;

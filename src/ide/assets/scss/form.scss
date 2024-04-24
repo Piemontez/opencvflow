@@ -9,3 +9,10 @@
     padding: 0.3rem 0.5rem;
     line-height: 1.2;
 }
+
+input[type=number].noarrow::-webkit-inner-spin-button,
+input[type=number].noarrow::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    width: 0;
+}

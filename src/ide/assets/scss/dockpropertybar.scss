@@ -24,4 +24,19 @@
   &.contracted .btn {
     padding: 2px;
   }
+
+  .row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .col {
+    padding-right: calc(var(--bs-gutter-x) * 0.1);
+    padding-left: calc(var(--bs-gutter-x) * 0.1);
+  }
+  .form-label {
+    padding-left: calc(var(--bs-gutter-x) * 0.1);
+  }
+  .form-control {
+    padding: 0.3rem 0.3rem;
+  }
 }

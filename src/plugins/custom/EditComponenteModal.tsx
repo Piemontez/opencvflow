@@ -1,7 +1,5 @@
-import { Button, Col, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { CVFFormGroup } from '../../ide/components/Form';
-import { PropertyType } from '../../ide/types/PropertyType';
 import { tabName } from './index';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
@@ -125,18 +123,20 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
       <Modal.Body>
         <Row>
           <Col>
-            <CVFFormGroup
-              groupAs={Row}
-              column={true}
-              type={PropertyType.Text}
-              name={'title'}
-              title="Component name"
-              value={content.title}
-              onChange={handleChangeTitle}
-            />
+            <Form.Group as={Row}>
+              <Form.Label column>Component name:</Form.Label>
+              <Col md="8">
+                <Form.Control type="name" value={content.title} onChange={(e) => handleChangeTitle(e.target.value)} />
+              </Col>
+            </Form.Group>
           </Col>
           <Col>
-            <CVFFormGroup groupAs={Row} column={true} type={PropertyType.Text} disabled name="tabName" title="Tab Bar Menu" value={tabName} />
+            <Form.Group as={Row}>
+              <Form.Label column>Tab Bar Menu:</Form.Label>
+              <Col md="8">
+                <Form.Control type="tabName" value={tabName} disabled />
+              </Col>
+            </Form.Group>
           </Col>
         </Row>
         {show && (

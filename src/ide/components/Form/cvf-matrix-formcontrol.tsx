@@ -73,6 +73,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: MatrixType) {
           {colsSeries.map((col) => (
             <Col key={col}>
               <Form.Control
+                className="noarrow"
                 type="number"
                 value={value.ucharAt(row, col)}
                 onChange={(event) => {
@@ -93,6 +94,7 @@ function BaseMatrixFormControl(props: CVFFormProps, type: MatrixType) {
           {colsSeries.map((col) => (
             <Col key={col}>
               <Form.Check
+                className="noarrow"
                 type="checkbox"
                 checked={value.charAt(row, col) !== 0}
                 onChange={(event) => {
@@ -147,7 +149,7 @@ export function MatrixSizeComp({
           type="number"
           value={rows}
           onChange={(event) => {
-            const parse = parseFloat(event.target.value);
+            const parse = parseInt(event.target.value);
             changeSize(null, parse || 0, event);
           }}
         />
@@ -159,7 +161,7 @@ export function MatrixSizeComp({
           type="number"
           value={cols}
           onChange={(event) => {
-            const parse = parseFloat(event.target.value);
+            const parse = parseInt(event.target.value);
             changeSize(parse || 0, null, event);
           }}
         />

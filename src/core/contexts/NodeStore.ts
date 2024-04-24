@@ -86,14 +86,15 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   addNodeType: (component: typeof CVFComponent) => {
-    const nodeTypes = get().nodeTypes;
+    const { nodeTypes, nodeTypesByMenu } = get();
     nodeTypes[component.name] = component as any;
+
     if (component.menu?.title) {
       const key = (component.menu as MenuWithElementTitleProps).name || (component.menu.title as string);
-      nodeTypes[key] = component as any;
+      nodeTypesByMenu[key] = component as any;
     }
 
-    set({ nodeTypes: { ...nodeTypes } });
+    set({ nodeTypes: { ...nodeTypes }, nodeTypesByMenu });
   },
 
   removeNodeType: (name: string) => {
@@ -317,6 +318,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     if (appAction) {
       component = get().nodeTypesByMenu[appAction] as any as typeof CVFComponent;
     }
+
     const customComponent = event.dataTransfer.getData('application/customcomponent');
     if (customComponent) {
       component = get().nodeTypes[customComponent] as any as typeof CVFComponent;
@@ -328,6 +330,7 @@ export const useNodeStore = create<NodeState>((set, get) => ({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
+
       get().addNodeFromComponent(component, position);
     }
   },

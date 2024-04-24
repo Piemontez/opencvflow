@@ -5,6 +5,8 @@
 }
 
 #samples {
+    min-height: 25vb;
+
     .filters {
         max-height: 45vb;
         overflow-y: auto;
@@ -24,6 +26,12 @@
             float: left;
             margin-right: 2%;
             margin-bottom: 10px;
-        }
+        }    
+    }
+    #donate {
+        width: 100%;
+        height: 100%;
+        margin-right: 0%;
+        margin-bottom: 0;
     }
 }

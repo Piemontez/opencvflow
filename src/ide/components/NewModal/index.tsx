@@ -4,6 +4,7 @@ import { useNewModalStore } from '../../contexts/NewModalStore';
 import { useShallow } from 'zustand/react/shallow';
 import { Card, Col, Form, Row } from 'react-bootstrap';
 import { memo } from 'react';
+import { DonateBody } from '../Donate';
 
 const NewModal = memo(() => {
   const [isShow, create, close, projectName, changeProjectName] = useNewModalStore(
@@ -59,6 +60,9 @@ const SideGroups = () => {
           {group}
         </Button>
       ))}
+      <Button variant="ligth" active={'donate' === groupSelected} onClick={() => changeGroup('donate')}>
+        Donate
+      </Button>
     </Col>
   );
 };
@@ -79,7 +83,21 @@ const SampleProjects = () => {
             </Card.ImgOverlay>
           </Card>
         ))}
+      {groupSelected === 'donate' && <DonateCard />}
     </Col>
+  );
+};
+
+const DonateCard = () => {
+  return (
+    <Card id="donate">
+      <Card.Body>
+        <Card.Title>Donate</Card.Title>
+        <Card.Text>
+          <DonateBody />
+        </Card.Text>
+      </Card.Body>
+    </Card>
   );
 };
 

@@ -51,8 +51,6 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   },
 
   cloneIfFound(menu: MenuTab): MenuTab | undefined {
-    const search = get().search;
-
     const submenus = [];
     for (const submenu of menu?.menus) {
       const foundMenu = get().cloneIfFound(submenu);
@@ -61,14 +59,13 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       }
     }
 
+    const search = get().search.toLocaleLowerCase();
     const actions = [];
     for (const action of menu.actions) {
-      if (
-        search
-          .toLocaleLowerCase()
-          .split(' ')
-          .every((words) => ('' + action.title).toLocaleLowerCase().includes(words))
-      ) {
+      const toFind = (menu.title + '' + action.title).toLocaleLowerCase();
+      const hasAction = search.split(' ').every((words) => toFind.includes(words));
+
+      if (hasAction) {
         actions.push(action);
       }
     }

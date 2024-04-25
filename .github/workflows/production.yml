@@ -27,10 +27,10 @@ jobs:
       - name: Altera versão node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.12
-      - name: Compila PWA
+          node-version: 20.12.2
+      - name: Compila 
         shell: bash
-        run: ./bin/local-build-webview.sh
+        run: ./bin/build.sh
 
-      - name: Atualiza PWA
-        run: rsync -e "ssh -i keypair.pem" -av release/app/dist/webview/* ${{ secrets.INSTANCE_USER }}@${{ secrets.INSTANCE_IP }}:/var/www/docker/opencvflowdocs/online/
+      - name: Atualiza
+        run: rsync -e "ssh -i keypair.pem" -av dist/* ${{ secrets.INSTANCE_USER }}@${{ secrets.INSTANCE_IP }}:/var/www/docker/opencvflowdocs/online/

@@ -1,12 +1,11 @@
 import logoIcon from '../../assets/imgs/logo.png';
 import { RefObject, memo, useRef } from 'react';
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Form } from 'react-bootstrap';
 import { useMenuStore } from '../../contexts/MenuStore';
 import { MenuWithElementTitleProps } from '../../types/menu';
 import About, { AboutRef } from '../About';
 import Donate, { DonateRef } from '../Donate';
 import { useShallow } from 'zustand/react/shallow';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDarkModeStore } from '../../contexts/DarkModeStore';
 
 /**
@@ -18,7 +17,6 @@ const MenuBar = memo(() => {
   const currentMenu = useMenuStore(useShallow((state) => state.currentMenuWithSearch));
   const donateRef = useRef<DonateRef>(null);
   const aboutRef = useRef<AboutRef>(null);
-  const [mode, toggle] = useDarkModeStore(useShallow((state) => [state.mode, state.toggle]));
 
   return (
     <>
@@ -44,9 +42,7 @@ const MenuBar = memo(() => {
             <Nav>
               <NavsLinks position="rigth" />
               <HelpDropDown donateRef={donateRef} aboutRef={aboutRef} />
-              <Nav.Link onClick={toggle}>
-                <FontAwesomeIcon icon={mode === 'dark' ? 'moon' : 'sun'} />
-              </Nav.Link>
+              <DarkBrightMode />
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -88,6 +84,17 @@ const HelpDropDown = memo(({ donateRef, aboutRef }: { donateRef: RefObject<Donat
       <NavDropdown.Item onClick={() => donateRef.current!.handleShow()}>Donate</NavDropdown.Item>
       <NavDropdown.Item onClick={() => aboutRef.current!.handleShow()}>About</NavDropdown.Item>
     </NavDropdown>
+  );
+});
+
+const DarkBrightMode = memo(() => {
+  const [mode, toggle] = useDarkModeStore(useShallow((state) => [state.mode, state.toggle]));
+
+  return (
+    <div className="nav-link">
+      {/* <FontAwesomeIcon icon={mode === 'dark' ? 'moon' : 'sun'} /> */}
+      <Form.Check className={mode} type="switch" checked={mode === 'dark'} onClick={toggle} />
+    </div>
   );
 });
 

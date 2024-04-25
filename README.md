@@ -2,7 +2,7 @@
 
 Open Computer Vision - Flow is an IDE for computer vision studies and testing.
 
-![OpenCV-Flow Demo Image](./assets/imgs/overview.gif)
+![OpenCV-Flow Demo Image](./sample.png)
 
 ## Compatibility
 

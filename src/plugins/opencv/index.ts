@@ -10,12 +10,15 @@ import * as smoothing from './smoothing';
 import * as transform from './transform';
 import * as draw from './draw';
 import * as utils from './utils';
+import * as geometricTransformations from './geometricTransformations';
 
 const OpenCVPlugin: PluginType = {
   name: 'OpenCV Plugin',
   components: [
     // video
     ...Object.values(inputs),
+    // geometric transformations
+    ...Object.values(geometricTransformations),
     // conversors
     ...Object.values(conversors),
     // arithmetic

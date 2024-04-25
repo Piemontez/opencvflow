@@ -1,4 +1,3 @@
-import { ThresholdTypes } from 'opencv-ts/src/ImageProcessing/Misc';
 import { XYPosition } from 'reactflow';
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { NodeSizes } from '../../core/config/sizes';

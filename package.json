@@ -39,6 +39,6 @@
     "sass": "^1.75.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "vite-plugin-dts": "^3.8.3"
+    "vite-plugin-static-copy": "^1.0.3"
   }
 }

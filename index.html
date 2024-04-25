@@ -11,12 +11,63 @@
         dataLayer.push(arguments);
       }
       gtag('js', new Date());
-
       gtag('config', 'UA-18861122-3');
     </script>
+    <link rel="stylesheet" crossorigin="" href="dist/assets/index-C3nv1Haq.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <style>
+        .logo-img {
+          background-image: url(/src/ide/assets/imgs/logo_lg.png);
+          background-size: cover; 
+          background-position: center;
+          height: 410px;
+        }
+      </style>
+      <div class="d-flex justify-content-center">
+        <div class="row" style="margin-top: 50px;">
+          <div class="col-lg-2"></div>
+          <div class="col-lg-8">
+            <div class="card" style="width: 100%;">
+              <div class="card-body">
+                <!-- Logo -->
+                <div class="card-title logo-img"></div>
+                <!-- Titulo -->
+                <h6 class="card-subtitle mb-2 text-muted">Loading dependencies</h6>
+                <!-- Descrição -->
+                <p class="card-text">The initialization process usually takes time the first time you use this application.</p>
+                <!-- Listagem de bibliotecas sendo carregadas -->
+                <ul class="list-group">
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Cras justo odio
+                    <span class="badge badge-primary badge-pill">14</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Dapibus ac facilisis in
+                    <span class="badge badge-primary badge-pill">2</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Morbi leo risus
+                    <span class="badge badge-primary badge-pill">1</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2"></div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      //Adicionado ao buildar aplicação
+      window.$bootloader = {
+        jss:  [BOOT_JSS],
+        modules: [BOOT_MODULES]
+      };
+    </script>
+    <script src="/bootloader.js"></script>
   </body>
 </html>

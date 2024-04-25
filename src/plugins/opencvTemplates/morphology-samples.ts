@@ -5,8 +5,11 @@ import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponen
 import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';
-import { useNodeStore } from '../../core/contexts/NodeStore';
 import { ProjectTemplate } from '../../core/types/project-template';
+import { CVResizeComponent } from '../opencv/geometricTransformations';
+import { useNodeStore } from '../../core/contexts/NodeStore';
+import cv from 'opencv-ts';
+import { ThresholdComponent } from '../opencv/segmentation';
 
 const group = 'OpenCV';
 
@@ -29,9 +32,11 @@ const MorphologySamplesAction: ProjectTemplate = {
     comp = useNodeStore.getState().getNodeType(CVVideoCaptureComponent.name);
     let videoId = '';
     if (comp) {
-      const pos = makeXYPosition(-3, 0, padding);
+      const pos = makeXYPosition(-4, 0, padding);
       videoId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
     }
+
+    // Add Kernel
     comp = useNodeStore.getState().getNodeType(CVKernelComponent.name);
     let kernelId = '';
     if (comp) {
@@ -39,12 +44,28 @@ const MorphologySamplesAction: ProjectTemplate = {
       kernelId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
     }
 
+    // Add Resize
+    comp = useNodeStore.getState().getNodeType(CVResizeComponent.name);
+    let resizeId = '';
+    if (comp) {
+      const pos = makeXYPosition(-2, -1, padding);
+      resizeId = useNodeStore.getState().addNodeFromComponent(comp, pos, { dsize: new cv.Size(128, 128) }).id;
+    }
+
     // Add Convert
     comp = useNodeStore.getState().getNodeType(CvtColorComponent.name);
     let cvtColorId = '';
     if (comp) {
-      const pos = makeXYPosition(-1, 0, padding);
+      const pos = makeXYPosition(-2, 0, padding);
       cvtColorId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    }
+
+    // Add Threshold BIN
+    comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
+    let trash1 = '';
+    if (comp) {
+      const pos = makeXYPosition(-1, 0, padding);
+      trash1 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
     }
 
     // Add Erode
@@ -83,13 +104,15 @@ const MorphologySamplesAction: ProjectTemplate = {
       morphId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
     }
 
-    useNodeStore.getState().addEdge(videoId, cvtColorId, 'out', 'src1');
-    useNodeStore.getState().addEdge(cvtColorId, erodeId, 'out', 'src1');
-    useNodeStore.getState().addEdge(cvtColorId, dilateId, 'out', 'src1');
-    useNodeStore.getState().addEdge(cvtColorId, opId, 'out', 'src1');
-    useNodeStore.getState().addEdge(cvtColorId, closeId, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoId, resizeId, 'out', 'src1');
+    useNodeStore.getState().addEdge(resizeId, cvtColorId, 'out', 'src1');
+    useNodeStore.getState().addEdge(cvtColorId, trash1, 'out', 'src1');
+    useNodeStore.getState().addEdge(trash1, erodeId, 'out', 'src1');
+    useNodeStore.getState().addEdge(trash1, dilateId, 'out', 'src1');
+    useNodeStore.getState().addEdge(trash1, opId, 'out', 'src1');
+    useNodeStore.getState().addEdge(trash1, closeId, 'out', 'src1');
 
-    useNodeStore.getState().addEdge(cvtColorId, morphId, 'out', 'src');
+    useNodeStore.getState().addEdge(trash1, morphId, 'out', 'src');
     useNodeStore.getState().addEdge(kernelId, morphId, 'out', 'kernel');
 
     setTimeout(useNodeStore.getState().fitView, 100);

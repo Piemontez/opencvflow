@@ -5,9 +5,10 @@ import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors';
 import { CVFComponent } from '../../ide/types/component';
 import { ThresholdComponent } from '../opencv/segmentation';
-import cv from 'opencv-ts';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import { ProjectTemplate } from '../../core/types/project-template';
+import { CVResizeComponent } from '../opencv/geometricTransformations';
+import cv from 'opencv-ts';
 
 const group = 'OpenCV';
 
@@ -34,6 +35,14 @@ const ThresholdSamplesAction: ProjectTemplate = {
       videoId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
     }
 
+    // Add Resize
+    comp = useNodeStore.getState().getNodeType(CVResizeComponent.name);
+    let resizeId = '';
+    if (comp) {
+      const pos = makeXYPosition(-1, -1, padding);
+      resizeId = useNodeStore.getState().addNodeFromComponent(comp, pos, { dsize: new cv.Size(128, 128) }).id;
+    }
+
     // Add Convert
     comp = useNodeStore.getState().getNodeType(CvtColorComponent.name);
     let cvtColorId = '';
@@ -47,43 +56,32 @@ const ThresholdSamplesAction: ProjectTemplate = {
     let trash1 = '';
     if (comp) {
       const pos = makeXYPosition(0, gridY++, padding);
-      trash1 = useNodeStore.getState().addNodeFromComponent(comp, pos, {
-        thresh: 100,
-        type: cv.THRESH_BINARY_INV as ThresholdTypes,
-      }).id;
+      trash1 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
     }
     // Add Threshold TRUNC
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
     let trash2 = '';
     if (comp) {
       const pos = makeXYPosition(0, gridY++, padding);
-      trash2 = useNodeStore.getState().addNodeFromComponent(comp, pos, {
-        thresh: 100,
-        type: cv.THRESH_TRUNC as ThresholdTypes,
-      }).id;
+      trash2 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_TRUNC }).id;
     }
     // Add Threshold TOZERO
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
     let trash3 = '';
     if (comp) {
       const pos = makeXYPosition(0, gridY++, padding);
-      trash3 = useNodeStore.getState().addNodeFromComponent(comp, pos, {
-        thresh: 100,
-        type: cv.THRESH_TOZERO as ThresholdTypes,
-      }).id;
+      trash3 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_TOZERO }).id;
     }
     // Add Threshold OTSU
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
     let trash4 = '';
     if (comp) {
       const pos = makeXYPosition(0, gridY++, padding);
-      trash4 = useNodeStore.getState().addNodeFromComponent(comp, pos, {
-        thresh: 100,
-        type: cv.THRESH_OTSU as ThresholdTypes,
-      }).id;
+      trash4 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_OTSU }).id;
     }
 
-    useNodeStore.getState().addEdge(videoId, cvtColorId, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoId, resizeId, 'out', 'src1');
+    useNodeStore.getState().addEdge(resizeId, cvtColorId, 'out', 'src1');
     useNodeStore.getState().addEdge(cvtColorId, trash1, 'out', 'src1');
     useNodeStore.getState().addEdge(cvtColorId, trash2, 'out', 'src1');
     useNodeStore.getState().addEdge(cvtColorId, trash3, 'out', 'src1');

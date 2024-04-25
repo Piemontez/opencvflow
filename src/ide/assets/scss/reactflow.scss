@@ -1,7 +1,8 @@
 .react-flow button {
   background-color: var(--bs-body-bg) !important;
   border-color: var(--bs-gray-dark) !important;
-  color: var(--bs-navbar-color) !important;
+  color: var(--bs-body-color);
+  fill:  var(--bs-body-color);
 }
 
 .node-body {

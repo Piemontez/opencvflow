@@ -16,10 +16,11 @@
   font-size: 0.75rem;
   font-weight: 600;
 
-  button, .node-header .form-select {
+  button, .form-select {
+    border-color: var(--bs-gray-dark) !important;
+    padding: 2px 4px;
     font-size: 0.5rem;
     font-weight: 600;
-    padding: 2px 4px;
     float: right;
   }
   
@@ -27,13 +28,9 @@
     width: 40px;
     height: 18px;
     padding: 0px 4px;
-    border-color: var(--bs-gray-dark) !important;
 
     background: var(--bs-dark-rgb);
-    color: var(--bs-navbar-color);
-    font-size: 0.75rem;
     text-align: center;
-    float: right;
   }
 }
 

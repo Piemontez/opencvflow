@@ -16,6 +16,8 @@ export default defineConfig({
           monacoeditor: ['@monaco-editor/react'],
           opencvts: ['opencv-ts'],
         },
+        entryFileNames: '[name]_[hash].js',
+        chunkFileNames: 'deps/[name].js',
       },
     },
   },

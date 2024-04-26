@@ -35,8 +35,8 @@ const jsToBottomNoModule = () => {
         html = html.replace(tag, '');
       }
 
-      html = html.replace('[BOOT_JSS]', JSON.stringify(jss));
-      html = html.replace('[BOOT_MODULES]', JSON.stringify(modules));
+      html = html.replace('[BOOT_SCRIPT_MODULE]', JSON.stringify(jss));
+      html = html.replace('[BOOT_LINK_MODULE]', JSON.stringify(modules));
 
       return html;
     },

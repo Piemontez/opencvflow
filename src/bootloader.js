@@ -27,7 +27,7 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
       var status = xhr.status;
       if (status === 200 || (status === 0 && xhr.response)) {
         progressCB(asset, asset.size, asset.size);
-        successCB(asset, xhr.response);
+        successCB(asset, xhr);
       } else {
         errorCB(asset, xhr);
       }
@@ -45,6 +45,7 @@ class Bootloader {
 
   assetsGroups = []; // [ [group, [assets] ] ]
   assets = []; // [{id, group, assets, loaded, size}]
+  tags = [];
   el = {
     assetslist: null,
     progres: null,
@@ -74,7 +75,9 @@ class Bootloader {
   };
 
   destroyRefs = () => {
+    this.assetsGroups = [];
     this.assets = [];
+    this.tag = [];
     this.el = {};
   };
 
@@ -114,27 +117,25 @@ class Bootloader {
    * Atualiza a barra de progresso do asset
    */
   updateAssetSize = (asset, loaded, size) => {
-    //console.log(asset, loaded, size);
     if (loaded && size) {
-      //asset.loaded = loaded;
+      asset.loaded = loaded;
       asset.size = size;
     } else {
       if (loaded) {
-        asset.loaded += loaded;
+        asset.loaded = loaded;
       }
       if (size) {
         asset.size = size;
       }
     }
     const percentage = Math.round((asset.loaded / asset.size) * 1000) / 10;
-    this.el.assets[asset.id].badge.innerHTML = percentage === Infinity ? '?' : percentage + '%';
+    this.el.assets[asset.id].badge.innerHTML = percentage + '%';
 
     this.updateProgress();
   };
 
   /* Atualiza a barra de progresso total */
   updateProgress = () => {
-    console.log(this.assets);
     const [loaded, size] = this.assets.reduce(
       (last, curr) => [
         // Soma os valores
@@ -149,42 +150,60 @@ class Bootloader {
     this.el.progres.setAttribute('max', size.toString());
   };
 
-  updateAssetProgress = (asset, bitsLoaded) => {
-    const id = this.getAssetId(asset);
-    const badge = this.el.assets[id];
-    if (badge) {
-      this.el.assets[id].badge.innerHTML = '' + bitsLoaded;
-    }
-  };
-
   load = () => {
     for (const asset of this.assets) {
-      getBlob(
-        asset,
-        this.updateAssetSize,
-        //Success
-        (asset, response) => {
-          if (asset.group === this.TYPE_JS) this.loadJs(asset, response);
-          if (asset.group === this.TYPE_MODULE) this.loadModule(asset, response);
-        },
-        //Error
-        () => {},
-      );
+      getBlob(asset, this.updateAssetSize, this.onLoaded, this.onLoadedError);
     }
   };
 
-  loadJs = (asset, resolve) => {
-    //console.log('js', asset, resolve);
+  onLoaded = (asset, xhr) => {
+    var tag =
+      asset.group === this.TYPE_JS //
+        ? this.createScriptModuleTag(xhr.response, asset.id)
+        : asset.group === this.TYPE_MODULE
+        ? this.createLinkModuleTag(xhr.response, asset.id)
+        : null;
+
+    this.tags.push(tag);
+    if (this.tags.length === this.assets.length) {
+      document.getElementById('root').innerHTML = '';
+      //Adiciona as tags com o conteudo carregado
+      for (const tag of this.tags) {
+        document.body.append(tag);
+      }
+      this.destroyRefs();
+    }
   };
 
-  loadModule = (asset, resolve) => {
-    //console.log('module', asset, resolve);
+  onLoadedError = (_, message) => {
+    console.log(message);
   };
 
-  loadError = (asset, message) => {
-    //console.log('js', asset, message);
+  createScriptModuleTag = function (blob, id) {
+    var objectURL = URL.createObjectURL(blob);
+
+    var tag = document.createElement('script');
+    tag.id = id;
+    tag.type = 'module';
+    tag.src = objectURL;
+    return tag;
+  };
+
+  createLinkModuleTag = function (blob, id) {
+    var objectURL = URL.createObjectURL(blob);
+
+    var tag = document.createElement('link');
+    tag.id = id;
+    tag.rel = 'modulepreload';
+    tag.href = objectURL;
+    return tag;
   };
 }
+/*
+<script type="module" crossorigin src="/index_CvmYgTZk.js"></script>
+<link rel="modulepreload" crossorigin href="/deps/monacoeditor.js">
+<link rel="modulepreload" crossorigin href="/deps/opencvts.js">
+*/
 
 function bootstrap() {
   const boot = new Bootloader(window.$bootloader);
@@ -193,8 +212,6 @@ function bootstrap() {
   boot.load();
 
   //Test
-  boot.updateAssetProgress('monacoeditor', 123);
-  boot.updateAssetProgress('opencvts', 1235);
 }
 
 window.addEventListener('load', bootstrap);

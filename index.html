@@ -24,6 +24,9 @@
           background-position: center;
           height: 410px;
         }
+        #progressbar {
+          width: 100%;
+        }
       </style>
       <div class="d-flex justify-content-center">
         <div class="row" style="margin-top: 50px;">
@@ -37,19 +40,11 @@
                 <h6 class="card-subtitle mb-2 text-muted">Loading dependencies</h6>
                 <!-- Descrição -->
                 <p class="card-text">The initialization process usually takes time the first time you use this application.</p>
+                
                 <!-- Listagem de bibliotecas sendo carregadas -->
-                <ul class="list-group">
+                <ul id="assetslist" class="list-group">
                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Cras justo odio
-                    <span class="badge badge-primary badge-pill">14</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Dapibus ac facilisis in
-                    <span class="badge badge-primary badge-pill">2</span>
-                  </li>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Morbi leo risus
-                    <span class="badge badge-primary badge-pill">1</span>
+                    <progress id="progressbar" class="progress" value="0" max="1"></progress>
                   </li>
                 </ul>
               </div>
@@ -63,11 +58,13 @@
 
     <script>
       //Adicionado ao buildar aplicação
-      window.$bootloader = {
-        jss:  [BOOT_JSS],
-        modules: [BOOT_MODULES]
-      };
+      window.$bootloader = [
+        //['jss',  [BOOT_JSS]],
+        //['modules', [BOOT_MODULES]]
+        ['jss',  ["/index_Czkozx7U.js"]],
+        ['modules', ["/deps/monacoeditor.js","/deps/opencvts.js"]]
+      ];
     </script>
-    <script src="/bootloader.js"></script>
+    <script src="/src/bootloader.js"></script>
   </body>
 </html>

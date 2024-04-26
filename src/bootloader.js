@@ -1,6 +1,6 @@
 const getBlob = (asset, progressCB, successCB, errorCB) => {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', asset.file, true);
+  xhr.open('GET', asset.path, true);
   xhr.responseType = 'blob';
 
   xhr.onreadystatechange = function () {
@@ -16,7 +16,7 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
     'progress',
     function (event) {
       if (event.lengthComputable) {
-        //progressCB(asset, event.loaded);
+        progressCB(asset, event.loaded, null);
       }
     },
     false,
@@ -26,7 +26,7 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
     function (event) {
       var status = xhr.status;
       if (status === 200 || (status === 0 && xhr.response)) {
-        //progressCB(asset, asset.size);
+        progressCB(asset, asset.size, asset.size);
         successCB(asset, xhr.response);
       } else {
         errorCB(asset, xhr);
@@ -44,16 +44,11 @@ class Bootloader {
   ASSETSLIST_TAGID = 'assetslist';
 
   assetsGroups = []; // [ [group, [assets] ] ]
-  assets = []; // [{id, group, assets, size, totalSize}]
+  assets = []; // [{id, group, assets, loaded, size}]
   el = {
     assetslist: null,
     progres: null,
     assets: {}, // { [id]: {li, badge} }
-  };
-  progressbar = {
-    loaded: 0,
-    size: 1,
-    el: null,
   };
 
   constructor(assetsGroups) {
@@ -68,8 +63,8 @@ class Bootloader {
           id: this.getAssetId(asset),
           group,
           path: asset,
+          loaded: 0,
           size: 0,
-          totalSize: 0,
         })),
       )
       .flat();
@@ -81,13 +76,12 @@ class Bootloader {
   destroyRefs = () => {
     this.assets = [];
     this.el = {};
-    this.progressbar = {};
   };
 
   getAssetId = (path) => {
     return path
       .replace(/\..*/, '') // Remove extenção arquivo
-      .replace(/\/[^\/]*\//, '') // Remove pasta do arquivo
+      .replace(/[^\/]*\//g, '') // Remove pasta do arquivo
       .replace(/[ \\\/"'<>`.]*/g, '');
   };
 
@@ -107,7 +101,7 @@ class Bootloader {
     li.innerHTML = asset.id;
 
     const badge = document.createElement('span');
-    badge.classList = 'badge badge-primary';
+    badge.classList = 'badge badge-success';
     badge.innerHTML = '0';
     li.appendChild(badge);
 
@@ -116,22 +110,43 @@ class Bootloader {
     this.el.assets[asset.id] = { li, badge };
   };
 
-  updateProgress = () => {
-    this.el.progres.setAttribute('value', this.progressbar.loaded.toString());
-    this.el.progres.setAttribute('max', this.progressbar.size.toString());
-  };
-
-  updateAssetSize = (asset, loaded, totalSize) => {
-    if (loaded) {
-      console.log(asset.id, 'loaded', this.load);
-      this.progressbar.loaded += loaded;
+  /**
+   * Atualiza a barra de progresso do asset
+   */
+  updateAssetSize = (asset, loaded, size) => {
+    //console.log(asset, loaded, size);
+    if (loaded && size) {
+      //asset.loaded = loaded;
+      asset.size = size;
+    } else {
+      if (loaded) {
+        asset.loaded += loaded;
+      }
+      if (size) {
+        asset.size = size;
+      }
     }
-    if (totalSize) {
-      this.progressbar.size += totalSize;
-    }
-    console.log(asset, loaded, totalSize);
+    const percentage = Math.round((asset.loaded / asset.size) * 1000) / 10;
+    this.el.assets[asset.id].badge.innerHTML = percentage === Infinity ? '?' : percentage + '%';
 
     this.updateProgress();
+  };
+
+  /* Atualiza a barra de progresso total */
+  updateProgress = () => {
+    console.log(this.assets);
+    const [loaded, size] = this.assets.reduce(
+      (last, curr) => [
+        // Soma os valores
+        last[0] + curr.loaded || 0,
+        last[1] + curr.size,
+      ],
+      // Valor iniciar
+      [0, 0],
+    );
+
+    this.el.progres.setAttribute('value', loaded.toString());
+    this.el.progres.setAttribute('max', size.toString());
   };
 
   updateAssetProgress = (asset, bitsLoaded) => {

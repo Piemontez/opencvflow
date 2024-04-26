@@ -2,11 +2,12 @@ class Bootloader {
   PROGRESSBAR_TAGID = 'progressbar';
   ASSETSLIST_TAGID = 'assetslist';
 
-  assets = [];
+  assetsGroups = []; // [ [group, [assets] ] ]
+  assets = []; // [string]
   el = {
     assetslist: null,
     progres: null,
-    assets: {}, // { [id]: {li:null, badge:null} }
+    assets: {}, // { [id]: {li, badge} }
   };
   progressbar = {
     loaded: 0,
@@ -44,7 +45,6 @@ class Bootloader {
     for (const asset of this.assets) {
       this.makeAssetsTag(asset);
     }
-    this.updateProgress(10, 11);
   };
 
   makeAssetsTag = (asset) => {
@@ -74,8 +74,26 @@ class Bootloader {
     this.el.progres.setAttribute('max', totalSize.toString());
   };
 
+  updateAssetProgress = (asset, bitsLoaded) => {
+    const id = this.getAssetId(asset);
+    this.el.assets[id].badge.innerHTML = '' + bitsLoaded;
+  };
+
   load = () => {
-    console.log(this);
+    for (const [group, assets] of this.assetsGroups) {
+      for (const asset of assets) {
+        if (group === 'js') this.loadJs(asset);
+        if (group === 'module') this.loadModule(asset);
+      }
+    }
+  };
+
+  loadJs = (asset) => {
+    console.log('js', asset);
+  };
+
+  loadModule = (asset) => {
+    console.log('module', asset);
   };
 }
 
@@ -84,6 +102,11 @@ function bootstrap() {
   boot.init();
   boot.makeDisplay();
   boot.load();
+
+  //Test
+  boot.updateProgress(10, 11);
+  boot.updateAssetProgress('monacoeditor', 123);
+  boot.updateAssetProgress('opencvts', 1235);
 }
 
 window.addEventListener('load', bootstrap);

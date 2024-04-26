@@ -1,3 +1,53 @@
+const getBlob = (asset, progressCB, successCB, errorCB) => {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', asset.file, true);
+  xhr.responseType = 'blob';
+
+  xhr.onreadystatechange = function () {
+    var clength = xhr.getResponseHeader('Content-Length');
+    if (clength && !asset.size) {
+      asset.size = clength;
+      _this.totalSize += parseInt(asset.size);
+    }
+  };
+
+  //set listeners
+  xhr.addEventListener(
+    'error',
+    function (err) {
+      return reject(err);
+    },
+    false,
+  );
+  xhr.addEventListener(
+    'progress',
+    function (event) {
+      if (event.lengthComputable) {
+        if (event.total && !asset.size) {
+          asset.size = event.total;
+          _this.totalSize += asset.size;
+        }
+        progressCB(asset.file, event.loaded);
+      }
+    },
+    false,
+  );
+  xhr.addEventListener(
+    'load',
+    function (event) {
+      var status = xhr.status;
+      if (status === 200 || (status === 0 && xhr.response)) {
+        progressCB(asset.file, asset.size);
+        successCB(asset.file, xhr.response);
+      } else {
+        errorCB(asset.file, 'status: '.concat(xhr.status, ' - ').concat(xhr.statusText));
+      }
+    },
+    false,
+  );
+  xhr.send();
+};
+
 class Bootloader {
   PROGRESSBAR_TAGID = 'progressbar';
   ASSETSLIST_TAGID = 'assetslist';
@@ -82,18 +132,31 @@ class Bootloader {
   load = () => {
     for (const [group, assets] of this.assetsGroups) {
       for (const asset of assets) {
-        if (group === 'js') this.loadJs(asset);
-        if (group === 'module') this.loadModule(asset);
+        getBlob(
+          assets,
+          this.updateProgress,
+          //Success
+          (file, response) => {
+            if (group === 'js') this.loadJs(file, response);
+            if (group === 'module') this.loadModule(file, response);
+          },
+          //Error
+          () => {},
+        );
       }
     }
   };
 
-  loadJs = (asset) => {
-    console.log('js', asset);
+  loadJs = (asset, resolve) => {
+    console.log('js', asset, resolve);
   };
 
-  loadModule = (asset) => {
-    console.log('module', asset);
+  loadModule = (asset, resolve) => {
+    console.log('module', asset, resolve);
+  };
+
+  loadError = (asset, message) => {
+    console.log('js', asset, message);
   };
 }
 

@@ -6,28 +6,17 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
   xhr.onreadystatechange = function () {
     var clength = xhr.getResponseHeader('Content-Length');
     if (clength && !asset.size) {
-      asset.size = clength;
-      _this.totalSize += parseInt(asset.size);
+      progressCB(asset, null, parseInt(clength));
     }
   };
 
   //set listeners
-  xhr.addEventListener(
-    'error',
-    function (err) {
-      return reject(err);
-    },
-    false,
-  );
+  xhr.addEventListener('error', (event) => errorCB(asset, xhr), false);
   xhr.addEventListener(
     'progress',
     function (event) {
       if (event.lengthComputable) {
-        if (event.total && !asset.size) {
-          asset.size = event.total;
-          _this.totalSize += asset.size;
-        }
-        progressCB(asset.file, event.loaded);
+        //progressCB(asset, event.loaded);
       }
     },
     false,
@@ -37,10 +26,10 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
     function (event) {
       var status = xhr.status;
       if (status === 200 || (status === 0 && xhr.response)) {
-        progressCB(asset.file, asset.size);
-        successCB(asset.file, xhr.response);
+        //progressCB(asset, asset.size);
+        successCB(asset, xhr.response);
       } else {
-        errorCB(asset.file, 'status: '.concat(xhr.status, ' - ').concat(xhr.statusText));
+        errorCB(asset, xhr);
       }
     },
     false,
@@ -49,11 +38,13 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
 };
 
 class Bootloader {
+  TYPE_JS = 'js';
+  TYPE_MODULE = 'module';
   PROGRESSBAR_TAGID = 'progressbar';
   ASSETSLIST_TAGID = 'assetslist';
 
   assetsGroups = []; // [ [group, [assets] ] ]
-  assets = []; // [string]
+  assets = []; // [{id, group, assets, size, totalSize}]
   el = {
     assetslist: null,
     progres: null,
@@ -61,7 +52,7 @@ class Bootloader {
   };
   progressbar = {
     loaded: 0,
-    totalSize: 1,
+    size: 1,
     el: null,
   };
 
@@ -71,7 +62,16 @@ class Bootloader {
 
   init = () => {
     this.assets = this.assetsGroups //
-      .map(([_group, assets]) => assets)
+      .map(([group, assets]) =>
+        assets.map((asset) => ({
+          //
+          id: this.getAssetId(asset),
+          group,
+          path: asset,
+          size: 0,
+          totalSize: 0,
+        })),
+      )
       .flat();
 
     this.el.assetslist = document.getElementById(this.ASSETSLIST_TAGID);
@@ -84,8 +84,11 @@ class Bootloader {
     this.progressbar = {};
   };
 
-  getAssetId = (asset) => {
-    return asset.replace(/[ \\\/"'<>`.]*/g, '');
+  getAssetId = (path) => {
+    return path
+      .replace(/\..*/, '') // Remove extenção arquivo
+      .replace(/\/[^\/]*\//, '') // Remove pasta do arquivo
+      .replace(/[ \\\/"'<>`.]*/g, '');
   };
 
   /**
@@ -98,16 +101,10 @@ class Bootloader {
   };
 
   makeAssetsTag = (asset) => {
-    asset = asset //
-      .replace(/\..*/, '') // Remove extenção arquivo
-      .replace(/\/[^\/]*\//, ''); // Remove pasta do arquivo
-
-    const id = this.getAssetId(asset);
-
     const li = document.createElement('li');
-    li.id = id;
+    li.id = asset.id;
     li.classList = 'list-group-item d-flex justify-content-between align-items-center';
-    li.innerHTML = id;
+    li.innerHTML = asset.id;
 
     const badge = document.createElement('span');
     badge.classList = 'badge badge-primary';
@@ -116,47 +113,61 @@ class Bootloader {
 
     this.el.assetslist.appendChild(li);
 
-    this.el.assets[id] = { li, badge };
+    this.el.assets[asset.id] = { li, badge };
   };
 
-  updateProgress = (loaded, totalSize) => {
-    this.el.progres.setAttribute('value', loaded.toString());
-    this.el.progres.setAttribute('max', totalSize.toString());
+  updateProgress = () => {
+    this.el.progres.setAttribute('value', this.progressbar.loaded.toString());
+    this.el.progres.setAttribute('max', this.progressbar.size.toString());
+  };
+
+  updateAssetSize = (asset, loaded, totalSize) => {
+    if (loaded) {
+      console.log(asset.id, 'loaded', this.load);
+      this.progressbar.loaded += loaded;
+    }
+    if (totalSize) {
+      this.progressbar.size += totalSize;
+    }
+    console.log(asset, loaded, totalSize);
+
+    this.updateProgress();
   };
 
   updateAssetProgress = (asset, bitsLoaded) => {
     const id = this.getAssetId(asset);
-    this.el.assets[id].badge.innerHTML = '' + bitsLoaded;
+    const badge = this.el.assets[id];
+    if (badge) {
+      this.el.assets[id].badge.innerHTML = '' + bitsLoaded;
+    }
   };
 
   load = () => {
-    for (const [group, assets] of this.assetsGroups) {
-      for (const asset of assets) {
-        getBlob(
-          assets,
-          this.updateProgress,
-          //Success
-          (file, response) => {
-            if (group === 'js') this.loadJs(file, response);
-            if (group === 'module') this.loadModule(file, response);
-          },
-          //Error
-          () => {},
-        );
-      }
+    for (const asset of this.assets) {
+      getBlob(
+        asset,
+        this.updateAssetSize,
+        //Success
+        (asset, response) => {
+          if (asset.group === this.TYPE_JS) this.loadJs(asset, response);
+          if (asset.group === this.TYPE_MODULE) this.loadModule(asset, response);
+        },
+        //Error
+        () => {},
+      );
     }
   };
 
   loadJs = (asset, resolve) => {
-    console.log('js', asset, resolve);
+    //console.log('js', asset, resolve);
   };
 
   loadModule = (asset, resolve) => {
-    console.log('module', asset, resolve);
+    //console.log('module', asset, resolve);
   };
 
   loadError = (asset, message) => {
-    console.log('js', asset, message);
+    //console.log('js', asset, message);
   };
 }
 
@@ -167,7 +178,6 @@ function bootstrap() {
   boot.load();
 
   //Test
-  boot.updateProgress(10, 11);
   boot.updateAssetProgress('monacoeditor', 123);
   boot.updateAssetProgress('opencvts', 1235);
 }

@@ -20,7 +20,7 @@ const jsToBottomNoModule = () => {
 
         jss.push(src);
 
-        console.log('SCRIPT TAG REMOVED: ' + tag);
+        //console.log('SCRIPT TAG REMOVED: ' + tag);
         html = html.replace(tag, '');
       }
 
@@ -31,12 +31,9 @@ const jsToBottomNoModule = () => {
 
         modules.push(href);
 
-        console.log('SCRIPT TAG REMOVED: ' + tag);
+        //console.log('SCRIPT TAG REMOVED: ' + tag);
         html = html.replace(tag, '');
       }
-
-      console.log(jss);
-      console.log(modules);
 
       html = html.replace('[BOOT_JSS]', JSON.stringify(jss));
       html = html.replace('[BOOT_MODULES]', JSON.stringify(modules));

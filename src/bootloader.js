@@ -23,7 +23,7 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
   );
   xhr.addEventListener(
     'load',
-    function (event) {
+    function () {
       var status = xhr.status;
       if (status === 200 || (status === 0 && xhr.response)) {
         progressCB(asset, asset.size, asset.size);
@@ -53,7 +53,9 @@ class Bootloader {
   };
 
   constructor(assetsGroups) {
-    this.assetsGroups = assetsGroups;
+    if (this.assetsGroups) {
+      this.assetsGroups = assetsGroups;
+    }
   }
 
   init = () => {
@@ -206,6 +208,9 @@ class Bootloader {
 */
 
 function bootstrap() {
+  const loaderCardTag = document.getElementById('loadercard');
+  loaderCardTag.classList = [...loaderCardTag.classList].filter((c) => c !== 'hidden');
+
   const boot = new Bootloader(window.$bootloader);
   boot.init();
   boot.makeDisplay();

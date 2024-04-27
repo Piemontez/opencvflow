@@ -3,8 +3,10 @@
   <head>
     <title>OpenCV-Flow IDE - Online</title>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/src/ide/assets/imgs/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/src/ide/assets/imgs/logo.png" />
+    <link rel="stylesheet" crossorigin="" href="dist/assets/index-VAo69Nkd.css">
+    <!-- GTAG -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -13,11 +15,13 @@
       gtag('js', new Date());
       gtag('config', 'UA-18861122-3');
     </script>
-    <link rel="stylesheet" crossorigin="" href="dist/assets/index-VAo69Nkd.css">
   </head>
   <body>
-    <div id="root">
+    <div id="roo t">
       <style>
+         .hidden {
+          display: none !important;
+         }
         .logo-img {
           background-image: url(/src/ide/assets/imgs/logo_lg.png);
           background-size: cover; 
@@ -32,7 +36,7 @@
         <div class="row" style="margin-top: 50px;">
           <div class="col-lg-2"></div>
           <div class="col-lg-8">
-            <div class="card" style="width: 100%;">
+            <div id="loadercard" class="card hidden" style="width: 100%;">
               <div class="card-body">
                 <!-- Logo -->
                 <div class="card-title logo-img"></div>
@@ -59,10 +63,10 @@
     <script>
       //Adicionado ao buildar aplicação
       window.$bootloader = [
-        //['module', [BOOT_LINK_MODULE]]
-        //['js',  [BOOT_SCRIPT_MODULE]],
-        ['module', ["/dist/deps/monacoeditor.js","/dist/deps/opencvts.js"]],
-        ['js',  ["/dist/index_Czkozx7U.js"]]
+        ['module', [BOOT_LINK_MODULE]],
+        ['js',  [BOOT_SCRIPT_MODULE]]
+        //['module', ["/dist/deps/monacoeditor.js","/dist/deps/opencvts.js"]],
+        //['js',  ["/dist/index_Czkozx7U.js"]]
       ];
     </script>
     <script src="/src/bootloader.js"></script>

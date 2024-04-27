@@ -3,6 +3,14 @@ import { defineConfig } from 'vite';
 import { ViteStaticCopyOptions, viteStaticCopy } from 'vite-plugin-static-copy';
 //import dts from 'vite-plugin-dts';
 
+const isProduction = process.env.NODE_ENV == 'production';
+const scriptSearch = '[BOOT_SCRIPT_MODULE]';
+const moduleSearch = '[BOOT_LINK_MODULE]';
+
+/**
+ * Coleta as tag scripts e adicionado em uma variavel do json no HTML do projeto
+ * @returns
+ */
 const jsToBottomNoModule = () => {
   return {
     name: 'no-attribute',
@@ -35,10 +43,20 @@ const jsToBottomNoModule = () => {
         html = html.replace(tag, '');
       }
 
-      html = html.replace('[BOOT_SCRIPT_MODULE]', JSON.stringify(jss));
-      html = html.replace('[BOOT_LINK_MODULE]', JSON.stringify(modules));
+      return html //
+        .replace(scriptSearch, JSON.stringify(jss))
+        .replace(moduleSearch, JSON.stringify(modules));
+    },
+  };
+};
 
-      return html;
+const clearProdBootLoader = () => {
+  return {
+    name: 'no-attribute',
+    transformIndexHtml(html: any) {
+      return html //
+        .replace(scriptSearch, '[]')
+        .replace(moduleSearch, '[]');
     },
   };
 };
@@ -47,16 +65,18 @@ const staticCopy: ViteStaticCopyOptions = {
   targets: [{ src: 'src/bootloader.js', dest: '' }],
 };
 
+console.log('a:' + isProduction);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     //
     react(),
     //dts(),
-    viteStaticCopy(staticCopy),
-    jsToBottomNoModule(),
+    isProduction ? viteStaticCopy(staticCopy) : null,
+    isProduction ? jsToBottomNoModule() : clearProdBootLoader(),
   ],
   build: {
+    target: 'es2020',
     rollupOptions: {
       output: {
         manualChunks: {

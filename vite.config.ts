@@ -17,7 +17,7 @@ const jsToBottomNoModule = () => {
     transformIndexHtml(html: any) {
       const jss = [];
       const modules = [];
-      console.log('');
+      //console.log('');
       //Procura as tags scripts, coleta a propriedade src e remove a tag
       for (const matches of html.matchAll(/<script[^>]*src=['"](.*)['"][^>]*>(.*?)<\/script[^>]*>/g)) {
         const tag = matches[0];
@@ -50,7 +50,11 @@ const jsToBottomNoModule = () => {
   };
 };
 
-const clearProdBootLoader = () => {
+const staticCopy: ViteStaticCopyOptions = {
+  targets: [{ src: 'src/bootloader.js', dest: 'src' }],
+};
+
+const clearProdBootLoaderVariables = () => {
   return {
     name: 'no-attribute',
     transformIndexHtml(html: any) {
@@ -61,19 +65,14 @@ const clearProdBootLoader = () => {
   };
 };
 
-const staticCopy: ViteStaticCopyOptions = {
-  targets: [{ src: 'src/bootloader.js', dest: '' }],
-};
-
-console.log('a:' + isProduction);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     //
     react(),
     //dts(),
-    isProduction ? viteStaticCopy(staticCopy) : null,
-    isProduction ? jsToBottomNoModule() : clearProdBootLoader(),
+    viteStaticCopy(staticCopy),
+    isProduction ? jsToBottomNoModule() : clearProdBootLoaderVariables(),
   ],
   build: {
     target: 'es2020',

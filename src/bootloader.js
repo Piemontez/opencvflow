@@ -23,7 +23,7 @@ const getBlob = (asset, progressCB, successCB, errorCB) => {
   );
   xhr.addEventListener(
     'load',
-    function () {
+    function (event) {
       var status = xhr.status;
       if (status === 200 || (status === 0 && xhr.response)) {
         progressCB(asset, asset.size, asset.size);
@@ -45,11 +45,10 @@ class Bootloader {
 
   assetsGroups = []; // [ [group, [assets] ] ]
   assets = []; // [{id, group, assets, loaded, size}]
-  tags = [];
   el = {
     assetslist: null,
     progres: null,
-    assets: {}, // { [id]: {li, badge} }
+    assets: {}, // { [id]: {li, badge, srcTag} }
   };
 
   constructor(assetsGroups) {
@@ -131,7 +130,7 @@ class Bootloader {
       }
     }
     const percentage = Math.round((asset.loaded / asset.size) * 1000) / 10;
-    this.el.assets[asset.id].badge.innerHTML = percentage + '%';
+    this.el.assets[asset.id].badge.innerHTML = (percentage || 0) + '%';
 
     this.updateProgress();
   };
@@ -161,17 +160,20 @@ class Bootloader {
   onLoaded = (asset, xhr) => {
     var tag =
       asset.group === this.TYPE_JS //
-        ? this.createScriptModuleTag(xhr.response, asset.id)
+        ? this.createScriptModuleTag(xhr.response)
         : asset.group === this.TYPE_MODULE
-        ? this.createLinkModuleTag(xhr.response, asset.id)
+        ? this.createLinkModuleTag(xhr.response)
         : null;
 
-    this.tags.push(tag);
-    if (this.tags.length === this.assets.length) {
-      document.getElementById('root').innerHTML = '';
+    this.el.assets[asset.id].srcTag = tag;
+    this.download = (this.download || 0) + 1;
+
+    if (this.download === this.assets.length) {
+      //document.getElementById('root').innerHTML = '';
       //Adiciona as tags com o conteudo carregado
-      for (const tag of this.tags) {
-        document.body.append(tag);
+      for (const asset of this.assets) {
+        const tag = this.el.assets[asset.id].srcTag;
+        document.head.append(tag);
       }
       this.destroyRefs();
     }
@@ -181,30 +183,31 @@ class Bootloader {
     console.log(message);
   };
 
-  createScriptModuleTag = function (blob, id) {
+  createScriptModuleTag = function (blob) {
     var objectURL = URL.createObjectURL(blob);
 
     var tag = document.createElement('script');
-    tag.id = id;
     tag.type = 'module';
+    tag.setAttribute('crossorigin', '');
     tag.src = objectURL;
     return tag;
   };
 
-  createLinkModuleTag = function (blob, id) {
+  createLinkModuleTag = function (blob) {
     var objectURL = URL.createObjectURL(blob);
 
     var tag = document.createElement('link');
-    tag.id = id;
     tag.rel = 'modulepreload';
+    tag.setAttribute('crossorigin', '');
     tag.href = objectURL;
     return tag;
   };
 }
 /*
-<script type="module" crossorigin src="/index_CvmYgTZk.js"></script>
+<script type="module" crossorigin src="/index_CNlQeP5V.js"></script>
 <link rel="modulepreload" crossorigin href="/deps/monacoeditor.js">
 <link rel="modulepreload" crossorigin href="/deps/opencvts.js">
+<link rel="stylesheet" crossorigin href="/assets/index-DdB6HiH3.css">
 */
 
 function bootstrap() {

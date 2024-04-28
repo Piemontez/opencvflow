@@ -57,14 +57,14 @@
         </div>
       </div>
     </div>
-    <!-- <script type="module" src="/src/main.tsx"></script> -->
+    <script type="module" src="/src/main.tsx"></script>
     <script>
       //Adicionado ao buildar aplicação
       window.$bootloader = [
-        //['module', [BOOT_LINK_MODULE]],
-        //['js',  [BOOT_SCRIPT_MODULE]]
-        ['module', ["/dist/deps/monacoeditor.js","/dist/deps/opencvts.js"]],
-        ['js',  ["/dist/index_BW0vT2xo.js"]]
+        ['module', [BOOT_LINK_MODULE]],
+        ['js',  [BOOT_SCRIPT_MODULE]]
+        //['module', ["/dist/deps/monacoeditor.js","/dist/deps/opencvts.js"]],
+        //['js',  ["/dist/index_BW0vT2xo.js"]]
       ];
     </script>
     <script src="/src/bootloader.js"></script>

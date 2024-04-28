@@ -1,6 +1,8 @@
 const getBlob = (asset, progressCB, successCB, errorCB) => {
+  const MAX_AGE = 86400;
   var xhr = new XMLHttpRequest();
   xhr.open('GET', asset.path, true);
+  xhr.setRequestHeader("Cache-Control", `public, max-age=${MAX_AGE}, immutable`);
   xhr.responseType = 'blob';
 
   xhr.onreadystatechange = function () {

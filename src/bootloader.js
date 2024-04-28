@@ -43,8 +43,9 @@ class Bootloader {
   PROGRESSBAR_TAGID = 'progressbar';
   ASSETSLIST_TAGID = 'assetslist';
 
+  target = document.head;
   assetsGroups = []; // [ [group, [assets] ] ]
-  assets = []; // [{id, group, assets, loaded, size}]
+  assets = []; // [{id, group, assets, loaded, size, blob}]
   el = {
     assetslist: null,
     progres: null,
@@ -160,20 +161,25 @@ class Bootloader {
   onLoaded = (asset, xhr) => {
     var tag =
       asset.group === this.TYPE_JS //
-        ? this.createScriptModuleTag(xhr.response)
+        ? this.createScriptModuleTag(asset, xhr.response)
         : asset.group === this.TYPE_MODULE
-        ? this.createLinkModuleTag(xhr.response)
+        ? this.createLinkModuleTag(asset, xhr.response)
         : null;
 
     this.el.assets[asset.id].srcTag = tag;
     this.download = (this.download || 0) + 1;
 
     if (this.download === this.assets.length) {
-      //document.getElementById('root').innerHTML = '';
+      document.getElementById('root').innerHTML = '';
+
+      // Adiciona tag com relação modulo -> blob
+      const tag = this.createImportMapTag();
+      this.target.append(tag);
+
       //Adiciona as tags com o conteudo carregado
       for (const asset of this.assets) {
         const tag = this.el.assets[asset.id].srcTag;
-        document.head.append(tag);
+        this.target.append(tag);
       }
       this.destroyRefs();
     }
@@ -183,23 +189,43 @@ class Bootloader {
     console.log(message);
   };
 
-  createScriptModuleTag = function (blob) {
-    var objectURL = URL.createObjectURL(blob);
+  createImportMapTag = () => {
+    const importmap = {
+      imports: {},
+    };
+    for (const asset of this.assets) {
+      continue;
+      if (asset.group !== this.TYPE_MODULE) {
+        continue;
+      }
+      importmap.imports[asset.path] = asset.blob.toString();
+    }
 
     var tag = document.createElement('script');
-    tag.type = 'module';
-    tag.setAttribute('crossorigin', '');
-    tag.src = objectURL;
+    tag.type = 'importmap';
+    tag.innerHTML = JSON.stringify(importmap, null, 2);
     return tag;
   };
 
-  createLinkModuleTag = function (blob) {
-    var objectURL = URL.createObjectURL(blob);
+  createScriptModuleTag = (asset, blob) => {
+    asset.blob = URL.createObjectURL(blob);
+
+    var tag = document.createElement('script');
+    tag.type = 'module';
+    tag.setAttribute('as', 'script');
+    tag.setAttribute('crossorigin', '');
+    tag.src = asset.path;
+    return tag;
+  };
+
+  createLinkModuleTag = (asset, blob) => {
+    asset.blob = URL.createObjectURL(blob);
 
     var tag = document.createElement('link');
     tag.rel = 'modulepreload';
+    tag.setAttribute('as', 'script');
     tag.setAttribute('crossorigin', '');
-    tag.href = objectURL;
+    tag.href = asset.blob;
     return tag;
   };
 }

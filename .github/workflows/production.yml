@@ -1,4 +1,4 @@
-name: Atualizar Documentação Servidor
+name: Atualizar
 
 on:
   push:

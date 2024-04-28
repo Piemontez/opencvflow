@@ -173,8 +173,8 @@ class Bootloader {
       document.getElementById('root').innerHTML = '';
 
       // Adiciona tag com relação modulo -> blob
-      const tag = this.createImportMapTag();
-      this.target.append(tag);
+      //const tag = this.createImportMapTag();
+      //this.target.append(tag);
 
       //Adiciona as tags com o conteudo carregado
       for (const asset of this.assets) {
@@ -194,7 +194,6 @@ class Bootloader {
       imports: {},
     };
     for (const asset of this.assets) {
-      continue;
       if (asset.group !== this.TYPE_MODULE) {
         continue;
       }
@@ -212,9 +211,9 @@ class Bootloader {
 
     var tag = document.createElement('script');
     tag.type = 'module';
-    tag.setAttribute('as', 'script');
     tag.setAttribute('crossorigin', '');
-    tag.src = asset.path;
+    //tag.src = asset.blob;
+    tag.src = asset.path; // Navegador cria cache
     return tag;
   };
 
@@ -225,16 +224,11 @@ class Bootloader {
     tag.rel = 'modulepreload';
     tag.setAttribute('as', 'script');
     tag.setAttribute('crossorigin', '');
-    tag.href = asset.blob;
+    //tag.href = asset.blob;
+    tag.href = asset.path; // Navegador cria cache
     return tag;
   };
 }
-/*
-<script type="module" crossorigin src="/index_CNlQeP5V.js"></script>
-<link rel="modulepreload" crossorigin href="/deps/monacoeditor.js">
-<link rel="modulepreload" crossorigin href="/deps/opencvts.js">
-<link rel="stylesheet" crossorigin href="/assets/index-DdB6HiH3.css">
-*/
 
 function bootstrap() {
   const loaderCardTag = document.getElementById('loadercard');

@@ -1,7 +1,7 @@
 import { NodeTypes, XYPosition, Connection } from 'reactflow';
 import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
-import { CVFNode } from '../types/node';
+import { CVFNode, CVFNodeProcessor } from '../types/node';
 import { CVFComponent } from '../../ide/types/component';
 import { v5 as uuidv5 } from 'uuid';
 import { ComponentMenuAction } from '../../ide/types/menu';
@@ -25,6 +25,7 @@ export type NodeState = {
   reactFlowInstance: any;
   reactFlowWrapper: HTMLDivElement | null;
 
+  getProcessos: () => Array<CVFNodeProcessor>;
   clear: () => void;
   storage: () => void;
   refreshFlow: (refreshNodes?: boolean) => void;
@@ -65,6 +66,10 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   nodeTypesByMenu: {} as NodeTypes,
   reactFlowInstance: null as any,
   reactFlowWrapper: null as HTMLDivElement | null,
+
+  getProcessos: () => {
+    return get().nodes.map((node) => node.data.processor);
+  },
 
   clear: () => {
     set({ nodes: [], edges: [] });

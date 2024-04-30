@@ -27,47 +27,47 @@ const MorphologySamplesAction: ProjectTemplate = {
     // Add Video
     comp = useNodeStore.getState().getNodeType(CVVideoCaptureComponent.name);
     pos = makeXYPosition(-4, 0);
-    let videoId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let videoId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Kernel
     comp = useNodeStore.getState().getNodeType(CVKernelComponent.name);
     pos = makeXYPosition(-2, 2);
-    let kernelId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let kernelId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Resize
     comp = useNodeStore.getState().getNodeType(CVResizeComponent.name);
     pos = makeXYPosition(-2, -1);
-    let resizeId = useNodeStore.getState().addNodeFromComponent(comp, pos, { dsize: new cv.Size(128, 128) }).id;
+    let resizeId = useNodeStore.getState().addNodeFromComponent(comp!, pos, { dsize: new cv.Size(128, 128) }).id;
 
     // Add Convert
     comp = useNodeStore.getState().getNodeType(CvtColorComponent.name);
     pos = makeXYPosition(-2, 0);
-    let cvtColorId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let cvtColorId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Threshold BIN
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
     pos = makeXYPosition(0, gridY++);
-    let trash1 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
+    let trash1 = useNodeStore.getState().addNodeFromComponent(comp!, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
 
     // Add Erode
     comp = useNodeStore.getState().getNodeType(ErodeComponent.name);
-    let erodeId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let erodeId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
     // Add Dilate
     comp = useNodeStore.getState().getNodeType(DilateComponent.name);
     pos = makeXYPosition(0, gridY++);
-    let dilateId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let dilateId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
     // Add Oppening
     comp = useNodeStore.getState().getNodeType(OpeningComponent.name);
     pos = makeXYPosition(0, gridY++);
-    let opId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let opId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
     // Add Clossi
     comp = useNodeStore.getState().getNodeType(ClosingComponent.name);
     pos = makeXYPosition(0, gridY++);
-    let closeId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let closeId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
     // Add Morph
     comp = useNodeStore.getState().getNodeType(MorphologyExComponent.name);
     pos = makeXYPosition(0, gridY++);
-    let morphId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
+    let morphId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     useNodeStore.getState().addEdge(videoId, resizeId, 'out', 'src1');
     useNodeStore.getState().addEdge(resizeId, cvtColorId, 'out', 'src1');

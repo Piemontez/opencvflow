@@ -1,6 +1,5 @@
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { tabName } from './index';
 import Editor, { Monaco, loader } from '@monaco-editor/react';
 import { useCustomComponentStore } from '../../ide/contexts/CustomComponentStore';
 import { CustomNodeType } from '../../core/types/custom-node-type';
@@ -12,6 +11,7 @@ import RAW_LOADER_property from '../../ide/types/PropertyType?raw';
 import RAW_LOADER_component from '../../ide/types/component?raw';
 import RAW_LOADER_node from '../../core/types/node?raw';
 import RAW_LOADER_gcstore from '../../core/contexts/GCStore?raw';
+import { customTabName } from './tabname';
 
 //loader.config({ monaco });
 loader.config({});
@@ -134,7 +134,7 @@ const EditComponenteModal = forwardRef<EditComponenteModal, {}>((_, ref) => {
             <Form.Group as={Row}>
               <Form.Label column>Tab Bar Menu:</Form.Label>
               <Col md="8">
-                <Form.Control type="tabName" value={tabName} disabled />
+                <Form.Control type="tabName" value={customTabName[0]} disabled />
               </Col>
             </Form.Group>
           </Col>

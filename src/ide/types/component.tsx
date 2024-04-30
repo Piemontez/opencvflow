@@ -7,7 +7,7 @@ import { NodeSizes } from '../../core/config/sizes';
 import GCStore from '../../core/contexts/GCStore';
 import { SourceHandle, TargetHandle } from '../../core/types/handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
-import { CVFNodeData, CVFNodeProcessor, EmptyNodeProcessor } from '../../core/types/node';
+import { CVFNodeData, CVFNodeProcessor } from '../../core/types/node';
 
 type OCVComponentProps = {
   id: string;
@@ -29,6 +29,8 @@ export enum CVFComponentOptions {
   NEXT_OPTION_02 = 2,
   NEXT_OPTION_01 = 4,
 }
+
+class EmptyNodeProcessor extends CVFNodeProcessor {}
 
 /**
  * Componente/NodeType
@@ -165,13 +167,6 @@ export abstract class CVFOutputComponent extends CVFComponent {
 }
 
 export abstract class CVFIOComponent extends CVFComponent {
-  // Conexões que o componente irá receber
-  targets: TargetHandle[] = [{ title: 'src1', position: Position.Left }];
-  // Conexões que o componente irá disparar
-  sources: SourceHandle[] = [{ title: 'out', position: Position.Right }];
-}
-
-export abstract class CVFIOEndlessComponent extends CVFComponent {
   // Conexões que o componente irá receber
   targets: TargetHandle[] = [{ title: 'src1', position: Position.Left }];
   // Conexões que o componente irá disparar

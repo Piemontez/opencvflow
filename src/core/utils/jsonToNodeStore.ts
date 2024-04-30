@@ -1,5 +1,5 @@
-import { CVFNode } from '../types/node';
-import { OCVFEdge } from '../types/edge';
+import { CVFNode, CVFNodeProperties } from '../types/node';
+import { OCVFEdgeProperties } from '../types/edge';
 import { SaveContent, SaveContentLoaded, SaveContentV0_10, SaveContentV0_9 } from '../../ide/types/SaveContent';
 import cv from 'opencv-ts';
 import GCStore from '../contexts/GCStore';
@@ -24,11 +24,11 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
   if (Array.isArray(elements)) {
     nodes = (elements as Array<any>)
       // Filtra apenas os componentes nó
-      .filter((el) => !((el as OCVFEdge).source && (el as OCVFEdge).target));
+      .filter((el) => !((el as OCVFEdgeProperties).source && (el as OCVFEdgeProperties).target));
 
     edges = (elements as Array<any>)
       // Filtra apenas as arestas
-      .filter((el) => (el as OCVFEdge).source && (el as OCVFEdge).target);
+      .filter((el) => (el as OCVFEdgeProperties).source && (el as OCVFEdgeProperties).target);
   }
 
   // Carrega os Nodes
@@ -45,7 +45,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
         }
         return true;
       })
-      .map((element: CVFNode) => {
+      .map((element: CVFNodeProperties): CVFNode => {
         const properties: any = element.data.processor;
 
         if (element.type) {
@@ -54,7 +54,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
             const processor: any = new component.processor();
             element.data.processor = processor;
 
-            Object.keys((element as CVFNode).data.processor.propertiesMap).forEach((key) => {
+            Object.keys((element as CVFNodeProperties).data.processor.propertiesMap).forEach((key) => {
               if (properties && properties[key] !== undefined) {
                 if (typeof processor[key] === 'object') {
                   const className = processor[key].constructor.name;
@@ -71,7 +71,7 @@ const jsonToNodeStore = (save: SaveContent): SaveContentLoaded => {
             });
           }
         }
-        return element;
+        return element as CVFNode;
       })
       .filter((element) => element);
   }

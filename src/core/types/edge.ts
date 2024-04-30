@@ -1,5 +1,6 @@
 import { Edge } from 'reactflow';
 import { CVFNodeProcessor, NodeSourceDef } from './node';
+import { NonFunctionProperties } from './non-function-properties';
 
 export class CVFEdgeData {
   // Origem da aresta
@@ -25,3 +26,4 @@ export class CVFEdgeData {
 }
 
 export type OCVFEdge = Edge<CVFEdgeData>;
+export type OCVFEdgeProperties = Edge<NonFunctionProperties<CVFEdgeData>>;

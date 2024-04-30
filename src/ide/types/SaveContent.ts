@@ -1,6 +1,6 @@
 import { CustomNodeType } from '../../core/types/custom-node-type';
-import { OCVFEdge } from '../../core/types/edge';
-import { CVFNode } from '../../core/types/node';
+import { OCVFEdge, OCVFEdgeProperties } from '../../core/types/edge';
+import { CVFNode, CVFNodeProperties } from '../../core/types/node';
 
 export type SaveContentLoaded = {
   nodesLoaded: Array<CVFNode>;
@@ -16,8 +16,8 @@ export type SaveContentV0_10 = {
   custom: {
     components: Array<CustomNodeType>; // From CustomComponentStore
   };
-  nodes: Array<CVFNode>; // From NodeStore
-  edges: Array<OCVFEdge>; // From NodeStore
+  nodes: Array<CVFNodeProperties>; // From NodeStore
+  edges: Array<OCVFEdgeProperties>; // From NodeStore
 };
 
 export type SaveContentV0_9 = {
@@ -25,5 +25,5 @@ export type SaveContentV0_9 = {
   custom: {
     components: Array<CustomNodeType>;
   };
-  elements: Array<CVFNode | OCVFEdge>;
+  elements: Array<CVFNodeProperties | OCVFEdgeProperties>;
 };

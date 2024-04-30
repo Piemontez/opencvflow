@@ -4,6 +4,7 @@ import { Mat, MatVector, Point } from 'opencv-ts';
 import { PropertyType } from '../../ide/types/PropertyType';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { createRef, RefObject } from 'react';
+import { NonFunctionProperties } from './non-function-properties';
 
 export type NodeSourceDef = Mat | MatVector | Point | Array<Point> | Moments | Array<Moments> | number;
 
@@ -83,3 +84,4 @@ export type CVFNodeData = {
  * Classe utilizada internamente
  */
 export type CVFNode = Node<CVFNodeData>;
+export type CVFNodeProperties = Node<{ processor: NonFunctionProperties<CVFNodeProcessor> }>;

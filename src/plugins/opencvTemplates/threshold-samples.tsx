@@ -1,9 +1,9 @@
 import { XYPosition } from 'reactflow';
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { NodeSizes } from '../../core/config/sizes';
-import { CvtColorComponent } from '../opencv/conversors';
+import { CvtColorComponent } from '../opencv/conversors/CvtColorComponent';
 import { CVFComponent } from '../../ide/types/component';
-import { ThresholdComponent } from '../opencv/segmentation';
+import { ThresholdComponent } from '../opencv/segmentation/ThresholdComponent';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import { ProjectTemplate } from '../../core/types/project-template';
 import { CVResizeComponent } from '../opencv/geometricTransformations';

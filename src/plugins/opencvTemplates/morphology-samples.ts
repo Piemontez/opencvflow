@@ -1,15 +1,19 @@
-import { ClosingComponent, DilateComponent, ErodeComponent, MorphologyExComponent, OpeningComponent } from '../opencv/morphology';
+import { MorphologyExComponent } from '../opencv/morphology/MorphologyExComponent';
+import { ClosingComponent } from '../opencv/morphology/ClosingComponent';
+import { OpeningComponent } from '../opencv/morphology/OpeningComponent';
+import { DilateComponent } from '../opencv/morphology/DilateComponent';
+import { ErodeComponent } from '../opencv/morphology/ErodeComponent';
 import { XYPosition } from 'reactflow';
 import { CVKernelComponent } from '../opencv/inputs/CVKernelComponent';
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { NodeSizes } from '../../core/config/sizes';
-import { CvtColorComponent } from '../opencv/conversors';
+import { CvtColorComponent } from '../opencv/conversors/CvtColorComponent';
 import { CVFComponent } from '../../ide/types/component';
 import { ProjectTemplate } from '../../core/types/project-template';
 import { CVResizeComponent } from '../opencv/geometricTransformations';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import cv from 'opencv-ts';
-import { ThresholdComponent } from '../opencv/segmentation';
+import { ThresholdComponent } from '../opencv/segmentation/ThresholdComponent';
 
 const group = 'OpenCV';
 

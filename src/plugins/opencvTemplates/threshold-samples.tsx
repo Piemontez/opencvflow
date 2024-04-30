@@ -1,83 +1,52 @@
-import { XYPosition } from 'reactflow';
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
-import { NodeSizes } from '../../core/config/sizes';
 import { CvtColorComponent } from '../opencv/conversors/CvtColorComponent';
 import { CVFComponent } from '../../ide/types/component';
 import { ThresholdComponent } from '../opencv/segmentation/ThresholdComponent';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import { ProjectTemplate } from '../../core/types/project-template';
 import { CVResizeComponent } from '../opencv/geometricTransformations';
+import { makeXYPosition } from '../../core/utils/makeXYPosition';
 import cv from 'opencv-ts';
 
 const group = 'OpenCV';
-
-const makeXYPosition = (gridX: number, gridY: number, padding: number): XYPosition => {
-  return {
-    x: (NodeSizes.defaultWidth + padding) * gridX,
-    y: (NodeSizes.defaultHeight + padding) * gridY,
-  };
-};
 
 const ThresholdSamplesAction: ProjectTemplate = {
   group,
   title: 'Threshold Samples',
   action: () => {
-    const padding = NodeSizes.defaultWidth / 3;
     let comp: typeof CVFComponent | null;
-    let gridY = -2;
+    let pos;
 
     // Add Video
     comp = useNodeStore.getState().getNodeType(CVVideoCaptureComponent.name);
-    let videoId = '';
-    if (comp) {
-      const pos = makeXYPosition(-3, 0, padding);
-      videoId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
-    }
+    pos = makeXYPosition(-3, 0);
+    const videoId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Resize
     comp = useNodeStore.getState().getNodeType(CVResizeComponent.name);
-    let resizeId = '';
-    if (comp) {
-      const pos = makeXYPosition(-1, -1, padding);
-      resizeId = useNodeStore.getState().addNodeFromComponent(comp, pos, { dsize: new cv.Size(128, 128) }).id;
-    }
-
+    pos = makeXYPosition(-1, -1);
+    const resizeId = useNodeStore.getState().addNodeFromComponent(comp!, pos, { dsize: new cv.Size(128, 128) }).id;
     // Add Convert
     comp = useNodeStore.getState().getNodeType(CvtColorComponent.name);
-    let cvtColorId = '';
-    if (comp) {
-      const pos = makeXYPosition(-1, 0, padding);
-      cvtColorId = useNodeStore.getState().addNodeFromComponent(comp, pos).id;
-    }
+    pos = makeXYPosition(-1, 0);
+    const cvtColorId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Threshold BIN
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
-    let trash1 = '';
-    if (comp) {
-      const pos = makeXYPosition(0, gridY++, padding);
-      trash1 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
-    }
+    pos = makeXYPosition(0, -2);
+    const trash1 = useNodeStore.getState().addNodeFromComponent(comp!, pos, { thresh: 100, type: cv.THRESH_BINARY_INV }).id;
     // Add Threshold TRUNC
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
-    let trash2 = '';
-    if (comp) {
-      const pos = makeXYPosition(0, gridY++, padding);
-      trash2 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_TRUNC }).id;
-    }
+    pos = makeXYPosition(0, -1);
+    const trash2 = useNodeStore.getState().addNodeFromComponent(comp!, pos, { thresh: 100, type: cv.THRESH_TRUNC }).id;
     // Add Threshold TOZERO
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
-    let trash3 = '';
-    if (comp) {
-      const pos = makeXYPosition(0, gridY++, padding);
-      trash3 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_TOZERO }).id;
-    }
+    pos = makeXYPosition(0, -0);
+    const trash3 = useNodeStore.getState().addNodeFromComponent(comp!, pos, { thresh: 100, type: cv.THRESH_TOZERO }).id;
     // Add Threshold OTSU
     comp = useNodeStore.getState().getNodeType(ThresholdComponent.name);
-    let trash4 = '';
-    if (comp) {
-      const pos = makeXYPosition(0, gridY++, padding);
-      trash4 = useNodeStore.getState().addNodeFromComponent(comp, pos, { thresh: 100, type: cv.THRESH_OTSU }).id;
-    }
+    pos = makeXYPosition(0, 1);
+    const trash4 = useNodeStore.getState().addNodeFromComponent(comp!, pos, { thresh: 100, type: cv.THRESH_OTSU }).id;
 
     useNodeStore.getState().addEdge(videoId, resizeId, 'out', 'src1');
     useNodeStore.getState().addEdge(resizeId, cvtColorId, 'out', 'src1');

@@ -1,4 +1,4 @@
-import cv from 'opencv-ts';
+import cv, { Mat, Point } from 'opencv-ts';
 import { Position } from 'reactflow';
 import GCStore from '../../core/contexts/GCStore';
 import { CVFComponent } from '../../ide/components/NodeComponent';
@@ -14,19 +14,26 @@ export class HistogramCalcComponent extends CVFComponent {
     { title: 'maks', position: Position.Left },
   ];
 
-  sources: SourceHandle[] = [{ title: 'hist', position: Position.Right }];
+  sources: SourceHandle[] = [
+    { title: 'hist1', position: Position.Right },
+    { title: 'hist2', position: Position.Right },
+    { title: 'hist3', position: Position.Right },
+    { title: 'hist4', position: Position.Right },
+  ];
 
   static processor = class HistogramCalcProcessor extends CVFNodeProcessor {
     properties = [
       { name: 'accumulate', type: PropertyType.Boolean },
-      { name: 'channels', type: PropertyType.Integer },
       { name: 'histSize', type: PropertyType.Integer },
     ];
 
     accumulate: boolean = false;
-    channels: number = 0;
     histSize = 256;
     ranges = [0, 256];
+
+    histHeight = 170;
+    colorBlack = [new cv.Scalar(0, 0, 0)];
+    colorRGB = [new cv.Scalar(255, 0, 0), new cv.Scalar(0, 255, 0), new cv.Scalar(0, 0, 255), new cv.Scalar(128, 128, 128)];
 
     async proccess() {
       const { inputsAsMat } = this;
@@ -43,27 +50,39 @@ export class HistogramCalcComponent extends CVFComponent {
         srcVect.push_back(image);
         GCStore.add(srcVect);
 
-        const hist = new cv.Mat();
-        GCStore.add(hist);
-
-        cv.calcHist(srcVect, [this.channels], mask, hist, [this.histSize], this.ranges, this.accumulate);
-
-        // draw histogram
-        const color = new cv.Scalar(0);
-        const minmaxloc = cv.minMaxLoc(hist, mask);
-
-        const max = minmaxloc.maxVal;
-        const out = new cv.Mat(image.rows, this.histSize, cv.CV_8U, new cv.Scalar(255));
+        const channels = image.channels();
+        const out = new cv.Mat(this.histHeight, this.histSize, channels > 1 ? cv.CV_8UC3 : cv.CV_8U, new cv.Scalar(255, 255, 255));
         GCStore.add(out);
-        for (let i = 0; i < this.histSize; i++) {
-          const binVal = (hist.data32F[i] * image.rows) / max;
-          const point1 = new cv.Point(i, image.rows - 1);
-          const point2 = new cv.Point(i + 1 - 1, image.rows - binVal);
-          cv.rectangle(out, point1, point2, color, cv.FILLED);
+
+        const scale = this.histHeight / image.rows;
+        const colors = channels > 1 ? this.colorRGB : this.colorBlack;
+
+        for (let channel = channels - 1; channel >= 0; channel--) {
+          const hist = new cv.Mat();
+          GCStore.add(hist);
+
+          cv.calcHist(srcVect, [channel], mask, hist, [this.histSize], this.ranges, this.accumulate);
+
+          // draw histogram
+          const minmaxloc = cv.minMaxLoc(hist, mask);
+
+          const max = minmaxloc.maxVal;
+
+          let lastPoint = undefined as Point | undefined;
+          for (let i = 0; i < this.histSize; i++) {
+            const binVal = this.histHeight - ((hist.data32F[i] * image.rows) / max) * scale;
+            if (lastPoint === undefined || !hist.data32F[i]) {
+              lastPoint = new cv.Point(i, binVal);
+            }
+            const point = new cv.Point(i, binVal);
+
+            cv.line(out, lastPoint, point, colors[channel], 1);
+            lastPoint = point;
+          }
+
+          this.sources.push(hist);
         }
         this.output(out);
-
-        this.sources = [hist];
       }
     }
   };

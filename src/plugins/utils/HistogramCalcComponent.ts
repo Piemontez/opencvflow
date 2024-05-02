@@ -70,8 +70,14 @@ export class HistogramCalcComponent extends CVFComponent {
 
           let lastPoint = undefined as Point | undefined;
           for (let i = 0; i < this.histSize; i++) {
-            const binVal = this.histHeight - ((hist.data32F[i] * image.rows) / max) * scale;
-            if (lastPoint === undefined || !hist.data32F[i]) {
+            if (!hist.data32F[i]) {
+              lastPoint = undefined;
+              continue;
+            }
+            const binVal = this.histHeight - (hist.data32F[i] * this.histHeight) / max;
+            if (channels === 1) {
+              lastPoint = new cv.Point(i, this.histSize);
+            } else if (lastPoint === undefined) {
               lastPoint = new cv.Point(i, binVal);
             }
             const point = new cv.Point(i, binVal);

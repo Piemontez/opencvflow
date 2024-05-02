@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { CustomNodeType } from '../../core/types/custom-node-type';
-import { CVFComponent, CVFIOComponent } from '../types/component';
+import { CVFComponent, CVFIOComponent } from '../components/NodeComponent';
 import { PropertyType } from '../types/PropertyType';
 import { CVFNodeProcessor } from '../../core/types/node';
 import GCStore from '../../core/contexts/GCStore';

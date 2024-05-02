@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import GCStore from '../../../core/contexts/GCStore';

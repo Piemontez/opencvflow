@@ -1,4 +1,4 @@
-import { CVFOutputComponent } from '../../../ide/types/component';
+import { CVFOutputComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat } from 'opencv-ts';
 import { MorphShapes } from 'opencv-ts/src/ImageProcessing/ImageFiltering';
@@ -6,7 +6,6 @@ import { PropertyType } from '../../../ide/types/PropertyType';
 import GCStore from '../../../core/contexts/GCStore';
 import { NodeSizes } from '../../../core/config/sizes';
 import { cvInputTabName } from './tabname';
-
 
 export class CVStructuringElementComponent extends CVFOutputComponent {
   static menu = { tabTitle: cvInputTabName, title: 'StructuringElement' };
@@ -32,7 +31,7 @@ export class CVStructuringElementComponent extends CVFOutputComponent {
       this.buildKernel(
         name === 'rows' ? (value as number) : this.rows,
         name === 'cols' ? (value as number) : this.cols,
-        name === 'type' ? (value as MorphShapes) : this.type
+        name === 'type' ? (value as MorphShapes) : this.type,
       );
     }
 

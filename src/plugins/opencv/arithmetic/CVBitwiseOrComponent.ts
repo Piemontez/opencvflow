@@ -1,7 +1,7 @@
 import cv, { Mat } from 'opencv-ts';
 import { Position } from 'reactflow';
 import GCStore from '../../../core/contexts/GCStore';
-import { CVFComponent } from '../../../ide/types/component';
+import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { arithmeticTabName } from './tabname';

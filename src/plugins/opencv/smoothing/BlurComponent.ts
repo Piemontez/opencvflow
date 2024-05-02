@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Point, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -32,6 +32,7 @@ export class BlurComponent extends CVFIOComponent {
           GCStore.add(out);
 
           cv.blur(src, out, this.ksize, this.anchor, this.borderType);
+          
           this.sources.push(out);
           this.output(out);
         }

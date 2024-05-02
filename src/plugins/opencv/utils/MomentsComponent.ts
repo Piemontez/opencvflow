@@ -2,11 +2,10 @@ import cv, { Mat, MatVector } from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { Position } from 'reactflow';
 import GCStore from '../../../core/contexts/GCStore';
-import { CVFComponentOptions, CVFIOComponent } from '../../../ide/types/component';
+import { CVFComponentOptions, CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { SourceHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { cvUtilsTabName } from './tabname';
-
 
 export class MomentsComponent extends CVFIOComponent {
   static menu = { tabTitle: cvUtilsTabName, title: 'Moments' };

@@ -1,4 +1,4 @@
-import { CVFComponent } from '../../../ide/types/component';
+import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { Position } from 'reactflow';

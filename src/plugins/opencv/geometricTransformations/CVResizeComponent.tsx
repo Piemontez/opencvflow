@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -27,6 +27,7 @@ export class CVResizeComponent extends CVFIOComponent {
         for (const src of inputs) {
           const out: Mat = new cv.Mat(this.dsize.height, this.dsize.width, src.type());
           GCStore.add(out);
+
           cv.resize(src, out, this.dsize, this.fx, this.fy, this.interpolation);
 
           this.sources.push(out);

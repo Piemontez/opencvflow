@@ -1,4 +1,4 @@
-import { CVFComponent } from '../../../ide/types/component';
+import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Point } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -24,18 +24,23 @@ export class RegionGrowing extends CVFComponent {
     properties = [
       { name: 'alert', type: PropertyType.Label },
       { name: 'thresh', type: PropertyType.Decimal },
+      { name: 'seed', type: PropertyType.Point },
     ];
 
     alert: string = 'This is an experimental operator';
     thresh: number = 7;
+    seed: Point = new cv.Point(0, 0);
 
     async proccess() {
       const { inputs } = this;
       if (inputs.length === 2) {
-        const [src, seed] = inputs;
+        let [src, seed ] = inputs;
 
-        if (!src || !seed) {
+        if (!src) {
           return;
+        }
+        if (!seed) {
+          seed = this.seed;
         }
 
         const out = new cv.Mat((src as Mat).rows, (src as Mat).cols, cv.CV_16U, new cv.Scalar(0));
@@ -96,7 +101,7 @@ export class RegionGrowing extends CVFComponent {
               nextNb!.x ? nextNb!.x - 1 : 0,
               nextNb!.y ? nextNb!.y - 1 : 0,
               out.cols - nextNb!.x > 3 ? 3 : out.cols - nextNb!.x,
-              out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y
+              out.rows - nextNb!.y > 3 ? 3 : out.rows - nextNb!.y,
             );
 
             for (let row = roi.y + roi.height - 1; row >= roi.y; row--) {

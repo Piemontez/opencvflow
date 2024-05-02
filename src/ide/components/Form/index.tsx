@@ -88,7 +88,7 @@ export function CVFFormGroup(props: CVFFormProps) {
       Control = CVFIntegerFormControl(props);
       break;
     case PropertyType.Label:
-      props.disabled = true;
+      props = { ...props, disabled: true };
       Control = CVFTextFormControl(props);
       break;
     case PropertyType.Text:

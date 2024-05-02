@@ -1,7 +1,7 @@
 import { PluginType } from '../../core/types/plugin';
 import * as files from './files';
 
-const OpenCVPlugin: PluginType = {
+const IDECVPlugin: PluginType = {
   name: 'IDE Plugin',
   components: [
     //Files
@@ -9,4 +9,4 @@ const OpenCVPlugin: PluginType = {
   ],
 };
 
-export default OpenCVPlugin;
+export default IDECVPlugin;

@@ -1,13 +1,14 @@
 import cv, { Mat } from 'opencv-ts';
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import NodeDisplay from '../components/NodeDisplay';
-import NodeTab from '../components/NodeTab';
-import { NodeSizes } from '../../core/config/sizes';
-import GCStore from '../../core/contexts/GCStore';
-import { SourceHandle, TargetHandle } from '../../core/types/handle';
-import { ComponentMenuAction, MenuWithElementTitleProps } from './menu';
-import { CVFNodeData, CVFNodeProcessor } from '../../core/types/node';
+import NodeDisplay from '../NodeDisplay';
+import NodeTab from '../NodeTab';
+import { NodeSizes } from '../../../core/config/sizes';
+import GCStore from '../../../core/contexts/GCStore';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
+import { ComponentMenuAction, MenuWithElementTitleProps } from '../../types/menu';
+import { CVFNodeData, CVFNodeProcessor } from '../../../core/types/node';
+import { Zoom } from '../../types/Zoom';
 
 type OCVComponentProps = {
   id: string;
@@ -46,9 +47,8 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
   // Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
   // Opções
-  // eslint-disable-next-line react/state-in-constructor
   state = {
-    zoom: 'AUTO_SCALE' as number | 'AUTO_SCALE',
+    zoom: Zoom.PERC_AUTO as Zoom,
     options: CVFComponentOptions.NONE,
   };
 
@@ -58,7 +58,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     return (menu as MenuWithElementTitleProps)?.name || (menu?.title as string) || this.constructor.name;
   }
 
-  changeZoom(zoom: number | 'AUTO_SCALE') {
+  changeZoom(zoom: Zoom) {
     this.setState({ zoom });
   }
 
@@ -88,9 +88,16 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
 
     processor.output = (mat: Mat) => {
       if (this.output) {
-        const { zoom, options } = this.state as OCVComponentState;
+        const { zoom, options } = this.state;
         const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
-        if (!notDisplay) {
+        if (notDisplay) {
+          return;
+        }
+
+        let out: Mat;
+        if (Zoom.PERC_100 === zoom) {
+          out = mat;
+        } else {
           let cols;
           let rows;
           if (zoom === 'AUTO_SCALE') {
@@ -102,14 +109,13 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
             rows = mat.rows * zoom;
             cols = mat.cols * zoom;
           }
-
-          const newSize = new cv.Size(cols, rows);
-          const out: Mat = new cv.Mat(rows, cols, mat.type());
+          
+          out = new cv.Mat(rows, cols, mat.type());
           GCStore.add(out);
-          cv.resize(mat, out, newSize, 0, 0, cv.INTER_NEAREST);
-
-          cv.imshow(this.output, out);
+          cv.resize(mat, out, new cv.Size(cols, rows), 0, 0, cv.INTER_NEAREST);
         }
+
+        cv.imshow(this.output, out);
       }
     };
 

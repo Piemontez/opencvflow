@@ -1,4 +1,4 @@
-import { CVFComponent } from '../../../ide/types/component';
+import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Scalar, Point } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -47,6 +47,7 @@ export class MorphologyExComponent extends CVFComponent {
           GCStore.add(out);
 
           cv.morphologyEx(src, out, this.op, kernel, this.anchor, this.iterations, this.borderType, this.borderValue);
+
           this.sources.push(out);
           this.output(out);
         }

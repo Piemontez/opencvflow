@@ -1,7 +1,8 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { CVFComponent, CVFComponentOptions } from '../../types/component';
+import { CVFComponent, CVFComponentOptions } from '../NodeComponent';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
+import { Zoom } from '../../types/Zoom';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
   const { zoom, options } = component.state;
@@ -25,17 +26,17 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
           </Button>
           <Form.Select
             value={(zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom}
-            onChange={(e) => component.changeZoom(e.target.value === 'AUTO_SCALE' ? 'AUTO_SCALE' : parseFloat(e.target.value || '1'))}
+            onChange={(e) => component.changeZoom(e.target.value === Zoom.PERC_AUTO ? Zoom.PERC_AUTO : parseFloat(e.target.value || '1'))}
           >
             <option>Zoom</option>
-            <option value="0.25">25%</option>
-            <option value="0.33">33%</option>
-            <option value="0.50">50%</option>
-            <option value="0.75">75%</option>
-            <option value="1.00">100%</option>
-            <option value="1.50">150%</option>
-            <option value="2.00">200%</option>
-            <option value="AUTO_SCALE">Auto scale</option>
+            <option value={Zoom.PERC_025}>25%</option>
+            <option value={Zoom.PERC_033}>33%</option>
+            <option value={Zoom.PERC_050}>50%</option>
+            <option value={Zoom.PERC_075}>75%</option>
+            <option value={Zoom.PERC_100}>100%</option>
+            <option value={Zoom.PERC_150}>150%</option>
+            <option value={Zoom.PERC_200}>200%</option>
+            <option value={Zoom.PERC_AUTO}>Auto scale</option>
           </Form.Select>
         </Col>
       </Row>

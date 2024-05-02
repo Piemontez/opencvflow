@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -34,12 +34,8 @@ export class CannyComponent extends CVFIOComponent {
           const out = new cv.Mat(src.rows, src.cols, src.type());
           GCStore.add(out);
 
-          cv.Canny(
-            src,
-            out,
-            this.tthreshold1,
-            this.tthreshold1
-          );
+          cv.Canny(src, out, this.tthreshold1, this.tthreshold1);
+          
           this.sources.push(out);
           this.output(out);
         }

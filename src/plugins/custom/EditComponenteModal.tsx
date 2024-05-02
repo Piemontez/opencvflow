@@ -8,7 +8,7 @@ import { useNodeStore } from '../../core/contexts/NodeStore';
 
 import RAW_LOADER_opencvts from '../../../node_modules/opencv-ts/src/opencv.d.ts?raw';
 import RAW_LOADER_property from '../../ide/types/PropertyType?raw';
-import RAW_LOADER_component from '../../ide/types/component?raw';
+import RAW_LOADER_component from '../../ide/components/NodeComponent/index?raw';
 import RAW_LOADER_node from '../../core/types/node?raw';
 import RAW_LOADER_gcstore from '../../core/contexts/GCStore?raw';
 import { customTabName } from './tabname';

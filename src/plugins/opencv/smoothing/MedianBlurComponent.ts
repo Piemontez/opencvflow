@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -25,6 +25,7 @@ export class MedianBlurComponent extends CVFIOComponent {
           GCStore.add(out);
 
           cv.medianBlur(src, out, this.kSize);
+          
           this.sources.push(out);
           this.output(out);
         }

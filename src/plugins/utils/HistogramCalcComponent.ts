@@ -1,15 +1,13 @@
 import cv from 'opencv-ts';
 import { Position } from 'reactflow';
-import GCStore from '../../../core/contexts/GCStore';
-import { CVFComponent } from '../../../ide/types/component';
-import { SourceHandle, TargetHandle } from '../../../core/types/handle';
-import { CVFNodeProcessor } from '../../../core/types/node';
-import { PropertyType } from '../../../ide/types/PropertyType';
-import { cvUtilsTabName } from './tabname';
-
+import GCStore from '../../core/contexts/GCStore';
+import { CVFComponent } from '../../ide/components/NodeComponent';
+import { SourceHandle, TargetHandle } from '../../core/types/handle';
+import { CVFNodeProcessor } from '../../core/types/node';
+import { PropertyType } from '../../ide/types/PropertyType';
 
 export class HistogramCalcComponent extends CVFComponent {
-  static menu = { tabTitle: cvUtilsTabName, title: 'Histogram Calc' };
+  static menu = { tabTitle: ['Utils'], title: 'Histogram Calc' };
 
   targets: TargetHandle[] = [
     { title: 'image', position: Position.Left },

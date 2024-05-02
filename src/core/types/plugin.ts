@@ -1,4 +1,4 @@
-import { CVFComponent } from '../../ide/types/component';
+import { CVFComponent } from '../../ide/components/NodeComponent';
 import { MenuActionProps } from '../../ide/types/menu';
 import { ProjectTemplate } from './project-template';
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CVFComponent } from '../types/component';
+import { CVFComponent } from '../components/NodeComponent';
 import { MenuActionProps } from '../types/menu';
 import { StringMap } from '../types/StringMap';
 

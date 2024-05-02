@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Point, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -36,6 +36,7 @@ export class BoxFilterComponent extends CVFIOComponent {
           GCStore.add(out);
 
           cv.boxFilter(src, out, this.ddepth, this.ksize, this.anchor, this.normalize, this.borderType);
+
           this.sources.push(out);
           this.output(out);
         }

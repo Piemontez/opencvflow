@@ -6,7 +6,7 @@ import { ErodeComponent } from '../opencv/morphology/ErodeComponent';
 import { CVKernelComponent } from '../opencv/inputs/CVKernelComponent';
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { CvtColorComponent } from '../opencv/conversors/CvtColorComponent';
-import { CVFComponent } from '../../ide/types/component';
+import { CVFComponent } from '../../ide/components/NodeComponent';
 import { ProjectTemplate } from '../../core/types/project-template';
 import { CVResizeComponent } from '../opencv/geometricTransformations';
 import { useNodeStore } from '../../core/contexts/NodeStore';

@@ -2,7 +2,7 @@ import { NodeTypes, XYPosition, Connection } from 'reactflow';
 import React, { MouseEvent } from 'react';
 import { CVFEdgeData, OCVFEdge } from '../types/edge';
 import { CVFNode, CVFNodeProcessor } from '../types/node';
-import { CVFComponent } from '../../ide/types/component';
+import { CVFComponent } from '../../ide/components/NodeComponent';
 import { v5 as uuidv5 } from 'uuid';
 import { ComponentMenuAction } from '../../ide/types/menu';
 import Storage from '../../ide/commons/Storage';

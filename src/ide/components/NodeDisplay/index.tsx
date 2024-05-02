@@ -1,4 +1,4 @@
-import { CVFComponent } from '../../types/component';
+import { CVFComponent } from '../NodeComponent';
 import { NodeSizes } from '../../../core/config/sizes';
 
 const NodeDisplay = ({

@@ -1,9 +1,9 @@
 import { PluginType } from '../../core/types/plugin';
 import { NewComponentAction } from './NewComponentAction';
 
-const OpenCVPlugin: PluginType = {
+const CustomCVPlugin: PluginType = {
   name: 'Custom Plugin',
   components: [NewComponentAction],
 };
 
-export default OpenCVPlugin;
+export default CustomCVPlugin;

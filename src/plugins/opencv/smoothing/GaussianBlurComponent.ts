@@ -1,4 +1,4 @@
-import { CVFIOComponent } from '../../../ide/types/component';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
@@ -34,6 +34,7 @@ export class GaussianBlurComponent extends CVFIOComponent {
           GCStore.add(out);
 
           cv.GaussianBlur(src, out, this.size, this.sigmaX, this.sigmaY, this.borderType);
+
           this.sources.push(out);
           this.output(out);
         }

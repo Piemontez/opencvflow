@@ -1,6 +1,6 @@
 import { MenuActionProps } from '../../ide/types/menu';
 import { PluginFile, PluginType } from '../types/plugin';
-import { CVFComponent } from '../../ide/types/component';
+import { CVFComponent } from '../../ide/components/NodeComponent';
 import { useMenuStore } from '../../ide/contexts/MenuStore';
 import { plugins } from '../../plugins';
 import { create } from 'zustand';

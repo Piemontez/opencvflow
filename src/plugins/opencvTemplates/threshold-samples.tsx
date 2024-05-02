@@ -1,6 +1,6 @@
 import { CVVideoCaptureComponent } from '../opencv/inputs/CVVideoCaptureComponent';
 import { CvtColorComponent } from '../opencv/conversors/CvtColorComponent';
-import { CVFComponent } from '../../ide/types/component';
+import { CVFComponent } from '../../ide/components/NodeComponent';
 import { ThresholdComponent } from '../opencv/segmentation/ThresholdComponent';
 import { useNodeStore } from '../../core/contexts/NodeStore';
 import { ProjectTemplate } from '../../core/types/project-template';

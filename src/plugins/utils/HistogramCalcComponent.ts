@@ -1,4 +1,4 @@
-import cv, { Mat, Point } from 'opencv-ts';
+import cv, { Point } from 'opencv-ts';
 import { Position } from 'reactflow';
 import GCStore from '../../core/contexts/GCStore';
 import { CVFComponent } from '../../ide/components/NodeComponent';
@@ -54,7 +54,6 @@ export class HistogramCalcComponent extends CVFComponent {
         const out = new cv.Mat(this.histHeight, this.histSize, channels > 1 ? cv.CV_8UC3 : cv.CV_8U, new cv.Scalar(255, 255, 255));
         GCStore.add(out);
 
-        const scale = this.histHeight / image.rows;
         const colors = channels > 1 ? this.colorRGB : this.colorBlack;
 
         for (let channel = channels - 1; channel >= 0; channel--) {

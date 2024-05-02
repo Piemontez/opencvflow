@@ -1,14 +1,16 @@
 import { PluginType } from '../../core/types/plugin';
-import morphologySamples from './morphology-samples';
-import thresholdSamples from './threshold-samples';
+import ThresholdSamplesAction from './threshold-samples';
+import MorphologySamplesAction from './morphology-samples';
+import HistogramCalcSamplesAction from './histogram-cal';
 
 const OpenCVTemplatesPlugin: PluginType = {
   name: 'OpenCV Templates Plugin',
   components: [],
   templates: [
     //
-    thresholdSamples,
-    morphologySamples,
+    ThresholdSamplesAction,
+    MorphologySamplesAction,
+    HistogramCalcSamplesAction,
   ],
 };
 

@@ -10,7 +10,7 @@ import { edgeTabName } from './tabname';
  * Sobel component and node
  */
 
-export class CVSobelComponent extends CVFIOComponent {
+export class SobelComponent extends CVFIOComponent {
   static menu = { tabTitle: edgeTabName, title: 'Sobel' };
 
   static processor = class SobelProcessor extends CVFNodeProcessor {

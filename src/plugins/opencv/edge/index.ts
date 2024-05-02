@@ -1,4 +1,4 @@
-export * from './CVSobelComponent';
+export * from './SobelComponent';
 export * from './CannyComponent';
 export * from './LaplacianComponent';
 export * from './ScharrComponent';

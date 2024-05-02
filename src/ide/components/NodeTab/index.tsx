@@ -5,7 +5,7 @@ import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { Zoom } from '../../types/Zoom';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
-  const { zoom, options } = component.state;
+  const { scale: zoom, options } = component.state;
   const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
   return (
     <div className="node-header">
@@ -26,7 +26,7 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
           </Button>
           <Form.Select
             value={(zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom}
-            onChange={(e) => component.changeZoom(e.target.value === Zoom.PERC_AUTO ? Zoom.PERC_AUTO : parseFloat(e.target.value || '1'))}
+            onChange={(e) => component.changeScale(e.target.value === Zoom.PERC_AUTO ? Zoom.PERC_AUTO : parseFloat(e.target.value || '1'))}
           >
             <option>Zoom</option>
             <option value={Zoom.PERC_025}>25%</option>

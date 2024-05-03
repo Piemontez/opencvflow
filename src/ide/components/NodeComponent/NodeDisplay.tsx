@@ -26,14 +26,19 @@ const NodeDisplay = ({ canvasRef, component, onMouseMove, onMouseLeave }: NodeDi
 export const NodeZoom = ({
   canvasRef,
   pos,
-  scale,
 }: {
   canvasRef: (ref: HTMLCanvasElement) => void;
-  pos: { x: number; y: number };
-  scale: number;
+  pos: { mx: number; my: number; canvasScale: number };
 }) => {
   return (
-    <div style={{ marginLeft: 50 + pos.x * scale, top: 75 + pos.y * scale, position: 'absolute', border: '1px solid' }}>
+    <div
+      style={{
+        marginLeft: 150 + pos.mx * pos.canvasScale,
+        top: 20 + pos.my * pos.canvasScale,
+        position: 'absolute',
+        border: '1px solid',
+      }}
+    >
       <canvas ref={canvasRef} height={NodeSizes.defaultHeight} />
     </div>
   );

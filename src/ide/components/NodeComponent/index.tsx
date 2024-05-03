@@ -44,9 +44,12 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
   static menu?: ComponentMenuAction;
 
   zoom = {
+    mx: 0,
+    my: 0,
     x: 0,
     y: 0,
-    width: 0,
+    width: 0, // Tamanho do cambas
+    canvasScale: 0, // Proporção exibida do canvas
     scale: 0, // Escala de zoom do componente
     scaleZoom: 0, // Escala de zoom da lupa de aumento
   };
@@ -77,12 +80,13 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
    * @param x
    * @param y
    */
-  showZoom(x: number, y: number) {
+  showZoom(mx: number, my: number) {
     const { left, top, width } = this.canvasRef!.getBoundingClientRect();
 
-    this.zoom.x = x - Math.floor(left);
-    this.zoom.y = y - Math.floor(top);
+    this.zoom.mx = mx - Math.floor(left);
+    this.zoom.my = my - Math.floor(top);
     this.zoom.width = Math.floor(width);
+    this.zoom.canvasScale = this.canvasRef!.width / this.zoom.width || 0;
 
     this.setState({ showZoom: true });
   }
@@ -130,7 +134,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
 
   private calculateScale = (mat: Mat) => {
     const { scale } = this.state;
-    const { x, y, width } = this.zoom;
+    const { mx, my, width } = this.zoom;
 
     // Escala do componente
     if (scale === 'AUTO_SCALE') {
@@ -142,8 +146,8 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
 
     // Escala da lupa de aumento
     this.zoom.scaleZoom = mat.cols / width;
-    this.zoom.x = Math.max(Math.min(x * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
-    this.zoom.y = Math.max(Math.min(y * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
+    this.zoom.x = Math.floor(Math.max(Math.min(mx * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0));
+    this.zoom.y = Math.floor(Math.max(Math.min(my * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0));
   };
 
   private output = (mat: Mat) => {
@@ -168,7 +172,13 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     if (this.canvasZoomRef && this.state.showZoom) {
       let { x, y } = this.zoom;
 
-      const roi = GCStore.add(mat.roi(new cv.Rect(x, y, ZOOM_BOX_SIZE, ZOOM_BOX_SIZE)));
+      const width = Math.min(ZOOM_BOX_SIZE, mat.cols);
+      const height = Math.min(ZOOM_BOX_SIZE, mat.rows);
+      const left = Math.min(x, mat.cols - width);
+      const top = Math.min(y, mat.rows - height);
+      const rect = new cv.Rect(left, top, width, height);
+
+      const roi = GCStore.add(mat.roi(rect));
       const zoom = GCStore.add(new cv.Mat());
 
       cv.resize(roi, zoom, new cv.Size(NodeSizes.defaultWidth, NodeSizes.defaultHeight), 0, 0, cv.INTER_NEAREST);
@@ -212,13 +222,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
         <NodeTab component={this} />
 
         <div className="node-body">
-          {!!showZoom && (
-            <NodeZoom
-              canvasRef={(ref) => (this.canvasZoomRef = ref)}
-              pos={this.zoom!}
-              scale={(this.canvasRef?.width || 1) / (this.zoom?.width || 1)}
-            />
-          )}
+          {!!showZoom && <NodeZoom canvasRef={(ref) => (this.canvasZoomRef = ref)} pos={this.zoom!} scale={this.zoom.canvasScale} />}
 
           {processor.body() || (
             <NodeDisplay

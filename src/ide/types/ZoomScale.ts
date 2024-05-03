@@ -1,4 +1,4 @@
-export enum Zoom {
+export enum ZoomScale {
   PERC_025 = 0.25,
   PERC_033 = 0.33,
   PERC_050 = 0.5,

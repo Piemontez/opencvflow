@@ -1,4 +1,4 @@
-import { CVFComponent } from '../NodeComponent';
+import { CVFComponent } from '.';
 import { NodeSizes } from '../../../core/config/sizes';
 import { MouseEventHandler } from 'react';
 

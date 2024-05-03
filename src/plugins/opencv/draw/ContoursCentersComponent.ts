@@ -1,7 +1,8 @@
 import cv from 'opencv-ts';
 import { Moments } from 'opencv-ts/src/core/Moments';
 import { Position } from 'reactflow';
-import { CVFComponentOptions, CVFIOComponent } from '../../../ide/components/NodeComponent';
+import { CVFIOComponent } from '../../../ide/components/NodeComponent';
+import { CVFComponentOptions } from '../../../ide/components/NodeComponent/CVFComponentOptions';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { drawTabName } from './tabname';

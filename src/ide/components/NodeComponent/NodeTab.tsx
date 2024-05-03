@@ -1,8 +1,9 @@
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { CVFComponent, CVFComponentOptions } from '../NodeComponent';
+import { CVFComponent } from '.';
+import { CVFComponentOptions } from './CVFComponentOptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
-import { Zoom } from '../../types/Zoom';
+import { ZoomScale } from '../../types/ZoomScale';
 
 const NodeTab = ({ component }: { component: CVFComponent }) => {
   const { scale: zoom, options } = component.state;
@@ -26,17 +27,17 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
           </Button>
           <Form.Select
             value={(zoom as number).toFixed ? (zoom as number).toFixed(2) : zoom}
-            onChange={(e) => component.changeScale(e.target.value === Zoom.PERC_AUTO ? Zoom.PERC_AUTO : parseFloat(e.target.value || '1'))}
+            onChange={(e) => component.changeScale(e.target.value === ZoomScale.PERC_AUTO ? ZoomScale.PERC_AUTO : parseFloat(e.target.value || '1'))}
           >
             <option>Zoom</option>
-            <option value={Zoom.PERC_025}>25%</option>
-            <option value={Zoom.PERC_033}>33%</option>
-            <option value={Zoom.PERC_050}>50%</option>
-            <option value={Zoom.PERC_075}>75%</option>
-            <option value={Zoom.PERC_100}>100%</option>
-            <option value={Zoom.PERC_150}>150%</option>
-            <option value={Zoom.PERC_200}>200%</option>
-            <option value={Zoom.PERC_AUTO}>Auto scale</option>
+            <option value={ZoomScale.PERC_025}>25%</option>
+            <option value={ZoomScale.PERC_033}>33%</option>
+            <option value={ZoomScale.PERC_050}>50%</option>
+            <option value={ZoomScale.PERC_075}>75%</option>
+            <option value={ZoomScale.PERC_100}>100%</option>
+            <option value={ZoomScale.PERC_150}>150%</option>
+            <option value={ZoomScale.PERC_200}>200%</option>
+            <option value={ZoomScale.PERC_AUTO}>Auto scale</option>
           </Form.Select>
         </Col>
       </Row>

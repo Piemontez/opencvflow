@@ -1,15 +1,16 @@
 import cv, { Mat } from 'opencv-ts';
 import React from 'react';
 import { Handle, Position } from 'reactflow';
-import NodeDisplay, { NodeZoom } from '../NodeDisplay';
-import NodeTab from '../NodeTab';
+import NodeDisplay, { NodeZoom } from './NodeDisplay';
+import NodeTab from './NodeTab';
 import { NodeSizes } from '../../../core/config/sizes';
 import GCStore from '../../../core/contexts/GCStore';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { ComponentMenuAction, MenuWithElementTitleProps } from '../../types/menu';
 import { CVFNodeData, CVFNodeProcessor } from '../../../core/types/node';
-import { Zoom } from '../../types/Zoom';
+import { ZoomScale } from '../../types/ZoomScale';
 import { ZOOM_BOX_SIZE, ZOOM_BOX_SIZE_HALF } from '../../commons/consts';
+import { CVFComponentOptions } from './CVFComponentOptions';
 
 type OCVComponentProps = {
   id: string;
@@ -17,23 +18,11 @@ type OCVComponentProps = {
   type: string;
 };
 
-type ZoomIn = {
-  x: number;
-  y: number;
-  width: number;
-};
 type OCVComponentState = {
-  scale: number | 'AUTO_SCALE';
-  zoomIn?: ZoomIn;
+  scale: ZoomScale;
+  showZoom?: boolean;
   options: number;
 };
-
-export enum CVFComponentOptions {
-  NONE = 0,
-  NOT_DISPLAY = 1,
-  NEXT_OPTION_02 = 2,
-  NEXT_OPTION_01 = 4,
-}
 
 class EmptyNodeProcessor extends CVFNodeProcessor {}
 class ForkCVFNodeProcessor extends CVFNodeProcessor {}
@@ -53,10 +42,19 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
   static processor: OCVComponentProcessor = EmptyNodeProcessor;
   // Definição do menu que ira aparecer
   static menu?: ComponentMenuAction;
+
+  zoom = {
+    x: 0,
+    y: 0,
+    width: 0,
+    scale: 0, // Escala de zoom do componente
+    scaleZoom: 0, // Escala de zoom da lupa de aumento
+  };
+
   // Opções
   state = {
-    scale: Zoom.PERC_AUTO as Zoom,
-    zoomIn: undefined as ZoomIn | undefined,
+    scale: ZoomScale.PERC_AUTO,
+    showZoom: false,
     options: CVFComponentOptions.NONE,
   };
 
@@ -66,24 +64,31 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     return (menu as MenuWithElementTitleProps)?.name || (menu?.title as string) || this.constructor.name;
   }
 
-  changeScale(scale: Zoom) {
+  /**
+   * Escala(Zoom) de visualização da imagem
+   * @param scale
+   */
+  changeScale(scale: ZoomScale) {
     this.setState({ scale });
   }
 
+  /**
+   * Modal adicional com zoom
+   * @param x
+   * @param y
+   */
   showZoom(x: number, y: number) {
     const { left, top, width } = this.canvasRef!.getBoundingClientRect();
 
-    x = x - Math.floor(left);
-    y = y - Math.floor(top);
-    this.setState({
-      zoomIn: { x, y, width: Math.floor(width) },
-    });
+    this.zoom.x = x - Math.floor(left);
+    this.zoom.y = y - Math.floor(top);
+    this.zoom.width = Math.floor(width);
+
+    this.setState({ showZoom: true });
   }
 
   hideZoom = () => {
-    this.setState({
-      zoomIn: undefined,
-    });
+    this.setState({ showZoom: false });
   };
 
   addOption(opt: number) {
@@ -110,59 +115,68 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
 
     processor.componentPointer = { current: this };
 
-    processor.output = this.output;
-    processor.outputMsg = this.outputMsg;
-  }
-
-  output = (mat: Mat) => {
-    if (this.canvasRef) {
-      const { scale: zoom, options } = this.state;
-      const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
+    processor.output = (mat: Mat) => {
+      const notDisplay = this.state.options & CVFComponentOptions.NOT_DISPLAY;
       if (notDisplay) {
         return;
       }
 
+      this.calculateScale(mat);
+      this.output(mat);
+      this.outputZoom(mat);
+    };
+    processor.outputMsg = this.outputMsg;
+  }
+
+  private calculateScale = (mat: Mat) => {
+    const { scale } = this.state;
+    const { x, y, width } = this.zoom;
+
+    // Escala do componente
+    if (scale === 'AUTO_SCALE') {
+      const min = Math.min(mat.rows, mat.cols);
+      this.zoom.scale = NodeSizes.defaultHeight / min;
+    } else {
+      this.zoom.scale = scale;
+    }
+
+    // Escala da lupa de aumento
+    this.zoom.scaleZoom = mat.cols / width;
+    this.zoom.x = Math.max(Math.min(x * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
+    this.zoom.y = Math.max(Math.min(y * this.zoom.scaleZoom + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
+  };
+
+  private output = (mat: Mat) => {
+    if (this.canvasRef) {
+      const { scale } = this.state;
+
       let out: Mat;
-      if (Zoom.PERC_100 === zoom) {
+      if (ZoomScale.PERC_100 === scale) {
         out = mat;
       } else {
-        let cols;
-        let rows;
-        if (zoom === 'AUTO_SCALE') {
-          const min = Math.min(mat.rows, mat.cols);
-          const scale = NodeSizes.defaultHeight / min;
-          cols = mat.cols * scale;
-          rows = mat.rows * scale;
-        } else {
-          rows = mat.rows * zoom;
-          cols = mat.cols * zoom;
-        }
+        let cols = mat.cols * this.zoom.scale;
+        let rows = mat.rows * this.zoom.scale;
 
         out = GCStore.add(new cv.Mat(rows, cols, mat.type()));
         cv.resize(mat, out, new cv.Size(cols, rows), 0, 0, cv.INTER_NEAREST);
       }
       cv.imshow(this.canvasRef, out);
-
-      this.outputZoom(mat);
     }
   };
 
-  outputZoom = (mat: Mat) => {
-    if (this.canvasZoomRef && this.state.zoomIn) {
-      let { x, y, width } = this.state.zoomIn;
-      const scale = mat.cols / width;
+  private outputZoom = (mat: Mat) => {
+    if (this.canvasZoomRef && this.state.showZoom) {
+      let { x, y } = this.zoom;
 
-      x = Math.max(Math.min(x * scale + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
-      y = Math.max(Math.min(y * scale + ZOOM_BOX_SIZE_HALF, mat.rows) - ZOOM_BOX_SIZE_HALF, 0);
+      const roi = GCStore.add(mat.roi(new cv.Rect(x, y, ZOOM_BOX_SIZE, ZOOM_BOX_SIZE)));
+      const zoom = GCStore.add(new cv.Mat());
 
-      const zoom = GCStore.add(mat.roi(new cv.Rect(x, y, ZOOM_BOX_SIZE, ZOOM_BOX_SIZE)));
-      const resize = GCStore.add(new cv.Mat());
-      cv.resize(zoom, resize, new cv.Size(NodeSizes.defaultWidth, NodeSizes.defaultHeight), 0, 0, cv.INTER_NEAREST);
-      cv.imshow(this.canvasZoomRef, resize);
+      cv.resize(roi, zoom, new cv.Size(NodeSizes.defaultWidth, NodeSizes.defaultHeight), 0, 0, cv.INTER_NEAREST);
+      cv.imshow(this.canvasZoomRef, zoom);
     }
   };
 
-  outputMsg = (msg: string) => {
+  private outputMsg = (msg: string) => {
     if (this.canvasRef) {
       const ctx = this.canvasRef.getContext('2d');
       if (ctx) {
@@ -172,7 +186,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
   };
 
   render() {
-    const { zoomIn } = this.state;
+    const { showZoom } = this.state;
     const { data } = this.props;
     const { processor } = data;
     return (
@@ -198,8 +212,12 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
         <NodeTab component={this} />
 
         <div className="node-body">
-          {!!zoomIn && (
-            <NodeZoom canvasRef={(ref) => (this.canvasZoomRef = ref)} pos={zoomIn} scale={(this.canvasRef?.width || 1) / (zoomIn?.width || 1)} />
+          {!!showZoom && (
+            <NodeZoom
+              canvasRef={(ref) => (this.canvasZoomRef = ref)}
+              pos={this.zoom!}
+              scale={(this.canvasRef?.width || 1) / (this.zoom?.width || 1)}
+            />
           )}
 
           {processor.body() || (

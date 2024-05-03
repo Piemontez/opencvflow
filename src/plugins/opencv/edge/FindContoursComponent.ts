@@ -1,4 +1,5 @@
-import { CVFComponent, CVFComponentOptions } from '../../../ide/components/NodeComponent';
+import { CVFComponent } from '../../../ide/components/NodeComponent';
+import { CVFComponentOptions } from '../../../ide/components/NodeComponent/CVFComponentOptions';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';

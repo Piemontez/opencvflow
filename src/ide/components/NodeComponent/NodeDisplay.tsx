@@ -36,10 +36,11 @@ export const NodeZoom = ({
         marginLeft: 150 + pos.mx * pos.canvasScale,
         top: 20 + pos.my * pos.canvasScale,
         position: 'absolute',
-        border: '1px solid',
       }}
     >
-      <canvas ref={canvasRef} height={NodeSizes.defaultHeight} />
+      <div className="node-body">
+        <canvas ref={canvasRef} height={NodeSizes.defaultHeight} />
+      </div>
     </div>
   );
 };

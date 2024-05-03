@@ -2,10 +2,12 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faAnglesLeft,
   faAnglesRight,
+  faBars,
   faEye,
   faEyeSlash,
   faFile,
   faFolderOpen,
+  faMagnifyingGlass,
   faMoon,
   faPlayCircle,
   faPlus,
@@ -39,4 +41,6 @@ library.add(
   faEye,
   faEyeSlash,
   faSearch,
+  faBars,
+  faMagnifyingGlass,
 );

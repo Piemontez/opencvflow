@@ -48,7 +48,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     my: 0,
     x: 0,
     y: 0,
-    width: 0, // Tamanho do cambas
+    width: 0, // Tamanho do canvas
     canvasScale: 0, // Proporção exibida do canvas
     scale: 0, // Escala de zoom do componente
     scaleZoom: 0, // Escala de zoom da lupa de aumento
@@ -113,7 +113,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     this.initOutputs();
   }
 
-  initOutputs() {
+  private initOutputs() {
     const { data } = this.props;
     const { processor } = data;
 
@@ -222,7 +222,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
         <NodeTab component={this} />
 
         <div className="node-body">
-          {!!showZoom && <NodeZoom canvasRef={(ref) => (this.canvasZoomRef = ref)} pos={this.zoom!} scale={this.zoom.canvasScale} />}
+          {!!showZoom && <NodeZoom canvasRef={(ref) => (this.canvasZoomRef = ref)} pos={this.zoom!} />}
 
           {processor.body() || (
             <NodeDisplay

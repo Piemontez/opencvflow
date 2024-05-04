@@ -18,6 +18,7 @@ import { CVFFormEvent } from './types/CVFFormEvent';
 import { OCVDistanceTypesFormControl } from './ocv-distancetypes-formcontrol';
 import { OCVMorphTypesFormControl } from './ocv-morphtypes-formcontrol';
 import { OCVDataTypeTypesFormControl } from './ocv-datatypes-formcontrol';
+import { OCVNormTypesFormControl } from './ocv-normtypes-formcontrol';
 
 /**
  * Definição da função chamada ao alterar um formulario
@@ -46,7 +47,7 @@ export function CVFFormGroup(props: CVFFormProps) {
       Control = <OCVDistanceTypesFormControl {...props} />;
       break;
     case PropertyType.NormTypes:
-      Control = <OCVDistanceTypesFormControl {...props} />;
+      Control = <OCVNormTypesFormControl {...props} />;
       break;
     case PropertyType.DataTypes:
       Control = <OCVDataTypeTypesFormControl {...props} />;

@@ -7,7 +7,6 @@ import { CVFNodeProcessor } from '../../../core/types/node';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import { arithmeticTabName } from './tabname';
 
-
 export class CVNormalizeComponent extends CVFIOComponent {
   static menu = { tabTitle: arithmeticTabName, title: 'Normalize' };
 

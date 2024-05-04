@@ -14,19 +14,11 @@ export class OCVNormTypesFormControl extends Component<CVFFormProps> {
     }
     return (
       <>
-        <Form.Control
-          autoComplete="off"
-          as="select"
-          name={this.props.name}
-          value={this.props.value}
-          onMouseDown={() => this.pickerRef.show()}
-        >
+        <Form.Control autoComplete="off" as="select" name={this.props.name} value={this.props.value} onMouseDown={() => this.pickerRef.show()}>
           <option>{option}</option>
         </Form.Control>
         <NormTypesPicker
-          onSel={(value: any | null, row: any, event: any) =>
-            this.props.onChange && this.props.onChange(value, row, event)
-          }
+          onSel={(value: any | null, row: any, event: any) => this.props.onChange && this.props.onChange(value, row, event)}
           title={this.props.title || 'NormTypes Types'}
           header={this.props.header}
           multi={this.props.multi}

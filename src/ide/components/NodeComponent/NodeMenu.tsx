@@ -30,7 +30,9 @@ const NodeMenu = ({ component }: { component: CVFComponent }) => {
               <Dropdown.Item onClick={() => component.changeScale(ZoomScale.PERC_AUTO)}>Auto scale</Dropdown.Item>
             </DropdownButton>
             <DropdownButton size="sm" as={ButtonGroup} title={<FontAwesomeIcon icon={'bars'} />}>
-              <Dropdown.Item onClick={() => setSourceOf(component)}>Show source</Dropdown.Item>
+              <Dropdown.Item onClick={() => setSourceOf(component)}>
+                <FontAwesomeIcon icon={'code'} /> Show source code
+              </Dropdown.Item>
               <Dropdown.Item onClick={() => component.toggleOption(CVFComponentOptions.NOT_DISPLAY)}>
                 <FontAwesomeIcon className={notDisplay ? 'text-danger' : ''} icon={notDisplay ? 'eye-slash' : 'eye'} /> Toggle view or hide
               </Dropdown.Item>

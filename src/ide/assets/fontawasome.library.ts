@@ -3,6 +3,7 @@ import {
   faAnglesLeft,
   faAnglesRight,
   faBars,
+  faCode,
   faEye,
   faEyeSlash,
   faFile,
@@ -43,4 +44,5 @@ library.add(
   faSearch,
   faBars,
   faMagnifyingGlass,
+  faCode,
 );

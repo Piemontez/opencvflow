@@ -2,7 +2,7 @@
   "name": "opencvflow",
   "productName": "OpenCV-FLOW",
   "description": "Open Computer Vision - Flow is an IDE for computer vision studies and testing.",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,22 +1,24 @@
-import { Button, ButtonGroup, Col, Dropdown, DropdownButton, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, Dropdown, DropdownButton, Modal, Row } from 'react-bootstrap';
 import { CVFComponent } from '.';
 import { CVFComponentOptions } from './CVFComponentOptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNodeStore } from '../../../core/contexts/NodeStore';
 import { ZoomScale } from '../../types/ZoomScale';
+import { useState } from 'react';
 
-const NodeTab = ({ component }: { component: CVFComponent }) => {
+const NodeMenu = ({ component }: { component: CVFComponent }) => {
   const { options } = component.state;
   const notDisplay = options & CVFComponentOptions.NOT_DISPLAY;
+
+  const [sourceOf, setSourceOf] = useState<any>();
+
   return (
     <div className="node-header">
       <Row>
         <Col>{component.title}</Col>
         <Col xs={5}>
-          <ButtonGroup aria-label="Basic example">
-            {/* <DropdownButton size="sm"  title={<FontAwesomeIcon icon={'bars'} />}> */}
-            {/* <Dropdown.Item eventKey="1">Show source</Dropdown.Item> */}
-            {/* </DropdownButton> */}
+          {!!sourceOf && <SourceModal sourceOf={sourceOf} setSourceOf={setSourceOf} />}
+          <ButtonGroup style={{ float: 'right' }}>
             <DropdownButton size="sm" as={ButtonGroup} title={<FontAwesomeIcon icon={'magnifying-glass'} />}>
               <Dropdown.Item onClick={() => component.changeScale(ZoomScale.PERC_025)}>25%</Dropdown.Item>
               <Dropdown.Item onClick={() => component.changeScale(ZoomScale.PERC_033)}>33%</Dropdown.Item>
@@ -27,13 +29,13 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
               <Dropdown.Item onClick={() => component.changeScale(ZoomScale.PERC_200)}>200%</Dropdown.Item>
               <Dropdown.Item onClick={() => component.changeScale(ZoomScale.PERC_AUTO)}>Auto scale</Dropdown.Item>
             </DropdownButton>
-            <Button
-              variant="outline-light"
-              size="sm"
-              onClick={() =>
-                notDisplay ? component.removeOption(CVFComponentOptions.NOT_DISPLAY) : component.addOption(CVFComponentOptions.NOT_DISPLAY)
-              }
-            >
+            <DropdownButton size="sm" as={ButtonGroup} title={<FontAwesomeIcon icon={'bars'} />}>
+              <Dropdown.Item onClick={() => setSourceOf(component)}>Show source</Dropdown.Item>
+              <Dropdown.Item onClick={() => component.toggleOption(CVFComponentOptions.NOT_DISPLAY)}>
+                <FontAwesomeIcon className={notDisplay ? 'text-danger' : ''} icon={notDisplay ? 'eye-slash' : 'eye'} /> Toggle view or hide
+              </Dropdown.Item>
+            </DropdownButton>
+            <Button variant="outline-light" size="sm" onClick={() => component.toggleOption(CVFComponentOptions.NOT_DISPLAY)}>
               <FontAwesomeIcon className={notDisplay ? 'text-danger' : ''} icon={notDisplay ? 'eye-slash' : 'eye'} />
             </Button>
             <Button variant="outline-light" size="sm" onClick={() => useNodeStore.getState().removeNode(component.props.id)}>
@@ -46,4 +48,22 @@ const NodeTab = ({ component }: { component: CVFComponent }) => {
   );
 };
 
-export default NodeTab;
+const SourceModal = ({ sourceOf, setSourceOf }: { sourceOf: CVFComponent; setSourceOf: (x: any) => void }) => {
+  return (
+    <Modal show={true} size="xl">
+      <Modal.Header>
+        <Modal.Title>Source Code Of {sourceOf.constructor.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ maxHeight: '60vh', overflow: 'auto' }}>
+        <pre>{sourceOf.constructor.toString()}</pre>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setSourceOf(null)}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export default NodeMenu;

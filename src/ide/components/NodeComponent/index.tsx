@@ -2,7 +2,7 @@ import cv, { Mat } from 'opencv-ts';
 import React from 'react';
 import { Handle, Position } from 'reactflow';
 import NodeDisplay, { NodeZoom } from './NodeDisplay';
-import NodeTab from './NodeTab';
+import NodeMenu from './NodeMenu';
 import { NodeSizes } from '../../../core/config/sizes';
 import GCStore from '../../../core/contexts/GCStore';
 import { SourceHandle, TargetHandle } from '../../../core/types/handle';
@@ -106,6 +106,13 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
     const { options } = this.state;
     this.setState({
       options: options & ~opt,
+    });
+  }
+
+  toggleOption(opt: number) {
+    const { options } = this.state;
+    this.setState({
+      options: options ^ opt,
     });
   }
 
@@ -219,7 +226,7 @@ export abstract class CVFComponent extends React.Component<OCVComponentProps, OC
           </Handle>
         ))}
 
-        <NodeTab component={this} />
+        <NodeMenu component={this} />
 
         <div className="node-body">
           {!!showZoom && <NodeZoom canvasRef={(ref) => (this.canvasZoomRef = ref)} pos={this.zoom!} />}

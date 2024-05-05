@@ -3,10 +3,10 @@ import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat, Size } from 'opencv-ts';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import GCStore from '../../../core/contexts/GCStore';
-import { cvInputTabName } from './tabname';
+import { cvGeoTransTabName } from './tabname';
 
 export class CVResizeComponent extends CVFIOComponent {
-  static menu = { tabTitle: cvInputTabName, title: 'Resize' };
+  static menu = { tabTitle: cvGeoTransTabName, title: 'Resize' };
   static processor = class ResizeNode extends CVFNodeProcessor {
     properties = [
       { name: 'dsize', type: PropertyType.Size },

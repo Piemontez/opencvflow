@@ -1,1 +1,1 @@
-export const edgeTabName = ['OpenCV', 'Edge'];
+export const edgeTabName = ['OpenCV', 'Edge / Gradients'];

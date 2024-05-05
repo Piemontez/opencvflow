@@ -1,1 +1,1 @@
-export const cvInputTabName = ['OpenCV', 'Geometric Transformations'];
+export const cvGeoTransTabName = ['OpenCV', 'Geometric Transformations / Resize'];

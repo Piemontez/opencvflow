@@ -10,7 +10,7 @@ import nodeStoreToJson from '../utils/nodeStoreToJson';
 import { CustomNodeType } from '../types/custom-node-type';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
-import { STORAGE_NODESTORE_ID } from '../../ide/commons/consts';
+import { EDGE_IN_COLOR, EDGE_OUT_COLOR, STORAGE_NODESTORE_ID } from '../../ide/commons/consts';
 import { useRunnerStore } from './RunnerStore';
 
 const uuidv5Hash = 'c54ab9bc-e083-56f2-9d1e-3eec4bcc93ad';
@@ -303,7 +303,29 @@ export const useNodeStore = create<NodeState>((set, get) => ({
   },
 
   onNodeClick: (_: MouseEvent, node: CVFNode) => {
-    set({ currentElement: node });
+    // Retira animação do antigo nó clicado
+    const edges = get().edges;
+    if (get().currentElement) {
+      edges
+        .filter((edge) => [edge.source, edge.target].includes(get().currentElement!.id))
+        .forEach((edge) => {
+          edge.animated = false;
+          edge.style = undefined;
+        });
+    }
+    // Inicia animação do nó clicado
+    edges
+      .filter((edge) => [edge.source, edge.target].includes(node.id))
+      .forEach((edge) => {
+        edge.animated = true;
+        edge.style = {
+          //
+          stroke: edge.target === node.id ? EDGE_IN_COLOR : EDGE_OUT_COLOR,
+          strokeWidth: 2,
+        };
+      });
+
+    set({ currentElement: node, edges: [...edges] });
   },
 
   refreshCurrentElement: () => {

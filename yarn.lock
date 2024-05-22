@@ -3106,7 +3106,7 @@ __metadata:
     react: ^18.2.0
     react-bootstrap: ^2.10.2
     react-dom: ^18.2.0
-    reactflow: ^11.11.1
+    reactflow: ^11.11.3
     sass: ^1.75.0
     typescript: ^5.2.2
     uuid: ^9.0.1
@@ -3381,7 +3381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reactflow@npm:^11.11.1":
+"reactflow@npm:^11.11.3":
   version: 11.11.3
   resolution: "reactflow@npm:11.11.3"
   dependencies:

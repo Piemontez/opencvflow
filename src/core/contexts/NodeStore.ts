@@ -247,8 +247,8 @@ export const useNodeStore = create<NodeState>((set, get) => ({
     };
 
     // Adicionando a aresta aos nós
-    source.data.processor.outEdges[sourcesIdx] = dataEdge;
-    target.data.processor.inEdges[targetsIdx] = dataEdge;
+    source.data.processor.outEdges.push(dataEdge);
+    target.data.processor.inEdges.push(dataEdge);
 
     // Adicionar a aresta nos elementos da tela
     set({

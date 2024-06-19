@@ -2,6 +2,7 @@ import GCStore from './GCStore';
 import { useNotificationStore } from '../../ide/components/Notification/store';
 import { create } from 'zustand';
 import { useNodeStore } from './NodeStore';
+import { CVFNodeProcessor } from 'core/types/node';
 
 /**
  * Realiza o processamento dos nós
@@ -58,7 +59,28 @@ export const useRunnerStore = create<RunnerState>((set, get) => ({
 
   runner: async (resolve: (value: true) => void) => {
     const processors = useNodeStore.getState().getProcessos();
+    const processorsOrdered: Array<CVFNodeProcessor> = [];
 
+    // Adiciona os nós de processamento de saída no inicio
+    processors.filter((proc) => !proc.componentPointer.current.targets?.length).map((_) => processorsOrdered.push(_));
+
+    // Adiciona os nós a partir deste
+    for (const processor of processorsOrdered) {
+      for (const outEdge of processor.outEdges) {
+        if (outEdge?.targetProcessor && !processorsOrdered.includes(outEdge.targetProcessor)) {
+          processorsOrdered.push(outEdge.targetProcessor);
+        }
+      }
+    }
+
+    // Adiciona os demais nós
+    for (const processor of processors) {
+      if (!processorsOrdered.includes(processor)) {
+        processorsOrdered.push(processor);
+      }
+    }
+
+    // Inicializa os nós
     for (const processor of processors) {
       try {
         processor.componentPointer.current.initOutputs();
@@ -72,6 +94,7 @@ export const useRunnerStore = create<RunnerState>((set, get) => ({
       if (!get().running) break;
     }
 
+    // Processa os nós
     let cycle = 0;
     while (get().running) {
       for (const processor of processors) {

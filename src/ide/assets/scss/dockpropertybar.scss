@@ -1,9 +1,12 @@
 .dockpropertybar {
   padding: 5px 8px;
   border-left: 1px solid var(--bs-dark);
-  min-width: 12%;
-  width: 12%;
-  max-width: 14%;
+
+  @media only screen and (min-width:480px) {
+    min-width: 12%;
+    width: 12%;
+    max-width: 14%;
+  }
 
   .properties {
     overflow: auto;

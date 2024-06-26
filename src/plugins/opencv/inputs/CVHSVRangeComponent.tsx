@@ -6,7 +6,7 @@ import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { inputTabName } from './tabname';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import { NodeSizes } from '../../../core/config/sizes';
-import { hsv2rgb, rgb2Hex } from '../../../core/utils/colors';
+import { rgb2Hex } from '../../../core/utils/colors';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import GCStore from '../../../core/contexts/GCStore';
 
@@ -69,9 +69,9 @@ export class CVHSVRangeComponent extends CVFComponent {
     }
 
     validateFields(name: string, value: number) {
-      if (value > 359) {
-        if (name === 'hueMin') this.hueMin = 359;
-        if (name === 'hueMax') this.hueMax = 359;
+      if (value > 180) {
+        if (name === 'hueMin') this.hueMin = 180;
+        if (name === 'hueMax') this.hueMax = 180;
       }
 
       if (value < 0) {
@@ -81,11 +81,11 @@ export class CVHSVRangeComponent extends CVFComponent {
         if (name === 'saturationMax') this.saturationMax = 0;
         if (name === 'valueMin') this.valueMin = 0;
         if (name === 'valueMax') this.valueMax = 0;
-      } else if (value > 100) {
-        if (name === 'saturationMin') this.saturationMin = 100;
-        if (name === 'saturationMax') this.saturationMax = 100;
-        if (name === 'valueMin') this.valueMin = 100;
-        if (name === 'valueMax') this.valueMax = 100;
+      } else if (value > 255) {
+        if (name === 'saturationMin') this.saturationMin = 255;
+        if (name === 'saturationMax') this.saturationMax = 255;
+        if (name === 'valueMin') this.valueMin = 255;
+        if (name === 'valueMax') this.valueMax = 255;
       }
     }
 
@@ -100,12 +100,19 @@ export class CVHSVRangeComponent extends CVFComponent {
       const hSize = this.canvas!.height / (this.saturationMax - this.saturationMin);
 
       let x = 0;
+      const hsv = GCStore.add(new cv.Mat(1, 1, cv.CV_8UC3));
+      const rgb = GCStore.add(new cv.Mat());
       for (let h = this.hueMin; h <= this.hueMax; h++, x++) {
         let y = 0;
         for (let s = this.saturationMin; s <= this.saturationMax; s++, y++) {
+          hsv.ucharPtr(0, 0)[0] = h;
+          hsv.ucharPtr(0, 0)[1] = s;
           {
             // Min Value
-            const [r, g, b] = hsv2rgb(h, s, this.valueMin);
+            hsv.ucharPtr(0, 0)[2] = this.valueMin;
+            cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
+
+            const [r, g, b] = rgb.data;
             const hex = '#' + rgb2Hex(r, g, b);
             canvasCTX.strokeStyle = hex;
             canvasCTX.fillStyle = hex;
@@ -114,7 +121,10 @@ export class CVHSVRangeComponent extends CVFComponent {
 
           {
             // Max value
-            const [r, g, b] = hsv2rgb(h, s, this.valueMax);
+            hsv.ucharPtr(0, 0)[2] = this.valueMax;
+            cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
+
+            const [r, g, b] = rgb.data;
             const hex = '#' + rgb2Hex(r, g, b);
             canvasEndCTX.strokeStyle = hex;
             canvasEndCTX.fillStyle = hex;
@@ -147,18 +157,8 @@ export class CVHSVRangeComponent extends CVFComponent {
     }
 
     calculateMinMax(rows: number, cols: number, type: DataTypes) {
-      this.min = new cv.Mat(
-        rows,
-        cols,
-        type || cv.CV_8UC3,
-        new cv.Scalar(this.hueMin , this.saturationMin * 2.55, this.valueMin * 2.55),
-      );
-      this.max = new cv.Mat(
-        rows,
-        cols,
-        type || cv.CV_8UC3,
-        new cv.Scalar(this.hueMax , this.saturationMax * 2.55, this.valueMax * 2.55),
-      );
+      this.min = new cv.Mat(rows, cols, type || cv.CV_8UC3, new cv.Scalar(this.hueMin, this.saturationMin, this.valueMin));
+      this.max = new cv.Mat(rows, cols, type || cv.CV_8UC3, new cv.Scalar(this.hueMax, this.saturationMax, this.valueMax));
 
       GCStore.add(this.min);
       GCStore.add(this.max);

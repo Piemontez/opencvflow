@@ -5,6 +5,8 @@ import { PropertyType } from '../../../ide/types/PropertyType';
 import { ColorConversionCodes } from 'opencv-ts/src/core/ColorConversion';
 import GCStore from '../../../core/contexts/GCStore';
 import { conversorsTabName } from './tabname';
+import { SourceHandle } from '../../../core/types/handle';
+import { Position } from 'reactflow';
 
 /**
  * CvtColor component and node
@@ -12,6 +14,11 @@ import { conversorsTabName } from './tabname';
 
 export class CvtColorComponent extends CVFIOComponent {
   static menu = { tabTitle: conversorsTabName, title: 'CvtColor' };
+  sources: SourceHandle[] = [
+    { title: 'out', position: Position.Right },
+    { title: 'type', position: Position.Right },
+  ];
+
   static processor = class CvtColorNode extends CVFNodeProcessor {
     properties = [
       { name: 'code', type: PropertyType.ColorConversionCodes },
@@ -23,18 +30,20 @@ export class CvtColorComponent extends CVFIOComponent {
 
     async proccess() {
       const { inputsAsMat } = this;
-      this.sources = [];
-      for (const src of inputsAsMat) {
-        if (!src) continue;
+      const [src] = inputsAsMat;
 
-        const out = new cv.Mat(src.rows, src.cols, src.type());
-        GCStore.add(out);
-
-        cv.cvtColor(src, out, this.code, this.dstCn);
-
-        this.sources.push(out);
-        this.output(out);
+      if (!src) {
+        this.sources = [];
+        return;
       }
+
+      const out = new cv.Mat(src.rows, src.cols, src.type());
+      GCStore.add(out);
+
+      cv.cvtColor(src, out, this.code, this.dstCn);
+
+      this.sources = [out, out.type()];
+      this.output(out);
     }
   };
 }

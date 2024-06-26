@@ -17,7 +17,6 @@ const jsToBottomNoModule = () => {
     transformIndexHtml(html: any) {
       const jss = [];
       const modules = [];
-      //console.log('');
       //Procura as tags scripts, coleta a propriedade src e remove a tag
       for (const matches of html.matchAll(/<script[^>]*src=['"](.*)['"][^>]*>(.*?)<\/script[^>]*>/g)) {
         const tag = matches[0];
@@ -28,7 +27,6 @@ const jsToBottomNoModule = () => {
 
         jss.push(src);
 
-        //console.log('SCRIPT TAG REMOVED: ' + tag);
         html = html.replace(tag, '');
       }
 
@@ -39,7 +37,6 @@ const jsToBottomNoModule = () => {
 
         modules.push(href);
 
-        //console.log('SCRIPT TAG REMOVED: ' + tag);
         html = html.replace(tag, '');
       }
 

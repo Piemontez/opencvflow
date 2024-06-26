@@ -37,24 +37,17 @@ class GCStore implements GCStoreI {
     this.mCollection = this.mCollection
       // Delete as referencia ao mat
       .map((mc) => {
-        if (
-          cycle === undefined ||
-          mc.cycle === undefined ||
-          mc.cycle === cycle
-        ) {
+        if (cycle === undefined || mc.cycle === undefined || mc.cycle === cycle) {
           try {
             mc.ref.delete();
           } catch (ex) {
-            console.log(ex);
+            console.warn(ex);
           }
         }
         return mc;
       })
       // retorna só o que não foi removido
-      .filter(
-        (mc) =>
-          cycle !== undefined && mc.cycle !== undefined && mc.cycle !== cycle
-      );
+      .filter((mc) => cycle !== undefined && mc.cycle !== undefined && mc.cycle !== cycle);
   }
 
   replaceCycle(cycle: number) {

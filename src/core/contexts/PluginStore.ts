@@ -32,7 +32,7 @@ export const usePluginStore = create<PluginState>((set, get) => ({
     get().loading = true;
 
     const localPluginsValues = Object.values(plugins);
-    console.log(`IDE plugins found: ${localPluginsValues.length}`);
+    console.info(`IDE plugins found: ${localPluginsValues.length}`);
 
     //Carrega os plugins instalados no sistema
     for (const plugin of localPluginsValues) {
@@ -52,17 +52,17 @@ export const usePluginStore = create<PluginState>((set, get) => ({
 
     if (pluginFile.plugin) {
       const plugin: PluginType = pluginFile.plugin;
-      console.log(`Load from: ${plugin.name}`);
+      console.info(`Load from: ${plugin.name}`);
 
       // Adiciona os componentes e ações da tela
       for (const comp of plugin.components) {
         if ((comp as MenuActionProps).tabTitle) {
           const compAs = comp as MenuActionProps;
-          console.log(`Add action: ${compAs.name || compAs.title}`);
+          console.info(`Add action: ${compAs.name || compAs.title}`);
           useMenuStore.getState().addMenuAction(compAs);
         } else {
           const compAs = comp as typeof CVFComponent;
-          console.log(`Add component: ${compAs.name}`);
+          console.info(`Add component: ${compAs.name}`);
           if (compAs.menu) {
             useMenuStore.getState().addComponentMenuAction(compAs);
           }
@@ -73,7 +73,7 @@ export const usePluginStore = create<PluginState>((set, get) => ({
       // Adiciona os templates de exemplo
       if (plugin.templates)
         for (const sampleTemplate of plugin.templates) {
-          console.log(`Add template: ${sampleTemplate.title}`);
+          console.info(`Add template: ${sampleTemplate.title}`);
           useNewModalStore.getState().addTemplate(sampleTemplate);
         }
     }

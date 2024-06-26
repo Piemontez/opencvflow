@@ -6,7 +6,6 @@ import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import { arithmeticTabName } from './tabname';
 
-
 export class CVBitwiseAndComponent extends CVFComponent {
   static menu = { tabTitle: arithmeticTabName, title: 'Bitwise And' };
   targets: TargetHandle[] = [

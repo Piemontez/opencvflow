@@ -2,11 +2,13 @@ import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
 import cv, { Mat } from 'opencv-ts';
 import { Position } from 'reactflow';
-import { SourceHandle } from '../../../core/types/handle';
+import { SourceHandle, TargetHandle } from '../../../core/types/handle';
 import { inputTabName } from './tabname';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import { NodeSizes } from '../../../core/config/sizes';
 import { hsv2rgb, rgb2Hex } from '../../../core/utils/colors';
+import { DataTypes } from 'opencv-ts/src/core/HalInterface';
+import GCStore from '../../../core/contexts/GCStore';
 
 /**
  * Video Capture component and node
@@ -16,6 +18,12 @@ export class CVHSVRangeComponent extends CVFComponent {
     tabTitle: inputTabName,
     title: 'HSV Range',
   };
+
+  targets: TargetHandle[] = [
+    { title: 'rows', position: Position.Left },
+    { title: 'cols', position: Position.Left },
+    { title: 'type', position: Position.Left },
+  ];
 
   sources: SourceHandle[] = [
     { title: 'min', position: Position.Right },
@@ -48,16 +56,15 @@ export class CVHSVRangeComponent extends CVFComponent {
     body() {
       return (
         <>
-          <canvas width={NodeSizes.defaultWidth / 2} height={NodeSizes.defaultHeight / 2} ref={(ref) => (this.canvas = ref)} />
+          <canvas width={NodeSizes.defaultWidth * 0.6} height={NodeSizes.defaultHeight * 0.4} ref={(ref) => (this.canvas = ref)} />
           <br style={{ clear: 'both' }} />
-          <canvas width={NodeSizes.defaultWidth / 2} height={NodeSizes.defaultHeight / 2} ref={(ref) => (this.canvasEnd = ref)} />
+          <canvas width={NodeSizes.defaultWidth * 0.6} height={NodeSizes.defaultHeight * 0.4} ref={(ref) => (this.canvasEnd = ref)} />
         </>
       );
     }
 
     async propertyChange(name: string, value: number): Promise<void> {
       this.validateFields(name, value);
-      this.calculateMinMax();
       this.repaintCanvas();
     }
 
@@ -117,18 +124,44 @@ export class CVHSVRangeComponent extends CVFComponent {
       }
     }
 
-    calculateMinMax() {
-      this.min = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
-      this.max = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
-    }
-
     async start() {
-      this.calculateMinMax();
       this.repaintCanvas();
     }
 
     async proccess() {
-      this.sources = [this.min!, this.max!];
+      const { inputs } = this;
+
+      this.sources = [];
+      if (inputs.length < 2) {
+        return;
+      }
+
+      this.calculateMinMax(inputs[0] as number, inputs[1] as number, inputs[2] as DataTypes);
+
+      if (this.min) {
+        this.sources.push(this.min);
+      }
+      if (this.max) {
+        this.sources.push(this.max);
+      }
+    }
+
+    calculateMinMax(rows: number, cols: number, type: DataTypes) {
+      this.min = new cv.Mat(
+        rows,
+        cols,
+        type || cv.CV_8UC3,
+        new cv.Scalar(this.hueMin , this.saturationMin * 2.55, this.valueMin * 2.55),
+      );
+      this.max = new cv.Mat(
+        rows,
+        cols,
+        type || cv.CV_8UC3,
+        new cv.Scalar(this.hueMax , this.saturationMax * 2.55, this.valueMax * 2.55),
+      );
+
+      GCStore.add(this.min);
+      GCStore.add(this.max);
     }
   };
 }

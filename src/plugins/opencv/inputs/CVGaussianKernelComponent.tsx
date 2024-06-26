@@ -39,7 +39,7 @@ export class CVGaussianKernelComponent extends CVFOutputComponent {
       GCStore.add(this.out, -100);
 
       this.kernel = new cv.Mat(rows, cols, cv.CV_32F);
-      console.log(cv);
+
       const g1 = cv.getGaussianKernel(rows, sigma, cv.CV_32F);
       const g2 = cv.getGaussianKernel(cols, sigma, cv.CV_32F);
       cv.multiply(g1, g2.t(), this.kernel, 1);

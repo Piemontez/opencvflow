@@ -188,7 +188,7 @@ class Bootloader {
   };
 
   onLoadedError = (_, message) => {
-    console.log(message);
+    console.error(message);
   };
 
   createImportMapTag = () => {

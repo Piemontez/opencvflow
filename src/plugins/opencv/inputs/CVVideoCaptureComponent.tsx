@@ -15,7 +15,7 @@ class VideoCapture extends cv.VideoCapture {}
 export class CVVideoCaptureComponent extends CVFOutputComponent {
   static menu = {
     tabTitle: inputTabName,
-    name: 'videocapture',
+    name: 'Video Capture',
     title: (
       <>
         <FontAwesomeIcon icon={'video'} /> Video Capture

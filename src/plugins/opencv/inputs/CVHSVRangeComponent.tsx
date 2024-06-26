@@ -1,11 +1,12 @@
 import { CVFComponent } from '../../../ide/components/NodeComponent';
 import { CVFNodeProcessor } from '../../../core/types/node';
-import cv from 'opencv-ts';
+import cv, { Mat } from 'opencv-ts';
 import { Position } from 'reactflow';
 import { SourceHandle } from '../../../core/types/handle';
 import { inputTabName } from './tabname';
 import { PropertyType } from '../../../ide/types/PropertyType';
 import { NodeSizes } from '../../../core/config/sizes';
+import { hsv2rgb, rgb2Hex } from '../../../core/utils/colors';
 
 /**
  * Video Capture component and node
@@ -34,40 +35,100 @@ export class CVHSVRangeComponent extends CVFComponent {
       { name: 'valueMax', type: PropertyType.Integer },
     ];
 
-    hueMin: number = 120;
-    hueMax: number = 140;
-    saturationMin: number = 120;
-    saturationMax: number = 140;
-    valueMin: number = 120;
-    valueMax: number = 140;
+    hueMin: number = 0;
+    hueMax: number = 359;
+    saturationMin: number = 0;
+    saturationMax: number = 100;
+    valueMin: number = 20;
+    valueMax: number = 80;
+
+    min?: Mat;
+    max?: Mat;
 
     body() {
       return (
         <>
-          aa
-          <canvas width={NodeSizes.defaultWidth} height={NodeSizes.defaultHeight} ref={(ref) => (this.canvas = ref)} />
-          bb
-          <canvas width={NodeSizes.defaultWidth} height={NodeSizes.defaultHeight} ref={(ref) => (this.canvasEnd = ref)} />
-          cc
+          <canvas width={NodeSizes.defaultWidth / 2} height={NodeSizes.defaultHeight / 2} ref={(ref) => (this.canvas = ref)} />
+          <br style={{ clear: 'both' }} />
+          <canvas width={NodeSizes.defaultWidth / 2} height={NodeSizes.defaultHeight / 2} ref={(ref) => (this.canvasEnd = ref)} />
         </>
       );
     }
 
-    async propertyChange(): Promise<void> {
+    async propertyChange(name: string, value: number): Promise<void> {
+      this.validateFields(name, value);
+      this.calculateMinMax();
       this.repaintCanvas();
     }
 
-    repaintCanvas() {
-      for (let h = this.hueMin; h < this.hueMax; h++) {
-        for (let s = this.saturationMin; s < this.saturationMax; s++) {}
+    validateFields(name: string, value: number) {
+      if (value > 359) {
+        if (name === 'hueMin') this.hueMin = 359;
+        if (name === 'hueMax') this.hueMax = 359;
+      }
+
+      if (value < 0) {
+        if (name === 'hueMin') this.hueMin = 0;
+        if (name === 'hueMax') this.hueMax = 0;
+        if (name === 'saturationMin') this.saturationMin = 0;
+        if (name === 'saturationMax') this.saturationMax = 0;
+        if (name === 'valueMin') this.valueMin = 0;
+        if (name === 'valueMax') this.valueMax = 0;
+      } else if (value > 100) {
+        if (name === 'saturationMin') this.saturationMin = 100;
+        if (name === 'saturationMax') this.saturationMax = 100;
+        if (name === 'valueMin') this.valueMin = 100;
+        if (name === 'valueMax') this.valueMax = 100;
       }
     }
 
-    async proccess() {
-      const min = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
-      const max = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
+    repaintCanvas() {
+      const canvasCTX = this.canvas?.getContext('2d');
+      const canvasEndCTX = this.canvasEnd?.getContext('2d');
+      if (!canvasCTX || !canvasEndCTX) {
+        return;
+      }
 
-      this.sources = [min, max];
+      const wSize = this.canvas!.width / (this.hueMax - this.hueMin);
+      const hSize = this.canvas!.height / (this.saturationMax - this.saturationMin);
+
+      let x = 0;
+      for (let h = this.hueMin; h <= this.hueMax; h++, x++) {
+        let y = 0;
+        for (let s = this.saturationMin; s <= this.saturationMax; s++, y++) {
+          {
+            // Min Value
+            const [r, g, b] = hsv2rgb(h, s, this.valueMin);
+            const hex = '#' + rgb2Hex(r, g, b);
+            canvasCTX.strokeStyle = hex;
+            canvasCTX.fillStyle = hex;
+            canvasCTX.fillRect(x * wSize, y * hSize, wSize, hSize);
+          }
+
+          {
+            // Max value
+            const [r, g, b] = hsv2rgb(h, s, this.valueMax);
+            const hex = '#' + rgb2Hex(r, g, b);
+            canvasEndCTX.strokeStyle = hex;
+            canvasEndCTX.fillStyle = hex;
+            canvasEndCTX.fillRect(x * wSize, y * hSize, wSize, hSize);
+          }
+        }
+      }
+    }
+
+    calculateMinMax() {
+      this.min = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
+      this.max = cv.matFromArray(1, 3, cv.CV_8U, [this.hueMin, this.saturationMin, this.valueMin]);
+    }
+
+    async start() {
+      this.calculateMinMax();
+      this.repaintCanvas();
+    }
+
+    async proccess() {
+      this.sources = [this.min!, this.max!];
     }
   };
 }

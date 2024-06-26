@@ -64,6 +64,13 @@ body,
 #dockwidgets {
   padding: 0;
   max-height: calc(100% - 78px);
+
+  @media only screen and (max-width:480px) {
+    flex-direction: column !important;
+  }
+  @media only screen and (min-width:480px) {
+    flex-direction: row !important;
+  }
 }
 
 /*StatusBar*/

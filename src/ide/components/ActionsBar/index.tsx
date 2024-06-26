@@ -17,7 +17,6 @@ const DockActionsBar = () => {
     <div className="dockactionsbar">
       <div className="actionsbar">
         {showSearch && <SearchBar />}
-
         {currentMenuWithSearch && (
           <>
             <SubmenuBar menus={currentMenuWithSearch.menus} />

@@ -103,9 +103,9 @@ export const useMenuStore = create<MenuState>((set, get) => ({
       const menu = get().findOrCreateTab(component.menu.tabTitle || null, {});
       menu.actions.push(component.menu);
 
-      if (menu.title === 'Inputs') {
+      /*if (menu.title === 'Inputs') {
         set({ currentMenu: menu, currentMenuWithSearch: menu });
-      }
+      }*/
 
       set({ menus: [...get().menus] });
     }

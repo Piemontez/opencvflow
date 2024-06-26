@@ -11,7 +11,12 @@ const DockActionsBar = () => {
   const [currentMenuWithSearch, currTitle] = useMenuStore(
     useShallow((state) => [state.currentMenuWithSearch, state.currentMenuWithSearch?.title || '']),
   );
-  const showSearch = !['File', 'Inputs', 'Custom Components'].includes(currTitle);
+  const hasCurrentMenu = !!currTitle;
+  const showSearch = hasCurrentMenu && !['File', 'Inputs', 'Custom Components'].includes(currTitle);
+
+  if (!hasCurrentMenu) {
+    return null;
+  }
 
   return (
     <div className="dockactionsbar">

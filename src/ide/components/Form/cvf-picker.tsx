@@ -101,10 +101,10 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
     this.setState({ modalVisible: true });
   };
 
-  filter = (item: any) => {
+  filter = (item: CVFOptionValue) => {
     if (this.state.search === '') return true;
 
-    const linha = (item.cols || []).join('');
+    const linha = (item.columns || []).join('');
     let contain = true;
     for (const regexp of this.state.searchRegexps) {
       contain = contain && regexp.test(linha);
@@ -113,18 +113,15 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
   };
 
   searchChange = (e: any) => {
-    let state = this.state;
+    const state = this.state;
     state.search = e.target.value;
-    state.searchRegexps = state.search
-      .split(' ')
-      .map((search) => toIlikeRegex(search) as RegExp);
+    state.searchRegexps = state.search.split(' ').map((search) => toIlikeRegex(search) as RegExp);
 
     if (this.search) {
       this.setState(state);
       this.search();
     } else {
-      if (!state.contentsBkp || !state.contentsBkp.length)
-        state.contentsBkp = state.contents;
+      if (!state.contentsBkp || !state.contentsBkp.length) state.contentsBkp = state.contents;
 
       state.contents = (state.contentsBkp || []).filter(this.filter);
 
@@ -190,16 +187,7 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
   };
 
   render() {
-    const {
-      onAdd,
-      addText,
-      multi,
-      header,
-      title,
-      subtitle,
-      footertitle,
-      placeholder,
-    } = this.props;
+    const { onAdd, addText, multi, header, title, subtitle, footertitle, placeholder } = this.props;
     const { contents } = this.state;
 
     return (
@@ -212,13 +200,7 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
           {placeholder !== false && (
             <Form.Group>
               <Form.Label>{placeholder || 'Search'}</Form.Label>
-              <Form.Control
-                type="text"
-                autoFocus
-                defaultValue={this.state.search}
-                onChange={this.searchChange}
-                ref={this.searchInput}
-              />
+              <Form.Control type="text" autoFocus defaultValue={this.state.search} onChange={this.searchChange} ref={this.searchInput} />
             </Form.Group>
           )}
           <p>
@@ -245,17 +227,10 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
                 {contents.map((item, key) => {
                   const hasId = item.value.id !== undefined;
                   const selected = hasId
-                    ? this.state.selected.findIndex(
-                        (sel: any) => sel.id === item.value.id
-                      ) !== -1
+                    ? this.state.selected.findIndex((sel: any) => sel.id === item.value.id) !== -1
                     : this.state.selected.includes(item.value);
                   return (
-                    <tr
-                      key={key}
-                      onClick={(event) =>
-                        this.onSel(item.value, item.columns, event)
-                      }
-                    >
+                    <tr key={key} onClick={(event) => this.onSel(item.value, item.columns, event)}>
                       {item.columns.map((col, key) => {
                         return <td key={key}>{col}</td>;
                       })}
@@ -273,11 +248,7 @@ export class CVFPicker<T = unknown> extends React.Component<T & PickerProps> {
           </Modal.Footer>
         )}
         <Modal.Footer>
-          {this.props.clearButton && (
-            <Button onClick={(e: any) => this.removeSer(e)}>
-              Remove selection
-            </Button>
-          )}
+          {this.props.clearButton && <Button onClick={(e: any) => this.removeSer(e)}>Remove selection</Button>}
           {onAdd && (
             <Button
               onClick={() => {

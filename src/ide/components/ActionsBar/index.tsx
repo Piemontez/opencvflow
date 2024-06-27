@@ -8,10 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { memo } from 'react';
 
 const DockActionsBar = () => {
-  const [currentMenuWithSearch, currTitle] = useMenuStore(
-    useShallow((state) => [state.currentMenuWithSearch, state.currentMenuWithSearch?.title || '']),
+  const [currentMenuWithSearch, currTitle, search] = useMenuStore(
+    useShallow((state) => [state.currentMenuWithSearch, state.currentMenuWithSearch?.title || '', state.search]),
   );
-  const hasCurrentMenu = !!currTitle;
+  const hasCurrentMenu = !!(currTitle || search);
   const showSearch = hasCurrentMenu && !['File', 'Inputs', 'Custom Components'].includes(currTitle);
 
   if (!hasCurrentMenu) {

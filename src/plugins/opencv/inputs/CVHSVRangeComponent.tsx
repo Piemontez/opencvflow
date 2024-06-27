@@ -47,9 +47,9 @@ export class CVHSVRangeComponent extends CVFComponent {
     hueMin: number = 0;
     hueMax: number = 359;
     saturationMin: number = 0;
-    saturationMax: number = 100;
-    valueMin: number = 20;
-    valueMax: number = 80;
+    saturationMax: number = 255;
+    valueMin: number = 0;
+    valueMax: number = 255;
 
     min?: Mat;
     max?: Mat;

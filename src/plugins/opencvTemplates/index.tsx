@@ -3,6 +3,7 @@ import ThresholdSamplesAction from './threshold-samples';
 import MorphologySamplesAction from './morphology-samples';
 import HistogramCalcSamplesAction from './histogram-cal';
 import EdgeSamplesAction from './edge';
+import ColorsFiltersSamplesAction from './colors-filter';
 
 const OpenCVTemplatesPlugin: PluginType = {
   name: 'OpenCV Templates Plugin',
@@ -13,6 +14,7 @@ const OpenCVTemplatesPlugin: PluginType = {
     ThresholdSamplesAction,
     MorphologySamplesAction,
     HistogramCalcSamplesAction,
+    ColorsFiltersSamplesAction,
   ],
 };
 

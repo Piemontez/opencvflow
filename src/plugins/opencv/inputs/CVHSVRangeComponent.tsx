@@ -9,6 +9,7 @@ import { NodeSizes } from '../../../core/config/sizes';
 import { rgb2Hex } from '../../../core/utils/colors';
 import { DataTypes } from 'opencv-ts/src/core/HalInterface';
 import GCStore from '../../../core/contexts/GCStore';
+import { OPENCV_HSV_H_MAXVALUE } from '../../../ide/commons/consts';
 
 /**
  * Video Capture component and node
@@ -69,9 +70,9 @@ export class CVHSVRangeComponent extends CVFComponent {
     }
 
     validateFields(name: string, value: number) {
-      if (value > 180) {
-        if (name === 'hueMin') this.hueMin = 180;
-        if (name === 'hueMax') this.hueMax = 180;
+      if (value > OPENCV_HSV_H_MAXVALUE) {
+        if (name === 'hueMin') this.hueMin = OPENCV_HSV_H_MAXVALUE;
+        if (name === 'hueMax') this.hueMax = OPENCV_HSV_H_MAXVALUE;
       }
 
       if (value < 0) {
@@ -90,48 +91,54 @@ export class CVHSVRangeComponent extends CVFComponent {
     }
 
     repaintCanvas() {
-      const canvasCTX = this.canvas?.getContext('2d');
-      const canvasEndCTX = this.canvasEnd?.getContext('2d');
-      if (!canvasCTX || !canvasEndCTX) {
+      const topCTX = this.canvas?.getContext('2d');
+      const botCTX = this.canvasEnd?.getContext('2d');
+      if (!topCTX || !botCTX) {
         return;
       }
 
-      const wSize = this.canvas!.width / (this.hueMax - this.hueMin);
-      const hSize = this.canvas!.height / (this.saturationMax - this.saturationMin);
-
-      let x = 0;
       const hsv = GCStore.add(new cv.Mat(1, 1, cv.CV_8UC3));
       const rgb = GCStore.add(new cv.Mat());
-      for (let h = this.hueMin; h <= this.hueMax; h++, x++) {
-        let y = 0;
-        for (let s = this.saturationMin; s <= this.saturationMax; s++, y++) {
-          hsv.ucharPtr(0, 0)[0] = h;
-          hsv.ucharPtr(0, 0)[1] = s;
-          {
-            // Min Value
+
+      let wSize;
+      const hSize = this.canvas!.height / (this.saturationMax - this.saturationMin);
+      const hueMinMax = [];
+
+      if (this.hueMin <= this.hueMax) {
+        wSize = this.canvas!.width / (this.hueMax - this.hueMin);
+        hueMinMax.push([this.hueMin, this.hueMax]);
+      } else {
+        wSize = this.canvas!.width / (this.hueMax + (OPENCV_HSV_H_MAXVALUE - this.hueMin));
+        hueMinMax.push([0, this.hueMax]);
+        hueMinMax.push([this.hueMin, OPENCV_HSV_H_MAXVALUE]);
+      }
+
+      let x = 0;
+      for (let [hMin, hMax] of hueMinMax) {
+        for (let h = hMin; h <= hMax; h++, x++) {
+          let y = 0;
+          for (let s = this.saturationMin; s <= this.saturationMax; s++, y++) {
+            hsv.ucharPtr(0, 0)[0] = h;
+            hsv.ucharPtr(0, 0)[1] = s;
+
             hsv.ucharPtr(0, 0)[2] = this.valueMin;
-            cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
+            this.fillCanvasColor(hsv, rgb, topCTX, x * wSize, y * hSize, wSize, hSize);
 
-            const [r, g, b] = rgb.data;
-            const hex = '#' + rgb2Hex(r, g, b);
-            canvasCTX.strokeStyle = hex;
-            canvasCTX.fillStyle = hex;
-            canvasCTX.fillRect(x * wSize, y * hSize, wSize, hSize);
-          }
-
-          {
-            // Max value
             hsv.ucharPtr(0, 0)[2] = this.valueMax;
-            cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
-
-            const [r, g, b] = rgb.data;
-            const hex = '#' + rgb2Hex(r, g, b);
-            canvasEndCTX.strokeStyle = hex;
-            canvasEndCTX.fillStyle = hex;
-            canvasEndCTX.fillRect(x * wSize, y * hSize, wSize, hSize);
+            this.fillCanvasColor(hsv, rgb, botCTX, x * wSize, y * hSize, wSize, hSize);
           }
         }
       }
+    }
+
+    fillCanvasColor(hsv: Mat, rgb: Mat, ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+      cv.cvtColor(hsv, rgb, cv.COLOR_HSV2RGB);
+      const [r, g, b] = rgb.data;
+      const hex = '#' + rgb2Hex(r, g, b);
+
+      ctx.strokeStyle = hex;
+      ctx.fillStyle = hex;
+      ctx.fillRect(x, y, w, h);
     }
 
     async start() {

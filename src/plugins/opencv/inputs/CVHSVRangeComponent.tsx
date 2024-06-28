@@ -97,6 +97,9 @@ export class CVHSVRangeComponent extends CVFComponent {
         return;
       }
 
+      topCTX.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
+      topCTX.clearRect(0, 0, this.canvasEnd!.width, this.canvasEnd!.height);
+
       const hsv = GCStore.add(new cv.Mat(1, 1, cv.CV_8UC3));
       const rgb = GCStore.add(new cv.Mat());
 

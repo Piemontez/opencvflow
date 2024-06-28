@@ -1,9 +1,5 @@
-import cv, { Mat, MatVector } from 'opencv-ts';
-import { Moments } from 'opencv-ts/src/core/Moments';
 import { Position } from 'reactflow';
-import GCStore from '../../core/contexts/GCStore';
 import { CVFIOComponent } from '../../ide/components/NodeComponent';
-import { CVFComponentOptions } from '../../ide/components/NodeComponent/CVFComponentOptions';
 import { SourceHandle } from '../../core/types/handle';
 import { CVFNodeProcessor } from '../../core/types/node';
 import { cvUtilsTabName } from './tabname';

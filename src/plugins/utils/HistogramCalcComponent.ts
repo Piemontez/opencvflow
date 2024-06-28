@@ -5,9 +5,10 @@ import { CVFComponent } from '../../ide/components/NodeComponent';
 import { SourceHandle, TargetHandle } from '../../core/types/handle';
 import { CVFNodeProcessor } from '../../core/types/node';
 import { PropertyType } from '../../ide/types/PropertyType';
+import { cvUtilsTabName } from './tabname';
 
 export class HistogramCalcComponent extends CVFComponent {
-  static menu = { tabTitle: ['Utils'], title: 'Histogram Calc' };
+  static menu = { tabTitle: cvUtilsTabName, title: 'Histogram Calc' };
 
   targets: TargetHandle[] = [
     { title: 'image', position: Position.Left },

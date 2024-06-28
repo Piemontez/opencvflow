@@ -7,6 +7,7 @@ import { Position } from 'reactflow';
 import { SourceHandle } from '../../../core/types/handle';
 import messages from '../messages';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { VideoSizes } from '../../../core/config/sizes';
 import { inputTabName } from './tabname';
 
 /**
@@ -59,7 +60,15 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
       return (
         <>
           <img style={{ display: 'none' }} ref={(ref) => (this.img = ref)} alt="" />
-          <video autoPlay muted playsInline style={{ display: 'none' }} ref={(ref) => (this.video = ref)} />
+          <video
+            autoPlay
+            width={VideoSizes.minWidth}
+            height={VideoSizes.minHeight}
+            muted
+            playsInline
+            style={{ display: 'none' }}
+            ref={(ref) => (this.video = ref)}
+          />
         </>
       );
     }

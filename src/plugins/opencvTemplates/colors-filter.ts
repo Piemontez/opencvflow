@@ -6,8 +6,9 @@ import { ProjectTemplate } from '../../core/types/project-template';
 import { makeXYPosition } from '../../core/utils/makeXYPosition';
 import cv from 'opencv-ts';
 import { InRangeComponent } from '../opencv/others';
-import { CVHSVRangeComponent } from '../opencv/inputs';
+import { CVFileLoaderCaptureComponent, CVHSVRangeComponent } from '../opencv/inputs';
 import { CVBitwiseAndComponent, CVBitwiseOrComponent } from '../opencv/arithmetic';
+import { MapPropertiesComponent } from '../utils/MapPropertiesComponent';
 
 const group = 'OpenCV';
 
@@ -20,8 +21,16 @@ const ColorsFiltersSamplesAction: ProjectTemplate = {
 
     // Add Video
     comp = useNodeStore.getState().getNodeType(CVVideoCaptureComponent.name);
-    pos = makeXYPosition(-3, 0.5);
+    pos = makeXYPosition(-4, 0.5);
     const videoId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
+
+    comp = useNodeStore.getState().getNodeType(CVFileLoaderCaptureComponent.name);
+    pos = makeXYPosition(-4, 2);
+    useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
+
+    comp = useNodeStore.getState().getNodeType(MapPropertiesComponent.name);
+    pos = makeXYPosition(-2, 1);
+    const videoPropsId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Add Convert
     comp = useNodeStore.getState().getNodeType(CvtColorComponent.name);
@@ -139,7 +148,8 @@ const ColorsFiltersSamplesAction: ProjectTemplate = {
     const andVideoPurple = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     // Edges
-    useNodeStore.getState().addEdge(videoId, cvtColorId, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoId, videoPropsId, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, cvtColorId, 'out', 'src1');
 
     // InRange red
     useNodeStore.getState().addEdge(cvtColorId, inRangeRed1, 'out', 'src');
@@ -176,71 +186,71 @@ const ColorsFiltersSamplesAction: ProjectTemplate = {
     useNodeStore.getState().addEdge(hsvPurple, inRangePurple, 'max', 'max');
 
     // HSV Red
-    useNodeStore.getState().addEdge(videoId, hsvRed1, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvRed1, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvRed1, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvRed1, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvRed1, 'type', 'type');
 
-    useNodeStore.getState().addEdge(videoId, hsvRed2, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvRed2, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvRed2, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvRed2, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvRed2, 'type', 'type');
 
     // HSV
-    useNodeStore.getState().addEdge(videoId, hsvYellow, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvYellow, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvYellow, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvYellow, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvYellow, 'type', 'type');
 
     // HSV
-    useNodeStore.getState().addEdge(videoId, hsvGreen, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvGreen, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvGreen, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvGreen, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvGreen, 'type', 'type');
 
     // HSV
-    useNodeStore.getState().addEdge(videoId, hsvBlue, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvBlue, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvBlue, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvBlue, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvBlue, 'type', 'type');
 
     // HSV
-    useNodeStore.getState().addEdge(videoId, hsvCyan, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvCyan, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvCyan, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvCyan, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvCyan, 'type', 'type');
 
     // HSV
-    useNodeStore.getState().addEdge(videoId, hsvPurple, 'rows', 'rows');
-    useNodeStore.getState().addEdge(videoId, hsvPurple, 'cols', 'cols');
+    useNodeStore.getState().addEdge(videoPropsId, hsvPurple, 'rows', 'rows');
+    useNodeStore.getState().addEdge(videoPropsId, hsvPurple, 'cols', 'cols');
     useNodeStore.getState().addEdge(cvtColorId, hsvPurple, 'type', 'type');
 
     // OR red 1 e 2
-    useNodeStore.getState().addEdge(hsvRed1, orRed, 'out', 'src1');
-    useNodeStore.getState().addEdge(hsvRed2, orRed, 'out', 'src2');
+    useNodeStore.getState().addEdge(inRangeRed1, orRed, 'out', 'src1');
+    useNodeStore.getState().addEdge(inRangeRed2, orRed, 'out', 'src2');
 
     // AND video e red
-    useNodeStore.getState().addEdge(videoId, andVideoRed, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoRed, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoRed, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoRed, 'out', 'src2');
     useNodeStore.getState().addEdge(orRed, andVideoRed, 'out', 'masc');
 
     // AND
-    useNodeStore.getState().addEdge(videoId, andVideoYellow, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoYellow, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoYellow, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoYellow, 'out', 'src2');
     useNodeStore.getState().addEdge(inRangeYellow, andVideoYellow, 'out', 'masc');
 
     // AND
-    useNodeStore.getState().addEdge(videoId, andVideoGreen, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoGreen, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoGreen, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoGreen, 'out', 'src2');
     useNodeStore.getState().addEdge(inRangeGreen, andVideoGreen, 'out', 'masc');
 
     // AND
-    useNodeStore.getState().addEdge(videoId, andVideoBlue, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoBlue, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoBlue, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoBlue, 'out', 'src2');
     useNodeStore.getState().addEdge(inRangeBlue, andVideoBlue, 'out', 'masc');
 
     // AND
-    useNodeStore.getState().addEdge(videoId, andVideoCyan, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoCyan, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoCyan, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoCyan, 'out', 'src2');
     useNodeStore.getState().addEdge(inRangeCyan, andVideoCyan, 'out', 'masc');
 
     // AND
-    useNodeStore.getState().addEdge(videoId, andVideoPurple, 'out', 'src1');
-    useNodeStore.getState().addEdge(videoId, andVideoPurple, 'out', 'src2');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoPurple, 'out', 'src1');
+    useNodeStore.getState().addEdge(videoPropsId, andVideoPurple, 'out', 'src2');
     useNodeStore.getState().addEdge(inRangePurple, andVideoPurple, 'out', 'masc');
 
     setTimeout(useNodeStore.getState().fitView, 100);

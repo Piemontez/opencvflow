@@ -50,15 +50,17 @@ export class CVVideoCaptureComponent extends CVFOutputComponent {
       this.cap = new cv.VideoCapture(this.video!);
 
       await navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((mediaStream) => {
-        if (this.video) {
-          this.video.srcObject = mediaStream;
-          this.video.onloadedmetadata = () => {
-            this.video!.width = this.video!.videoWidth;
-            this.video!.height = this.video!.videoHeight;
-            this.video!.play();
-          };
-        }
-        return null;
+        return new Promise((res, rej) => {
+          if (this.video) {
+            this.video.srcObject = mediaStream;
+            this.video.onloadedmetadata = () => {
+              this.video!.width = this.video!.videoWidth;
+              this.video!.height = this.video!.videoHeight;
+
+              this.video!.play().then(res).catch(rej);
+            };
+          }
+        });
       });
     }
 

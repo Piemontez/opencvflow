@@ -56,19 +56,11 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
       this.proccess = this.proccess.bind(this);
     }
 
-    header() {
+    body() {
       return (
         <>
           <img style={{ display: 'none' }} ref={(ref) => (this.img = ref)} alt="" />
-          <video
-            autoPlay
-            width={VideoSizes.minWidth}
-            height={VideoSizes.minHeight}
-            muted
-            playsInline
-            style={{ display: 'none' }}
-            ref={(ref) => (this.video = ref)}
-          />
+          <video autoPlay muted playsInline ref={(ref) => (this.video = ref)} />
         </>
       );
     }
@@ -86,9 +78,18 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
           this.img!.src = url;
         } else if (this.file!.type.match('video.*')) {
           this.isVideo = true;
-          this.video!.src = url;
-          this.video!.loop = this.loop;
-          await this.video!.play();
+
+          if (this.video) {
+            this.video.src = url;
+            this.video.loop = this.loop;
+
+            this.video.onloadedmetadata = () => {
+              this.video!.width = this.video!.videoWidth;
+              this.video!.height = this.video!.videoHeight;
+            };
+
+            await this.video.play();
+          }
 
           this.cap = new cv.VideoCapture(this.video!);
         } else {
@@ -107,6 +108,7 @@ export class CVFileLoaderCaptureComponent extends CVFOutputComponent {
         this.output(src);
         this.sources = [src];
       }
+
       if (this.isVideo && this.cap && this.video!.width && this.video!.width) {
         const src = new cv.Mat(this.video!.height!, this.video!.width!, cv.CV_8UC4);
         GCStore.add(src);

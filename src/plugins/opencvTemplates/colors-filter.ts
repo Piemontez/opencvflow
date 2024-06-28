@@ -25,7 +25,7 @@ const ColorsFiltersSamplesAction: ProjectTemplate = {
     const videoId = useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     comp = useNodeStore.getState().getNodeType(CVFileLoaderCaptureComponent.name);
-    pos = makeXYPosition(-4, 2);
+    pos = makeXYPosition(-3, 2);
     useNodeStore.getState().addNodeFromComponent(comp!, pos).id;
 
     comp = useNodeStore.getState().getNodeType(MapPropertiesComponent.name);

@@ -19,6 +19,7 @@ import { OCVDistanceTypesFormControl } from './ocv-distancetypes-formcontrol';
 import { OCVMorphTypesFormControl } from './ocv-morphtypes-formcontrol';
 import { OCVDataTypeTypesFormControl } from './ocv-datatypes-formcontrol';
 import { OCVNormTypesFormControl } from './ocv-normtypes-formcontrol';
+import { CVFIntegerRangeFormControl } from './cvf-number-range-formcontrol';
 
 /**
  * Definição da função chamada ao alterar um formulario
@@ -87,6 +88,9 @@ export function CVFFormGroup(props: CVFFormProps) {
       break;
     case PropertyType.Integer:
       Control = CVFIntegerFormControl(props);
+      break;
+    case PropertyType.IntegerRange:
+      Control = CVFIntegerRangeFormControl(props);
       break;
     case PropertyType.Label:
       props = { ...props, disabled: true };

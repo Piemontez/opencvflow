@@ -11,6 +11,7 @@ export enum PropertyType {
   IntMatrix,
   DoubleMatrix,
   FileUrl,
+  IntegerRange,
   // OpenCV Types
   Size = 1000,
   Point,
@@ -24,4 +25,3 @@ export enum PropertyType {
   NormTypes,
   DistanceTransformMasks = PropertyType.Integer,
 }
-

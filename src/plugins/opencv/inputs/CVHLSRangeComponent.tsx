@@ -36,16 +36,16 @@ export class CVHLSRangeComponent extends CVFComponent {
     canvasEnd: HTMLCanvasElement | null = null;
 
     properties = [
-      { name: 'hueMin', type: PropertyType.Integer },
-      { name: 'hueMax', type: PropertyType.Integer },
-      { name: 'lightnessMin', type: PropertyType.Integer },
-      { name: 'lightnessMax', type: PropertyType.Integer },
-      { name: 'saturationMin', type: PropertyType.Integer },
-      { name: 'saturationMax', type: PropertyType.Integer },
+      { name: 'hueMin', type: PropertyType.IntegerRange, min: 0, max: OPENCV_HLS_H_MAXVALUE },
+      { name: 'hueMax', type: PropertyType.IntegerRange, min: 0, max: OPENCV_HLS_H_MAXVALUE },
+      { name: 'lightnessMin', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'lightnessMax', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'saturationMin', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'saturationMax', type: PropertyType.IntegerRange, min: 0, max: 255 },
     ];
 
     hueMin: number = 0;
-    hueMax: number = 359;
+    hueMax: number = OPENCV_HLS_H_MAXVALUE;
     lightnessMin: number = 0;
     lightnessMax: number = 255;
     saturationMin: number = 0;
@@ -70,23 +70,17 @@ export class CVHLSRangeComponent extends CVFComponent {
     }
 
     validateFields(name: string, value: number) {
-      if (value > OPENCV_HLS_H_MAXVALUE) {
-        if (name === 'hueMin') this.hueMin = OPENCV_HLS_H_MAXVALUE;
-        if (name === 'hueMax') this.hueMax = OPENCV_HLS_H_MAXVALUE;
+      if (name === 'saturationMin' && value > this.saturationMax) {
+        this.saturationMax = value;
       }
-
-      if (value < 0) {
-        if (name === 'hueMin') this.hueMin = 0;
-        if (name === 'hueMax') this.hueMax = 0;
-        if (name === 'saturationMin') this.saturationMin = 0;
-        if (name === 'saturationMax') this.saturationMax = 0;
-        if (name === 'lightnessMin') this.lightnessMin = 0;
-        if (name === 'lightnessMax') this.lightnessMax = 0;
-      } else if (value > 255) {
-        if (name === 'saturationMin') this.saturationMin = 255;
-        if (name === 'saturationMax') this.saturationMax = 255;
-        if (name === 'lightnessMin') this.lightnessMin = 255;
-        if (name === 'lightnessMax') this.lightnessMax = 255;
+      if (name === 'saturationMax' && value < this.saturationMin) {
+        this.saturationMin = value;
+      }
+      if (name === 'lightnessMin' && value > this.lightnessMax) {
+        this.lightnessMax = value;
+      }
+      if (name === 'lightnessMax' && value < this.lightnessMin) {
+        this.lightnessMin = value;
       }
     }
 

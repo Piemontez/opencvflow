@@ -1,6 +1,6 @@
 import { PropertyType } from '../../../types/PropertyType';
 import { CVFFormEventHandler } from '../index';
-import { CVFOptionValue } from "./CVFOptionValue";
+import { CVFOptionValue } from './CVFOptionValue';
 
 /**
  * Propriedades do formulário
@@ -27,6 +27,9 @@ export declare type CVFFormProps = {
   options?: CVFOptionValue[];
   //control
   controlClassName?: string;
+  //range controls
+  min: number;
+  max: number;
 
   onChange?: CVFFormEventHandler;
 };

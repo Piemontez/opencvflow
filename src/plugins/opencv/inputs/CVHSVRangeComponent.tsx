@@ -36,16 +36,16 @@ export class CVHSVRangeComponent extends CVFComponent {
     canvasEnd: HTMLCanvasElement | null = null;
 
     properties = [
-      { name: 'hueMin', type: PropertyType.Integer },
-      { name: 'hueMax', type: PropertyType.Integer },
-      { name: 'saturationMin', type: PropertyType.Integer },
-      { name: 'saturationMax', type: PropertyType.Integer },
-      { name: 'valueMin', type: PropertyType.Integer },
-      { name: 'valueMax', type: PropertyType.Integer },
+      { name: 'hueMin', type: PropertyType.IntegerRange, min: 0, max: OPENCV_HSV_H_MAXVALUE },
+      { name: 'hueMax', type: PropertyType.IntegerRange, min: 0, max: OPENCV_HSV_H_MAXVALUE },
+      { name: 'saturationMin', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'saturationMax', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'valueMin', type: PropertyType.IntegerRange, min: 0, max: 255 },
+      { name: 'valueMax', type: PropertyType.IntegerRange, min: 0, max: 255 },
     ];
 
     hueMin: number = 0;
-    hueMax: number = 359;
+    hueMax: number = OPENCV_HSV_H_MAXVALUE;
     saturationMin: number = 0;
     saturationMax: number = 255;
     valueMin: number = 0;
@@ -70,23 +70,17 @@ export class CVHSVRangeComponent extends CVFComponent {
     }
 
     validateFields(name: string, value: number) {
-      if (value > OPENCV_HSV_H_MAXVALUE) {
-        if (name === 'hueMin') this.hueMin = OPENCV_HSV_H_MAXVALUE;
-        if (name === 'hueMax') this.hueMax = OPENCV_HSV_H_MAXVALUE;
+      if (name === 'saturationMin' && value > this.saturationMax) {
+        this.saturationMax = value;
       }
-
-      if (value < 0) {
-        if (name === 'hueMin') this.hueMin = 0;
-        if (name === 'hueMax') this.hueMax = 0;
-        if (name === 'saturationMin') this.saturationMin = 0;
-        if (name === 'saturationMax') this.saturationMax = 0;
-        if (name === 'valueMin') this.valueMin = 0;
-        if (name === 'valueMax') this.valueMax = 0;
-      } else if (value > 255) {
-        if (name === 'saturationMin') this.saturationMin = 255;
-        if (name === 'saturationMax') this.saturationMax = 255;
-        if (name === 'valueMin') this.valueMin = 255;
-        if (name === 'valueMax') this.valueMax = 255;
+      if (name === 'saturationMax' && value < this.saturationMin) {
+        this.saturationMin = value;
+      }
+      if (name === 'valueMin' && value > this.valueMax) {
+        this.valueMax = value;
+      }
+      if (name === 'valueMax' && value < this.valueMin) {
+        this.valueMin = value;
       }
     }
 

@@ -8,3 +8,4 @@ export const ZOOM_BOX_SIZE = 50;
 export const ZOOM_BOX_SIZE_HALF = 50 / 2;
 
 export const OPENCV_HSV_H_MAXVALUE = 180;
+export const OPENCV_HLS_H_MAXVALUE = 180;

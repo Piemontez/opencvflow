@@ -4,12 +4,12 @@ import { CVFFormEvent } from './types/CVFFormEvent';
 
 export function CVFIntegerRangeFormControl(props: CVFFormProps) {
   const value = props.value ?? props.min;
-  const perc = Math.ceil(((value - props.min) / (props.max - props.min)) * 100);
+  const perc = Math.ceil(((value - props.min!) / (props.max! - props.min!)) * 100);
   const backPercStyle = { background: `linear-gradient(90deg, var(--bs-gray-600) ${perc - 5}%, var(--bs-dark) ${perc + 5}%)` };
 
   const changeValue = (event: CVFFormEvent, value: number) => {
-    if (value < props.min) value = props.min;
-    if (value > props.max) value = props.max;
+    if (props.min && value < props.min) value = props.min;
+    if (props.max && value > props.max) value = props.max;
     props.onChange!(value, '' + value, event);
   };
 
@@ -31,7 +31,7 @@ export function CVFIntegerRangeFormControl(props: CVFFormProps) {
         const perc = x / rect.width;
 
         if (perc < 0.86) {
-          changeValue(event, Math.ceil(props.max * perc));
+          changeValue(event, Math.ceil(props.max! * perc));
         }
       }}
       style={backPercStyle}

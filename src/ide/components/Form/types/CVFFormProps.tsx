@@ -28,8 +28,8 @@ export declare type CVFFormProps = {
   //control
   controlClassName?: string;
   //range controls
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
 
   onChange?: CVFFormEventHandler;
 };

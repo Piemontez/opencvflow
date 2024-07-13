@@ -7,7 +7,6 @@ import { Position } from 'reactflow';
 import { SourceHandle } from '../../../core/types/handle';
 import messages from '../messages';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { VideoSizes } from '../../../core/config/sizes';
 import { inputTabName } from './tabname';
 
 /**
